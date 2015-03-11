@@ -1,0 +1,55 @@
+<Alloy>
+	<Model src="dummy"/>
+ <Tab id="tab_invoicelist" title="invoice">
+  <Window id="invoicelist_window"  title="INVOICE">
+	<RightNavButton platform="ios">
+	   <Button systemButton="Ti.UI.iPhone.SystemButton.ADD" onClick="addHandler" /> 
+	   <!--Button systemButton="Ti.UI.iPhone.SystemButton.SEARCH" right="20" onClick="searchHandler"/-->
+	</RightNavButton>
+	<ListView id="invoicelist_list" height="Ti.UI.Size" defaultItemTemplate="template">
+		<SearchBar barColor="gray" />
+		<HeaderView>
+                <View backgroundColor="#DDD" height="Ti.UI.SIZE">
+                    <Label>Invoices</Label>
+                </View>>
+            </HeaderView>
+		<Templates>
+			<ItemTemplate name="template" backgroundColor="white" height="60" onClick="selectItem" >
+				<Label id="label_header" color="#333"  left="20" top="10" bindId="info" onClick="doClick"/>
+				<Label id="label_sub1" color="#330"  left="20" top="30" bindId="total" onClick="doClick"/>
+				<Label  id="label_sub2" color="orange"  right="60" top="30" bindId="bal" onClick="doClick"/>
+				<Label  id="label_sub3" color="#333"  right="60" top="40" bindId="paid" onClick="doClick"/>
+				<ImageView bindId="img" id="icon" height="10" width="60" left="20" top="43" onClick="doClick"/>
+				<Button id="next_button" bindId="all" image="light_info.png" right="20" top="30" width="20" height="20" onClick="doClick"/>
+			</ItemTemplate>
+		</Templates>
+		<ListSection id="invoicelist_section" headerTitle="Invoice List" dataCollection="invoice" dataFilter="filterFunction" dataTransform="transformFunction" onClick="selectItem" >
+			<ListItem id="invoice_listitem" all:text="{title}" info:text="{custom}" total:text="{total}" bal:text="{bal}" paid:text="{paid}" status:text="{status}" img:image="{img}"/>
+		</ListSection>
+			<FooterView>
+                <View backgroundColor="#DDD" height="50">
+                </View>>
+            </FooterView>
+   </ListView>
+       <!--View id="sortview" backgroundColor="#DDD" width="Ti.UI.SIZE" height="Ti.UI.SIZE">
+       	<Require src="button" label="All"/>
+		<Require src="button" label="Paid"/>
+		<Require src="button" label="Owed"/>
+		<Require src="button" label="None"/>	
+    </View-->
+          <Toolbar id="sortview" platform="ios" bottom="0" borderTop="true" borderBottom="false">
+            <Items >
+            	<FlexSpace/>
+            	<Button systemButton="COMPOSE" onClick="mailAction"/>
+            	<Button systemButton="BOOKMARKS" onClick="uploadFile"/>
+            	<FlexSpace/>
+            	<Button id="All" title="All" style="Ti.UI.iPhone.SystemButtonStyle.PLAIN" onClick="buttonAction" />
+            	<Button id="Paid"  title="Paid" style="Ti.UI.iPhone.SystemButtonStyle.PLAIN" onClick="buttonAction"  />            	
+            	<Button id="Owed"  title="Owed" style="Ti.UI.iPhone.SystemButtonStyle.PLAIN" onClick="buttonAction"  />
+            	<FlexSpace/>
+            </Items>
+        </Toolbar>
+
+  </Window>
+    </Tab>
+</Alloy>

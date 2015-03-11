@@ -1,0 +1,27 @@
+<Alloy>
+<Collection src="labor"/>
+<Tab id="tab_two" title="Tech Loc" icon="standing39.png">
+  <Window id="labor_window" backgroundColor="white" title="Field Tech">
+	<TableView id="labor_table" backgroundColor="transparent" dataCollection="labor" search="search_history" dataTransform="transformFunction" filterAttribute="title">
+	  <SearchBar id="search_history" height="47" />
+		<TableViewRow id="labor_row" height="75" backgroundColor="transparent" opacity="0" color="transparent" title="{title}">
+			<Label id="label_header" color="#333" color="gray" top="10" textAlign="Ti.UI.TEXT_ALIGNMENT_CENTER" text="{custom}"/>
+			<Label id="label_sub1" color="#330"  textAlign="Ti.UI.TEXT_ALIGNMENT_CENTER" top="30" text="{phone}"/>
+			<Label  id="label_sub2" color="orange"  textAlign="Ti.UI.TEXT_ALIGNMENT_CENTER" top="45" text="{email}"/>
+			<Label  id="label_sub3" color="#333"  textAlign="Ti.UI.TEXT_ALIGNMENT_CENTER" top="60" text="{address}"/>
+		</TableViewRow>
+	</TableView>
+	  <Toolbar id="sortview" platform="ios" bottom="0" borderTop="true" borderBottom="false">
+        <Items >
+        	<FlexSpace/>
+        	<Button image="group12.png" onClick="checkAllLoc"/>
+        	<FlexSpace/>
+        	<ImageView image="businessman257.png" width="24" height="24"></ImageView>
+        	<FlexSpace/>
+        	<Button image="light_locate.png" onClick="updateLoc"/>
+        	<FlexSpace/>
+        </Items>
+      </Toolbar>
+  </Window>
+  </Tab>
+</Alloy>

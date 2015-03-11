@@ -1,0 +1,24 @@
+<Alloy>
+  <Tab id="tab_google">
+  <Window id="google_window" backgroundColor="white" title="google List">
+	  <TableView id="google_table" backgroundColor="transparent" >
+		  <TableViewRow id="sync" backgroundColor="transparent" opacity="0" color="white" Title="Google Sync">
+		  	<Label id="sync_label" color="yellow" top="5" left="50" text="Sync it"/>
+		  </TableViewRow>
+		  <TableViewRow id="logout" backgroundColor="transparent" opacity="0" color="white" Title="Logout">
+		  	<Label id="logout_label" color="red" top="5" left="50" text="Logout"/>
+		  </TableViewRow>
+		  <TableViewRow id="sheet" backgroundColor="transparent" opacity="0" color="white" Title="Sheet Sync">
+		  	<Label id="sheet_label" color="yellow" top="5" left="50" text="Check Spreadsheet Access"/>
+		  </TableViewRow>
+		  <TableViewRow id="urlinput" backgroundColor="transparent" opacity="0" color="white" Title="INPUT URL">
+		  	<TextField id="url_tf"></TextField>
+			<Button id="save_url_button"></Button>
+		  </TableViewRow>
+		  <TableViewRow id="getdatainput" backgroundColor="transparent" opacity="0" color="white" Title="Get Data Input">
+		  	<Label id="getdatainput_label" color="yellow" top="5" left="50" text="Get Data Based on URL entered"/>
+		  </TableViewRow>
+	  </TableView>
+  </Window>
+  </Tab>
+</Alloy>

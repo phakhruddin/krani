@@ -1,0 +1,52 @@
+<Alloy>
+  <Collection src="project"/>
+  <Collection src="client"/>
+  <Collection src="invoice"/>
+  <Collection src="inventory"/>
+  <Tab id="tab_one" title="MAIN" icon="house202.png">
+    <Window title="Krani" class='container'>
+      <TableView id="table" backgroundColor="white" >
+ 	      <TableViewRow id="schedule" opacity="0" Title="location">
+ 	      	<Label id="label_schedule"/>
+		   		  <Label id="label_schedule" color="orange"  left="80" text="Schedule"/>
+		   		  <ImageView image="calendar90.png" left="12" height="50" width="50"/>
+		   </TableViewRow>
+	      <TableViewRow id="location" backgroundColor="transparent" Title="Location">
+	      	<Label id="label_location" />
+		   		  <Label id="label_location" color="#333"  left="80" text="Locate Tech"/>
+		   		  <ImageView image="man388.png" left="20" height="30" width="30"/>
+		   </TableViewRow>
+		   <TableViewRow id="project" backgroundColor="transparent" Title="Project">
+		   	<Label id="label_project"/>
+		   		  <Label id="label_project" color="#008080"  left="80" text="Projects"/>
+		   		  <ImageView image="silhouette35.png" left="20" height="30" width="30"/>
+		   </TableViewRow>
+		   <TableViewRow id="client" backgroundColor="transparent" Title="Clients">
+		   		  <Label id="label_clients" color="#228B22"  left="80" text="Clients"/>
+		   		  <ImageView image="hands8.png" left="20" height="30" width="30"/>
+		   </TableViewRow>
+		   <TableViewRow id="invoicelistlist" backgroundColor="transparent" Title="Invoice">
+		   		   <Label id="label_invoice" color="#008080"  left="80" text="Invoice"/>
+		   		  <ImageView image="dollar150.png" left="15" height="40" width="40"/>
+		   </TableViewRow>
+		   <TableViewRow id="supplier" backgroundColor="transparent" Title="Supplier">
+		   		 <Label id="label_supplier" color="#333"  left="80" text="Supplier"/>
+		   		  <ImageView image="industrial4.png" left="20" height="30" width="30"/>
+		   </TableViewRow>
+		   <TableViewRow id="inventory" backgroundColor="transparent" Title="Inventory">
+		   		  <Label id="label_inventory" color="orange"  left="80" text="Inventory"/>
+		   		  <ImageView image="global35.png" left="20" height="40" width="40"/>
+		   </TableViewRow>
+		   <TableViewRow id="proposal" backgroundColor="transparent" Title="Proposal">
+		   		  <Label id="label_proposal" color="#008080"  left="80" text="Proposal"/>
+		   		  <ImageView image="silhouette61.png" left="20" height="30" width="30"/>
+		   </TableViewRow>
+		   <TableViewRow id="report" backgroundColor="transparent" Title="Report">
+		   		  <Label id="label_report" color="#333"  left="80" text="Report"/>
+		   		  <ImageView image="business155.png" left="20" height="30" width="30"/>
+		   </TableViewRow>
+		   <TableViewRow id="google" Title="google"/>
+	   </TableView>
+    </Window>
+  </Tab>
+</Alloy>
