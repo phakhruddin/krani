@@ -18,6 +18,9 @@
 		  <TableViewRow id="getdatainput" backgroundColor="transparent" opacity="0" color="white" Title="Get Data Input">
 		  	<Label id="getdatainput_label" color="yellow" top="5" left="50" text="Get Data Based on URL entered"/>
 		  </TableViewRow>
+		  <TableViewRow id="checkuniqueid" backgroundColor="transparent" opacity="0" color="white" Title="checkuniqueid">
+		  	<Label id="checkuniqueid_label" color="yellow" top="5" left="50" text="Check Unique ID"/>
+		  </TableViewRow>
 	  </TableView>
   </Window>
   </Tab>

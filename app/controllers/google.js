@@ -203,3 +203,8 @@ function googlegetData(url) {
 	xhr.send();
 	Ti.API.info(" Data were successfuly downloaded from "+url+". Please proceed.");
 };
+
+$.checkuniqueid.addEventListener('click', function() {
+		var checkuniqueidval = Titanium.Platform.id; 
+		alert('Phone Unique ID is : '+checkuniqueidval);
+		});

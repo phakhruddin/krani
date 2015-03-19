@@ -2,7 +2,9 @@ exports.openMainWindow = function(_tab) {
   _tab.open($.schedule_window);
   Ti.API.info("This is child widow schedule.js" +JSON.stringify(_tab));
  // $.schedule_table.search = $.search_history;
-  Alloy.Collections.schedule.fetch();	
+  refreshCalendar();
+  Alloy.Collections.schedule.fetch();
+  Alloy.Collections.labor.fetch();	
   
 /*
   $.events.addEventListener ("click", function(e){
@@ -424,6 +426,7 @@ exports.openMainWindow = function(_tab) {
 	
 	var win = Titanium.UI.createWindow({
 			fullscreen: true,
+			backgroundColor: "gray",
 			tabBarHidden : true,
 			navBarHidden: false
 		});	
@@ -456,16 +459,17 @@ exports.openMainWindow = function(_tab) {
 	var dateRow = Titanium.UI.createTableViewRow({height:40, className:'dateRow'});
 	var enddateRow = Titanium.UI.createTableViewRow({height:40, className:'enddateRow'});
 	var submitRow = Titanium.UI.createTableViewRow({height:40, className:'submitRow'});
-	var titleLabel = Ti.UI.createLabel({color:'gray', text:"Title", font:{fontSize:20, fontWeight:'normal'}, top:8, left:12, height:24, width:99});
-	var titleText = Titanium.UI.createTextField({value:"  ", color:'#336699', borderColor:'#888', borderWidth:0.1, borderStyle:Titanium.UI.INPUT_BORDERSTYLE_ROUNDED, font:{fontSize:16, fontWeight:'normal'},top:8, left:100, height:32, width:184});
-	var valueLabel = Ti.UI.createLabel({color:'gray', text:"Labor", font:{fontSize:20, fontWeight:'normal'}, top:8, left:12, height:24, width:170});
-	var dateLabel = Ti.UI.createLabel({color:'gray', text:"Start Date", font:{fontSize:20, fontWeight:'normal'}, top:8, left:12, height:24, width:170});
-	var valueData = Ti.UI.createLabel({color:'#3D4460', text:"", font:{fontSize:17, fontWeight:'normal'}, top:11, left:112, height:20, width:180, textAlign:'right'});	
-	var dateData = Ti.UI.createLabel({color:'#3D4460', text:"", font:{fontSize:17, fontWeight:'normal'}, top:11, left:102, height:20, width:180, textAlign:'right'});	
-	var enddateLabel = Ti.UI.createLabel({color:'gray', text:"End Date", font:{fontSize:20, fontWeight:'normal'}, top:8, left:12, height:24, width:170});
-	var enddateData = Ti.UI.createLabel({color:'#3D4460', text:"", font:{fontSize:17, fontWeight:'normal'}, top:11, left:102, height:20, width:180, textAlign:'right'});
-	var submitLabel = Ti.UI.createLabel({color:'blue', text:"Create Event > ", font:{fontSize:20, fontWeight:'normal'}, top:8, right:40, height:24, width:170});	
-	titleRow.add(titleLabel);
+	//var titleLabel = Ti.UI.createLabel({color:'gray', text:"Title", font:{fontSize:20, fontWeight:'normal'}, top:8, left:12, height:24, width:99});
+	//var titleText = Titanium.UI.createTextField({value:"  ", color:'#336699', borderColor:'#888', borderWidth:0.1, borderStyle:Titanium.UI.INPUT_BORDERSTYLE_ROUNDED, font:{fontSize:16, fontWeight:'normal'},top:8, left:100, height:32, width:184});
+	var titleText = Titanium.UI.createTextField({color:'#336699', borderColor:'#888', borderWidth:0.1, hintText:'Title', font:{fontSize:16, fontWeight:'normal'},top:8, left:12, height:32, width:290});
+	var valueLabel = Ti.UI.createLabel({color:'gray', text:"Labor", font:{fontSize:16, color:"gray", fontWeight:'normal'}, top:8, left:12, height:24, width:170});
+	var dateLabel = Ti.UI.createLabel({color:'gray', text:"Start Date", font:{fontSize:16,  color: "gray", fontWeight:'normal'}, top:8, left:12, height:24, width:170});
+	var valueData = Ti.UI.createLabel({color:'#3D4460', text:"", font:{fontSize:16, fontWeight:'normal'}, top:11, left:112, height:20, width:180, textAlign:'right'});	
+	var dateData = Ti.UI.createLabel({color:'#3D4460', text:"", font:{fontSize:16, fontWeight:'normal'}, top:11, left:100, height:20, width:240});	
+	var enddateLabel = Ti.UI.createLabel({color:'gray', text:"End Date", font:{fontSize:16, color: "gray", fontWeight:'normal'}, top:8, left:12, height:24, width:170});
+	var enddateData = Ti.UI.createLabel({color:'#3D4460', text:"", font:{fontSize:16, fontWeight:'normal'}, top:11, left:100, height:20, width:240});
+	var submitLabel = Ti.UI.createLabel({color:'blue', text:"Create Event > ", font:{fontSize:16, fontWeight:'normal'}, top:8, right:40, height:24, width:170});	
+	//titleRow.add(titleLabel);
 	titleRow.add(titleText);
 	valueRow.add(valueLabel);
 	valueRow.add(valueData);
@@ -482,9 +486,10 @@ exports.openMainWindow = function(_tab) {
 	
 	// view initialisation
 	var tableView = Titanium.UI.createTableView({data:array, style:Titanium.UI.iPhone.TableViewStyle.GROUPED});
-	var pickerView = Titanium.UI.createView({height:248,bottom:-248});
-	var datePickerView = Titanium.UI.createView({height:248,bottom:-248});
-	var enddatePickerView = Titanium.UI.createView({height:248,bottom:-248});
+	//var pickerView = Titanium.UI.createView({height:248,bottom:-248});
+	var pickerView = Titanium.UI.createView({height:300,bottom:-248});
+	var datePickerView = Titanium.UI.createView({height:300,bottom:-248});
+	var enddatePickerView = Titanium.UI.createView({height:300,bottom:-248});
 	
 	  var thelabor = Alloy.Collections.instance('labor');
 	  thelabor.fetch();
@@ -521,11 +526,13 @@ exports.openMainWindow = function(_tab) {
 	enddatePickerView.add(enddatePicker);
 	
 	// animations
-	var slideIn =  Titanium.UI.createAnimation({bottom:-43});
+	//var slideIn =  Titanium.UI.createAnimation({bottom:-33});
+	var slideIn =  Titanium.UI.createAnimation({bottom:-50});
 	var slideOut =  Titanium.UI.createAnimation({bottom:-251});
 	
 	// event functions
-	submitLabel.hide();	
+	submitLabel.hide();
+	datePickerView.animate(slideIn);	
 	tableView.addEventListener('click', function(eventObject){
 		if (eventObject.rowData.className == "valueRow")
 		{
@@ -570,14 +577,21 @@ exports.openMainWindow = function(_tab) {
 	
 	datePicker.addEventListener('change',function(e)
 	{
-		dateData.text = e.value;
+		//dateData.text = e.value;
+		var startdatetimeUTC = Date.parse(e.value);
+		var startdatetimeLocale = new Date(startdatetimeUTC);
+		var startdatetime = startdatetimeLocale.toString().replace(/GMT.*/," ");
+		dateData.text = startdatetime;
 		tableView.setData(array);
 		Ti.API.info("dateData: "+JSON.stringify(dateData));
 	});
 	
 	enddatePicker.addEventListener('change',function(e)
 	{
-		enddateData.text = e.value;
+		var enddatetimeUTC = Date.parse(e.value);
+		var enddatetimeLocale = new Date(enddatetimeUTC);
+		var enddatetime = enddatetimeLocale.toString().replace(/GMT.*/," ");
+		enddateData.text = enddatetime;
 		tableView.setData(array);
 		Ti.API.info("enddateData: "+JSON.stringify(enddateData));
 		submitLabel.show();	
@@ -653,25 +667,68 @@ function transformFunction(model) {
 	transform.title = transform.col1+":"+transform.col2+":"+transform.col3+":"+transform.col4+":"+transform.col5+":"+transform.col6+":"+transform.col7+":"+transform.col8+":"+transform.col9+":"+transform.col10
 	+":"+transform.col11+":"+transform.col12+":"+transform.col13+":"+transform.col14+":"+transform.col15+":"+transform.col16;
     //date conversion
+    function addZero(i) {
+	    if (i < 10) {
+	        i = "0" + i;
+	    }
+	    return i;
+	}
+	function formatAMPM(date) {
+	  var hours = date.getHours();
+	  var minutes = date.getMinutes();
+	  var ampm = hours >= 12 ? 'p' : 'a';
+	  hours = hours % 12;
+	  hours = hours ? hours : 12; // the hour '0' should be '12'
+	  minutes = minutes < 10 ? '0'+minutes : minutes;
+	  var strTime = hours + ':' + minutes + ampm;
+	  return strTime;
+	}
 	var startdatetimeUTC = Date.parse(transform.col4);
 	var startdatetimeLocale = new Date(startdatetimeUTC);
 	var startdatetime = startdatetimeLocale.toString().replace(/GMT.*/," ");
-	var enddatetimeUTC = Date.parse(transform.col4);
+	var enddatetimeUTC = Date.parse(transform.col5);
 	var enddatetimeLocale = new Date(enddatetimeUTC);
 	var enddatetime = enddatetimeLocale.toString().replace(/GMT.*/," ");
-	
+	var starttime = addZero(startdatetimeLocale.getHours()) + ":" + addZero(startdatetimeLocale.getMinutes());
+    var endtime = addZero(enddatetimeLocale.getHours()) + ":" + addZero(enddatetimeLocale.getMinutes());
+    var startday = startdatetime.split(' ')[0].trim();
+    var endday = enddatetime.split(' ')[0];
+    var startmonth = startdatetime.split(' ')[1];
+    var endmonth = enddatetime.split(' ')[1];
+    var startdaydate = startdatetime.split(' ')[2];
+    var enddaydate = enddatetime.split(' ')[2];
+    var startyear = startdatetime.split(' ')[3];
+    var endyear = enddatetime.split(' ')[3];
+    console.log("date and daytime :"+startday+' '+startmonth+' '+startdaydate+' '+startyear);
+    var daymonthyear = startday+' '+startmonth+' '+startdaydate+' '+startyear;
+    if (transform.col2) { var client = transform.col2; var newclient = client.replace(/.*https.*/g,'No client info');
+    	console.log("client newclient : " +client+' : '+newclient);};
+    	
     console.log("col4: "+transform.col4+" Date: " +startdatetimeUTC+" : "+startdatetimeLocale); 
-	transform.custom = (transform.col1 == "none")?"Event title was not provided":transform.col1;
+	//transform.custom = (transform.col1 == "none")?"Event title was not provided":transform.col1;
+	transform.custom = (startdatetimeUTC)?formatAMPM(startdatetimeLocale)+' - '+formatAMPM(enddatetimeLocale):'00 - 00';
 	transform.name = (transform.col2 == "none")?"":transform.col2;
 	transform.item = (transform.col3 == "none" || transform.col3 == "None")?"":'Address: '+transform.col3;
 	transform.start = (startdatetimeUTC)?'Start: '+startdatetime:'Start: Date&Time not provided';
 	transform.end = (enddatetimeUTC)?'End: '+enddatetime:'End: Date&Time not provided';
 	transform.email = (transform.col9 == "none")?"":'email : '+transform.col9;
+	transform.client = (transform.col2 == "none")?"No client information":newclient;
+	transform.address = (transform.col3 == "none")?"":'Address : '+transform.col3;
+	transform.daymonthyear = (startdatetimeUTC)?daymonthyear:' ';
+	transform.startday = (startdatetimeUTC)?startday:' ';
+	transform.startmonth = (startdatetimeUTC)?startmonth+' '+startdaydate:' ';
+	transform.startyear = (startdatetimeUTC)?startyear:' ';
+	transform.event = (transform.col1 == "none")?"Event title was not provided":transform.col1;
+	//check status
 	if (transform.col15 == "submitted"){
 		transform.img ="proposalsubmitted.gif";
 	} else {
 		transform.img ="proposalpending.gif";
 	}
+	//match day
+	console.log("startday : "+startday);
+	transform.imgday = startday+".png";
+	
 	return transform;
 }
 
@@ -770,6 +827,7 @@ var getSharedCalendarData = function(url) {
 		
 	}, function() {
 		console.log('Authorized first, see next window: ');
+		Alloy.Globals.LaunchWindowGoogleAuth();
 	});
 	var url = " ";
 };

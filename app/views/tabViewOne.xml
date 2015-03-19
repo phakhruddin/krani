@@ -3,6 +3,9 @@
   <Collection src="client"/>
   <Collection src="invoice"/>
   <Collection src="inventory"/>
+  <Collection src="labor"/>
+  <Collection src="schedule"/>
+  <Collection src="proposal"/>
   <Tab id="tab_one" title="MAIN" icon="house202.png">
     <Window title="Krani" class='container'>
       <TableView id="table" backgroundColor="white" >

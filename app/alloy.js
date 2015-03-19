@@ -387,6 +387,8 @@ var scope = ['https://spreadsheets.google.com/feeds', 'https://docs.google.com/f
 scope.push ("https://www.googleapis.com/auth/drive.appdata");
 scope.push ("https://www.googleapis.com/auth/drive.apps.readonly");
 scope.push ("https://www.googleapis.com/auth/drive.file");
+scope.push ("https://www.googleapis.com/auth/plus.login");
+scope.push ("https://www.googleapis.com/auth/plus.me");
 
 var GoogleAuth = require('googleAuth');
 var googleAuthSheet = new GoogleAuth({

@@ -24,7 +24,14 @@
 },
 "#label_header": {
 	font: {
-		fontSize: "18"
+		fontSize: "33",
+		fontWeight: "normal"
+	}
+},
+"#label_subheader": {
+	font: {
+		fontSize: "18",
+		fontWeight: "bold"
 	}
 },
 "#label_sub1": {
@@ -34,11 +41,11 @@
 },
 "#label_sub2": {
 	font: {
-		fontSize: "10"
+		fontSize: "36"
 	}
 },
 "#label_sub3": {
 	font: {
-		fontSize: "10"
+		fontSize: "6"
 	}
 }
