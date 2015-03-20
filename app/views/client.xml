@@ -1,10 +1,11 @@
 <Alloy>
 <Collection src="client"/>
   <Tab id="tab_clientlist" title="clientlist">
-	  <Window id="clientlist_window" backgroundColor="white" title="clientlist List">
+	  <Window id="clientlist_window" backgroundColor="white" title="clientlist List">	
 	  <RightNavButton platform="ios">
 	   <Button systemButton="Ti.UI.iPhone.SystemButton.ADD" onClick="addHandler" /> 
 	</RightNavButton>
+	<Widget id="ptr" src="nl.fokkezb.pullToRefresh" onRelease="myRefresher">
 	  	<TableView id="clientlist_table"  backgroundColor="transparent" dataCollection="client" search="search_history" dataTransform="transformFunction" filterAttribute="title">
 		  	<SearchBar id="search_history" height="43" />
 				<TableViewRow id="clientlist_row" height="75" backgroundColor="transparent" opacity="0" color="transparent" title="{title}">
@@ -14,6 +15,7 @@
 					<Label  id="label_sub3" color="#333"  textAlign="Ti.UI.TEXT_ALIGNMENT_CENTER" top="60" text="{address}"/>
 				</TableViewRow>
 		</TableView>
+		</Widget>
 	  </Window>
   </Tab>
 </Alloy>

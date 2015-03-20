@@ -8,6 +8,8 @@ exports.openMainWindow = function(_tab) {
 	Alloy.Collections.client.fetch();	
 };
 
+$.ptr.refresh();
+
 console.log("args sourcecall detected is: " +args.sourcecall);
 if (args.sourcecall) {
 	$.clientlist_window.addEventListener("click", function(e){
@@ -119,6 +121,14 @@ function addHandler(e) {
 		//var title = e.row.title;
 		var clientController = Alloy.createController('enterclient');
 		clientController.openMainWindow($.tab_clientlist);
+}
+
+function myRefresher(e) {
+	console.log("refreshing after pull : " +JSON.stringify(e));
+    Alloy.Collections.client.fetch({
+        success: e.hide,
+        error: e.hide
+    });
 }
 	
 	
