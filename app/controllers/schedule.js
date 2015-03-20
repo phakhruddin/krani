@@ -578,21 +578,29 @@ exports.openMainWindow = function(_tab) {
 	datePicker.addEventListener('change',function(e)
 	{
 		//dateData.text = e.value;
+		console.log("start date e.value: "+e.value);
 		var startdatetimeUTC = Date.parse(e.value);
 		var startdatetimeLocale = new Date(startdatetimeUTC);
-		var startdatetime = startdatetimeLocale.toString().replace(/GMT.*/," ");
+		//var startdatetime = startdatetimeLocale.toString().replace(/GMT.*/," ");
+		var startdatetime = startdatetimeLocale.toString().split(' ',4).toString().replace(/,/g,' ')+' '+Alloy.Globals.formatAMPM(startdatetimeLocale);
 		dateData.text = startdatetime;
 		tableView.setData(array);
+		var dateTime = startdatetimeLocale.toISOString();
+		dateData.textid = dateTime;
 		Ti.API.info("dateData: "+JSON.stringify(dateData));
 	});
 	
 	enddatePicker.addEventListener('change',function(e)
 	{
+		console.log("end date e.value: "+e.value);
 		var enddatetimeUTC = Date.parse(e.value);
 		var enddatetimeLocale = new Date(enddatetimeUTC);
-		var enddatetime = enddatetimeLocale.toString().replace(/GMT.*/," ");
+		var enddatetime = enddatetimeLocale.toString().split(' ',4).toString().replace(/,/g,' ')+' '+Alloy.Globals.formatAMPM(enddatetimeLocale);
 		enddateData.text = enddatetime;
-		tableView.setData(array);
+		tableView.setData(array);		
+		var enddateTime = enddatetimeLocale.toISOString();
+		console.log("+enddateTime: " +enddateTime);
+		enddateData.textid = enddateTime;
 		Ti.API.info("enddateData: "+JSON.stringify(enddateData));
 		submitLabel.show();	
 	});
@@ -614,12 +622,14 @@ exports.openMainWindow = function(_tab) {
 	submitLabel.addEventListener('click',function() {
 		console.log("title txt :"+JSON.stringify(titleText));
 		var summary = titleText.value;
-		var enddateTime = enddateData.text.toISOString();
-		var startdateTime = dateData.text.toISOString();
+		var description = valueData.text;
+		var enddateTime = enddateData.textid;
+		var startdateTime = dateData.textid;
 		var organizerdisplayName = valueData.text;
-		console.log(" summary, organizerdisplayName, startdateTime, enddateTime :" +summary+", "+organizerdisplayName+", "+startdateTime+", "+enddateTime);
+		console.log(" summary, organizerdisplayName, startdateTime, enddateTime, description :" +summary+", "+organizerdisplayName+", "+startdateTime+", "+enddateTime+" , "+description);
 		alert("event created");
-		Alloy.Globals.postCreateEvent (startdateTime,enddateTime,"",summary,"",organizerdisplayName);
+		//Alloy.Globals.postCreateEvent(startdateTime,enddateTime,location,summary,description,organizerdisplayName,organizeremail,colorid,attendeeslist)
+		Alloy.Globals.postCreateEvent (startdateTime,enddateTime,"",summary,description,organizerdisplayName);
 	});
 
 	
