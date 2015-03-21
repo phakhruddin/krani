@@ -6,6 +6,8 @@ exports.openMainWindow = function(_tab) {
 
 };
 
+$.ptr.refresh();
+
 $.proposallist_window.addEventListener("click", function(e){
 		Alloy.Globals.openDetail(e);
 		var title = e.row.title;
@@ -404,6 +406,14 @@ function createpdf(){
 	navWin.open();
 }
  
+ function myRefresher(e) {
+	console.log("refreshing after pull : " +JSON.stringify(e));
+    Alloy.Collections.proposal.fetch({
+        success: e.hide,
+        error: e.hide
+    });
+}
+
 
    
 

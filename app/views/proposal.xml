@@ -6,6 +6,7 @@
 	<RightNavButton platform="ios">
 	   <Button systemButton="Ti.UI.iPhone.SystemButton.ADD" onClick="addHandler" /> 
 	</RightNavButton>
+	<Widget id="ptr" src="nl.fokkezb.pullToRefresh" onRelease="myRefresher">
 	<ListView id="proposallist_list" height="Ti.UI.Size" defaultItemTemplate="template">
 		<SearchBar barColor="gray" />
 		<HeaderView>
@@ -36,6 +37,7 @@
                 </View>>
             </FooterView>
    </ListView>
+  </Widget>
           <Toolbar id="sortview" platform="ios" bottom="0" borderTop="true" borderBottom="false">
             <Items >
             	<FlexSpace/>
