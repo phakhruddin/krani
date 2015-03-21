@@ -5,6 +5,7 @@ exports.openMainWindow = function(_tab) {
 	Alloy.Collections.invoice.fetch();	
 
 };
+$.ptr.refresh();
 /*
 $.invoicelist_window.addEventListener("click", function(e){
 		//Alloy.Globals.openDetail(e);
@@ -153,4 +154,12 @@ function uploadFile(){
 			Ti.API.info('done POSTed');
  		
  	}
+ 	
+function myRefresher(e) {
+	console.log("refreshing after pull : " +JSON.stringify(e));
+    Alloy.Collections.invoice.fetch({
+        success: e.hide,
+        error: e.hide
+    });
+}
    

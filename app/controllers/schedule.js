@@ -46,6 +46,8 @@ exports.openMainWindow = function(_tab) {
 
 };
 
+$.ptr.refresh();
+
   var osname = Ti.Platform.osname;
   
   function CheckEvents() {
@@ -848,4 +850,12 @@ function selectItem(e) {
 
 function doClick(e) {
 	console.log("JSON stringify: "+JSON.stringify(e));
+}
+
+function myRefresher(e) {
+	console.log("refreshing after pull : " +JSON.stringify(e));
+    Alloy.Collections.schedule.fetch({
+        success: e.hide,
+        error: e.hide
+    });
 }

@@ -18,6 +18,7 @@
 			<Label  id="label_sub3" color="#333" left="20" top="55" text="{end}"/>
 		</TableViewRow>
 	 </TableView-->
+	 <Widget id="ptr" src="nl.fokkezb.pullToRefresh" onRelease="myRefresher">
 	 	<ListView id="schedule_list" height="Ti.UI.Size" defaultItemTemplate="template">
 		<SearchBar barColor="gray" />
 		<HeaderView>
@@ -45,6 +46,7 @@
 				startyear:text="{startyear}" img:image="{img}" imgday:image="{imgday}"/>
 		</ListSection>
    </ListView>
+   </Widget>
 		<Toolbar id="sortview" platform="ios" bottom="0" borderTop="true" borderBottom="false">
 			<Items >
 				<FlexSpace/>
