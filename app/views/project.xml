@@ -5,6 +5,7 @@
   		  <RightNavButton platform="ios">
 	   <Button systemButton="Ti.UI.iPhone.SystemButton.ADD" onClick="addHandler" /> 
 	</RightNavButton>
+	<Widget id="ptr" src="nl.fokkezb.pullToRefresh" onRelease="myRefresher">
 	  <TableView id="projectlist_table" backgroundColor="transparent" dataCollection="project" search="search_history" dataTransform="transformFunction" filterAttribute="title">
 		<SearchBar id="search_history" height="43" />
 		  <TableViewRow id="projectlist_row" height="95" backgroundColor="transparent" opacity="0"  color="transparent" title="{title}">
@@ -15,6 +16,7 @@
 			<Label  id="label_sub3" color="#333"  textAlign="Ti.UI.TEXT_ALIGNMENT_CENTER" top="75" text="{address}"/>
 		  </TableViewRow>
 	  </TableView>
+	  </Widget>
   </Window>
   </Tab>
 </Alloy>

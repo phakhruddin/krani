@@ -6,6 +6,8 @@ exports.openMainWindow = function(_tab) {
 
 };
 
+$.ptr.refresh();
+
 $.inventory_window.addEventListener("click", function(e){
 		Alloy.Globals.openDetail(e);
 		var title = e.row.title;
@@ -34,4 +36,13 @@ function addHandler(e) {
 		///var clientController = Alloy.createController('enterclient');
 		///clientController.openMainWindow($.tab_clientlist);
 }
+
+function myRefresher(e) {
+	console.log("refreshing after pull : " +JSON.stringify(e));
+    Alloy.Collections.inventory.fetch({
+        success: e.hide,
+        error: e.hide
+    });
+}
+	
 

@@ -6,6 +6,8 @@ exports.openMainWindow = function(_tab) {
 
 };
 
+$.ptr.refresh();
+
 $.projectlist_window.addEventListener("click", function(e){
 		Alloy.Globals.openDetail(e);
 		var title = e.row.title;
@@ -33,3 +35,12 @@ function addHandler(e) {
 			var clientController = Alloy.createController('enterproject');
 		clientController.openMainWindow($.tab_projectlist);
 }
+
+function myRefresher(e) {
+	console.log("refreshing after pull : " +JSON.stringify(e));
+    Alloy.Collections.client.fetch({
+        success: e.hide,
+        error: e.hide
+    });
+}
+	
