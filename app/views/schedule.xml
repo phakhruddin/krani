@@ -1,5 +1,4 @@
 <Alloy>
-	<!--Model src="labor"/-->
 	<Collection src="schedule"/>
 	<Collection src="labor"/>
 	<Tab id="schedule_tab" title="SCHEDULE" icon="calendar112.png">
@@ -10,14 +9,6 @@
 	<RightNavButton platform="ios">
 		<Button systemButton="Ti.UI.iPhone.SystemButton.ADD" onClick="multiplepicker" />
 	</RightNavButton>	
-	  <!--TableView id="schedule_table" backgroundColor="transparent" dataCollection="schedule"  search="search_history" dataTransform="transformFunction" filterAttribute="title">
-			<SearchBar id="search_history" height="43" />
-		  <TableViewRow id="events_row" backgroundColor="transparent" height="75" opacity="0" top="75" color="transparent" title="{title}">
-			<Label id="label_header" color="#333" left="20" top="10" textAlign="Ti.UI.TEXT_ALIGNMENT_CENTER" text="{custom}"/>
-			<Label  id="label_sub3" color="orange" left="20" top="40" text="{start}"/>
-			<Label  id="label_sub3" color="#333" left="20" top="55" text="{end}"/>
-		</TableViewRow>
-	 </TableView-->
 	 <Widget id="ptr" src="nl.fokkezb.pullToRefresh" onRelease="myRefresher">
 	 	<ListView id="schedule_list" height="Ti.UI.Size" defaultItemTemplate="template">
 		<SearchBar barColor="gray" />
@@ -29,7 +20,6 @@
 		<Templates>
 			<ItemTemplate name="template" backgroundColor="white" height="118" onClick="selectItem" >
 				<Label id="label_header" color="gray"  left="80" top="10" bindId="info"/>
-				<!--Label id="label_sub2" color="gray" left="10" top="10" bindId="startday"/-->
 				<Label id="label_subheader" color="#333"  left="16" top="70" bindId="startmonth"/>
 				<Label id="label_sub1" color="#333" left="30" top="97" bindId="startyear"/>
 				<Label id="label_sub1" color="orange"  left="80" top="54" bindId="event"/>
@@ -45,23 +35,27 @@
 				startday:text="{startday}" startmonth:text="{startmonth}" daymonthyear:text="{daymonthyear}" event:text="{event}" 
 				startyear:text="{startyear}" img:image="{img}" imgday:image="{imgday}"/>
 		</ListSection>
+		<FooterView>
+	        <View backgroundColor="#DDD" height="50">
+	        </View>>
+        </FooterView>
    </ListView>
    </Widget>
 		<Toolbar id="sortview" platform="ios" bottom="0" borderTop="true" borderBottom="false">
 			<Items >
+				<!--FlexSpace/>
+					<Button top="1" title="Check Events" image="checkevent.png" onClick="CheckEvents"/-->
 				<FlexSpace/>
-					<Button top="1" title="Check Events" image="checkevent.png" onClick="CheckEvents"/>
+					<Button title="Day" style="Ti.UI.iPhone.SystemButtonStyle.PLAIN" onClick="buttonAction"/>
+					<Button title="Week" style="Ti.UI.iPhone.SystemButtonStyle.PLAIN" onClick="buttonAction"/>
+					<Button title="Month" style="Ti.UI.iPhone.SystemButtonStyle.PLAIN" onClick="buttonAction"/>
 				<FlexSpace/>
-					<Button title="Today" onClick="buttonAction"/>
-					<Button title="ThisWeek" onClick="buttonAction"/>
-					<Button title="NextWeek" onClick="buttonAction"/>
-				<FlexSpace/>
-					<Button top="5" title="Now" onClick="CreateEvents"/>
+					<!--Button top="5" title="Now" onClick="CreateEvents"/>
 					<Button title="Future" onClick="createEventFuture"/>
 					<Button top="20" title="Multiple" onClick="multiplepicker"/>
 				<FlexSpace/>
 					<Button top="1" image="createevent.png" title="create event" onClick="sharedCalendar"/>
-				<FlexSpace/>
+				<FlexSpace/-->
 			</Items>
 		</Toolbar>
   </Window>
