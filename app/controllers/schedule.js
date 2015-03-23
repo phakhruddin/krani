@@ -717,12 +717,13 @@ function transformFunction(model) {
     var enddaydate = enddatetime.split(' ')[2];
     var startyear = startdatetime.split(' ')[3];
     var endyear = enddatetime.split(' ')[3];
-    console.log("date and daytime :"+startday+' '+startmonth+' '+startdaydate+' '+startyear);
+    ///console.log("date and daytime :"+startday+' '+startmonth+' '+startdaydate+' '+startyear);
     var daymonthyear = startday+' '+startmonth+' '+startdaydate+' '+startyear;
     if (transform.col2) { var client = transform.col2; var newclient = client.replace(/.*https.*/g,'No client info');
-    	console.log("client newclient : " +client+' : '+newclient);};
+    	///console.log("client newclient : " +client+' : '+newclient);
+    };
     	
-    console.log("col4: "+transform.col4+" Date: " +startdatetimeUTC+" : "+startdatetimeLocale); 
+    ///console.log("col4: "+transform.col4+" Date: " +startdatetimeUTC+" : "+startdatetimeLocale); 
 	//transform.custom = (transform.col1 == "none")?"Event title was not provided":transform.col1;
 	transform.custom = (startdatetimeUTC)?formatAMPM(startdatetimeLocale)+' - '+formatAMPM(enddatetimeLocale):'00 - 00';
 	transform.name = (transform.col2 == "none")?"":transform.col2;
@@ -744,19 +745,21 @@ function transformFunction(model) {
 		transform.img ="proposalpending.gif";
 	}
 	//match day
-	console.log("startday : "+startday);
+	///console.log("startday : "+startday);
 	transform.imgday = startday+".png";
 	
 	return transform;
 }
 
+// 24hrs - 86400000
 function filterFunction(collection) { 
 		var sorttype = Titanium.App.Properties.getString('sorttype'); 
 	    console.log("sorttype in filter : "+sorttype); 
 	    //console.log("JSON stringify collection: " +JSON.stringify(collection));
-	    if (sorttype == "Today")  {
+	    if (sorttype == "XToday")  {
 	    	var filterday = new Date();
-	    	console.log("filterday: "+filterday);
+	    	var dateNow = Date.now();
+	    	console.log("filterday: "+filterday+ ", dateNow: "+dateNow);
 	    	return collection.where({col6:"confirmed"});
 	    } else if (sorttype == "ThisWeek") {
 	    	return collection.where({col6:"phakhruddin1@gmail.com"});
@@ -769,7 +772,10 @@ function buttonAction(e){
 	console.log("JSON stringify e : " +JSON.stringify(e));
 	console.log("JSON stringify e.source : " +JSON.stringify(e.source));
 	var thesort = e.source.title;
-	if (thesort == "Day") { var sorttype = "Today"; };
+	if (thesort == "Day") { 
+		var sorttype = "Today";
+		Alloy.Collections.schedule.today();
+	};
 	if (thesort == "Week") { var sorttype = "ThisWeek"; };
 	if (thesort == "Month") { var sorttype = "ThisMonth"; };
 	if (thesort == "None") { var sorttype = "\*"; };

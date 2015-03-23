@@ -1,3 +1,4 @@
+var moment = require("moment");
 exports.definition = {
 	config: {
 		columns: {
@@ -92,7 +93,47 @@ exports.definition = {
 				db.close();
 				 
 				collection.trigger('sync');
-			}
+			},
+			
+			today : function(_options) {
+                var self = this;
+
+                // this can be more elegant, but kept it simple for demo purposes
+                //
+                // db.execute("SELECT FROM " + table + " " + opts.query.sql, opts.query.params);
+                //
+                var yesterday, tomorrow, today, todayUTC;
+
+                // get today and reset to midnight
+                yesterday = moment().hours(0).minutes(0).seconds(1).subtract('days', 1);
+                tomorrow = moment().hours(0).minutes(0).seconds(1).add('days', 1);
+                today = new Date();
+                todayUTC = Date.now();
+                tomorrowUTC= todayUTC+86400000;
+                tomorrowLocale = new Date(tomorrowUTC);
+                tomorrowISO= tomorrowLocale.toISOString();
+                todayISO = today.toISOString();
+                
+
+                // debug information
+                Ti.API.info("today: " + today+" todayISO: "+todayISO);
+                Ti.API.info("tomorrowLocale: " + tomorrowLocale+" tomorrowISO: "+tomorrowISO);
+                //Ti.API.info("yesterday " + yesterday.calendar()+' yesterday.unix(): '+yesterday.unix());
+                //Ti.API.info("tomorrow " + tomorrow.calendar()+' tomorrow.unix(): '+tomorrow.unix());
+
+                var p = [];
+                ///p.push(yesterday.unix() +"");
+                ///p.push(tomorrow.unix() +"");
+                p.push(todayISO +"");
+                p.push(tomorrowISO +"");
+                // pass params
+                _options['query'] = {
+                    "sql" : 'WHERE col4 between ? AND ?',
+                    "params" : p
+                };
+                self.fetch(_options);
+            }
+				
 		});
 
 		return Collection;
