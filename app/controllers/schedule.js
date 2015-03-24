@@ -439,6 +439,8 @@ $.ptr.refresh();
 		   	var btnBack = Ti.UI.createButton({ 
 				title: '< Back', 
 				top: 5,
+				color: "blue",
+				style: "Ti.UI.iPhone.SystemButtonStyle.PLAIN",
 				left: 10
 			});
 		   	var win1 = Titanium.UI.iOS.createNavigationWindow({
@@ -461,6 +463,7 @@ $.ptr.refresh();
 	var dateRow = Titanium.UI.createTableViewRow({height:40, className:'dateRow'});
 	var enddateRow = Titanium.UI.createTableViewRow({height:40, className:'enddateRow'});
 	var submitRow = Titanium.UI.createTableViewRow({height:40, className:'submitRow'});
+	var dummyRow = Titanium.UI.createTableViewRow({height:5, backgroundColor:'gray', className:'dummyRow'}); 
 	//var titleLabel = Ti.UI.createLabel({color:'gray', text:"Title", font:{fontSize:20, fontWeight:'normal'}, top:8, left:12, height:24, width:99});
 	//var titleText = Titanium.UI.createTextField({value:"  ", color:'#336699', borderColor:'#888', borderWidth:0.1, borderStyle:Titanium.UI.INPUT_BORDERSTYLE_ROUNDED, font:{fontSize:16, fontWeight:'normal'},top:8, left:100, height:32, width:184});
 	var titleText = Titanium.UI.createTextField({color:'#336699', borderColor:'#888', borderWidth:0.1, hintText:'Title', font:{fontSize:16, fontWeight:'normal'},top:8, left:12, height:32, width:290});
@@ -480,18 +483,23 @@ $.ptr.refresh();
 	enddateRow.add(enddateLabel);
 	enddateRow.add(enddateData);
 	submitRow.add(submitLabel);
+	array.push(dummyRow);
 	array.push(titleRow);
+	array.push(dummyRow);
 	array.push(valueRow);
+	array.push(dummyRow);
 	array.push(dateRow);
+	array.push(dummyRow);
 	array.push(enddateRow);
+	array.push(dummyRow);
 	array.push(submitRow);
 	
 	// view initialisation
 	var tableView = Titanium.UI.createTableView({data:array, style:Titanium.UI.iPhone.TableViewStyle.GROUPED});
 	//var pickerView = Titanium.UI.createView({height:248,bottom:-248});
-	var pickerView = Titanium.UI.createView({height:300,bottom:-248});
-	var datePickerView = Titanium.UI.createView({height:300,bottom:-248});
-	var enddatePickerView = Titanium.UI.createView({height:300,bottom:-248});
+	var pickerView = Titanium.UI.createView({height:248,bottom:-248});
+	var datePickerView = Titanium.UI.createView({height:248,bottom:-248});
+	var enddatePickerView = Titanium.UI.createView({height:248,bottom:-248});
 	
 	  var thelabor = Alloy.Collections.instance('labor');
 	  thelabor.fetch();
@@ -756,13 +764,16 @@ function filterFunction(collection) {
 		var sorttype = Titanium.App.Properties.getString('sorttype'); 
 	    console.log("sorttype in filter : "+sorttype); 
 	    //console.log("JSON stringify collection: " +JSON.stringify(collection));
-	    if (sorttype == "XToday")  {
+	    if (sorttype == "Today")  {
+	    	//Alloy.Collections.schedule.today();
 	    	var filterday = new Date();
 	    	var dateNow = Date.now();
 	    	console.log("filterday: "+filterday+ ", dateNow: "+dateNow);
 	    	return collection.where({col6:"confirmed"});
 	    } else if (sorttype == "ThisWeek") {
 	    	return collection.where({col6:"phakhruddin1@gmail.com"});
+	    } else if ( sorttype == "ThisMonth") {
+	        return collection.where({col6:"confirmed"});
 	    } else {
 	    	return collection.where({col6:"confirmed"});
 	    }
@@ -771,16 +782,63 @@ function filterFunction(collection) {
 function buttonAction(e){
 	console.log("JSON stringify e : " +JSON.stringify(e));
 	console.log("JSON stringify e.source : " +JSON.stringify(e.source));
+	var someDummy = Alloy.Models.dummy;
+	someDummy.set('id', '1234');
+    var today = new Date();
+    var todayUTC = Date.now();
+    var tomorrowUTC= todayUTC+86400000;
+    var tomorrowLocale = new Date(tomorrowUTC);
+    var tomorrowISO= tomorrowLocale.toISOString();
+    var todayISO = today.toISOString();
+    var yesterdayUTC = todayUTC-86400000;
+    var yesterdayLocale = new Date(yesterdayUTC);
+    var yesterdayISO= yesterdayLocale.toISOString();
+    var lastweekUTC = todayUTC-(86400000*7);
+    var lastweekLocale = new Date(lastweekUTC);
+    var lastweekISO= lastweekLocale.toISOString();
+    var nextweekUTC = todayUTC+(86400000*7);
+    var nextweekLocale = new Date(nextweekUTC);
+    var nextweekISO= nextweekLocale.toISOString();
+    var nextmonthUTC = todayUTC+(86400000*31);
+    var nextmonthLocale = new Date(nextmonthUTC);
+    var nextmonthISO= nextmonthLocale.toISOString();
+    Ti.API.info("today: " + today+" todayISO: "+todayISO);
+    Ti.API.info("tomorrowLocale: " + tomorrowLocale+" tomorrowISO: "+tomorrowISO);
+    Ti.API.info("yesterdayLocale: " + yesterdayLocale+" yesterdayISO: "+yesterdayISO);
 	var thesort = e.source.title;
 	if (thesort == "Day") { 
 		var sorttype = "Today";
-		Alloy.Collections.schedule.today();
+		//var HeaderTitle = 'Today: '+today.toString().split(' ',4).toString().replace(/,/g,' ');
+		var HeaderTitle = 'Today: '+today.toString().substring(0,15);
+		someDummy.set('HeaderTitle',HeaderTitle);
+        var sql = "SELECT * FROM " + Alloy.Collections.schedule.config.adapter.collection_name +" WHERE col4 between "+'"'+yesterdayISO+'"'+" AND "+'"'+tomorrowISO+'"';
+        console.log("sql string:" +sql);
+		Alloy.Collections.schedule.fetch({query:sql});
+		//Alloy.Collections.schedule.today();
 	};
-	if (thesort == "Week") { var sorttype = "ThisWeek"; };
-	if (thesort == "Month") { var sorttype = "ThisMonth"; };
-	if (thesort == "None") { var sorttype = "\*"; };
+	if (thesort == "Week") { 
+		var sorttype = "ThisWeek"; 
+		var HeaderTitle = 'Week: '+today.toString().substring(0,11)+' - '+nextweekLocale.toString().substring(0,15);
+		someDummy.set('HeaderTitle',HeaderTitle);
+		var sql = "SELECT * FROM " + Alloy.Collections.schedule.config.adapter.collection_name +" WHERE col4 between "+'"'+yesterdayISO+'"'+" AND "+'"'+nextweekISO+'"';
+        console.log("sql string:" +sql);
+		Alloy.Collections.schedule.fetch({query:sql});	
+		};
+	if (thesort == "Month") { 
+		var sorttype = "ThisMonth"; 
+		var HeaderTitle = 'Month: '+today.toString().substring(0,11)+' - '+nextmonthLocale.toString().substring(0,15);
+		someDummy.set('HeaderTitle',HeaderTitle);
+		var sql = "SELECT * FROM " + Alloy.Collections.schedule.config.adapter.collection_name +" WHERE col4 between "+'"'+todayISO+'"'+" AND "+'"'+nextmonthISO+'"';
+        console.log("sql string:" +sql);
+		Alloy.Collections.schedule.fetch({query:sql});	
+		};
+	if (thesort == "All") { 
+		someDummy.set('HeaderTitle','ALL Calendar Entries');
+		Alloy.Collections.schedule.fetch(); 
+		someDummy.fetch();
+		};
 	Ti.App.Properties.setString("sorttype",sorttype);
-	Alloy.Collections.schedule.fetch();
+	//Alloy.Collections.schedule.fetch();
 }
 
 function refreshCalendar() {

@@ -27,6 +27,7 @@ function transformFunction(model) {
 	transform.phone = "Phone: "+transform.col5;
 	transform.email = "Email: "+transform.col6;
 	transform.address = "Address: "+transform.col7+","+transform.col8+","+transform.col9;
+	transform.assign = "Assign to: "+transform.col16;
 	return transform;
 }
 
