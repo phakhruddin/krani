@@ -6,16 +6,16 @@
 		  <TableViewRow id="projectdetail_row"  height="180">
 		  	  <Label id="label_header" left="20" color="#333" top="5" text="{dummy.projectname}" />
 		  	  <Label left="20" color="#333" top="40" text="Client:" />
-	   		  <Button left="100" top="35" title="{dummy.fullname}"/>
+	   		  <Button left="100" top="35" title="{dummy.fullname}" onClick="nameAction" />
 	   		  <Label left="20" color="#333" top="60" text="Phone:" />
-	   		  <Button left="100" top="55" title="{dummy.phone}" />
+	   		  <Button left="100" top="55" title="{dummy.phone}" onClick="phoneAction"/>
 	   		  <Label left="20" color="#333" top="80" text="Email:" />
-	   		  <Button left="100" top="75" title="{dummy.email}" />
+	   		  <Button left="100" top="75" title="{dummy.email}" onClick="emailAction"/>
 	   		  <Label left="20" color="#333" top="100" text="Company:" />
 	   		  <Button left="100" top="95" title="{dummy.company}" />
 	   		  <Label left="20" color="#333" top="120" text="Address:" />
-	   		  <Button left="100" top="115" title="{dummy.address}" />
-	   		  <Button left="100" top="135" title="{dummy.citystate}" />
+	   		  <Button left="100" top="115" title="{dummy.address}" onClick="addressAction"/>
+	   		  <Button left="100" top="135" title="{dummy.citystate}" onClick="addressAction" />
 		  </TableViewRow>
 	  </TableViewSection>
 	  <TableViewSection headerTitle="Pending Invoice">

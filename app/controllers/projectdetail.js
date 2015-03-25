@@ -35,6 +35,7 @@ someDummy.set('phone', phone);
 someDummy.set('email', email);
 someDummy.set('address', address);
 someDummy.set('citystate', city+' , '+state);
+someDummy.set('fulladdress',+address+' , '+city+' , '+state);
 someDummy.set('country', country);
 someDummy.set('firstname', firstname);
 someDummy.set('lastname', lastname);
@@ -42,3 +43,19 @@ someDummy.set('notes', notes);
 someDummy.set('percentcomplete', percentcomplete);
 someDummy.set('nextappt', nextappt);
 someDummy.set('datedue', datedue);
+
+function nameAction(e) {
+	console.log("JSON stringify e: "+JSON.stringify(e));
+};
+
+function phoneAction(e) {
+	console.log("JSON stringify e: "+JSON.stringify(e));
+};
+
+function emailAction(e) {
+	console.log("JSON stringify e: "+JSON.stringify(e));
+};
+
+function addressAction(e) {
+	console.log("JSON stringify e: "+JSON.stringify(e));
+};
