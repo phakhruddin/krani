@@ -3,23 +3,19 @@
   <Window id="projectdetail_window" title="project Detail" backgroundColor="white">
 	  <TableView id="projectdetail_table"  backgroundColor="transparent">
 	  	<TableViewSection headerTitle="ProjectDetails">
-		  <TableViewRow id="projectdetail_row" Title="projectDetail">
-		  	  <Label id="ProjectName" text="{dummy.projectname}" />
-		  </TableViewRow>
-		  <TableViewRow id="clientprojectdetail_row" Title="clientprojectDetail">
-	   		  <Label id="fullname" text="{dummy.fullname}" />
-	   	  </TableViewRow>
-		  <TableViewRow id="phoneprojectdetail_row" Title="PhoneprojectDetail">
-	   		  <Label id="phone" text="{dummy.phone}" />
-	   	  </TableViewRow>
-	   	  <TableViewRow id="addressprojectdetail_row" Title="addressprojectDetail">
-	   		  <Label id="address" text="{dummy.address}" />
-	   	  </TableViewRow>
-	   	  <TableViewRow id="emailprojectdetail_row" Title="emailprojectDetail">
-	   		  <Label id="email" text="{dummy.email}" />
-	   	  </TableViewRow>
-	   	  <TableViewRow id="companyprojectdetail_row" Title="companyprojectDetail">
-	   		  <Label id="company" text="{dummy.company}" />
+		  <TableViewRow id="projectdetail_row"  height="180">
+		  	  <Label id="label_header" left="20" color="#333" top="5" text="{dummy.projectname}" />
+		  	  <Label left="20" color="#333" top="40" text="Client:" />
+	   		  <Button left="100" top="35" title="{dummy.fullname}"/>
+	   		  <Label left="20" color="#333" top="60" text="Phone:" />
+	   		  <Button left="100" top="55" title="{dummy.phone}" />
+	   		  <Label left="20" color="#333" top="80" text="Email:" />
+	   		  <Button left="100" top="75" title="{dummy.email}" />
+	   		  <Label left="20" color="#333" top="100" text="Company:" />
+	   		  <Button left="100" top="95" title="{dummy.company}" />
+	   		  <Label left="20" color="#333" top="120" text="Address:" />
+	   		  <Button left="100" top="115" title="{dummy.address}" />
+	   		  <Button left="100" top="135" title="{dummy.citystate}" />
 		  </TableViewRow>
 	  </TableViewSection>
 	  <TableViewSection headerTitle="Pending Invoice">
