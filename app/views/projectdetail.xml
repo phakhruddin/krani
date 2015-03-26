@@ -36,7 +36,7 @@
 	   		  <Label id="nextappt" text="{dummy.nextappt}" />
 		  </TableViewRow>
 	  </TableViewSection>
-	  <TableViewSection headerTitle="Notes">
+	  <TableViewSection headerTitle="Job Details">
 		  <TableViewRow id="notesdetail_row" Title="notesDetail">
 	   		  <Label id="notes" text="{dummy.notes}" />
 		  </TableViewRow>

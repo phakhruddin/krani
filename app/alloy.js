@@ -388,7 +388,6 @@ scope.push ("https://www.googleapis.com/auth/drive.appdata");
 scope.push ("https://www.googleapis.com/auth/drive.apps.readonly");
 scope.push ("https://www.googleapis.com/auth/drive.file");
 scope.push ("https://www.googleapis.com/auth/plus.login");
-scope.push ("https://www.googleapis.com/auth/plus.me");
 
 var GoogleAuth = require('googleAuth');
 var googleAuthSheet = new GoogleAuth({
@@ -420,8 +419,8 @@ Alloy.Globals.googleAuthCalendar = new GoogleAuth({
 
 Alloy.Globals.LaunchWindowGoogleAuth = function() {
 	//authorize first
-	//googleAuthSheet.authorize();	
-			var win = Titanium.UI.createWindow({
+	googleAuthSheet.authorize();	
+	/*		var win = Titanium.UI.createWindow({
 				fullscreen: false,
 				tabBarHidden : false,
 				navBarHidden: false,
@@ -452,7 +451,7 @@ Alloy.Globals.LaunchWindowGoogleAuth = function() {
 			view.add(googleAuthSheet.authorize());
 			win1.add(btnBack);	
 			//window.add(view);
-			win1.open({modal:true});		
+			win1.open({modal:true});	*/	
 
 };
 	
