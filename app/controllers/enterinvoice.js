@@ -252,20 +252,21 @@ $.itemlist_tf.addEventListener('blur', function(_e) {
 	var itemqty = [];
 	var itemprice = [];
 	for (i=0;i<tabledata.length;i++){
-		if (tabledata[i].data1 == "clientfirstname_tf") { var clientfirstname = tabledata[i].data2; };
-		if (tabledata[i].data1 == "clientlastname_tf") { var clientlastname = tabledata[i].data2; };
-		if (tabledata[i].data1 == "clientphone_tf") { var clientphone = tabledata[i].data2; };
-		if (tabledata[i].data1 == "clientemail_tf") { var clientemail = tabledata[i].data2; };
-		if (tabledata[i].data1 == "clientstreetaddress_tf") { var clientstreetaddress = tabledata[i].data2; };
-		if (tabledata[i].data1 == "clientcity_tf") { var clientcity = tabledata[i].data2; };
-		if (tabledata[i].data1 == "clientstate_tf") { var clientstate = tabledata[i].data2; };
-		if (tabledata[i].data1 == "clientcompany_tf") { var clientcompany = tabledata[i].data2; };
 		if (tabledata[i].data1 == "itemlist_tf") {  item.push({ descr:tabledata[i].data2 }); };
 		if (tabledata[i].data1 == "itemqty_tf") {  itemqty.push({ qty:tabledata[i].data2 }); };
 		if (tabledata[i].data1 == "itemprice_tf") {  itemprice.push({ price:tabledata[i].data2 }); };
-	}	
+	}
+	var clientfirstname = tabledata[3].data2;
+	var clientlastname = tabledata[5].data2;
+	var clientphone = tabledata[7].data2; 
+	var clientemail = tabledata[9].data2;
+	var clientstreetaddress = tabledata[11].data2; 
+	var clientcity = tabledata[13].data2;
+	var clientstate = tabledata[15].data2;
+	var clientcompany = tabledata[17].data2;	
 	//console.log("checking clientfirstname ::: "+clientfirstname);
-	if (!clientfirstname) { //no entry done. Get from existing.
+	if (clientfirstname == " ") { //no entry done. Get from existing.
+		console.log("No client firstname, get them from others.");
 		var someDummy = Alloy.Models.dummy;
 		var fullname = someDummy.get('fullname');
 		var clientfirstname = someDummy.get('firstname');
@@ -283,12 +284,25 @@ $.itemlist_tf.addEventListener('blur', function(_e) {
 	console.log("item: "+JSON.stringify(item));
 	console.log("itemqty: "+JSON.stringify(itemqty));
 	console.log("itemprice: "+JSON.stringify(itemprice));
+	var invoicenumber = "10";
+	var name = clientfirstname+' '+clientlastname;
+	var customerno = "2";
+	var total = "200";
+	var bal = "200";
+	var paid = "50%";
+	var lastpaiddate = "4/1/2015";
+	var followupdate = "5/1/2015";
+	var duedate = "6/1/2015";
+	var currency = "USD";
+	var status = "owed";
+	console.log("clientfirstname: "+clientfirstname+" clientlastname "+clientlastname);	
+	submit(invoicenumber,name,customerno,total,bal,paid,lastpaiddate,followupdate,clientphone,clientemail,duedate,currency,status);
+	console.log('submit('+invoicenumber+','+name+','+customerno+','+total+','+bal+','+paid+','+lastpaiddate+','+followupdate+','+clientphone+','+clientemail+','+duedate+','
+	+currency+','+status+')');
  }; 
  
- function submit() {		
+ function submit(invoicenumber,name,customerno,total,bal,paid,lastpaiddate,followupdate,clientphone,clientemail,duedate,currency,status) {	
  	var now = new Date();
- 	var clientlastname = Titanium.App.Properties.getString('clientlastname',"none");
- 	var clientfirstname = Titanium.App.Properties.getString('clientfirstname',"none");
  	var clientphone = Titanium.App.Properties.getString('clientphone',"none");
  	var clientemail = Titanium.App.Properties.getString('clientemail',"none");
  	var clientstreetaddress = Titanium.App.Properties.getString('clientstreetaddress',"none");
@@ -296,16 +310,16 @@ $.itemlist_tf.addEventListener('blur', function(_e) {
  	var clientstate = Titanium.App.Properties.getString('clientstate',"none");
  	var clientproject = Titanium.App.Properties.getString('clientproject',"none");
  	var clientcompany = Titanium.App.Properties.getString('clientcompany',"none");
- 	alert("On "+now+" : Info on: "+clientfirstname+" "+clientlastname+" with "+clientphone+" and email "+clientemail+" at "+clientstreetaddress+", "+clientcity+", "+clientstate+". submitted");
- 	var fcsv = Ti.Filesystem.getFile(Ti.Filesystem.tempDirectory,'enterclient.csv');
+ 	//alert("On "+now+" : Info on: "+clientfirstname+" "+clientlastname+" with "+clientphone+" and email "+clientemail+" at "+clientstreetaddress+", "+clientcity+", "+clientstate+". submitted");
+ 	/*var fcsv = Ti.Filesystem.getFile(Ti.Filesystem.tempDirectory,'enterclient.csv');
  	var ftxt = Ti.Filesystem.getFile(Ti.Filesystem.tempDirectory,'enterclient.txt');
 	fcsv.write(now+", "+clientfirstname+", "+clientlastname+", "+clientphone+", "+clientemail+", "+clientstreetaddress+", "+clientcity+", "+clientstate+'\n', true); // write to the file
-	ftxt.write(now+", "+clientfirstname+", "+clientlastname+", "+clientphone+", "+clientemail+", "+clientstreetaddress+", "+clientcity+", "+clientstate+'\n', true); // write to the file
+	ftxt.write(now+", "+clientfirstname+", "+clientlastname+", "+clientphone+", "+clientemail+", "+clientstreetaddress+", "+clientcity+", "+clientstate+'\n', true); // write to the file*/
 	var xmldatastring = '<entry xmlns=\'http://www.w3.org/2005/Atom\' xmlns:gsx=\'http://schemas.google.com/spreadsheets/2006/extended\'>'
-	+'<gsx:col1>'+clientfirstname+'</gsx:col1><gsx:col2>'+clientfirstname+'</gsx:col2><gsx:col3>'
-	+clientlastname+'</gsx:col3><gsx:col4>'+clientcompany+'</gsx:col4><gsx:col5>'
-	+clientphone+'</gsx:col5><gsx:col6>'+clientemail+'</gsx:col6><gsx:col7>'+clientstreetaddress+'</gsx:col7><gsx:col8>'+clientcity+'</gsx:col8><gsx:col9>'+clientstate
-	+'</gsx:col9><gsx:col10>'+'USA'+'</gsx:col10><gsx:col11>'+'NA'+'</gsx:col11><gsx:col12>NA</gsx:col12><gsx:col13>NA</gsx:col13><gsx:col14>NA</gsx:col14><gsx:col15>NA</gsx:col15><gsx:col16>NA</gsx:col16></entry>';
+	+'<gsx:col1>'+invoicenumber+'</gsx:col1><gsx:col2>'+name+'</gsx:col2><gsx:col3>'
+	+customerno+'</gsx:col3><gsx:col4>'+total+'</gsx:col4><gsx:col5>'
+	+bal+'</gsx:col5><gsx:col6>'+paid+'</gsx:col6><gsx:col7>'+lastpaiddate+'</gsx:col7><gsx:col8>'+followupdate+'</gsx:col8><gsx:col9>'+clientphone
+	+'</gsx:col9><gsx:col10>'+clientemail+'</gsx:col10><gsx:col11>'+duedate+'</gsx:col11><gsx:col12>'+currency+'</gsx:col12><gsx:col13>'+status+'</gsx:col13><gsx:col14>NA</gsx:col14><gsx:col15>NA</gsx:col15><gsx:col16>NA</gsx:col16></entry>';
 	Ti.API.info('xmldatastring to POST: '+xmldatastring);
 	var xhr =  Titanium.Network.createHTTPClient({
     onload: function() {
@@ -320,11 +334,14 @@ $.itemlist_tf.addEventListener('blur', function(_e) {
         alert("Danger, Will Robinson!"); 
     }
 });
-	xhr.open("POST", 'https://spreadsheets.google.com/feeds/qty/1ECkNoyzgeSu8WkVs3kBnlY8MjJRIAc787nVs6IJsA9w/od6/private/full');
+    //var spreadsheet_id = '1-Wz7Apn4AvVpfqcNyMgfqyKA8OAoLNy5Bl0d_jQ9IZk';
+    var spreadsheet_id = Titanium.App.Properties.getString('invoice');
+	xhr.open("POST", 'https://spreadsheets.google.com/feeds/list/'+spreadsheet_id+'/od6/private/full');
 	xhr.setRequestHeader("Content-type", "application/atom+xml");
-	xhr.setRequestHeader("Authorization", 'Bearer '+ Alloy.Globals.googleAuthSheet.getAccessToken());
+	xhr.setRequestHeader("Authorization", 'Bearer '+ googleAuth.getAccessToken());
 	xhr.send(xmldatastring);
 	Ti.API.info('done POSTed');
+
  }
  
  $.enterinvoice_window.addEventListener('click',function(e){
@@ -411,7 +428,15 @@ $.check_client.addEventListener('click', function(e){
 	
 });
 
-
+var GoogleAuth = require('googleAuth');
+var googleAuth = new GoogleAuth({
+	clientId : '306793301753-8ej6duert04ksb3abjutpie916l8hcc7.apps.googleusercontent.com',
+	clientSecret : 'fjrsVudiK3ClrOKWxO5QvXYL',
+	propertyName : 'googleToken',
+	scope : ['https://www.googleapis.com/auth/tasks', 'https://www.googleapis.com/auth/tasks.readonly'],
+	quiet: false
+	//scope : ['https://spreadsheets.google.com/feeds', 'https://docs.google.com/feeds'],
+});
  
 
 

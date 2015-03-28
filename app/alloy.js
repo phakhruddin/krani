@@ -23,7 +23,7 @@ var schedulesid = '1c5Nj6XOMIEtlqmHLDoyGocdNu5MRG-WQhckIseVlU2I'; Titanium.App.P
 var laborsid = '1-YaHKOuTqpRG1X83_1tZ6zHWrO1krEmV99HS7S130Hc'; Titanium.App.Properties.setString('labor',laborsid);
 
 
-
+console.log("TempDir: "+JSON.stringify(Ti.Filesystem.tempDirectory));
 			
 Alloy.Globals.writeFile = function (content, filename){
 			var file = Ti.Filesystem.getFile(
@@ -419,8 +419,9 @@ Alloy.Globals.googleAuthCalendar = new GoogleAuth({
 
 Alloy.Globals.LaunchWindowGoogleAuth = function() {
 	//authorize first
-	googleAuthSheet.authorize();	
-	/*		var win = Titanium.UI.createWindow({
+	//setTimeout("googleAuthSheet.authorize()", 100);
+	//googleAuthSheet.authorize();	
+			var win = Titanium.UI.createWindow({
 				fullscreen: false,
 				tabBarHidden : false,
 				navBarHidden: false,
@@ -451,7 +452,7 @@ Alloy.Globals.LaunchWindowGoogleAuth = function() {
 			view.add(googleAuthSheet.authorize());
 			win1.add(btnBack);	
 			//window.add(view);
-			win1.open({modal:true});	*/	
+			win1.open({modal:true});
 
 };
 	
@@ -460,6 +461,7 @@ Alloy.Globals.checkGoogleisAuthorized = function () {
 		console.log('Access Token: ' + googleAuthSheet.getAccessToken());
 	}, function() {
 		console.log('Authorized first, see next window: ');
+		//googleAuthSheet.authorize();
 		Alloy.Globals.LaunchWindowGoogleAuth();
 	});
 };	

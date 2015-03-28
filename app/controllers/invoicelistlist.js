@@ -6,17 +6,8 @@ exports.openMainWindow = function(_tab) {
 
 };
 $.ptr.refresh();
-/*
-$.invoicelist_window.addEventListener("click", function(e){
-		//Alloy.Globals.openDetail(e);
-		console.log("JSON stringify(e)  : " +JSON.stringify(e));
-});*/
 
-/*$.invoicelist_list.addEventListener("click", function(e){
-		//Alloy.Globals.openDetail(e);
-		console.log("JSON stringify(e)  : " +JSON.stringify(e));
-});
-*/
+
 function transformFunction(model) {
 	var transform = model.toJSON();
 	console.log("transform is ::" +JSON.stringify(transform));
@@ -36,18 +27,6 @@ function transformFunction(model) {
 	return transform;
 }
 
-function filterFunction(collection) { 
-		var sorttype = Titanium.App.Properties.getString('sorttype'); 
-	    console.log("sorttype in filter : "+sorttype); 
-	    //console.log("JSON stringify collection: " +JSON.stringify(collection));
-	    if (sorttype == "All")  {
-	    	return collection.where({col16:"none"});
-	    } else {
-	    	return collection.where({col13: sorttype });
-	    }	
-}
-
-
 function doClick(e) {
 	console.log("JSON.stringify e : " +JSON.stringify(e));	
 	//Alloy.Globals.openDetail(e);
@@ -59,30 +38,26 @@ function doClick(e) {
 		clientController.openMainWindow($.tab_invoicelist);
 	//alert("click this");
 };
-/*
-$.sortview.addEventListener("click", function(e){
-	console.log("JSON stringify e : " +JSON.stringify(e));
-	console.log("JSON stringify e.source : " +JSON.stringify(e.source));
-	var thesort = e.source.text;
-	if (thesort == "All") { var sorttype = "All"; };
-	if (thesort == "Paid") { var sorttype = "paid"; };
-	if (thesort == "Owed") { var sorttype = "owed"; };
-	if (thesort == "None") { var sorttype = "\*"; };
-	Ti.App.Properties.setString("sorttype",sorttype);
-	Alloy.Collections.invoice.fetch();
-});
-*/
 
 function buttonAction(e){
 	console.log("JSON stringify e : " +JSON.stringify(e));
 	console.log("JSON stringify e.source : " +JSON.stringify(e.source));
 	var thesort = e.source.title;
-	if (thesort == "All") { var sorttype = "All"; };
-	if (thesort == "Paid") { var sorttype = "paid"; };
-	if (thesort == "Owed") { var sorttype = "owed"; };
+	
+	if (thesort == "All") { 
+		Alloy.Collections.invoice.fetch();
+		};
+	if (thesort == "Paid") { 
+		var sql = "SELECT * FROM " + Alloy.Collections.invoice.config.adapter.collection_name +" WHERE col13=\"paid\";";
+        console.log("sql string:" +sql);
+	    Alloy.Collections.invoice.fetch({query:sql});
+		};
+	if (thesort == "Owed") { 
+		var sql = "SELECT * FROM " + Alloy.Collections.invoice.config.adapter.collection_name +" WHERE col13=\"owed\";";
+        console.log("sql string:" +sql);
+	    Alloy.Collections.invoice.fetch({query:sql});
+		};
 	if (thesort == "None") { var sorttype = "\*"; };
-	Ti.App.Properties.setString("sorttype",sorttype);
-	Alloy.Collections.invoice.fetch();
 }
 
 function addHandler(e){

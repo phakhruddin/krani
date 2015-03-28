@@ -2,7 +2,7 @@
 	<Model src="dummy" />
   <Window id="projectdetail_window" title="project Detail" backgroundColor="white">
 	  <TableView id="projectdetail_table"  backgroundColor="transparent">
-	  	<TableViewSection headerTitle="ProjectDetails">
+	  	<TableViewSection headerTitle="{dummy.projectname}">
 		  <TableViewRow id="projectdetail_row"  height="180">
 		  	  <Label id="label_header" left="20" color="#333" top="5" text="{dummy.projectname}" />
 		  	  <Label left="20" color="#333" top="40" text="Client:" />
