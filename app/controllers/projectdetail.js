@@ -59,3 +59,9 @@ function emailAction(e) {
 function addressAction(e) {
 	console.log("JSON stringify e: "+JSON.stringify(e));
 };
+
+function JobDetail(e){
+	console.log("JSON stringify e: "+JSON.stringify(e));
+	var tabViewOneController = Alloy.createController("jobdetail");
+	tabViewOneController.openMainWindow($.tab_projectdetail);	
+}

@@ -1,0 +1,15 @@
+<Alloy>
+	<Model src="dummy" />
+  <Window id="jobdetail_window" title="Job Detail" backgroundColor="white">
+  	        <CoverFlowView id="view" platform="ios" backgroundColor="gray">
+            <Images>
+                <Image>dollar150.png</Image>
+                <Image>group12.png</Image>
+                <Image>man388.png</Image>
+            </Images>
+
+            <!-- Place additional views for the CoverFlowView here. -->
+
+        </CoverFlowView>
+  </Window>
+</Alloy>

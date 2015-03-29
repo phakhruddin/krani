@@ -1,5 +1,6 @@
 <Alloy>
 	<Model src="dummy" />
+	<Tab id="tab_projectdetail" title="Project">
   <Window id="projectdetail_window" title="project Detail" backgroundColor="white">
 	  <TableView id="projectdetail_table"  backgroundColor="transparent">
 	  	<TableViewSection headerTitle="{dummy.projectname}">
@@ -36,11 +37,17 @@
 	   		  <Label id="nextappt" text="{dummy.nextappt}" />
 		  </TableViewRow>
 	  </TableViewSection>
-	  <TableViewSection headerTitle="Job Details">
+	  <TableViewSection headerTitle="Job Dates">
 		  <TableViewRow id="notesdetail_row" Title="notesDetail">
 	   		  <Label id="notes" text="{dummy.notes}" />
 		  </TableViewRow>
 	  </TableViewSection>
+	 <TableViewSection headerTitle="Job Details">
+		  <TableViewRow id="jobdetail_row" Title="JobDetail">
+	   		  <Label id="JobDetails" text="Job Details > " onClick="JobDetail" />
+		  </TableViewRow>
+	  </TableViewSection>
 	  </TableView>
   </Window>
+ </Tab>
 </Alloy>

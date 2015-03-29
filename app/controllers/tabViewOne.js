@@ -64,12 +64,7 @@ $.proposal.addEventListener ("click", function(e){
 	var item = e.row.id;
 	openNextTab(item);
 });
-/*
-$.enterdata.addEventListener ("click", function(e){
-	Alloy.Globals.openDetail(e);
-	var tabViewOneController = Alloy.createController("enterdata");
-	tabViewOneController.openMainWindow($.tab_one);	
-});*/
+
 
 $.google.addEventListener ("click", function(e){
 	Alloy.Globals.openDetail(e);
