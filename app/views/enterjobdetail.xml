@@ -17,10 +17,10 @@
   	</TableView>
   		<!--TextField hintText="Please enter notes" height="200" borderStyle="Ti.UI.INPUT_BORDERSTYLE_ROUNDED"></TextField--->
           <Toolbar id="sortview" platform="ios" bottom="0" borderTop="true" borderBottom="false">
-            <Items >
+            <Items id="itemjobdetail">
             	<Button systemButton="ACTION" onClick="uploadFile"/>
             	<FlexSpace/>
-            	<TextField hintText="notes" borderStyle="Ti.UI.INPUT_BORDERSTYLE_ROUNDED" width="200" ></TextField>
+            	<TextField id="jobdetailtf" hintText="notes" borderStyle="Ti.UI.INPUT_BORDERSTYLE_ROUNDED" width="200" ></TextField>
             	<FlexSpace/>
             	<Button systemButton="CAMERA" onClick="takePic"/>
             </Items>

@@ -99,3 +99,50 @@ function takePic(e){
 		videoQuality:Titanium.Media.QUALITY_HIGH
 	});
 	}
+	
+	
+var win = Ti.UI.createWindow({
+  backgroundColor: 'white'
+});
+
+	
+var send = Titanium.UI.createButton({
+    title : 'Send',
+    style : Titanium.UI.iPhone.SystemButtonStyle.DONE,
+});
+
+var camera = Titanium.UI.createButton({
+    systemButton : Titanium.UI.iPhone.SystemButton.CAMERA,
+});
+
+var cancel = Titanium.UI.createButton({
+    systemButton : Titanium.UI.iPhone.SystemButton.CANCEL
+});
+
+var flexSpace = Titanium.UI.createButton({
+    systemButton : Titanium.UI.iPhone.SystemButton.FLEXIBLE_SPACE
+});
+
+var textfield = Titanium.UI.createTextField({
+    borderStyle : Titanium.UI.INPUT_BORDERSTYLE_BEZEL,
+    hintText : 'Focus to see keyboard with toolbar',
+    keyboardToolbar : [cancel, flexSpace, camera, flexSpace, send],
+    keyboardToolbarColor : '#999',
+    keyboardToolbarHeight : 40,
+    top : 10,
+    width : 300, height : 35
+});
+
+win.add(textfield);
+
+
+$.jobdetailtf.addEventListener("focus", function(e){
+ 		console.log("JSON.stringify(e)  :" +JSON.stringify(e));
+ 		//win.open();
+    });
+
+function largeTF(e){
+	console.log("JSON.stringify(e) largeTF  :" +JSON.stringify(e));
+	//$.itemjobdetail.add(textfield);
+}
+
