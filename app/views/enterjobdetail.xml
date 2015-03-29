@@ -7,5 +7,14 @@
   	<TableViewRow height="200">
   	</TableViewRow>
   </TableView>
+          <Toolbar id="sortview" platform="ios" bottom="0" borderTop="true" borderBottom="false">
+            <Items >
+            	<FlexSpace/>
+            	<Button systemButton="ACTION" onClick="uploadFile"/>
+            	<Button systemButton="CAMERA" onClick="takePic"/>
+            	<FlexSpace/>
+            	<FlexSpace/>
+            </Items>
+        </Toolbar>
   </Window>
 </Alloy>
