@@ -10,16 +10,19 @@
 			<Label  id="label_sub2" color="orange"  textAlign="Ti.UI.TEXT_ALIGNMENT_CENTER" top="45" text="{email}"/>
 			<Label  id="label_sub3" color="#333"  textAlign="Ti.UI.TEXT_ALIGNMENT_CENTER" top="60" text="{address}"/>
 		</TableViewRow>
-
+		<FooterView>
+	        <View backgroundColor="#DDD" height="50">
+	        </View>>
+        </FooterView>
   	</TableView>
   		<!--TextField hintText="Please enter notes" height="200" borderStyle="Ti.UI.INPUT_BORDERSTYLE_ROUNDED"></TextField--->
           <Toolbar id="sortview" platform="ios" bottom="0" borderTop="true" borderBottom="false">
             <Items >
-            	<FlexSpace/>
             	<Button systemButton="ACTION" onClick="uploadFile"/>
+            	<FlexSpace/>
+            	<TextField hintText="notes" borderStyle="Ti.UI.INPUT_BORDERSTYLE_ROUNDED" width="200" ></TextField>
+            	<FlexSpace/>
             	<Button systemButton="CAMERA" onClick="takePic"/>
-            	<FlexSpace/>
-            	<FlexSpace/>
             </Items>
         </Toolbar>
   </Window>
