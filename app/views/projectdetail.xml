@@ -2,6 +2,9 @@
 	<Model src="dummy" />
 	<Tab id="tab_projectdetail" title="Project">
   <Window id="projectdetail_window" title="project Detail" backgroundColor="white">
+  	<RightNavButton platform="ios">
+	   <Button systemButton="Ti.UI.iPhone.SystemButton.ADD" onClick="addHandler" /> 
+	</RightNavButton>
 	  <TableView id="projectdetail_table"  backgroundColor="transparent">
 	  	<TableViewSection headerTitle="{dummy.projectname}">
 		  <TableViewRow id="projectdetail_row"  height="180">

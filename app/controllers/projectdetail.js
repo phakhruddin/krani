@@ -65,3 +65,9 @@ function JobDetail(e){
 	var tabViewOneController = Alloy.createController("jobdetail");
 	tabViewOneController.openMainWindow($.tab_projectdetail);	
 }
+
+function addHandler(e){
+	console.log("JSON stringify e: "+JSON.stringify(e));
+	var tabViewOneController = Alloy.createController("enterjobdetail");
+	tabViewOneController.openMainWindow($.tab_projectdetail);	
+}

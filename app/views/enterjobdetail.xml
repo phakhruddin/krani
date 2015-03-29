@@ -1,0 +1,11 @@
+<Alloy>
+	<Model src="dummy" />
+  <Window id="enterjobdetail_window" title="Job Logs" backgroundColor="white">
+  <TableView>
+  	<TableViewRow height="200">
+  	</TableViewRow>
+  	<TableViewRow height="200">
+  	</TableViewRow>
+  </TableView>
+  </Window>
+</Alloy>
