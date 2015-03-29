@@ -1,12 +1,18 @@
 <Alloy>
 	<Model src="dummy" />
+	<Collection src="joblog"/>
   <Window id="enterjobdetail_window" title="Job Logs" backgroundColor="white">
-  <TableView>
-  	<TableViewRow height="200">
-  	</TableViewRow>
-  	<TableViewRow height="200">
-  	</TableViewRow>
-  </TableView>
+  	<TableView id="labor_table" backgroundColor="transparent" dataCollection="joblog" search="search_history" dataTransform="transformFunction" filterAttribute="title">
+  		<SearchBar id="search_history" height="47" />
+  		<TableViewRow id="joblog_row" height="75" backgroundColor="transparent" opacity="0" color="transparent" title="{title}">
+			<Label id="label_header" color="#333" color="gray" top="10" textAlign="Ti.UI.TEXT_ALIGNMENT_CENTER" text="{custom}"/>
+			<Label id="label_sub1" color="#330"  textAlign="Ti.UI.TEXT_ALIGNMENT_CENTER" top="30" text="{phone}"/>
+			<Label  id="label_sub2" color="orange"  textAlign="Ti.UI.TEXT_ALIGNMENT_CENTER" top="45" text="{email}"/>
+			<Label  id="label_sub3" color="#333"  textAlign="Ti.UI.TEXT_ALIGNMENT_CENTER" top="60" text="{address}"/>
+		</TableViewRow>
+
+  	</TableView>
+  		<!--TextField hintText="Please enter notes" height="200" borderStyle="Ti.UI.INPUT_BORDERSTYLE_ROUNDED"></TextField--->
           <Toolbar id="sortview" platform="ios" bottom="0" borderTop="true" borderBottom="false">
             <Items >
             	<FlexSpace/>

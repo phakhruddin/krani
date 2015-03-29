@@ -68,6 +68,9 @@ function JobDetail(e){
 
 function addHandler(e){
 	console.log("JSON stringify e: "+JSON.stringify(e));
+		var item = "joblog";
+	var sid = Titanium.App.Properties.getString(item,"none");
+	Alloy.Globals.getPrivateData(sid,item);
 	var tabViewOneController = Alloy.createController("enterjobdetail");
 	tabViewOneController.openMainWindow($.tab_projectdetail);	
 }

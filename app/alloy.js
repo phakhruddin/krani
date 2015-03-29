@@ -21,6 +21,7 @@ var proposalsid = '1H95ytL9cA1f3YU1Hag4GAtMUV98NyBcYqzyP04BDSwk'; Titanium.App.P
 var mastersid = '1WUtkBcD1q3ezozI98w0sq42rl1TwIOTMq25Yayj-sEk'; Titanium.App.Properties.setString('master',mastersid);
 var schedulesid = '1c5Nj6XOMIEtlqmHLDoyGocdNu5MRG-WQhckIseVlU2I'; Titanium.App.Properties.setString('schedule',schedulesid);
 var laborsid = '1-YaHKOuTqpRG1X83_1tZ6zHWrO1krEmV99HS7S130Hc'; Titanium.App.Properties.setString('labor',laborsid);
+var joblogsid = '1SLNRI176qK51rkFWWCQvqToXswdNYlqINsdB2HM0ozk'; Titanium.App.Properties.setString('joblog',joblogsid);
 
 
 console.log("TempDir: "+JSON.stringify(Ti.Filesystem.tempDirectory));
@@ -230,6 +231,7 @@ Alloy.Globals.getData = function(sid,type) {
 			(type == 'supplier') && Alloy.Collections.supplier.deleteAll();
 			(type == 'proposal') && Alloy.Collections.proposal.deleteAll();
 			(type == 'labor') && Alloy.Collections.labor.deleteAll();
+			(type == 'joblog') && Alloy.Collections.labor.deleteAll();
 			for (var i=1; i < +json.feed.entry.length; i++) {
 				var dataModel = Alloy.createModel(type,{
 					col1 :  json.feed.entry[i].title.$t || "none",
@@ -293,6 +295,7 @@ Alloy.Globals.getPrivateData = function(sid,type) {
 			(type == 'supplier') && Alloy.Collections.supplier.deleteAll();
 			(type == 'proposal') && Alloy.Collections.proposal.deleteAll();
 			(type == 'labor') && Alloy.Collections.labor.deleteAll();
+			(type == 'joblog') && Alloy.Collections.labor.deleteAll();
 			(type == 'master') && Alloy.Collections.master.deleteAll();
 			// deleting existing entry done
 			for (i=1;i<entry.length;i++){

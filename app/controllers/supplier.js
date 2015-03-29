@@ -5,8 +5,6 @@ exports.openMainWindow = function(_tab) {
 
 };
 
-$.ptr.refresh();
-
 function addHandler(e) {
 	console.log("JSON stringify addHandler(e): "+JSON.stringify(e));
 }
