@@ -16,13 +16,14 @@
         </FooterView>
   	</TableView>
   		<!--TextField hintText="Please enter notes" height="200" borderStyle="Ti.UI.INPUT_BORDERSTYLE_ROUNDED"></TextField--->
-          <Toolbar id="sortview" platform="ios" bottom="0" borderTop="true" borderBottom="false">
+          <Toolbar id="jobdetailtoolbar" platform="ios" bottom="0" borderTop="true" borderBottom="false"  onClick="enterNotes">
             <Items id="itemjobdetail">
             	<Button systemButton="ACTION" onClick="uploadFile"/>
-            	<FlexSpace/>
-            	<TextField id="jobdetailtf" hintText="notes" borderStyle="Ti.UI.INPUT_BORDERSTYLE_ROUNDED" width="200" ></TextField>
-            	<FlexSpace/>
             	<Button systemButton="CAMERA" onClick="takePic"/>
+            	<Button systemButton="PLAIN" onClick="enterNotes"/>
+            	<FlexSpace/>
+            	<TextField id="jobdetailtf" hintText="notes" borderStyle="Ti.UI.INPUT_BORDERSTYLE_ROUNDED" width="180" onClick="enterNotes"></TextField>
+            	<FlexSpace/>           	
             </Items>
         </Toolbar>
   </Window>
