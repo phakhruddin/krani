@@ -2,29 +2,39 @@
 	<Model src="dummy" />
 	<Collection src="joblog"/>
   <Window id="enterjobdetail_window" title="Job Logs" backgroundColor="white">
-  	<TableView id="labor_table" backgroundColor="transparent" dataCollection="joblog" search="search_history" dataTransform="transformFunction" filterAttribute="title">
+  	<TableView id="labor_table" backgroundColor="white"  separatorStyle="Titanium.UI.iPhone.TableViewSeparatorStyle.NONE"  backgroundColor="transparent" dataCollection="joblog" search="search_history" dataTransform="transformFunction" filterAttribute="title">
   		<SearchBar id="search_history" height="47" />
-  		<TableViewRow id="joblog_row" height="75" backgroundColor="transparent" opacity="0" color="transparent" title="{title}">
-			<Label id="label_header" color="#333" color="gray" top="10" textAlign="Ti.UI.TEXT_ALIGNMENT_CENTER" text="{custom}"/>
-			<Label id="label_sub1" color="#330"  textAlign="Ti.UI.TEXT_ALIGNMENT_CENTER" top="30" text="{phone}"/>
-			<Label  id="label_sub2" color="orange"  textAlign="Ti.UI.TEXT_ALIGNMENT_CENTER" top="45" text="{email}"/>
-			<Label  id="label_sub3" color="#333"  textAlign="Ti.UI.TEXT_ALIGNMENT_CENTER" top="60" text="{address}"/>
+  		<TableViewRow id="joblog_row" backgroundColor="#ECE6E6" opacity="0" color="transparent" title="{title}">
+			<View width="90%" height="80%" backgroundColor="white" borderRadius="4" borderWidth="0.1" borderColor="white">
+			<Label id="label_sub1" color="#330" left="20" textAlign="Ti.UI.TEXT_ALIGNMENT_LEFT" top="10" text="{date}"/>
+			<Label  id="label_sub2" color="orange" left="20"  textAlign="Ti.UI.TEXT_ALIGNMENT_LEFT" top="40" text="{notes}"/>
+			<ImageView image="{img}" height="100" width="100"></ImageView>
+			<!--Label  id="label_sub2" color="orange" left="20"  textAlign="Ti.UI.TEXT_ALIGNMENT_LEFT" top="60" text="{img}"/-->
+			</View>
 		</TableViewRow>
 		<FooterView>
-	        <View backgroundColor="#DDD" height="50">
-	        </View>>
+	        <View backgroundColor="#DDD" height="150">
+	        	<TextArea id="notes_textarea" width="300" height="100" top="5" borderWidth="2" borderColor="#bbb" borderRadius="5" hintText="notes"
+	        		color="#888" textAlign="left" >
+	        		<KeyboardToolbar id="ktb_textarea">
+	        			<Toolbar>
+	        				<Items>
+	        					<Button systemButton="ACTION" onClick="uploadFile"/>
+            					<Button systemButton="CAMERA" onClick="takePic"/>
+	        				</Items>
+	        			</Toolbar>
+	        		</KeyboardToolbar>	        		
+	        		</TextArea>
+	        </View>
         </FooterView>
   	</TableView>
-  		<!--TextField hintText="Please enter notes" height="200" borderStyle="Ti.UI.INPUT_BORDERSTYLE_ROUNDED"></TextField--->
-          <Toolbar id="jobdetailtoolbar" platform="ios" bottom="0" borderTop="true" borderBottom="false"  onClick="enterNotes">
+          <Toolbar id="jobdetailtoolbar" platform="ios" bottom="0" borderTop="true" borderBottom="false">
             <Items id="itemjobdetail">
+            	<FlexSpace/>
             	<Button systemButton="ACTION" onClick="uploadFile"/>
             	<Button systemButton="CAMERA" onClick="takePic"/>
-            	<Button systemButton="PLAIN" onClick="enterNotes"/>
-            	<FlexSpace/>
-            	<TextField id="jobdetailtf" hintText="notes" borderStyle="Ti.UI.INPUT_BORDERSTYLE_ROUNDED" width="180" onClick="enterNotes"></TextField>
-            	<FlexSpace/>           	
+             	<FlexSpace/>           	
             </Items>
-        </Toolbar>
+        </Toolbar>   
   </Window>
 </Alloy>

@@ -3,7 +3,7 @@ exports.openMainWindow = function(_tab) {
   _tab.open($.enterjobdetail_window);
   Ti.API.info("This is child widow checking _tab on : " +JSON.stringify(_tab));
   Ti.API.info(" input details : "+JSON.stringify(args));
-  $.labor_table.search = $.search_history;
+  // $.labor_table.search = $.search_history;
   	Alloy.Collections.joblog.fetch();
 };
 
@@ -11,10 +11,12 @@ function transformFunction(model) {
 	var currentaddr;
 	var transform = model.toJSON();
 	console.log("transform is ::" +JSON.stringify(transform));
-	transform.title = transform.col1+":"+transform.col2+":"+transform.col3+":"+transform.col4+":"+transform.col5+":"+transform.col6+":"+transform.col7+":"+transform.col8+":"+transform.col9+":"+transform.col10+":"+transform.col11+":"+transform.col12+":"+transform.col13+":"+transform.col14+":"+transform.col15+":"+transform.col16;
-	transform.custom = transform.col2+"  "+transform.col3;
-	transform.phone = "Phone: "+transform.col5;
-	transform.email = "Email: "+transform.col6;
+	transform.title = transform.col1+":"+transform.col2+":"+transform.col5+":"+transform.col6+":"+transform.col7+":"
+						+transform.col8+":"+transform.col9+":"+transform.col10+":"+transform.col11+":"+transform.col12+":"+transform.col13
+						+":"+transform.col14+":"+transform.col15+":"+transform.col16;
+	transform.date = "Date: "+transform.col1;
+	transform.notes = "Notes: "+transform.col2;
+	transform.img = (transform.col4)?transform.col4:"none";
 	
 	lat1=transform.col8;
 	lon1=transform.col9;
@@ -130,26 +132,27 @@ function takePic(e){
 	    keyboardToolbarColor : '#999',
 	    backgroundColor : "white",
 	    keyboardToolbarHeight : 40,
-	    bottom : 208,
+	    top : 10,
 	    width : Ti.UI.SIZE, height : Ti.UI.SIZE
 	});
 	
+	$.notes_textarea.addEventListener("blur",function(e){
+		console.log("JSON.stringify(e)  :" +JSON.stringify(e));
+		e.source.keyboardToolbar.items = null;
+		//$.ktb_textarea.hide();
+	});
 	
-
-
 function enterNotes(e) {
-	
-
 	console.log("JSON.stringify(e) enterNotes  :" +JSON.stringify(e));
-	$.enterjobdetail_window.add(textfield);
+	//$.enterjobdetail_window.show($.notes_textarea);
+	//$.enterjobdetail_window.add(textfield);
 };
-
 /*
 $.jobdetailtf.addEventListener("focus", function(e){
  		console.log("JSON.stringify(e)  :" +JSON.stringify(e));
- 		//win.open();
-    });
-
+ 		
+    });*/
+/*
 function largeTF(e){
 	console.log("JSON.stringify(e) largeTF  :" +JSON.stringify(e));
 	//$.itemjobdetail.add(textfield);

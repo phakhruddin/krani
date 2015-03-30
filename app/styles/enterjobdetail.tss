@@ -3,7 +3,8 @@
 },
 "TableViewRow": {
 	width: Ti.UI.SIZE,
-	height: "36"
+	height: Ti.UI.SIZE,
+	font: {fontSize: '1'}
 },
 "Label": {
 	width: Ti.UI.SIZE,
@@ -26,12 +27,12 @@
 },
 "#label_sub1": {
 	font: {
-		fontSize: "10"
+		fontSize: "14"
 	}
 },
 "#label_sub2": {
 	font: {
-		fontSize: "10"
+		fontSize: "12"
 	}
 },
 "#label_sub3": {
