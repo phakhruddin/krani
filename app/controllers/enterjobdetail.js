@@ -4,11 +4,14 @@ exports.openMainWindow = function(_tab) {
   Ti.API.info("This is child widow checking _tab on : " +JSON.stringify(_tab));
   Ti.API.info(" input details : "+JSON.stringify(args));
   // $.labor_table.search = $.search_history;
-  	Alloy.Collections.joblog.fetch();
+  	
 };
+
+Alloy.Collections.joblog.fetch();
 
 function transformFunction(model) {
 	var currentaddr;
+
 	var transform = model.toJSON();
 	console.log("transform is ::" +JSON.stringify(transform));
 	transform.title = transform.col1+":"+transform.col2+":"+transform.col5+":"+transform.col6+":"+transform.col7+":"
@@ -21,8 +24,21 @@ function transformFunction(model) {
 	lat1=transform.col8;
 	lon1=transform.col9;
 	transform.address = "Lat: "+transform.col8+" , Lon:"+transform.col9;
+	var newRow = Ti.UI.createTableViewRow({});
+	var newImageView = Ti.UI.createImageView({
+		image : transform.img,
+		height: 100,
+		width: 100
+	});	
+	var imageRow = newRow.add(newImageView);
+	$.labor_table.setData($.joblog_row);
 	return transform;
 }
+
+var joblog  = Alloy.Collections.instance('joblog');
+var content = joblog.toJSON();
+console.log("JSON stringify joblog: "+JSON.stringify(content));
+
 
 function closeWin(e) {
 	console.log("e is: "+JSON.stringify(e));

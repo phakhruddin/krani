@@ -6,9 +6,15 @@
   		<SearchBar id="search_history" height="47" />
   		<TableViewRow id="joblog_row" backgroundColor="#ECE6E6" opacity="0" color="transparent" title="{title}">
 			<View width="90%" height="80%" backgroundColor="white" borderRadius="4" borderWidth="0.1" borderColor="white">
+				<Label id="label_sub1" color="#330" left="20" textAlign="Ti.UI.TEXT_ALIGNMENT_LEFT" top="10" text="{date}"/>
+				<Label  id="label_sub2" color="orange" left="20"  textAlign="Ti.UI.TEXT_ALIGNMENT_LEFT" top="40" text="{notes}"/>
+			</View>
+		</TableViewRow>
+		<TableViewRow id="joblog_row_image" backgroundColor="#ECE6E6" opacity="0" color="transparent" title="{title}">
+			<View width="90%" height="80%" backgroundColor="white" borderRadius="4" borderWidth="0.1" borderColor="white">
 			<Label id="label_sub1" color="#330" left="20" textAlign="Ti.UI.TEXT_ALIGNMENT_LEFT" top="10" text="{date}"/>
 			<Label  id="label_sub2" color="orange" left="20"  textAlign="Ti.UI.TEXT_ALIGNMENT_LEFT" top="40" text="{notes}"/>
-			<ImageView image="{img}" height="100" width="100"></ImageView>
+			<ImageView id="jd_image" image="{img}" height="100" width="100"></ImageView>
 			<!--Label  id="label_sub2" color="orange" left="20"  textAlign="Ti.UI.TEXT_ALIGNMENT_LEFT" top="60" text="{img}"/-->
 			</View>
 		</TableViewRow>
