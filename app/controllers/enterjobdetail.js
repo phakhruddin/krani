@@ -31,13 +31,141 @@ function transformFunction(model) {
 		width: 100
 	});	
 	var imageRow = newRow.add(newImageView);
-	$.labor_table.setData($.joblog_row);
+	//$.labor_table.setData($.joblog_row);
 	return transform;
 }
 
 var joblog  = Alloy.Collections.instance('joblog');
 var content = joblog.toJSON();
 console.log("JSON stringify joblog: "+JSON.stringify(content));
+
+function jobDetailAddRow (date,notesbody,imageurl) {
+	var datelabel = Ti.UI.createLabel ({
+		color : "orange",
+		left  : "20",
+		textAlign : "Ti.UI.TEXT_ALIGNMENT_LEFT",
+		top : "10",
+		text : date
+	});
+	var noteslabel = Ti.UI.createLabel ({
+		color : "#888",
+		left  : "20",
+		textAlign : "Ti.UI.TEXT_ALIGNMENT_LEFT",
+		font: {
+			fontSize: "12"
+			},
+		text : notesbody
+	});
+	var imagelabel = Ti.UI.createImageView ({
+		image : imageurl,
+		height : "100",
+		width : "100"
+	});
+	var innerview = Ti.UI.createView({
+		width:"90%",
+		height:"80%",
+		backgroundColor:"white",
+		borderRadius:"10",
+		borderWidth:"0.1",
+		borderColor:"white"
+	});
+	innerview.add(datelabel);
+	if ( notesbody != "none" ) {
+		innerview.add(noteslabel);
+		noteslabel.top = 50;
+	} else {
+		imagelabel.height = 200;
+		imagelabel.width = 200;
+	};
+	if (imageurl != "none") {innerview.add(imagelabel);};
+	if ( notesbody != "none" && imageurl != "none") {
+		imagelabel.top = 50;
+		noteslabel.top = 220;
+	};
+	var jobrow = Ti.UI.createTableViewRow ({
+		backgroundColor: "#ECE6E6",
+		opacity:"0",
+		color:"transparent",
+		width: Ti.UI.FILL,
+		height: Ti.UI.SIZE
+		//title:"{title}"
+	});
+	jobrow.add(innerview);
+	
+	var jobtable = Ti.UI.createTableView({
+		backgroundColor: "white",
+		separatorStyle :"Titanium.UI.iPhone.TableViewSeparatorStyle.NONE"
+	});
+	jobtable.add(jobrow);
+	
+	$.labor_table.appendRow(jobrow);
+
+};
+
+for (i=0;i<content.length;i++){
+	var datelabel = Ti.UI.createLabel ({
+		color : "orange",
+		left  : "20",
+		textAlign : "Ti.UI.TEXT_ALIGNMENT_LEFT",
+		top : "10",
+		text : content[i].col1
+	});
+	var notesbody = content[i].col2;
+	var noteslabel = Ti.UI.createLabel ({
+		color : "#888",
+		left  : "20",
+		textAlign : "Ti.UI.TEXT_ALIGNMENT_LEFT",
+		font: {
+			fontSize: "12"
+			},
+		text : notesbody
+	});
+	var imageurl = content[i].col4;
+	var imagelabel = Ti.UI.createImageView ({
+		image : imageurl,
+		height : "100",
+		width : "100"
+	});
+	var innerview = Ti.UI.createView({
+		width:"90%",
+		height:"80%",
+		backgroundColor:"white",
+		borderRadius:"10",
+		borderWidth:"0.1",
+		borderColor:"white"
+	});
+	innerview.add(datelabel);
+	if ( notesbody != "none" ) {
+		innerview.add(noteslabel);
+		noteslabel.top = 50;
+	} else {
+		imagelabel.height = 200;
+		imagelabel.width = 200;
+	};
+	if (imageurl != "none") {innerview.add(imagelabel);};
+	if ( notesbody != "none" && imageurl != "none") {
+		imagelabel.top = 50;
+		noteslabel.top = 220;
+	};
+	var jobrow = Ti.UI.createTableViewRow ({
+		backgroundColor: "#ECE6E6",
+		opacity:"0",
+		color:"transparent",
+		width: Ti.UI.FILL,
+		height: Ti.UI.SIZE
+		//title:"{title}"
+	});
+	jobrow.add(innerview);
+	
+	var jobtable = Ti.UI.createTableView({
+		backgroundColor: "white",
+		separatorStyle :"Titanium.UI.iPhone.TableViewSeparatorStyle.NONE"
+	});
+	jobtable.add(jobrow);
+	
+	$.labor_table.appendRow(jobrow);
+
+}
 
 
 function closeWin(e) {
@@ -49,7 +177,7 @@ function UploadPhotoToServer(e){
 }
 
 function uploadFile(e){
-	console.log("JSON stringify e" +JSON.stringify(e));
+	console.log("JSON stringify e uploadFile : " +JSON.stringify(e));
        Titanium.Media.openPhotoGallery({
            success:function(event)
            {             
@@ -76,7 +204,7 @@ function uploadFile(e){
 				});
 
 function takePic(e){ 
-	console.log("JSON stringify e" +JSON.stringify(e));
+	console.log("JSON stringify e takePic:" +JSON.stringify(e));
 	Titanium.Media.showCamera({
 		success:function(e){
 			if(e.mediaType === Titanium.Media.MEDIA_TYPE_PHOTO){
@@ -152,16 +280,34 @@ function takePic(e){
 	    width : Ti.UI.SIZE, height : Ti.UI.SIZE
 	});
 	
-	$.notes_textarea.addEventListener("blur",function(e){
-		console.log("JSON.stringify(e)  :" +JSON.stringify(e));
-		e.source.keyboardToolbar.items = null;
-		//$.ktb_textarea.hide();
-	});
+$.notes_textarea.addEventListener("blur",function(e){
+	console.log("JSON.stringify(e)  :" +JSON.stringify(e));
+	e.source.keyboardToolbar.items = null;
+	enterNotes(e);
+	//$.ktb_textarea.hide();
+});
 	
 function enterNotes(e) {
 	console.log("JSON.stringify(e) enterNotes  :" +JSON.stringify(e));
 	//$.enterjobdetail_window.show($.notes_textarea);
 	//$.enterjobdetail_window.add(textfield);
+	var date = new Date();
+	var notesbody = e.value;
+	var imageurl = "none";
+	var dataModel = Alloy.createModel("joblog",{
+					col1 :  date || "none",
+					col2 : notesbody || "none",
+					col3 : imageurl,	
+					col4 : "none"	
+				});	
+	dataModel.save();
+	Alloy.Collections.joblog.fetch();
+	var joblog  = Alloy.Collections.instance('joblog');
+	var content = joblog.toJSON();
+	console.log("JSON stringify joblog after write: "+JSON.stringify(content));
+	var thedate = date.toString().replace(".","").split(' ',4).toString().replace(/,/g,' ')+' '+Alloy.Globals.formatAMPM(date);
+	console.log("thedate is: " +thedate);
+	jobDetailAddRow (thedate,notesbody,imageurl);
 };
 /*
 $.jobdetailtf.addEventListener("focus", function(e){
