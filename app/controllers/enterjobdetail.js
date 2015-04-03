@@ -131,7 +131,7 @@ function takePic(e){
 	    backgroundColor : "white",
 	    keyboardToolbarHeight : 40,
 	    bottom : 208,
-	    width : Ti.UI.SIZE, height : Ti.UI.SIZE
+	    width : 310, height : 80
 	});
 	
 	
