@@ -911,7 +911,8 @@ var getSharedCalendarData = function(url) {
 		
 	}, function() {
 		console.log('Authorized first, see next window: ');
-		Alloy.Globals.LaunchWindowGoogleAuth();
+		googleAuthCalendar.authorize();
+		///Alloy.Globals.LaunchWindowGoogleAuth();
 	});
 	var url = " ";
 };

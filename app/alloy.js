@@ -464,8 +464,8 @@ Alloy.Globals.checkGoogleisAuthorized = function () {
 		console.log('Access Token: ' + googleAuthSheet.getAccessToken());
 	}, function() {
 		console.log('Authorized first, see next window: ');
-		//googleAuthSheet.authorize();
-		Alloy.Globals.LaunchWindowGoogleAuth();
+		googleAuthSheet.authorize();
+		//Alloy.Globals.LaunchWindowGoogleAuth();
 	});
 };	
 	
