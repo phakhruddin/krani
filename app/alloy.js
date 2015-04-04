@@ -231,7 +231,7 @@ Alloy.Globals.getData = function(sid,type) {
 			(type == 'supplier') && Alloy.Collections.supplier.deleteAll();
 			(type == 'proposal') && Alloy.Collections.proposal.deleteAll();
 			(type == 'labor') && Alloy.Collections.labor.deleteAll();
-			(type == 'joblog') && Alloy.Collections.labor.deleteAll();
+			(type == 'joblog') && Alloy.Collections.joblog.deleteAll();
 			for (var i=1; i < +json.feed.entry.length; i++) {
 				var dataModel = Alloy.createModel(type,{
 					col1 :  json.feed.entry[i].title.$t || "none",
@@ -295,7 +295,7 @@ Alloy.Globals.getPrivateData = function(sid,type) {
 			(type == 'supplier') && Alloy.Collections.supplier.deleteAll();
 			(type == 'proposal') && Alloy.Collections.proposal.deleteAll();
 			(type == 'labor') && Alloy.Collections.labor.deleteAll();
-			(type == 'joblog') && Alloy.Collections.labor.deleteAll();
+			(type == 'joblog') && Alloy.Collections.joblog.deleteAll();
 			(type == 'master') && Alloy.Collections.master.deleteAll();
 			// deleting existing entry done
 			for (i=1;i<entry.length;i++){
@@ -464,8 +464,8 @@ Alloy.Globals.checkGoogleisAuthorized = function () {
 		console.log('Access Token: ' + googleAuthSheet.getAccessToken());
 	}, function() {
 		console.log('Authorized first, see next window: ');
-		//googleAuthSheet.authorize();
-		Alloy.Globals.LaunchWindowGoogleAuth();
+		googleAuthSheet.authorize();
+		//Alloy.Globals.LaunchWindowGoogleAuth();
 	});
 };	
 	

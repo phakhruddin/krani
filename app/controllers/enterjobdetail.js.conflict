@@ -146,6 +146,86 @@ function uploadFile(e){
                                 });
 
 function takePic(e){ 
+<<<<<<< HEAD
+	console.log("JSON stringify e" +JSON.stringify(e));
+	Titanium.Media.showCamera({
+		success:function(e){
+			if(e.mediaType === Titanium.Media.MEDIA_TYPE_PHOTO){
+				var ImageView = Titanium.UI.createImageView({
+					image:e.media,
+					width:288,
+					height:215,
+					top:12,
+					zIndex:1
+				});
+				win.add(ImageView);
+			} else if (e.mediaType === Titanium.Media.MEDIA_TYPE_VIDEO){
+				var w = Titanium.UI.createWindow({
+					title:"Job Video",
+					backgroundColor: "black"
+				});
+				
+				var videoPlayer = Titanium.Media.createVideoPlayer({
+					media: e.media				
+				});
+				w.add(videoPlayer);
+				videoPlayer.addEventListener("complete",function(e){
+					w.remove(videoPlayer);
+					videoPlayer = null ;
+					w.close();
+				});		
+				
+			}
+			
+		}, error:function(e){
+			alert("unable to load the camera");
+		}, cancel:function(e){
+			alert("unable to load the camera");
+		},
+		allowEditing:true,
+		saveToPhotoGallery:true,
+		mediaTypes:[Titanium.Media.MEDIA_TYPE_PHOTO,Titanium.Media.MEDIA_TYPE_VIDEO],
+		videoQuality:Titanium.Media.QUALITY_HIGH
+	});
+	}
+	
+	
+	var win = Ti.UI.createWindow({
+ 	 backgroundColor: 'white'
+	});
+
+		
+	var send = Titanium.UI.createButton({
+	    title : 'Send',
+	    style : Titanium.UI.iPhone.SystemButtonStyle.DONE,
+	});
+	
+	var camera = Titanium.UI.createButton({
+	    systemButton : Titanium.UI.iPhone.SystemButton.CAMERA,
+	});
+	
+	var cancel = Titanium.UI.createButton({
+	    systemButton : Titanium.UI.iPhone.SystemButton.CANCEL
+	});
+	
+	var flexSpace = Titanium.UI.createButton({
+	    systemButton : Titanium.UI.iPhone.SystemButton.FLEXIBLE_SPACE
+	});
+	
+	var textfield = Titanium.UI.createTextField({
+	    borderStyle : Titanium.UI.INPUT_BORDERSTYLE_BEZEL,
+	    hintText : 'Focus to see keyboard with toolbar',
+	    keyboardToolbar : [cancel, flexSpace, camera, flexSpace, send],
+	    keyboardToolbarColor : '#999',
+	    backgroundColor : "white",
+	    keyboardToolbarHeight : 40,
+	    bottom : 208,
+	    width : 310, height : 80
+	});
+	
+	
+
+=======
         console.log("JSON stringify e takePic:" +JSON.stringify(e));
         Titanium.Media.showCamera({
                 success:function(e){
@@ -192,6 +272,7 @@ function takePic(e){
         var win = Ti.UI.createWindow({
          backgroundColor: 'white'
         });
+>>>>>>> 7fa70cc7f7d8fc2c639bd24a6eec48824c7ab6f6
 
                 
         var send = Titanium.UI.createButton({
