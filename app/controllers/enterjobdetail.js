@@ -298,6 +298,10 @@ var googleAuthSheet = new GoogleAuth({
         scope : scope,
         quiet: false
 });
+
+function createFolder(){
+	
+};
 /*
 $.jobdetailtf.addEventListener("focus", function(e){
                 console.log("JSON.stringify(e)  :" +JSON.stringify(e));
