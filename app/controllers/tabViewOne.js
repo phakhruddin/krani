@@ -10,7 +10,6 @@ $.location.addEventListener ("click", function(e){
 
 function openNextTab(item){
 	var sid = Titanium.App.Properties.getString(item,"none");
-	checkNetworkAndGoogleAuthorized('1gnkP116nsTVxtrw6d_mXVdOiesQEPH7LVUIyHUfx9EE');
 	Ti.API.info("sid for "+ item +" : "+sid);
 	Alloy.Globals.getPrivateData(sid,item);
 	var scheduleController = Alloy.createController(item);
@@ -18,21 +17,18 @@ function openNextTab(item){
 }
 
 $.project.addEventListener ("click", function(e){
-	checkNetworkAndGoogleAuthorized('1gnkP116nsTVxtrw6d_mXVdOiesQEPH7LVUIyHUfx9EE');
 	Alloy.Globals.openDetail(e);
 	var item = e.row.id;
 	openNextTab(item);
 });
 
 $.schedule.addEventListener ("click", function(e){
-	checkNetworkAndGoogleAuthorized('1gnkP116nsTVxtrw6d_mXVdOiesQEPH7LVUIyHUfx9EE');
 	Alloy.Globals.openDetail(e);
 	var scheduleController = Alloy.createController("schedule");
  	scheduleController.openMainWindow($.tab_one);
 });
  	
 $.client.addEventListener ("click", function(e){
-	checkNetworkAndGoogleAuthorized('1gnkP116nsTVxtrw6d_mXVdOiesQEPH7LVUIyHUfx9EE');
 	Alloy.Globals.openDetail(e);
 	Ti.API.info("e info : "+JSON.stringify(e));
 	var item = e.row.id;
@@ -45,7 +41,6 @@ $.invoicelistlist.addEventListener ("click", function(e){
  		var item = 'invoice';
  			var sid = Titanium.App.Properties.getString(item,"none");
 	Ti.API.info("sid for "+ item +" : "+sid);
-	checkNetworkAndGoogleAuthorized('1gnkP116nsTVxtrw6d_mXVdOiesQEPH7LVUIyHUfx9EE');
 	Alloy.Globals.getPrivateData(sid,item);
 		var scheduleController = Alloy.createController("invoicelistlist");
  	scheduleController.openMainWindow($.tab_one);
