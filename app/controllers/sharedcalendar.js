@@ -92,7 +92,7 @@ var getSharedCalendarData = function(url) {
 		Ti.API.info(" Data were successfuly downloaded from "+url+". Please proceed.");
 		
 	}, function() {
-		console.log('Authorized first, see next window: ');
+		console.log('Sh cal Authorized first, see next window: ');
 	});
 	var url = " ";
 };

@@ -642,7 +642,7 @@ $.ptr.refresh();
 		googleAuthCalendar.isAuthorized(function() {
 				console.log('Access Token: ' + googleAuthCalendar.getAccessToken());				
 		}, function() {
-				console.log('Authorized first, see next window: ');
+				console.log('Schedule submit: Authorized first, see next window: ');
 		});
 		postCreateEvent(startdateTime,enddateTime,"",summary,description,organizerdisplayName);
 		
@@ -682,7 +682,7 @@ function sharedCalendar() {
 	googleAuthCalendar.isAuthorized(function() {
 		console.log('Access Token: ' + googleAuthCalendar.getAccessToken());
 	}, function() {
-		console.log('Authorized first, see next window: ');
+		console.log('Sch shared cal Authorized first, see next window: ');
 		});
 	Alloy.Globals.createController('sharedcalendar',$.schedule_tab);
 }
@@ -854,7 +854,7 @@ var getSharedCalendarData = function(url) {
 	var data = [];
 	//Alloy.Globals.checkGoogleisAuthorized();
 	//Alloy.Globals.checkNetworkAndGoogleAuthorized('1gnkP116nsTVxtrw6d_mXVdOiesQEPH7LVUIyHUfx9EE');
-	googleAuthCalendar;
+	//googleAuthCalendar;
 	console.log('Access Token for Calendar is: ' + googleAuthCalendar.getAccessToken());
 	googleAuthCalendar.isAuthorized(function() {
 		console.log('Access Token: ' + googleAuthCalendar.getAccessToken());
@@ -910,7 +910,7 @@ var getSharedCalendarData = function(url) {
 		Ti.API.info(" Data were successfuly downloaded from "+url+". Please proceed.");
 		
 	}, function() {
-		console.log('Authorized first, see next window: ');
+		console.log('Sch get shrd cal Authorized first, see next window: ');
 		googleAuthCalendar.authorize();
 		///Alloy.Globals.LaunchWindowGoogleAuth();
 	});

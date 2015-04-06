@@ -5,6 +5,7 @@ exports.openMainWindow = function(_tab) {
   Ti.API.info("This is child widow schedule.js" +JSON.stringify(_tab));
     Alloy.Globals.checkNetworkAndGoogleAuthorized('1gnkP116nsTVxtrw6d_mXVdOiesQEPH7LVUIyHUfx9EE');
 	//Alloy.Globals.checkGoogleisAuthorized();
+	googleAuth.authorize();
 	
 	/*$.save_clientfirstname_button.addEventListener('click', function(_e) {
     $.clientfirstname_tf.blur();
@@ -428,12 +429,16 @@ $.check_client.addEventListener('click', function(e){
 	
 });
 
+var scope = ['https://spreadsheets.google.com/feeds', 'https://docs.google.com/feeds','https://www.googleapis.com/auth/calendar','https://www.googleapis.com/auth/calendar.readonly','https://www.googleapis.com/auth/drive'];
+scope.push ("https://www.googleapis.com/auth/drive.appdata");
+scope.push ("https://www.googleapis.com/auth/drive.apps.readonly");
+scope.push ("https://www.googleapis.com/auth/drive.file");
 var GoogleAuth = require('googleAuth');
 var googleAuth = new GoogleAuth({
 	clientId : '306793301753-8ej6duert04ksb3abjutpie916l8hcc7.apps.googleusercontent.com',
 	clientSecret : 'fjrsVudiK3ClrOKWxO5QvXYL',
 	propertyName : 'googleToken',
-	scope : ['https://www.googleapis.com/auth/tasks', 'https://www.googleapis.com/auth/tasks.readonly'],
+	scope : scope,
 	quiet: false
 	//scope : ['https://spreadsheets.google.com/feeds', 'https://docs.google.com/feeds'],
 });

@@ -460,11 +460,12 @@ Alloy.Globals.LaunchWindowGoogleAuth = function() {
 };
 	
 Alloy.Globals.checkGoogleisAuthorized = function () {
+	Titanium.App.Properties.setString('needAuth',"false");
 	googleAuthSheet.isAuthorized(function() {
 		console.log('Access Token: ' + googleAuthSheet.getAccessToken());
 	}, function() {
-		console.log('Authorized first, see next window: ');
-		googleAuthSheet.authorize();
+		console.log('Fr AlloyGlobal Authorized first, see next window: '+(new  Date()));
+		Titanium.App.Properties.setString('needAuth',"true");
 		//Alloy.Globals.LaunchWindowGoogleAuth();
 	});
 };	
@@ -519,6 +520,7 @@ Alloy.Globals.checkNetworkAndGoogleAuthorized = function(sid){
 	    try {
 	    		Ti.API.info("network is good. Replies are: "+this.responseText);
 	    		Alloy.Globals.checkGoogleisAuthorized();
+	    		if (needAuth == "true") {googleAuth.authorize();};
 	    	} catch(e){
 				Ti.API.info("cathing e: "+JSON.stringify(e));
 			}
