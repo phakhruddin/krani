@@ -276,6 +276,10 @@ Alloy.Globals.getPrivateData = function(sid,type) {
 	var data = [];
 	//Alloy.Globals.checkGoogleisAuthorized();
 	Alloy.Globals.checkNetworkAndGoogleAuthorized('1gnkP116nsTVxtrw6d_mXVdOiesQEPH7LVUIyHUfx9EE');
+	//Google Auth check.
+	var needAuth = Titanium.App.Properties.getString('needAuth');
+	console.log("needAuth is :  " +needAuth);
+	if (needAuth == "true") {googleAuthSheet.authorize();};
 	var url = "https://spreadsheets.google.com/feeds/list/"+sid+"/od6/private/full";
 	var thefile = "gss"+sid+".xml";
 	var xhr = Ti.Network.createHTTPClient({
@@ -520,7 +524,6 @@ Alloy.Globals.checkNetworkAndGoogleAuthorized = function(sid){
 	    try {
 	    		Ti.API.info("network is good. Replies are: "+this.responseText);
 	    		Alloy.Globals.checkGoogleisAuthorized();
-	    		if (needAuth == "true") {googleAuth.authorize();};
 	    	} catch(e){
 				Ti.API.info("cathing e: "+JSON.stringify(e));
 			}
