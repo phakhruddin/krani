@@ -58,14 +58,12 @@ $.supplier.addEventListener ("click", function(e){
 });
 
 $.inventory.addEventListener ("click", function(e){
-	checkNetworkAndGoogleAuthorized('1gnkP116nsTVxtrw6d_mXVdOiesQEPH7LVUIyHUfx9EE');
 	Alloy.Globals.openDetail(e);
 	var item = e.row.id;
 	openNextTab(item);
 });
 
 $.proposal.addEventListener ("click", function(e){
-	checkNetworkAndGoogleAuthorized('1gnkP116nsTVxtrw6d_mXVdOiesQEPH7LVUIyHUfx9EE');
 	Alloy.Globals.openDetail(e);
 	var item = e.row.id;
 	openNextTab(item);

@@ -464,9 +464,10 @@ Alloy.Globals.LaunchWindowGoogleAuth = function() {
 };
 	
 Alloy.Globals.checkGoogleisAuthorized = function () {
-	Titanium.App.Properties.setString('needAuth',"false");
+	Titanium.App.Properties.setString('needAuth',"true");
 	googleAuthSheet.isAuthorized(function() {
 		console.log('Access Token: ' + googleAuthSheet.getAccessToken());
+		Titanium.App.Properties.setString('needAuth',"false");
 	}, function() {
 		console.log('Fr AlloyGlobal Authorized first, see next window: '+(new  Date()));
 		Titanium.App.Properties.setString('needAuth',"true");
