@@ -33,7 +33,9 @@
             	<FlexSpace/>
             	<Button systemButton="ACTION" onClick="uploadFile"/>
             	<Button systemButton="CAMERA" onClick="takePic"/>
-             	<FlexSpace/>           	
+             	<FlexSpace/> 
+             	<FlexSpace/>
+             	<Button systemButton="DISCLOSURE" onClick="getParentFolder"/>          	
             </Items>
         </Toolbar>   
   </Window>

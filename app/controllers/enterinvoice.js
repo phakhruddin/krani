@@ -73,9 +73,6 @@ title : 'Row ' + ($.enterinvoice_table.data[0].rowCount + 1)
 $.enterinvoice_table.appendRow(newRow);
 }
 
-$.enterinvoice_table.addEventListener('click', function(e){
-	console.log("JSON stringify after table row is clicked : " +JSON.stringify(e));
-});
 
 var count = 3; //row where line item is entered
 Titanium.App.Properties.setInt('count',count);
@@ -194,31 +191,6 @@ function addItem(e,itemTextField){
  	console.log("e JSON of textfield: "+JSON.stringify(_e));
  });
  
- //blur all text field when touching window 
- 	function allBlur(){
- 		$.itemlist_tf.blur();
-	 	$.itemqty_tf.blur();
-	 	$.itemprice_tf.blur();
-	 	itemTextFieldqty.blur();
-	 	itemTextField.blur();
-	 	itemTextFieldprice.blur();
- 	};
-	 $.itemline_row.addEventListener('click',function(e){
-	 	allBlur();
-	 });
-	 
-	 newRow.addEventListener('click',function(e){
-	 	allBlur();
-	 });
-	 
-	 $.clientdetail_row.addEventListener('click',function(e){
-	 	allBlur();
-	 });
-	 
-	 $.addrow_button.addEventListener('click',function(e){
-	 	allBlur();
-	 });
-	
 	//var textfield = Ti.UI.createTextField({keyboardType: Ti.UI.KEYBOARD_NUMBER_PAD, returnKeyType: Ti.UI.RETURNKEY_DONE, backgroundColor: '#262626', border: 1, width: 100});
 
 }
@@ -441,6 +413,15 @@ var googleAuth = new GoogleAuth({
 	scope : scope,
 	quiet: false
 	//scope : ['https://spreadsheets.google.com/feeds', 'https://docs.google.com/feeds'],
+});
+
+
+
+$.enterinvoice_table.addEventListener('click', function(e){
+	console.log("JSON stringify after table row is clicked : " +JSON.stringify(e));
+		 	$.itemlist_tf.blur();
+	 	$.itemqty_tf.blur();
+	 	$.itemprice_tf.blur();
 });
  
 

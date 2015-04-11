@@ -299,9 +299,30 @@ var googleAuthSheet = new GoogleAuth({
         quiet: false
 });
 
-function createFolder(){
-	
+function getParentFolder() {
+	var sid = Titanium.App.Properties.getString('joblog');
+	var xhr = Ti.Network.createHTTPClient({
+	    onload: function(e) {
+	    try {
+	    		Ti.API.info("response is: "+this.responseText);
+	    		var json = JSON.parse(this.responseText);
+	    		var parentid = json.items[0].id;
+	    		console.log("parentid : "+parentid);
+	    	} catch(e){
+				Ti.API.info("cathing e: "+JSON.stringify(e));
+			}
+		}
+		});
+	xhr.onerror = function(e){
+		alert("Unable to connect to the cloud.");
+	};
+	xhr.open("GET", 'https://www.googleapis.com/drive/v2/files/'+sid+'/parents');
+	xhr.setRequestHeader("Content-type", "application/json");
+    xhr.setRequestHeader("Authorization", 'Bearer '+ googleAuthSheet.getAccessToken());
+	xhr.send();
 };
+
+
 /*
 $.jobdetailtf.addEventListener("focus", function(e){
                 console.log("JSON.stringify(e)  :" +JSON.stringify(e));
