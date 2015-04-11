@@ -2,7 +2,7 @@ var args = arguments[0] || {};
 exports.openMainWindow = function(_tab) {
   _tab.open($.enterjobdetail_window);
   Ti.API.info("This is child widow checking _tab on : " +JSON.stringify(_tab));
-  Ti.API.info(" input details : "+JSON.stringify(args));
+  Ti.API.info(" input details after tab enterjobdetail : "+JSON.stringify(args));
   // $.labor_table.search = $.search_history;
         
 };
@@ -299,6 +299,9 @@ var googleAuthSheet = new GoogleAuth({
         quiet: false
 });
 
+//var jsonargs = JSON.stringify(args);
+console.log("jsonargs : "+JSON.stringify(args));
+//var filename = "project"+jsonargs.title.split(':')[15];
 function getParentFolder() {
 	var sid = Titanium.App.Properties.getString('joblog');
 	var xhr = Ti.Network.createHTTPClient({
@@ -320,7 +323,43 @@ function getParentFolder() {
 	xhr.setRequestHeader("Content-type", "application/json");
     xhr.setRequestHeader("Authorization", 'Bearer '+ googleAuthSheet.getAccessToken());
 	xhr.send();
+	createSpreadsheet();
+	return parentid;
 };
+
+
+function createSpreadsheet() {
+	//var name = "project"+args.title.split(':')[15];
+	//console.log("filename is : "+filename);
+		var xhr = Ti.Network.createHTTPClient({
+	    onload: function(e) {
+	    try {
+	    		Ti.API.info("response is: "+this.responseText);
+	    		var json = JSON.parse(this.responseText);
+	    		var sid = json.id;
+	    		console.log("sid : "+sid);
+	    	} catch(e){
+				Ti.API.info("cathing e: "+JSON.stringify(e));
+			}
+		}
+		});
+	xhr.onerror = function(e){
+		alert("Unable to connect to the cloud.");
+	};
+	xhr.open("POST", 'https://www.googleapis.com/drive/v2/files');
+	var jsonpost = [{
+		 "title": "file02",
+		 "parents": [
+		  {
+		   "id": "0AHXMbMJnSVEGUk9PVA"
+		  }
+		 ],
+		 "mimeType": "application/vnd.google-apps.spreadsheet"
+		}];
+	xhr.setRequestHeader("Content-type", "application/json");
+    xhr.setRequestHeader("Authorization", 'Bearer '+ googleAuthSheet.getAccessToken());
+	xhr.send();
+}
 
 
 /*

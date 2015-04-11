@@ -66,11 +66,28 @@ function JobDetail(e){
 	tabViewOneController.openMainWindow($.tab_projectdetail);	
 }
 
-function addHandler(e){
-	console.log("JSON stringify e: "+JSON.stringify(e));
+$.addbutton.setTitleid(args);
+
+$.addbutton.addEventListener("click", function(e){
+		console.log("JSON stringify e on addHandler: "+JSON.stringify(e));
+	console.log("JSON stringify e on addHandler args: "+JSON.stringify(args));
 		var item = "joblog";
 	var sid = Titanium.App.Properties.getString(item,"none");
 	Alloy.Globals.getPrivateData(sid,item);
-	var tabViewOneController = Alloy.createController("enterjobdetail");
+	var tabViewOneController = Alloy.createController("enterjobdetail",{
+			title: args
+		});
+	tabViewOneController.openMainWindow($.tab_projectdetail);	
+});
+
+function addHandler(e,args){
+	console.log("JSON stringify e on addHandler: "+JSON.stringify(e));
+	console.log("JSON stringify e on addHandler args: "+JSON.stringify(args));
+		var item = "joblog";
+	var sid = Titanium.App.Properties.getString(item,"none");
+	Alloy.Globals.getPrivateData(sid,item);
+	var tabViewOneController = Alloy.createController("enterjobdetail",{
+			title: args
+		});
 	tabViewOneController.openMainWindow($.tab_projectdetail);	
 }

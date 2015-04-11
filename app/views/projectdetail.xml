@@ -3,7 +3,8 @@
 	<Tab id="tab_projectdetail" title="Project">
   <Window id="projectdetail_window" title="project Detail" backgroundColor="white">
   	<RightNavButton platform="ios">
-	   <Button systemButton="Ti.UI.iPhone.SystemButton.ADD" onClick="addHandler" /> 
+	   <!--Button id="addbutton" systemButton="Ti.UI.iPhone.SystemButton.ADD" onClick="addHandler" /-->
+	   <Button id="addbutton" systemButton="Ti.UI.iPhone.SystemButton.ADD"/> 
 	</RightNavButton>
 	  <TableView id="projectdetail_table"  backgroundColor="transparent">
 	  	<TableViewSection headerTitle="{dummy.projectname}">
