@@ -332,7 +332,7 @@ $.itemlist_tf.addEventListener('blur', function(_e) {
     },
     onerror: function(e) {
     	Ti.API.info("error e: "+JSON.stringify(e));
-        alert("Danger, Will Robinson!"); 
+        alert("Unable to communicate to the cloud. Please try again."); 
     }
 });
     //var spreadsheet_id = '1-Wz7Apn4AvVpfqcNyMgfqyKA8OAoLNy5Bl0d_jQ9IZk';

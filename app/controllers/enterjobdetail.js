@@ -273,7 +273,7 @@ function enterNotes(e) {
     },
     onerror: function(e) {
         Ti.API.info("error e: "+JSON.stringify(e));
-        alert("Danger, Will Robinson!"); 
+        alert("Unable to communicate to the cloud. Please try again"); 
     }
 });
         var sid = Titanium.App.Properties.getString('joblog');

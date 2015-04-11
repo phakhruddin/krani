@@ -155,7 +155,7 @@ exports.openMainWindow = function(_tab) {
     },
     onerror: function(e) {
     	Ti.API.info("error e: "+JSON.stringify(e));
-        alert("Danger, Will Robinson!"); 
+        alert("Unable to communicate to the cloud. Please try again"); 
     }
 });
 	xhr.open("POST", 'https://spreadsheets.google.com/feeds/list/1ECkNoyzgeSu8WkVs3kBnlY8MjJRIAc787nVs6IJsA9w/od6/private/full');

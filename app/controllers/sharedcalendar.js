@@ -175,7 +175,7 @@ function postCreateEvent(startdateTime,enddateTime,location,summary,description,
     },
     onerror: function(e) {
     	Ti.API.info("error e: "+JSON.stringify(e));
-        alert("Danger, Will Robinson!"); 
+        alert("Unable to communicate to the cloud. Please try again"); 
     }
 });
 	xhr.open("POST", url);

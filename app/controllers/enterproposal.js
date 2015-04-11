@@ -260,7 +260,7 @@ $.itemlist_tf.addEventListener('blur', function(_e) {
     },
     onerror: function(e) {
     	Ti.API.info("error e: "+JSON.stringify(e));
-        alert("Danger, Will Robinson!"); 
+        alert("Unable to communicate to the cloud. Please try again"); 
     }
 });
 	var clientsid = Titanium.App.Properties.getString('client');
