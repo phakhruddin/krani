@@ -302,15 +302,15 @@ var googleAuthSheet = new GoogleAuth({
 //var jsonargs = JSON.stringify(args);
 console.log("jsonargs : "+JSON.stringify(args));
 //var filename = "project"+jsonargs.title.split(':')[15];
-function getParentFolder() {
+function getParentFolder(args) {
 	var sid = Titanium.App.Properties.getString('joblog');
 	var xhr = Ti.Network.createHTTPClient({
 	    onload: function(e) {
 	    try {
 	    		Ti.API.info("response is: "+this.responseText);
-	    		var json = JSON.parse(this.responseText);
-	    		var parentid = json.items[0].id;
-	    		console.log("parentid : "+parentid);
+	    		console.log("args inside getParentFolder: "+args);
+	    		//var parentid = json.items[0].id;
+	    		//console.log("parentid : "+parentid);
 	    	} catch(e){
 				Ti.API.info("cathing e: "+JSON.stringify(e));
 			}
@@ -324,7 +324,7 @@ function getParentFolder() {
     xhr.setRequestHeader("Authorization", 'Bearer '+ googleAuthSheet.getAccessToken());
 	xhr.send();
 	createSpreadsheet();
-	return parentid;
+	//return parentid;
 };
 
 
