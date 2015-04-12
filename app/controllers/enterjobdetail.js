@@ -305,6 +305,7 @@ var projectid = args.title.title.split(':')[15];
 var firstname = args.title.title.split(':')[1];
 var lastname = args.title.title.split(':')[2];
 var filename = 'project_'+projectid+'_'+firstname+'_'+lastname;
+Titanium.App.Properties.setString('filename',filename);
 console.log("value derived from args: projectid: "+projectid+" firstname: "+firstname+" lastname: "+lastname);
 //var filename = "project"+jsonargs.title.split(':')[15];
 function getParentFolder(args) {
@@ -369,8 +370,10 @@ function createSpreadsheet(filename,parentid) {
 }
 
 
-
-function listDrive(){
+var jsonlist = " ";
+function fileExist(){
+		var fileexist = 0;
+		var jsonlist = " ";
 		var xhr = Ti.Network.createHTTPClient({
 	    onload: function(e) {
 	    try {
@@ -380,17 +383,31 @@ function listDrive(){
 				Ti.API.info("cathing e: "+JSON.stringify(e));
 			}
 			console.log("jsonlist.items.length: "+jsonlist.items.length);
+			var filename = Titanium.App.Properties.getString('filename');
 			filelist = [];
 			for (i=0;i<jsonlist.items.length;i++){
-				var filename = jsonlist.items[i].title;
-				filelist.push(filename);
+				var existfilename = jsonlist.items[i].title;
+				filelist.push({
+					'existfilename': existfilename,
+					'filename': filename
+					});
+				if ( filename == existfilename ){
+					console.log("existing filename "+filename+" EXIST!");
+					var fileexist = 1;
+					console.log("filelist are: "+JSON.stringify(filelist));
+					return;
+				} 
+			}
+			if (fileexist == 0) {
+				console.log("NEW FILE: create a new file");
+				createSpreadsheet(filename,parentid); 
+			} else {
+				console.log("file exist, skipped!");
 			}
 			console.log("filelist are: "+JSON.stringify(filelist));
-			return filelist;
-			//exports filelist;		
+			//return filelist;
 		}
 		});
-		//return filelist;
 	xhr.onerror = function(e){
 		alert("Unable to connect to the cloud.");
 	};
@@ -400,10 +417,10 @@ function listDrive(){
 	xhr.send();
 }
 
-listDrive();
+fileExist(filename);
 var parentid = Titanium.App.Properties.getString('parentid');
 console.log("create spreadsheet with filename: "+filename+" and parentid: "+parentid); 
-createSpreadsheet(filename,parentid); 
+//createSpreadsheet(filename,parentid); 
 
 /*
 $.jobdetailtf.addEventListener("focus", function(e){
