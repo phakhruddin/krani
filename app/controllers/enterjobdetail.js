@@ -372,52 +372,41 @@ function createSpreadsheet(filename,parentid) {
 
 var jsonlist = " ";
 function fileExist(){
-		var fileexist = 0;
 		var jsonlist = " ";
 		var xhr = Ti.Network.createHTTPClient({
 	    onload: function(e) {
 	    try {
 	    		var jsonlist = JSON.parse(this.responseText);
-	    		//Ti.API.info("response of jsonlist is: "+JSON.stringify(jsonlist));
+	    		Ti.API.info("response of jsonlist is: "+JSON.stringify(jsonlist));
 	    	} catch(e){
 				Ti.API.info("cathing e: "+JSON.stringify(e));
 			}
 			console.log("jsonlist.items.length: "+jsonlist.items.length);
 			var filename = Titanium.App.Properties.getString('filename');
 			filelist = [];
-			for (i=0;i<jsonlist.items.length;i++){
-				var existfilename = jsonlist.items[i].title;
-				filelist.push({
-					'existfilename': existfilename,
-					'filename': filename
-					});
-				if ( filename == existfilename ){
-					console.log("existing filename "+filename+" EXIST!");
-					var fileexist = 1;
-					console.log("filelist are: "+JSON.stringify(filelist));
-					return;
-				} 
-			}
-			if (fileexist == 0) {
-				console.log("NEW FILE: create a new file");
-				createSpreadsheet(filename,parentid); 
+			if (jsonlist.items.length == "0" ){
+				console.log("File DOES NOT EXIST");
+				var fileexist = "false";
+				createSpreadsheet(filename,parentid);  // create file when does not exists
 			} else {
-				console.log("file exist, skipped!");
-			}
-			console.log("filelist are: "+JSON.stringify(filelist));
-			//return filelist;
+				var fileexist = "true";
+				console.log("File exist. sid is: "+jsonlist.items[0].id+" Skipped.");
+			};
 		}
 		});
 	xhr.onerror = function(e){
 		alert("Unable to connect to the cloud.");
 	};
-	xhr.open("GET", 'https://www.googleapis.com/drive/v2/files');
+	//xhr.open("GET", 'https://www.googleapis.com/drive/v2/files');
+	var rawquerystring = '?q=title+%3D+\'project_1_Phakhruddin_Abdullah\'+and+mimeType+%3D+\'application%2Fvnd.google-apps.spreadsheet\'+and+trashed+%3D+false&fields=items(id%2CmimeType%2Clabels%2Ctitle)';
+	//xhr.open("GET", 'https://www.googleapis.com/drive/v2/files?q=title+%3D+\'project_1_Phakhruddin_Abdullah\'&fields=items(mimeType%2Clabels%2Ctitle)');
+	xhr.open("GET", 'https://www.googleapis.com/drive/v2/files'+rawquerystring);
 	xhr.setRequestHeader("Content-type", "application/json");
     xhr.setRequestHeader("Authorization", 'Bearer '+ googleAuthSheet.getAccessToken());
 	xhr.send();
 }
 
-fileExist(filename);
+fileExist();
 var parentid = Titanium.App.Properties.getString('parentid');
 console.log("create spreadsheet with filename: "+filename+" and parentid: "+parentid); 
 //createSpreadsheet(filename,parentid); 
