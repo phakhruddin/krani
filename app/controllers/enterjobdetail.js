@@ -301,19 +301,28 @@ var googleAuthSheet = new GoogleAuth({
 
 //var jsonargs = JSON.stringify(args);
 console.log("jsonargs : "+JSON.stringify(args));
+var projectid = args.title.title.split(':')[15];
+var firstname = args.title.title.split(':')[1];
+var lastname = args.title.title.split(':')[2];
+var filename = 'project_'+projectid+'_'+firstname+'_'+lastname;
+console.log("value derived from args: projectid: "+projectid+" firstname: "+firstname+" lastname: "+lastname);
 //var filename = "project"+jsonargs.title.split(':')[15];
 function getParentFolder(args) {
 	var sid = Titanium.App.Properties.getString('joblog');
 	var xhr = Ti.Network.createHTTPClient({
 	    onload: function(e) {
 	    try {
-	    		Ti.API.info("response is: "+this.responseText);
-	    		console.log("args inside getParentFolder: "+args);
-	    		//var parentid = json.items[0].id;
-	    		//console.log("parentid : "+parentid);
+	    		var json = JSON.parse(this.responseText);
+	    		Ti.API.info("response is: "+JSON.stringify(json));
+	    		var parentid = json.items[0].id;
+	    		Titanium.App.Properties.setString('parentid',parentid);
+	    		console.log("args inside getParentFolder: "+JSON.stringify(args));
+	    		//var filename = 'test03';
+	    		//createSpreadsheet(filename,parentid);    		
 	    	} catch(e){
 				Ti.API.info("cathing e: "+JSON.stringify(e));
 			}
+			return parentid;
 		}
 		});
 	xhr.onerror = function(e){
@@ -323,14 +332,20 @@ function getParentFolder(args) {
 	xhr.setRequestHeader("Content-type", "application/json");
     xhr.setRequestHeader("Authorization", 'Bearer '+ googleAuthSheet.getAccessToken());
 	xhr.send();
-	createSpreadsheet();
-	//return parentid;
 };
 
 
-function createSpreadsheet() {
-	//var name = "project"+args.title.split(':')[15];
-	//console.log("filename is : "+filename);
+function createSpreadsheet(filename,parentid) {
+	console.log("create ss with filename: "+filename+" and parentid: "+parentid);
+	var jsonpost = '{'
+		 +'\"title\": \"'+filename+'\",'
+		 +'\"parents\": ['
+		  +'{'
+		   +'\"id\": \"0AHXMbMJnSVEGUk9PVA\"'
+		 +' }'
+		 +'],'
+		 +'\"mimeType\": \"application/vnd.google-apps.spreadsheet\"'
+		+'}';
 		var xhr = Ti.Network.createHTTPClient({
 	    onload: function(e) {
 	    try {
@@ -346,21 +361,49 @@ function createSpreadsheet() {
 	xhr.onerror = function(e){
 		alert("Unable to connect to the cloud.");
 	};
-	xhr.open("POST", 'https://www.googleapis.com/drive/v2/files');
-	var jsonpost = [{
-		 "title": "file02",
-		 "parents": [
-		  {
-		   "id": "0AHXMbMJnSVEGUk9PVA"
-		  }
-		 ],
-		 "mimeType": "application/vnd.google-apps.spreadsheet"
-		}];
+	xhr.open("POST", 'https://www.googleapis.com/drive/v2/files');	
+	xhr.setRequestHeader("Content-type", "application/json");
+    xhr.setRequestHeader("Authorization", 'Bearer '+ googleAuthSheet.getAccessToken());
+    console.log("json post: "+jsonpost);
+	xhr.send(jsonpost);
+}
+
+
+
+function listDrive(){
+		var xhr = Ti.Network.createHTTPClient({
+	    onload: function(e) {
+	    try {
+	    		var jsonlist = JSON.parse(this.responseText);
+	    		//Ti.API.info("response of jsonlist is: "+JSON.stringify(jsonlist));
+	    	} catch(e){
+				Ti.API.info("cathing e: "+JSON.stringify(e));
+			}
+			console.log("jsonlist.items.length: "+jsonlist.items.length);
+			filelist = [];
+			for (i=0;i<jsonlist.items.length;i++){
+				var filename = jsonlist.items[i].title;
+				filelist.push(filename);
+			}
+			console.log("filelist are: "+JSON.stringify(filelist));
+			return filelist;
+			//exports filelist;		
+		}
+		});
+		//return filelist;
+	xhr.onerror = function(e){
+		alert("Unable to connect to the cloud.");
+	};
+	xhr.open("GET", 'https://www.googleapis.com/drive/v2/files');
 	xhr.setRequestHeader("Content-type", "application/json");
     xhr.setRequestHeader("Authorization", 'Bearer '+ googleAuthSheet.getAccessToken());
 	xhr.send();
 }
 
+listDrive();
+var parentid = Titanium.App.Properties.getString('parentid');
+console.log("create spreadsheet with filename: "+filename+" and parentid: "+parentid); 
+createSpreadsheet(filename,parentid); 
 
 /*
 $.jobdetailtf.addEventListener("focus", function(e){
