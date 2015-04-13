@@ -250,8 +250,8 @@ function enterNotes(e) {
         console.log("JSON stringify joblog after write: "+JSON.stringify(content));
         var thedate = date.toString().replace(".","").split(' ',4).toString().replace(/,/g,' ')+' '+Alloy.Globals.formatAMPM(date);
         //console.log("thedate is: " +thedate);
-        jobDetailAddRow (thedate,notesbody,imageurl);
-        submit(thedate,notesbody,imageurl);
+        jobDetailAddRow (thedate,notesbody,imageurl); //add to the local db
+        submit(thedate,notesbody,imageurl); //submit to the cloud
         
 };
 
@@ -276,7 +276,8 @@ function enterNotes(e) {
         alert("Unable to communicate to the cloud. Please try again"); 
     }
 });
-        var sid = Titanium.App.Properties.getString('joblog');
+        //var sid = Titanium.App.Properties.getString('joblog'); 
+        var sid = Titanium.App.Properties.getString('sid'); //sid need to correct//sid need to correct
         xhr.open("POST", 'https://spreadsheets.google.com/feeds/list/'+sid+'/od6/private/full');
         xhr.setRequestHeader("Content-type", "application/atom+xml");
         xhr.setRequestHeader("Authorization", 'Bearer '+ googleAuthSheet.getAccessToken());
@@ -398,7 +399,7 @@ function fileExist(){
 		alert("Unable to connect to the cloud.");
 	};
 	//xhr.open("GET", 'https://www.googleapis.com/drive/v2/files');
-	var rawquerystring = '?q=title+%3D+\'project_1_Phakhruddin_Abdullah\'+and+mimeType+%3D+\'application%2Fvnd.google-apps.spreadsheet\'+and+trashed+%3D+false&fields=items(id%2CmimeType%2Clabels%2Ctitle)';
+	var rawquerystring = '?q=title+%3D+\''+filename+'\'+and+mimeType+%3D+\'application%2Fvnd.google-apps.spreadsheet\'+and+trashed+%3D+false&fields=items(id%2CmimeType%2Clabels%2Ctitle)';
 	//xhr.open("GET", 'https://www.googleapis.com/drive/v2/files?q=title+%3D+\'project_1_Phakhruddin_Abdullah\'&fields=items(mimeType%2Clabels%2Ctitle)');
 	xhr.open("GET", 'https://www.googleapis.com/drive/v2/files'+rawquerystring);
 	xhr.setRequestHeader("Content-type", "application/json");
@@ -406,9 +407,9 @@ function fileExist(){
 	xhr.send();
 }
 
-fileExist();
+//fileExist();
 var parentid = Titanium.App.Properties.getString('parentid');
-console.log("create spreadsheet with filename: "+filename+" and parentid: "+parentid); 
+//console.log("create spreadsheet with filename: "+filename+" and parentid: "+parentid); 
 //createSpreadsheet(filename,parentid); 
 
 /*
