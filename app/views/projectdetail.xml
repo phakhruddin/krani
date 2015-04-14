@@ -49,6 +49,12 @@
 	 <TableViewSection headerTitle="Job Details">
 		  <TableViewRow id="jobdetail_row" Title="JobDetail">
 	   		  <Label id="JobDetails" text="Job Details > " onClick="JobDetail" />
+	   		</TableViewRow>
+	   		<TableViewRow id="getSSkey_row" Title="GetSSKey">
+	   		  <Label id="GetSSKey" text="Get Spreadsheet Key" onClick="getSSKey" />
+		  </TableViewRow>
+		  <TableViewRow id="getSScell_row" Title="GetSSKey">
+	   		  <Label id="GetSSCell" text="Get Spreadsheet Cell" onClick="getSSCell" />
 		  </TableViewRow>
 	  </TableViewSection>
 	  </TableView>

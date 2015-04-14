@@ -82,9 +82,9 @@ $.addbutton.addEventListener("click", function(e){
 	console.log("need to check if parent/filename exist: "+parentid+'/'+filename);
 	fileExist(filename,parentid);
 	var item = "joblog";
-	var sid = Titanium.App.Properties.getString(item,"none");
+	//var sid = Titanium.App.Properties.getString(item,"none");
 	// Get joblog specific to project - END
-	var sid = Titanium.App.Properties.getString(item,"none");
+	var sid = Titanium.App.Properties.getString('sid');
 	Alloy.Globals.getPrivateData(sid,item);
 	var tabViewOneController = Alloy.createController("enterjobdetail",{
 			title: args
@@ -125,6 +125,7 @@ function fileExist(filename,parentid){
 				var sid = jsonlist.items[0].id;
 				console.log("File exist. sid is: "+jsonlist.items[0].id+" Skipped.");
 				Titanium.App.Properties.setString('sid',sid);
+				populateSpreadsheetHeader();
 			};
 		}
 		});
@@ -163,6 +164,56 @@ function getParentFolder(args) {
 	xhr.send();
 };
 
+function getSSKey() {
+	var xhr = Ti.Network.createHTTPClient({
+	    onload: function(e) {
+	    try {
+	    		var xml = Titanium.XML.parseString(this.responseText);
+	    		Ti.API.info("getSSKey:: response is: "+this.responseText);
+	    		Ti.API.info("getSSKey:: xml response is: "+xml);
+	    	} catch(e){
+				Ti.API.info("cathing e: "+JSON.stringify(e));
+			}
+		}
+		});
+	xhr.onerror = function(e){
+		alert("Unable to connect to the cloud.");
+	};
+	xhr.open("GET", 'https://spreadsheets.google.com/feeds/spreadsheets/private/full');
+	xhr.setRequestHeader("Content-type", "application/atom+xml");
+    xhr.setRequestHeader("Authorization", 'Bearer '+ googleAuthSheet.getAccessToken());
+	xhr.send();
+};
+
+function getSSCell(sid,pos) {
+	var sid = '1gecYbrWtzS3Zr5d6kpzmYBAxe4UXncKylKfSMREiDtM';
+	var pos = "R3C1";
+	console.log("get SS Cell on :  https://spreadsheets.google.com/feeds/cells/"+sid+"/od6/private/full/"+pos);
+	var xhr = Ti.Network.createHTTPClient({
+	    onload: function(e) {
+	    try {
+	    		var xml = Titanium.XML.parseString(this.responseText);
+	    		Ti.API.info("getSSCell:: response is: "+this.responseText);
+	    		Ti.API.info("getSSCell:: xml response is: "+xml);
+	    		var entry = xml.documentElement.getElementsByTagName("entry");
+	    		//var link = entry.item(0).getElementsByTagName("link").text;
+	    		//console.log(" URL to edit the cell is: " +link);
+	    		console.log(" entry to edit the cell is: " +entry);
+	    	} catch(e){
+				Ti.API.info("cathing e: "+JSON.stringify(e));
+			}
+		}
+		});
+	xhr.onerror = function(e){
+		alert("Unable to connect to the cloud. "+e);
+	};
+	xhr.open("GET", 'https://spreadsheets.google.com/feeds/cells/'+sid+'/od6/private/full/'+pos);
+	xhr.setRequestHeader("Content-type", "application/atom+xml");
+    xhr.setRequestHeader("Authorization", 'Bearer '+ googleAuthSheet.getAccessToken());
+	xhr.send();
+};
+
+
 getParentFolder();
 
 function createSpreadsheet(filename,parentid) {
@@ -197,5 +248,70 @@ function createSpreadsheet(filename,parentid) {
     xhr.setRequestHeader("Authorization", 'Bearer '+ googleAuthSheet.getAccessToken());
     console.log("json post: "+jsonpost);
 	xhr.send(jsonpost);
+}
+
+function populateSpreadsheetHeader(){ 
+		var sid = Titanium.App.Properties.getString('sid'); //sid need to correct//sid need to correct
+		var xmldatastring = ['<entry xmlns=\'http://www.w3.org/2005/Atom\' '
+ 		+' xmlns:gs=\'http://schemas.google.com/spreadsheets/2006\'>'
+ 		+'<id>https://spreadsheets.google.com/feeds/cells/1gecYbrWtzS3Zr5d6kpzmYBAxe4UXncKylKfSMREiDtM/od6/private/full/R3C1</id>'
+ 		+'<link rel=\'edit\' type=\'application/atom+xml\''
+ 		+' href=\'https://spreadsheets.google.com/feeds/cells/1gecYbrWtzS3Zr5d6kpzmYBAxe4UXncKylKfSMREiDtM/od6/private/full/R3C1/2t69\'/>'
+ 		+'<gs:cell row=\'3\' col=\'1\' inputValue=\'11\'>'
+ 		+'</gs:cell>'
+ 		+'</entry>'].join('');
+        /*var xmldatastring = ['<entry xmlns=\'http://www.w3.org/2005/Atom\' xmlns:gsx=\'http://schemas.google.com/spreadsheets/2006/extended\'>'
+        +'<gsx:col1>'+thedate+'</gsx:col1><gsx:col2>'+notesbody+'</gsx:col2><gsx:col3>'
+        +imageurl+'</gsx:col3><gsx:col4>'+thenone+'</gsx:col4><gsx:col5>'
+        +thenone+'</gsx:col5><gsx:col6>'+thenone+'</gsx:col6><gsx:col7>'+thenone+'</gsx:col7><gsx:col8>'+thenone+'</gsx:col8><gsx:col9>'+thenone
+        +'</gsx:col9><gsx:col10>'+thenone+'</gsx:col10><gsx:col11>'+thenone+'</gsx:col11><gsx:col12>NA</gsx:col12><gsx:col13>NA</gsx:col13><gsx:col14>NA</gsx:col14><gsx:col15>NA</gsx:col15><gsx:col16>NA</gsx:col16></entry>'].join('');*/
+ 		/*var xmldatastring = '<entry xmlns=\'http://www.w3.org/2005/Atom\' xmlns:gsx=\'http://schemas.google.com/spreadsheets/2006/extended\'>'
+ 		+'<gsx:datacol1>1</gsx:datacol1>'
+ 		+'<gsx:datacol2>2</gsx:datacol2>'
+ 		+'<gsx:datacol3>3</gsx:datacol3>'
+ 		+'<gsx:datacol4>4</gsx:datacol4>'
+ 		+'<gsx:datacol5>5</gsx:datacol5></entry>';*/
+ 		/*var xmldatastring = '<feed xmlns="http://www.w3.org/2005/Atom" xmlns:batch="http://schemas.google.com/gdata/batch" xmlns:gs="http://schemas.google.com/spreadsheets/2006">'
+ 		+'<id>https://spreadsheets.google.com/feeds/cells/key/'+sid+'/private/full</id>'
+ 		+'<entry>'
+ 		+'<batch:id>b1</batch:id>'
+ 		+'<batch:operation type="insert"/>'
+ 		+'<id>https://spreadsheets.google.com/feeds/cells/key/'+sid+'/private/full/R1C1</id>'
+ 		+'<link rel="edit" type="application/atom+xml"'
+ 		+' href="https://spreadsheets.google.com/feeds/cells/key/'+sid+'/private/full/R1C1"/>'
+ 		+'<gs:cell row="1" col="1" inputValue="A1"/>'
+ 		+'</entry>'
+ 		+'</feed>';*/
+ 		/*var xmldatastring = ['<entry xmlns=\'http://www.w3.org/2005/Atom\' '
+ 		+' xmlns:gs=\'http://schemas.google.com/spreadsheets/2006\'>'
+ 		+'<id>https://spreadsheets.google.com/feeds/cells/1gecYbrWtzS3Zr5d6kpzmYBAxe4UXncKylKfSMREiDtM/od6/private/full/R3C1</id>'
+ 		+'<link rel=\'edit\' type=\'application/atom+xml\''
+ 		+' href=\'https://spreadsheets.google.com/feeds/cells/1gecYbrWtzS3Zr5d6kpzmYBAxe4UXncKylKfSMREiDtM/od6/private/full/R3C1/2t69\'/>'
+ 		+'<gs:cell row=\'3\' col=\'1\' inputValue=\'11\'>'
+ 		+'</gs:cell>'
+ 		+'</entry>'].join('');*/
+ 		console.log("xmldatastring: "+xmldatastring);
+       var xhr =  Titanium.Network.createHTTPClient({
+    onload: function() {
+        try {
+                Ti.API.info(this.responseText); 
+        } catch(e){
+                Ti.API.info("cathing e: "+JSON.stringify(e));
+        }     
+    },
+    onerror: function(e) {
+        Ti.API.info("error e: "+JSON.stringify(e));
+        alert("Unable to communicate to the cloud. Please try again"); 
+    }
+});
+        //var sid = Titanium.App.Properties.getString('joblog'); 
+        
+        //xhr.open("POST", 'https://spreadsheets.google.com/feeds/list/'+sid+'/od6/private/full');
+        //xhr.open("POST", 'https://spreadsheets.google.com/feeds/cells/key/'+sid+'/private/full/batch');
+         xhr.open("PUT", 'https://spreadsheets.google.com/feeds/cells/1gecYbrWtzS3Zr5d6kpzmYBAxe4UXncKylKfSMREiDtM/od6/private/full/R3C1/2t69');
+        xhr.setRequestHeader("Content-type", "application/atom+xml");
+        xhr.setRequestHeader("Authorization", 'Bearer '+ googleAuthSheet.getAccessToken());
+        xhr.send(xmldatastring);
+        Ti.API.info('done POSTed');
 }
 

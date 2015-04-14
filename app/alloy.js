@@ -286,8 +286,8 @@ Alloy.Globals.getPrivateData = function(sid,type) {
 	    onload: function(e) {
 	    try {
 			var xml = Titanium.XML.parseString(this.responseText);
-			console.log("response txt is: "+this.responseText);
-			console.log("this xml is: " +xml);	   
+			console.log("pop db:: response txt is: "+this.responseText);
+			console.log("pop db:: this xml is: " +xml);	   
 			var feed = xml.documentElement.getElementsByTagName("feed");
 			var entry = xml.documentElement.getElementsByTagName("entry"); 
 			console.log("this entry length is: " +entry.length);
