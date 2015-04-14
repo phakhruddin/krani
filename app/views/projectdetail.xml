@@ -54,7 +54,7 @@
 	   		  <Label id="GetSSKey" text="Get Spreadsheet Key" onClick="getSSKey" />
 		  </TableViewRow>
 		  <TableViewRow id="getSScell_row" Title="GetSSKey">
-	   		  <Label id="GetSSCell" text="Get Spreadsheet Cell" onClick="getSSCell" />
+	   		  <Label id="GetSSCell" text="Get Spreadsheet Cell"/>
 		  </TableViewRow>
 	  </TableViewSection>
 	  </TableView>
