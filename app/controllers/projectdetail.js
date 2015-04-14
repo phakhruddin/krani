@@ -185,6 +185,44 @@ function getSSKey() {
 	xhr.send();
 };
 
+function xmlToJson(xml) {
+	
+	// Create the return object
+	var obj = {};
+
+	if (xml.nodeType == 1) { // element
+		// do attributes
+		if (xml.attributes.length > 0) {
+		obj["@attributes"] = {};
+			for (var j = 0; j < xml.attributes.length; j++) {
+				var attribute = xml.attributes.item(j);
+				obj["@attributes"][attribute.nodeName] = attribute.nodeValue;
+			}
+		}
+	} else if (xml.nodeType == 3) { // text
+		obj = xml.nodeValue;
+	}
+
+	// do children
+	if (xml.hasChildNodes()) {
+		for(var i = 0; i < xml.childNodes.length; i++) {
+			var item = xml.childNodes.item(i);
+			var nodeName = item.nodeName;
+			if (typeof(obj[nodeName]) == "undefined") {
+				obj[nodeName] = xmlToJson(item);
+			} else {
+				if (typeof(obj[nodeName].push) == "undefined") {
+					var old = obj[nodeName];
+					obj[nodeName] = [];
+					obj[nodeName].push(old);
+				}
+				obj[nodeName].push(xmlToJson(item));
+			}
+		}
+	}
+	return obj;
+};
+
 function getSSCell(sid,pos) {
 	var sid = '1gecYbrWtzS3Zr5d6kpzmYBAxe4UXncKylKfSMREiDtM';
 	var pos = "R3C1";
@@ -196,9 +234,17 @@ function getSSCell(sid,pos) {
 	    		Ti.API.info("getSSCell:: response is: "+this.responseText);
 	    		Ti.API.info("getSSCell:: xml response is: "+xml);
 	    		var entry = xml.documentElement.getElementsByTagName("entry");
+	    		var link = xml.documentElement.getElementsByTagName("link");
 	    		//var link = entry.item(0).getElementsByTagName("link").text;
 	    		//console.log(" URL to edit the cell is: " +link);
-	    		console.log(" entry to edit the cell is: " +entry);
+	    		console.log(" entry to edit the cell is: " +entry+ " length: "+entry.length);
+	    		console.log(" entry to edit the cell is: " +link+ " length: "+link.length);
+	    		//console.log(" entry to edit the cell is: " +href+ " length: "+href.length);
+	    		for (i=0;i<link.length;i++){			
+	    			//console.log("link is :"+Titanium.XML.toString(link));
+	    			var listitem = link.item(i);
+	    			Ti.API.info("link inside is :"+listitem);	    			
+	    		}
 	    	} catch(e){
 				Ti.API.info("cathing e: "+JSON.stringify(e));
 			}
