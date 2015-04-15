@@ -76,6 +76,12 @@ $.google.addEventListener ("click", function(e){
 	tabViewOneController.openMainWindow($.tab_one);	
 });
 
+$.bootstrap.addEventListener ("click", function(e){
+	Alloy.Globals.openDetail(e);
+	var tabViewOneController = Alloy.createController("bootstrap");
+	tabViewOneController.openMainWindow($.tab_one);	
+});
+
 
 var scope = ['https://spreadsheets.google.com/feeds', 'https://docs.google.com/feeds','https://www.googleapis.com/auth/calendar','https://www.googleapis.com/auth/calendar.readonly','https://www.googleapis.com/auth/drive'];
 scope.push ("https://www.googleapis.com/auth/drive.appdata");

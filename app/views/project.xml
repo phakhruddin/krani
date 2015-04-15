@@ -1,5 +1,4 @@
 <Alloy>
-<Collection src="project"/>
  <Tab id="tab_projectlist" title="projectlist">
   <Window id="projectlist_window" backgroundColor="white" title="Project List">
   		  <RightNavButton platform="ios">

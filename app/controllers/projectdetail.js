@@ -3,6 +3,7 @@ exports.openMainWindow = function(_tab) {
   _tab.open($.projectdetail_window);
   Ti.API.info("This is child widow checking _tab on : " +JSON.stringify(_tab));
   Ti.API.info(" input details : "+JSON.stringify(args));
+  //Titanium.App.Properties.setString('sid',"none"); // reset the job log sid.
 };
 
 var someDummy = Alloy.Models.dummy;
@@ -259,11 +260,17 @@ function getSSCell(sid,rowno,colno,value) {
 };
 
 $.GetSSCell.addEventListener("click", function(e){
-	var sid = '1gecYbrWtzS3Zr5d6kpzmYBAxe4UXncKylKfSMREiDtM';
+	var sid = Titanium.App.Properties.getString('sid');
+	//var sid = '1gecYbrWtzS3Zr5d6kpzmYBAxe4UXncKylKfSMREiDtM';
 	for (i=1;i<17;i++){
 		var value = "col"+i;
 		getSSCell(sid,1,i,value);
 	}
+	getSSCell(sid,2,1,"Date");
+	getSSCell(sid,2,2,"Notes");
+	var date = new Date();
+	getSSCell(sid,3,1,date);
+	getSSCell(sid,3,2,"Please enter work logs.");
 	//getSSCell(sid,1,1,'col1');
 });
 
@@ -286,7 +293,7 @@ function createSpreadsheet(filename,parentid) {
 	    		Ti.API.info("response is: "+this.responseText);
 	    		var json = JSON.parse(this.responseText);
 	    		var sid = json.id;
-	    		Titanium.App.Properties.setString('sid',sid);
+	    		Titanium.App.Properties.setString('sid',sid); // 1st sid created.
 	    		console.log("sid : "+sid);
 	    	} catch(e){
 				Ti.API.info("cathing e: "+JSON.stringify(e));

@@ -49,6 +49,7 @@
 		   		  <ImageView image="business155.png" left="20" height="30" width="30"/>
 		   </TableViewRow>
 		   <TableViewRow id="google" Title="google"/>
+		   <TableViewRow id="bootstrap" Title="bootstrap"/>
 	   </TableView>
     </Window>
   </Tab>
