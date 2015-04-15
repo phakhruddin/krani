@@ -2,7 +2,7 @@
 	<Collection src="project"/>
   <Window id="bootstrap_window" backgroundColor="white" title="bootstrap List">
  	  <TableView id="bootstrap_table" backgroundColor="transparent" >
- 		<TableViewRow id="row1" left="20" title="Title1"></TableViewRow>
+ 		<TableViewRow id="createsssid" left="20" title="Create Main SID SS"></TableViewRow>
 	  </TableView>
   </Window>
 </Alloy>

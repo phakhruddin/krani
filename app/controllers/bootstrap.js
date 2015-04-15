@@ -16,15 +16,15 @@ for( var i=0; i < projectjson.length; i++){
 
 
 
-function getSSCell(sid,rowno,colno,value) {
+function editTheCell(sid,rowno,colno,value) {
 	var pos = "R"+rowno+"C"+colno;
 	console.log("get SS Cell on :  https://spreadsheets.google.com/feeds/cells/"+sid+"/od6/private/full/"+pos);
 	var xhr = Ti.Network.createHTTPClient({
 	    onload: function(e) {
 	    try {
 	    		var xml = Titanium.XML.parseString(this.responseText);
-	    		Ti.API.info("getSSCell:: response is: "+this.responseText);
-	    		Ti.API.info("getSSCell:: xml response is: "+xml);
+	    		Ti.API.info("editTheCell:: response is: "+this.responseText);
+	    		Ti.API.info("editTheCell:: xml response is: "+xml);
 	    		var entry = xml.documentElement.getElementsByTagName("entry");
 	    		var link = xml.documentElement.getElementsByTagName("link");
 	    		console.log(" number of link found: " +link+ " length: "+link.length);
@@ -35,7 +35,7 @@ function getSSCell(sid,rowno,colno,value) {
 	    		}
 	    		Ti.API.info("self href is : "+selfhref);
 				Ti.API.info("edit href is : "+edithref);
-	    		populateSpreadsheetHeader(sid,rowno,colno,edithref,selfhref,value);	    				    			
+	    		editCell(sid,rowno,colno,edithref,selfhref,value);	    				    			
 	    	} catch(e){
 				Ti.API.info("cathing e: "+JSON.stringify(e));
 			}
@@ -50,23 +50,8 @@ function getSSCell(sid,rowno,colno,value) {
 	xhr.send();
 };
 
-$.GetSSCell.addEventListener("click", function(e){
-	var sid = Titanium.App.Properties.getString('sid');
-	//var sid = '1gecYbrWtzS3Zr5d6kpzmYBAxe4UXncKylKfSMREiDtM';
-	for (i=1;i<17;i++){
-		var value = "col"+i;
-		getSSCell(sid,1,i,value);
-	}
-	getSSCell(sid,2,1,"Date");
-	getSSCell(sid,2,2,"Notes");
-	var date = new Date();
-	getSSCell(sid,3,1,date);
-	getSSCell(sid,3,2,"Please enter work logs.");
-	//getSSCell(sid,1,1,'col1');
-});
 
-getParentFolder();
-
+/*
 function createSpreadsheet(filename,parentid) {
 	console.log("create ss with filename: "+filename+" and parentid: "+parentid);
 	var jsonpost = '{'
@@ -99,9 +84,47 @@ function createSpreadsheet(filename,parentid) {
     xhr.setRequestHeader("Authorization", 'Bearer '+ googleAuthSheet.getAccessToken());
     console.log("json post: "+jsonpost);
 	xhr.send(jsonpost);
+}*/
+
+function createSpreadsheet(filename) {
+	console.log("create ss with filename: "+filename);
+	var jsonpost = '{'
+		 +'\"title\": \"'+filename+'\",'
+		 +'\"mimeType\": \"application/vnd.google-apps.spreadsheet\"'
+		+'}';
+		var xhr = Ti.Network.createHTTPClient({
+	    onload: function(e) {
+	    try {
+	    		Ti.API.info("response is: "+this.responseText);
+	    		var json = JSON.parse(this.responseText);
+	    		var sid = json.id;
+	    		//populate header
+	    		for (i=1;i<17;i++){
+					var value = "col"+i;
+					editTheCell(sid,1,i,value);
+				}
+				editTheCell(sid,2,1,"Project Name");
+				editTheCell(sid,2,2,"sid");
+				editTheCell(sid,2,3,"Date Created");
+				editTheCell(sid,2,4,"Date Modified");
+	    		Titanium.App.Properties.setString('sid',sid); // 1st sid created.
+	    		console.log("sid : "+sid);
+	    	} catch(e){
+				Ti.API.info("cathing e: "+JSON.stringify(e));
+			}
+		}
+		});
+	xhr.onerror = function(e){
+		alert("Unable to connect to the cloud.");
+	};
+	xhr.open("POST", 'https://www.googleapis.com/drive/v2/files');	
+	xhr.setRequestHeader("Content-type", "application/json");
+    xhr.setRequestHeader("Authorization", 'Bearer '+ googleAuthSheet.getAccessToken());
+    console.log("json post: "+jsonpost);
+	xhr.send(jsonpost);
 }
 
-function populateSpreadsheetHeader(sid,rowno,colno,edithref,selfhref,value){ 
+function editCell(sid,rowno,colno,edithref,selfhref,value){ 
 		var xmldatastring = ['<entry xmlns=\'http://www.w3.org/2005/Atom\' '
  		+' xmlns:gs=\'http://schemas.google.com/spreadsheets/2006\'>'
  		+'<id>'+selfhref+'</id>'
@@ -131,3 +154,41 @@ function populateSpreadsheetHeader(sid,rowno,colno,edithref,selfhref,value){
         Ti.API.info('done POSTed');
 }
 
+function checkFileExistThenCreateSS(filename){
+		var jsonlist = " ";
+		var xhr = Ti.Network.createHTTPClient({
+	    onload: function(e) {
+	    try {
+	    		var jsonlist = JSON.parse(this.responseText);
+	    		Ti.API.info("response of jsonlist is: "+JSON.stringify(jsonlist));
+	    	} catch(e){
+				Ti.API.info("cathing e: "+JSON.stringify(e));
+			}
+			console.log("jsonlist.items.length: "+jsonlist.items.length);
+			if (jsonlist.items.length == "0" ){
+				console.log("File DOES NOT EXIST");
+				var fileexist = "false";
+				createSpreadsheet(filename);  // create file when does not exists
+			} else {
+				var fileexist = "true";
+				var sid = jsonlist.items[0].id;
+				console.log("File exist. sid is: "+jsonlist.items[0].id+" Skipped.");
+				Titanium.App.Properties.setString('sid',sid);
+				//editCell();
+			};
+		}
+		});
+	xhr.onerror = function(e){
+		alert("Unable to connect to the cloud.");
+	};
+	var rawquerystring = '?q=title+%3D+\''+filename+'\'+and+mimeType+%3D+\'application%2Fvnd.google-apps.spreadsheet\'+and+trashed+%3D+false&fields=items(id%2CmimeType%2Clabels%2Ctitle)';
+	xhr.open("GET", 'https://www.googleapis.com/drive/v2/files'+rawquerystring);
+	xhr.setRequestHeader("Content-type", "application/json");
+    xhr.setRequestHeader("Authorization", 'Bearer '+ googleAuthSheet.getAccessToken());
+	xhr.send();
+}
+
+
+$.createsssid.addEventListener("click", function(e){
+	checkFileExistThenCreateSS("joblogssid");
+});
