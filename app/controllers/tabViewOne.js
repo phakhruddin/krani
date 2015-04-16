@@ -17,6 +17,8 @@ function openNextTab(item){
 }
 
 $.project.addEventListener ("click", function(e){
+	Alloy.Globals.checkFileExistThenCreateSS("joblogssid");
+	prefetchJoblogSID();
 	Alloy.Globals.openDetail(e);
 	var item = e.row.id;
 	openNextTab(item);
@@ -123,3 +125,15 @@ checkNetworkAndGoogleAuthorized = function(sid){
 	xhr.open("GET", url);
 	xhr.send();
 };
+
+function prefetchJoblogSID(){
+	var sid = Titanium.App.Properties.getString('joblogssid',"none");
+	console.log("prefetchJoblogSID:: checking sid :" +sid);
+	if ( sid != "none"){
+		console.log('prefetchJoblogSID:: populate Alloy.Globals.getPrivateData('+sid+','+joblogsid+'); ');
+		Alloy.Globals.getPrivateData(sid,"joblogsid");
+	} else {
+		console.log("prefetchJoblogSID:: joblogsid sid does not exists !");
+	}
+	
+}

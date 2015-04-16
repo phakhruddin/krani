@@ -3,6 +3,7 @@ exports.openMainWindow = function(_tab) {
   _tab.open($.projectdetail_window);
   Ti.API.info("This is child widow checking _tab on : " +JSON.stringify(_tab));
   Ti.API.info(" input details : "+JSON.stringify(args));
+  Alloy.Globals.checkFileExistThenUpdateSID(filename);
   //Titanium.App.Properties.setString('sid',"none"); // reset the job log sid.
 };
 
@@ -28,6 +29,9 @@ var notes = data[11];
 var percentcomplete = data[12];
 var nextappt = data[13];
 var datedue = data[14];
+var projectid = data[15];
+var filename = 'project_'+projectid+'_'+firstname+'_'+lastname;
+console.log("projectdetail:: filename : "+filename);
 
 someDummy.set('projectname', projectname);
 someDummy.set('fullname', fullname);
@@ -121,6 +125,7 @@ function fileExist(filename,parentid){
 				console.log("File DOES NOT EXIST");
 				var fileexist = "false";
 				createSpreadsheet(filename,parentid);  // create file when does not exists
+				//PopulateHeader
 			} else {
 				var fileexist = "true";
 				var sid = jsonlist.items[0].id;
@@ -294,6 +299,18 @@ function createSpreadsheet(filename,parentid) {
 	    		var json = JSON.parse(this.responseText);
 	    		var sid = json.id;
 	    		Titanium.App.Properties.setString('sid',sid); // 1st sid created.
+	    		for (i=1;i<17;i++){
+						var value = "col"+i;
+						getSSCell(sid,1,i,value);
+					}
+					getSSCell(sid,2,1,"Date");
+					getSSCell(sid,2,2,"Notes");
+					var date = new Date();
+					for (r=3;r<6;r++) {
+						getSSCell(sid,r,1,date);
+						getSSCell(sid,r,2,"Please enter work logs.");
+					};
+					
 	    		console.log("sid : "+sid);
 	    	} catch(e){
 				Ti.API.info("cathing e: "+JSON.stringify(e));
@@ -339,4 +356,32 @@ function populateSpreadsheetHeader(sid,rowno,colno,edithref,selfhref,value){
         xhr.send(xmldatastring);
         Ti.API.info('done POSTed');
 }
+
+
+function checkjoblogsid(){
+	thejoblogsidarray = [];
+	var thejoblogsid = Alloy.Collections.instance('joblogsid');
+	thejoblogsid.fetch();
+	Ti.API.info(" thejoblogsid : "+JSON.stringify(thejoblogsid));
+	if (thejoblogsid.length > 0) {
+		var joblogsidjson = thejoblogsid.toJSON();
+		console.log("JSON.stringify(joblogsidjson): " +JSON.stringify(joblogsidjson));
+		for( var i=0; i < joblogsidjson.length; i++){
+			var projectid  = joblogsidjson[i].col1;
+			var projectname = joblogsidjson[i].col2;
+			var sid = joblogsidjson[i].col3.trim();
+			thejoblogsidarray.push({projectname:projectname,sid: sid});
+			var content = filename+','+sid;
+			Alloy.Globals.appendFile(content,"joblogsid.txt");
+		}
+		
+		console.log("thejoblogsidarray.length : "+thejoblogsidarray.length);
+		if ( thejoblogsidarray.length > 0 ){
+			console.log("thejoblogsidarray : "+JSON.stringify(thejoblogsidarray));
+		}
+	} 
+
+}
+
+checkjoblogsid();
 

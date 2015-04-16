@@ -24,6 +24,7 @@ var laborsid = '1-YaHKOuTqpRG1X83_1tZ6zHWrO1krEmV99HS7S130Hc'; Titanium.App.Prop
 var joblogsid = '1SLNRI176qK51rkFWWCQvqToXswdNYlqINsdB2HM0ozk'; Titanium.App.Properties.setString('joblog',joblogsid);
 
 
+
 console.log("TempDir: "+JSON.stringify(Ti.Filesystem.tempDirectory));
 			
 Alloy.Globals.writeFile = function (content, filename){
@@ -39,6 +40,8 @@ Alloy.Globals.appendFile = function (content, filename){
 			);
 			file.append(content+"\n");
 };
+
+Alloy.Globals.writeFile("","joblogsid.txt");
 
 Alloy.Globals.GoogleAuth_module = require('googleAuth');
 
@@ -301,6 +304,7 @@ Alloy.Globals.getPrivateData = function(sid,type) {
 			(type == 'labor') && Alloy.Collections.labor.deleteAll();
 			(type == 'joblog') && Alloy.Collections.joblog.deleteAll();
 			(type == 'master') && Alloy.Collections.master.deleteAll();
+			(type == 'joblogsid') && Alloy.Collections.joblogsid.deleteAll();
 			// deleting existing entry done
 			for (i=1;i<entry.length;i++){
 				var col1 = entry.item(i).getElementsByTagName("gsx:col1").item(0).text;
@@ -655,3 +659,204 @@ Alloy.Globals.formatAMPM = 	function(date) {
 	  var strTime = hours + ':' + minutes + ampm;
 	  return strTime;
 };
+
+Alloy.Globals.checkFileExistThenCreateSS = function(filename){
+		var jsonlist = " ";
+		var xhr = Ti.Network.createHTTPClient({
+	    onload: function(e) {
+	    try {
+	    		var jsonlist = JSON.parse(this.responseText);
+	    		Ti.API.info("Alloy.Globals.checkFileExistThenCreateSS::response of jsonlist is: "+JSON.stringify(jsonlist));
+	    	} catch(e){
+				Ti.API.info("cathing e: "+JSON.stringify(e));
+			}
+			console.log("Alloy.Globals.checkFileExistThenCreateSS::jsonlist.items.length: "+jsonlist.items.length);
+			if (jsonlist.items.length == "0" ){
+				console.log("File DOES NOT EXIST");
+				var fileexist = "false";
+				Alloy.Globals.createSpreadsheet(filename);  // create file when does not exists
+				Titanium.App.Properties.setString(filename,sid); // stamp the ssid.
+			} else {
+				var fileexist = "true";
+				var sid = jsonlist.items[0].id;
+				console.log("Alloy.Globals.checkFileExistThenCreateSS::File exist. sid is: "+jsonlist.items[0].id+" Skipped.");
+				Titanium.App.Properties.setString(filename,sid);
+			};
+		}
+		});
+	xhr.onerror = function(e){
+		alert("Unable to connect to the cloud.");
+	};
+	var rawquerystring = '?q=title+%3D+\''+filename+'\'+and+mimeType+%3D+\'application%2Fvnd.google-apps.spreadsheet\'+and+trashed+%3D+false&fields=items(id%2CmimeType%2Clabels%2Ctitle)';
+	xhr.open("GET", 'https://www.googleapis.com/drive/v2/files'+rawquerystring);
+	xhr.setRequestHeader("Content-type", "application/json");
+    xhr.setRequestHeader("Authorization", 'Bearer '+ googleAuthSheet.getAccessToken());
+	xhr.send();
+};
+
+Alloy.Globals.checkFileExistThenUpdateSID = function(filename){
+		var jsonlist = " ";
+		var xhr = Ti.Network.createHTTPClient({
+	    onload: function(e) {
+	    try {
+	    		var jsonlist = JSON.parse(this.responseText);
+	    		Ti.API.info("Alloy.Globals.checkFileExistThenUpdateSID::response of jsonlist is: "+JSON.stringify(jsonlist));
+	    	} catch(e){
+				Ti.API.info("Alloy.Globals.checkFileExistThenUpdateSID::cathing e: "+JSON.stringify(e));
+			}
+			console.log("Alloy.Globals.checkFileExistThenUpdateSID::jsonlist.items.length: "+jsonlist.items.length);
+			if (jsonlist.items.length == "0" ){
+				console.log("Alloy.Globals.checkFileExistThenUpdateSID::File DOES NOT EXIST");
+				var fileexist = "false";
+			} else {
+				var fileexist = "true";
+				var sid = jsonlist.items[0].id;
+				console.log("Alloy.Globals.checkFileExistThenUpdateSID::File exist. sid is: "+jsonlist.items[0].id+" Skipped.");
+				Titanium.App.Properties.setString(filename,sid);
+				// Write contents.
+				var content = filename+','+sid;
+				Alloy.Globals.appendFile(content,"joblogsid.txt");
+			};
+		}
+		});
+	xhr.onerror = function(e){
+		alert("Unable to connect to the cloud.");
+	};
+	var rawquerystring = '?q=title+%3D+\''+filename+'\'+and+mimeType+%3D+\'application%2Fvnd.google-apps.spreadsheet\'+and+trashed+%3D+false&fields=items(id%2CmimeType%2Clabels%2Ctitle)';
+	xhr.open("GET", 'https://www.googleapis.com/drive/v2/files'+rawquerystring);
+	xhr.setRequestHeader("Content-type", "application/json");
+    xhr.setRequestHeader("Authorization", 'Bearer '+ googleAuthSheet.getAccessToken());
+	xhr.send();
+};
+
+
+Alloy.Globals.createSpreadsheet = function(filename) {
+	console.log("create ss with filename: "+filename);
+	var jsonpost = '{'
+		 +'\"title\": \"'+filename+'\",'
+		 +'\"mimeType\": \"application/vnd.google-apps.spreadsheet\"'
+		+'}';
+		var xhr = Ti.Network.createHTTPClient({
+	    onload: function(e) {
+	    try {
+	    		Ti.API.info("response is: "+this.responseText);
+	    		var json = JSON.parse(this.responseText);
+	    		var sid = json.id;
+	    		//populate header
+	    		for (i=1;i<17;i++){
+					var value = "col"+i;
+					Alloy.Globals.editTheCell(sid,1,i,value);
+				}
+				Alloy.Globals.editTheCell(sid,2,1,"Project Name");
+				Alloy.Globals.editTheCell(sid,2,2,"sid");
+				Alloy.Globals.editTheCell(sid,2,4,"Date Created");
+				Alloy.Globals.editTheCell(sid,2,5,"Date Modified");
+	    		Titanium.App.Properties.setString('sid',sid); // 1st sid created.
+	    		console.log("sid : "+sid);
+	    	} catch(e){
+				Ti.API.info("cathing e: "+JSON.stringify(e));
+			}
+		}
+		});
+	xhr.onerror = function(e){
+		alert("Unable to connect to the cloud.");
+	};
+	xhr.open("POST", 'https://www.googleapis.com/drive/v2/files');	
+	xhr.setRequestHeader("Content-type", "application/json");
+    xhr.setRequestHeader("Authorization", 'Bearer '+ googleAuthSheet.getAccessToken());
+    console.log("json post: "+jsonpost);
+	xhr.send(jsonpost);
+};
+
+Alloy.Globals.editTheCell = function(sid,rowno,colno,value) {
+	var pos = "R"+rowno+"C"+colno;
+	console.log("get SS Cell on :  https://spreadsheets.google.com/feeds/cells/"+sid+"/od6/private/full/"+pos);
+	var xhr = Ti.Network.createHTTPClient({
+	    onload: function(e) {
+	    try {
+	    		var xml = Titanium.XML.parseString(this.responseText);
+	    		Ti.API.info("Alloy.Globals.editTheCell:: response is: "+this.responseText);
+	    		Ti.API.info("Alloy.Globals.editTheCell:: xml response is: "+xml);
+	    		var entry = xml.documentElement.getElementsByTagName("entry");
+	    		var link = xml.documentElement.getElementsByTagName("link");
+	    		console.log(" number of link found: " +link+ " length: "+link.length);
+	    		for (i=0;i<link.length;i++){			
+	    			var listitem = link.item(i);
+	    			if (listitem.getAttribute("rel") == "edit"){ var edithref = listitem.getAttribute("href");}
+	    			if (listitem.getAttribute("rel") == "self"){ var selfhref = listitem.getAttribute("href");}
+	    		}
+	    		Ti.API.info("Alloy.Globals.editTheCell:: self href is : "+selfhref);
+				Ti.API.info("Alloy.Globals.editTheCell:: edit href is : "+edithref);
+	    		Alloy.Globals.editCell(sid,rowno,colno,edithref,selfhref,value);	    				    			
+	    	} catch(e){
+				Ti.API.info("cathing e: "+JSON.stringify(e));
+			}
+		}
+		});
+	xhr.onerror = function(e){
+		alert("Unable to connect to the cloud. "+e);
+	};
+	xhr.open("GET", 'https://spreadsheets.google.com/feeds/cells/'+sid+'/od6/private/full/'+pos);
+	xhr.setRequestHeader("Content-type", "application/atom+xml");
+    xhr.setRequestHeader("Authorization", 'Bearer '+ googleAuthSheet.getAccessToken());
+	xhr.send();
+};
+
+Alloy.Globals.editCell = function(sid,rowno,colno,edithref,selfhref,value){ 
+		var xmldatastring = ['<entry xmlns=\'http://www.w3.org/2005/Atom\' '
+ 		+' xmlns:gs=\'http://schemas.google.com/spreadsheets/2006\'>'
+ 		+'<id>'+selfhref+'</id>'
+ 		+'<link rel=\'edit\' type=\'application/atom+xml\''
+ 		+' href=\''+edithref+'\'/>'
+ 		+'<gs:cell row=\''+rowno+'\' col=\''+colno+'\' inputValue=\''+value+'\'>'
+ 		+'</gs:cell>'
+ 		+'</entry>'].join('');
+ 		console.log("xmldatastring: "+xmldatastring);
+       var xhr =  Titanium.Network.createHTTPClient({
+    onload: function() {
+        try {
+                Ti.API.info(this.responseText); 
+        } catch(e){
+                Ti.API.info("cathing e: "+JSON.stringify(e));
+        }     
+    },
+    onerror: function(e) {
+        Ti.API.info("error e: "+JSON.stringify(e));
+        alert("Unable to communicate to the cloud. Please try again"); 
+    }
+});
+        xhr.open("PUT", ''+edithref+'');
+        xhr.setRequestHeader("Content-type", "application/atom+xml");
+        xhr.setRequestHeader("Authorization", 'Bearer '+ googleAuthSheet.getAccessToken());
+        xhr.send(xmldatastring);
+        Ti.API.info('done POSTed');
+};
+
+Alloy.Globals.updateSpreadsheet = function(sid,col1,col2,col3,col4,col5,col6,col7,col8,col9,col10,col11,col12,col13,col14,col15,col16){
+	var xmldatastring = '<entry xmlns=\'http://www.w3.org/2005/Atom\' xmlns:gsx=\'http://schemas.google.com/spreadsheets/2006/extended\'>'
+	+'<gsx:col1>'+col1+'</gsx:col1><gsx:col2>'+col2+'</gsx:col2><gsx:col3>'
+	+col3+'</gsx:col3><gsx:col4>'+col4+'</gsx:col4><gsx:col5>'
+	+col5+'</gsx:col5><gsx:col6>'+col6+'</gsx:col6><gsx:col7>'+col7+'</gsx:col7><gsx:col8>'+col8+'</gsx:col8><gsx:col9>'+col9
+	+'</gsx:col9><gsx:col10>'+col10+'</gsx:col10><gsx:col11>'+col11+'</gsx:col11><gsx:col12>'+col12+'</gsx:col12><gsx:col13>'+col13+'</gsx:col13><gsx:col14>'+col14+'</gsx:col14><gsx:col15>'+col15+'</gsx:col15><gsx:col16>'+col16+'</gsx:col16></entry>';
+	Ti.API.info('xmldatastring to POST: '+xmldatastring);
+	var xhr =  Titanium.Network.createHTTPClient({
+    onload: function() {
+    	try {
+    		Ti.API.info(this.responseText); 
+    	} catch(e){
+    		Ti.API.info("cathing e: "+JSON.stringify(e));
+    	}     
+    },
+    onerror: function(e) {
+    	Ti.API.info("error e: "+JSON.stringify(e));
+        alert("Unable to communicate to the cloud. Please try again"); 
+    }
+});
+	xhr.open("POST", 'https://spreadsheets.google.com/feeds/list/'+sid+'/od6/private/full');
+	xhr.setRequestHeader("Content-type", "application/atom+xml");
+	xhr.setRequestHeader("Authorization", 'Bearer '+ Alloy.Globals.googleAuthSheet.getAccessToken());
+	xhr.send(xmldatastring);
+	Ti.API.info('done POSTed');
+};
+
+

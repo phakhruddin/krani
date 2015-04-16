@@ -103,10 +103,11 @@ function createSpreadsheet(filename) {
 					var value = "col"+i;
 					editTheCell(sid,1,i,value);
 				}
-				editTheCell(sid,2,1,"Project Name");
-				editTheCell(sid,2,2,"sid");
-				editTheCell(sid,2,3,"Date Created");
-				editTheCell(sid,2,4,"Date Modified");
+				editTheCell(sid,2,1,"Project ID");
+				editTheCell(sid,2,2,"Project Name");
+				editTheCell(sid,2,3,"sid");
+				editTheCell(sid,2,4,"Date Created");
+				editTheCell(sid,2,5,"Date Modified");
 	    		Titanium.App.Properties.setString('sid',sid); // 1st sid created.
 	    		console.log("sid : "+sid);
 	    	} catch(e){
@@ -169,12 +170,12 @@ function checkFileExistThenCreateSS(filename){
 				console.log("File DOES NOT EXIST");
 				var fileexist = "false";
 				createSpreadsheet(filename);  // create file when does not exists
+				Titanium.App.Properties.setString('joblogssid',sid); // stamp the ssid.
 			} else {
 				var fileexist = "true";
 				var sid = jsonlist.items[0].id;
 				console.log("File exist. sid is: "+jsonlist.items[0].id+" Skipped.");
-				Titanium.App.Properties.setString('sid',sid);
-				//editCell();
+				Titanium.App.Properties.setString('joblogssid',sid);
 			};
 		}
 		});
