@@ -18,7 +18,6 @@ function openNextTab(item){
 
 $.project.addEventListener ("click", function(e){
 	Alloy.Globals.checkFileExistThenCreateSS("joblogssid");
-	prefetchJoblogSID();
 	Alloy.Globals.openDetail(e);
 	var item = e.row.id;
 	openNextTab(item);
@@ -137,3 +136,5 @@ function prefetchJoblogSID(){
 	}
 	
 }
+
+prefetchJoblogSID();
