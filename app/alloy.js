@@ -41,6 +41,18 @@ Alloy.Globals.appendFile = function (content, filename){
 			file.append(content+"\n");
 };
 
+Alloy.Globals.readFile = function (filename){
+			var file = Ti.Filesystem.getFile(
+				Ti.Filesystem.tempDirectory, filename
+			);
+			file.read();
+};
+
+
+Alloy.Globals.writeFileinJSON = function(content, filename){
+	
+};
+
 Alloy.Globals.writeFile("","joblogsid.txt");
 
 Alloy.Globals.GoogleAuth_module = require('googleAuth');

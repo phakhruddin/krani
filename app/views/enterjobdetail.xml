@@ -1,6 +1,7 @@
 <Alloy>
 	<Model src="dummy" />
 	<Collection src="joblog"/>
+	<Collection src="joblogsid"/>
   <Window id="enterjobdetail_window" title="Job Logs" backgroundColor="white">
   	<!--TableView id="labor_table" backgroundColor="white"  separatorStyle="Titanium.UI.iPhone.TableViewSeparatorStyle.NONE"  backgroundColor="transparent" dataCollection="joblog" search="search_history" dataTransform="transformFunction" filterAttribute="title"-->
 	<TableView id="labor_table" height=Ti.UI.SIZE backgroundColor="white"  separatorStyle="Titanium.UI.iPhone.TableViewSeparatorStyle.NONE"  backgroundColor="transparent" >
@@ -14,7 +15,7 @@
 		</TableViewRow-->
 		<FooterView>
 	        <View backgroundColor="#DDD" height="150">
-	        	<TextArea id="notes_textarea" width="300" height="100" top="5" borderWidth="2" borderColor="#bbb" borderRadius="5" hintText="notes"
+	        	<TextArea id="notes_textarea" width="300" height="100" top="5" borderWidth="2" borderColor="#bbb" borderRadius="5" 
 	        		color="#888" textAlign="left" >
 	        		<KeyboardToolbar id="ktb_textarea">
 	        			<Toolbar>

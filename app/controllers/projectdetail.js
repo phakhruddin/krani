@@ -83,7 +83,6 @@ $.addbutton.addEventListener("click", function(e){
 	var lastname = args.title.split(':')[2];
 	var filename = 'project_'+projectid+'_'+firstname+'_'+lastname;
 	var parentid = Titanium.App.Properties.getString('parentid');
-	Titanium.App.Properties.setString('filename',filename);
 	console.log("need to check if parent/filename exist: "+parentid+'/'+filename);
 	fileExist(filename,parentid);
 	var item = "joblog";
@@ -107,7 +106,7 @@ function addHandler(e,args){
 	tabViewOneController.openMainWindow($.tab_projectdetail);	
 }
 
-
+//MAIN if spreadsheet exist ignore, NOT create the spreadsheet
 function fileExist(filename,parentid){
 		var jsonlist = " ";
 		var xhr = Ti.Network.createHTTPClient({
@@ -119,7 +118,6 @@ function fileExist(filename,parentid){
 				Ti.API.info("cathing e: "+JSON.stringify(e));
 			}
 			console.log("jsonlist.items.length: "+jsonlist.items.length);
-			var filename = Titanium.App.Properties.getString('filename');
 			filelist = [];
 			if (jsonlist.items.length == "0" ){
 				console.log("File DOES NOT EXIST");
@@ -129,8 +127,9 @@ function fileExist(filename,parentid){
 			} else {
 				var fileexist = "true";
 				var sid = jsonlist.items[0].id;
-				console.log("File exist. sid is: "+jsonlist.items[0].id+" Skipped.");
+				console.log("projectdetail.js::fileExist:: File exist. sid is: "+jsonlist.items[0].id+" Skipped.");
 				Titanium.App.Properties.setString('sid',sid);
+				populatejoblogSIDtoDB(filename,sid);
 				//populateSpreadsheetHeader();
 			};
 		}
@@ -298,6 +297,7 @@ function createSpreadsheet(filename,parentid) {
 	    		Ti.API.info("response is: "+this.responseText);
 	    		var json = JSON.parse(this.responseText);
 	    		var sid = json.id;
+	    		populatejoblogSIDtoDB(filename,sid);
 	    		Titanium.App.Properties.setString('sid',sid); // 1st sid created.
 	    		for (i=1;i<17;i++){
 						var value = "col"+i;
@@ -358,7 +358,7 @@ function populateSpreadsheetHeader(sid,rowno,colno,edithref,selfhref,value){
 }
 
 
-function checkjoblogsid(){
+function checkjoblogsidfromDB(){
 	thejoblogsidarray = [];
 	var thejoblogsid = Alloy.Collections.instance('joblogsid');
 	thejoblogsid.fetch();
@@ -383,5 +383,32 @@ function checkjoblogsid(){
 
 }
 
-checkjoblogsid();
 
+function populatejoblogSIDtoDB(filename,sid) {
+	var needupdate = "yes";
+	var thejoblogsid = Alloy.Collections.instance('joblogsid');
+	thejoblogsid.fetch();
+    if (thejoblogsid.length > 0) {
+    	var joblogsidjson = thejoblogsid.toJSON();
+    	for( var i=0; i < joblogsidjson.length; i++ ){
+    		var oldsid = joblogsidjson[i].col2.trim();
+    		console.log("projectdetail.js::populatejoblogSIDtoDB::compare sid : "+oldsid+" vs. "+sid);
+    		if ( sid == oldsid ){
+    			var needupdate = "no";
+    			console.log("projectdetail.js::populatejoblogSIDtoDB::needupdate: "+needupdate+" , abort!");
+    			return;
+    		} 
+    	}
+    }   
+       	if (needupdate == "yes"){
+		    var dataModel = Alloy.createModel("joblogsid",{
+	            col1 :  filename || "none",
+	            col2 : sid || "none",
+	            col3 : "none",col4:"none", col5:"none",	col6:"none", col7:"none", col8:"none", col9:"none", 
+	            col10:"none", col11:"none",	col12:"none", col13:"none",	col14:"none", col15:"none",	col16:"none"
+	    	});
+    		dataModel.save();
+    	}; 	
+	thejoblogsid.fetch();
+	Ti.API.info(" projectdetail.js::populatejoblogSIDtoDB::needupdate "+needupdate+" with thejoblogsid: "+thejoblogsid.length+" : "+JSON.stringify(thejoblogsid));
+	}

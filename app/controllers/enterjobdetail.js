@@ -221,7 +221,7 @@ function takePic(e){
             top : 10,
             width : Ti.UI.SIZE, height : Ti.UI.SIZE
         });
-        
+                   
 $.notes_textarea.addEventListener("blur",function(e){
         console.log("JSON.stringify(e)  :" +JSON.stringify(e));
         e.source.keyboardToolbar.items = null;
@@ -355,6 +355,7 @@ function createSpreadsheet(filename,parentid) {
 	    		var json = JSON.parse(this.responseText);
 	    		var sid = json.id;
 	    		console.log("sid : "+sid);
+	    		populatejoblogSIDtoDB(filename,sid);
 	    	} catch(e){
 				Ti.API.info("cathing e: "+JSON.stringify(e));
 			}
@@ -391,7 +392,8 @@ function fileExist(){
 				createSpreadsheet(filename,parentid);  // create file when does not exists
 			} else {
 				var fileexist = "true";
-				console.log("File exist. sid is: "+jsonlist.items[0].id+" Skipped.");
+				console.log("enterjobdetail.js::fileExist:: File exist. sid is: "+jsonlist.items[0].id+" Skipped.");
+				populatejoblogSIDtoDB(filename,sid);
 			};
 		}
 		});
@@ -411,6 +413,28 @@ function fileExist(){
 var parentid = Titanium.App.Properties.getString('parentid');
 //console.log("create spreadsheet with filename: "+filename+" and parentid: "+parentid); 
 //createSpreadsheet(filename,parentid); 
+
+
+var file = Ti.Filesystem.getFile(
+				Ti.Filesystem.tempDirectory, "joblogsid.txt"
+			);
+		var joblogsidfile =	file.read().text;
+		//var joblogsidfilejson =	JSON.parse(joblogsidfile);
+console.log("joblogsidfile" +joblogsidfile);
+//console.log("JSON.stringify(joblogsidfilejson)" +joblogsidfilejson);
+
+function populatejoblogSIDtoDB(filename,sid) {
+	       var dataModel = Alloy.createModel("joblogsid",{
+                                        col1 :  filename || "none",
+                                        col2 : sid || "none",
+                                        col3 : "none",col4:"none", col5:"none",	col6:"none", col7:"none", col8:"none", col9:"none", 
+                                        col10:"none", col11:"none",	col12:"none", col13:"none",	col14:"none", col15:"none",	col16:"none"
+                                });     
+        dataModel.save();
+	var thejoblogsid = Alloy.Collections.instance('joblogsid');
+	thejoblogsid.fetch();
+	Ti.API.info(" enterjobdetail.js::populatejoblogSIDtoDB:: thejoblogsid : "+JSON.stringify(thejoblogsid));
+	}
 
 /*
 $.jobdetailtf.addEventListener("focus", function(e){

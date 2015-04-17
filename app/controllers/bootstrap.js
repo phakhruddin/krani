@@ -174,7 +174,7 @@ function checkFileExistThenCreateSS(filename){
 			} else {
 				var fileexist = "true";
 				var sid = jsonlist.items[0].id;
-				console.log("File exist. sid is: "+jsonlist.items[0].id+" Skipped.");
+				console.log("checkFileExistThenCreateSS:: File exist. sid is: "+jsonlist.items[0].id+" Skipped.");
 				Titanium.App.Properties.setString('joblogssid',sid);
 			};
 		}
