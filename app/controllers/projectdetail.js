@@ -91,7 +91,8 @@ $.addbutton.addEventListener("click", function(e){
 	var sid = Titanium.App.Properties.getString('sid');
 	Alloy.Globals.getPrivateData(sid,item);
 	var tabViewOneController = Alloy.createController("enterjobdetail",{
-			title: args
+			title: args,
+			sid: sid
 		});
 	tabViewOneController.openMainWindow($.tab_projectdetail);	
 });
@@ -412,3 +413,20 @@ function populatejoblogSIDtoDB(filename,sid) {
 	thejoblogsid.fetch();
 	Ti.API.info(" projectdetail.js::populatejoblogSIDtoDB::needupdate "+needupdate+" with thejoblogsid: "+thejoblogsid.length+" : "+JSON.stringify(thejoblogsid));
 	}
+
+function getjoblogSID(thefilename){
+	var thejoblogsid = Alloy.Collections.instance('joblogsid');
+	thejoblogsid.fetch();
+    if (thejoblogsid.length > 0) {
+    	var joblogsidjson = thejoblogsid.toJSON();
+    	for( var i=0; i < joblogsidjson.length; i++ ){
+    		var filename = joblogsidjson[i].col1.trim();
+    		var sid = joblogsidjson[i].col2.trim();
+    		if ( thefilename == filename ){
+    			console.log("projectdetail.js::getjoblogSID::needupdate: "+filename+" match "+thefilename+" with sid: "+sid);
+    			return sid;
+    		} 
+    	}
+    }   
+}	
+
