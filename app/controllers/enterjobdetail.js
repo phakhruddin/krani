@@ -277,7 +277,8 @@ function enterNotes(e) {
     }
 });
         //var sid = Titanium.App.Properties.getString('joblog'); 
-        var sid = Titanium.App.Properties.getString('sid'); //sid need to correct//sid need to correct
+        //var sid = Titanium.App.Properties.getString('sid'); //sid need to correct//sid need to correct
+        var sid = args.sid;
         xhr.open("POST", 'https://spreadsheets.google.com/feeds/list/'+sid+'/od6/private/full');
         xhr.setRequestHeader("Content-type", "application/atom+xml");
         xhr.setRequestHeader("Authorization", 'Bearer '+ googleAuthSheet.getAccessToken());
