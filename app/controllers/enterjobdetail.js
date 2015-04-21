@@ -437,6 +437,12 @@ function populatejoblogSIDtoDB(filename,sid) {
 	Ti.API.info(" enterjobdetail.js::populatejoblogSIDtoDB:: thejoblogsid : "+JSON.stringify(thejoblogsid));
 	}
 
+//Retrieve cloud data again
+
+var sid = args.sid;
+Ti.API.info("sid for joblog in enterjobdetail.js : "+sid);
+Alloy.Globals.getPrivateData(sid,"joblog");
+
 /*
 $.jobdetailtf.addEventListener("focus", function(e){
                 console.log("JSON.stringify(e)  :" +JSON.stringify(e));

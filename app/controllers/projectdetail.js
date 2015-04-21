@@ -4,6 +4,7 @@ exports.openMainWindow = function(_tab) {
   Ti.API.info("This is child widow checking _tab on : " +JSON.stringify(_tab));
   Ti.API.info(" input details : "+JSON.stringify(args));
   Alloy.Globals.checkFileExistThenUpdateSID(filename);
+  Alloy.Collections.joblog.fetch();
   //Titanium.App.Properties.setString('sid',"none"); // reset the job log sid.
 };
 

@@ -1,5 +1,6 @@
 <Alloy>
 	<Model src="dummy" />
+	<Collection src="joblog"/>
 	<Collection src="joblogsid"/>
 	<Tab id="tab_projectdetail" title="Project">
   <Window id="projectdetail_window" title="project Detail" backgroundColor="white">
