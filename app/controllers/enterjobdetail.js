@@ -102,11 +102,16 @@ function jobDetailAddRow (date,notesbody,imageurl) {
 
 };
 
+var sid = args.sid;
+console.log("sid right before key in contents value: "+sid);
+
 for (i=0;i<content.length;i++){
-        var notesbody = content[i].col2;
+	if ( content[i].col10 == sid ){
+		var notesbody = content[i].col2;
         var imageurl = content[i].col4;
         var date = content[i].col1;
         jobDetailAddRow (date,notesbody,imageurl);      
+	}
 }
 
 
