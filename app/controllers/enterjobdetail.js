@@ -265,11 +265,12 @@ function enterNotes(e) {
 
  function submit(thedate,notesbody,imageurl) {  
         var thenone = "none";   
+        var sid = args.sid;
         var xmldatastring = ['<entry xmlns=\'http://www.w3.org/2005/Atom\' xmlns:gsx=\'http://schemas.google.com/spreadsheets/2006/extended\'>'
         +'<gsx:col1>'+thedate+'</gsx:col1><gsx:col2>'+notesbody+'</gsx:col2><gsx:col3>'
         +imageurl+'</gsx:col3><gsx:col4>'+thenone+'</gsx:col4><gsx:col5>'
         +thenone+'</gsx:col5><gsx:col6>'+thenone+'</gsx:col6><gsx:col7>'+thenone+'</gsx:col7><gsx:col8>'+thenone+'</gsx:col8><gsx:col9>'+thenone
-        +'</gsx:col9><gsx:col10>'+thenone+'</gsx:col10><gsx:col11>'+thenone+'</gsx:col11><gsx:col12>NA</gsx:col12><gsx:col13>NA</gsx:col13><gsx:col14>NA</gsx:col14><gsx:col15>NA</gsx:col15><gsx:col16>NA</gsx:col16></entry>'].join('');
+        +'</gsx:col9><gsx:col10>'+sid+'</gsx:col10><gsx:col11>'+thenone+'</gsx:col11><gsx:col12>NA</gsx:col12><gsx:col13>NA</gsx:col13><gsx:col14>NA</gsx:col14><gsx:col15>NA</gsx:col15><gsx:col16>NA</gsx:col16></entry>'].join('');
         Ti.API.info('xmldatastring to POST: '+xmldatastring);
         var xhr =  Titanium.Network.createHTTPClient({
     onload: function() {
@@ -286,7 +287,6 @@ function enterNotes(e) {
 });
         //var sid = Titanium.App.Properties.getString('joblog'); 
         //var sid = Titanium.App.Properties.getString('sid'); //sid need to correct//sid need to correct
-        var sid = args.sid;
         xhr.open("POST", 'https://spreadsheets.google.com/feeds/list/'+sid+'/od6/private/full');
         xhr.setRequestHeader("Content-type", "application/atom+xml");
         xhr.setRequestHeader("Authorization", 'Bearer '+ googleAuthSheet.getAccessToken());
