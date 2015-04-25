@@ -221,7 +221,11 @@ function takePic(e){
             top : 10,
             width : Ti.UI.SIZE, height : Ti.UI.SIZE
         });
-                   
+
+
+var sid = args.sid;
+console.log("before notes_textarea hintText: JSON.stringify(args): "+JSON.stringify(args)+" sid:"+sid);
+$.notes_textarea._hintText = sid;           
 $.notes_textarea.addEventListener("blur",function(e){
         console.log("JSON.stringify(e)  :" +JSON.stringify(e));
         e.source.keyboardToolbar.items = null;
@@ -236,12 +240,16 @@ function enterNotes(e) {
         //$.enterjobdetail_window.add(textfield);
         var date = new Date();
         var notesbody = e.value;
+        var sourcesid = e.source._hintText;
         var imageurl = "none";
         var dataModel = Alloy.createModel("joblog",{
                                         col1 :  date || "none",
                                         col2 : notesbody || "none",
                                         col3 : imageurl,        
-                                        col4 : "none"   
+                                        col4 : "none", col5:"none",	col6:"none", col7:"none", col8:"none", col9:"none", 
+                                        col10: sourcesid, 
+                                        col11:"none",	col12:"none", col13:"none",	col14:"none", col15:"none",	col16:"none"
+ 
                                 });     
         dataModel.save();
         Alloy.Collections.joblog.fetch();
