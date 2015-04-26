@@ -9,7 +9,7 @@ exports.openMainWindow = function(_tab) {
 };
 
 var someDummy = Alloy.Models.dummy;
-console.log("stringify dummy :"+JSON.stringify(someDummy));
+console.log("projectdetail.js::stringify dummy :"+JSON.stringify(someDummy));
 someDummy.set('id', '1234');
 someDummy.fetch();
 
@@ -19,8 +19,8 @@ var firstname = data[1];
 var lastname = data[2];
 var fullname = firstname+" "+lastname;
 var company = data[3];
-var phone = data[4];console.log("phone: "+phone);
-var email = data[5];console.log("email: "+email);
+var phone = data[4];console.log("projectdetail.js::phone: "+phone);
+var email = data[5];console.log("projectdetail.js::email: "+email);
 var address = data[6];
 var city = data[7];
 var state = data[8];
@@ -32,7 +32,7 @@ var nextappt = data[13];
 var datedue = data[14];
 var projectid = data[15];
 var filename = 'project_'+projectid+'_'+firstname+'_'+lastname;
-console.log("projectdetail:: filename : "+filename);
+console.log("projectdetail.js::projectdetail:: filename : "+filename);
 
 someDummy.set('projectname', projectname);
 someDummy.set('fullname', fullname);
@@ -51,23 +51,23 @@ someDummy.set('nextappt', nextappt);
 someDummy.set('datedue', datedue);
 
 function nameAction(e) {
-	console.log("JSON stringify e: "+JSON.stringify(e));
+	console.log("projectdetail.js::JSON stringify e: "+JSON.stringify(e));
 };
 
 function phoneAction(e) {
-	console.log("JSON stringify e: "+JSON.stringify(e));
+	console.log("projectdetail.js::JSON stringify e: "+JSON.stringify(e));
 };
 
 function emailAction(e) {
-	console.log("JSON stringify e: "+JSON.stringify(e));
+	console.log("projectdetail.js::JSON stringify e: "+JSON.stringify(e));
 };
 
 function addressAction(e) {
-	console.log("JSON stringify e: "+JSON.stringify(e));
+	console.log("projectdetail.js::JSON stringify e: "+JSON.stringify(e));
 };
 
 function JobDetail(e){
-	console.log("JSON stringify e: "+JSON.stringify(e));
+	console.log("projectdetail.js::JSON stringify e: "+JSON.stringify(e));
 	var tabViewOneController = Alloy.createController("jobdetail");
 	tabViewOneController.openMainWindow($.tab_projectdetail);	
 }
@@ -75,8 +75,8 @@ function JobDetail(e){
 $.addbutton.setTitleid(args);
 
 $.addbutton.addEventListener("click", function(e){
-	console.log("JSON stringify e on addHandler: "+JSON.stringify(e));
-	console.log("JSON stringify e on addHandler args: "+JSON.stringify(args));
+	console.log("projectdetail.js::JSON stringify e on addHandler: "+JSON.stringify(e));
+	console.log("projectdetail.js::JSON stringify e on addHandler args: "+JSON.stringify(args));
 	var item = "joblog";
     	//Get joblog specific to project - START
 	var projectid = args.title.split(':')[15];
@@ -84,21 +84,19 @@ $.addbutton.addEventListener("click", function(e){
 	var lastname = args.title.split(':')[2];
 	var filename = 'project_'+projectid+'_'+firstname+'_'+lastname;
 	var parentid = Titanium.App.Properties.getString('parentid');
-	console.log("need to check if parent/filename exist: "+parentid+'/'+filename);
+	console.log("projectdetail.js::need to check if parent/filename exist: "+parentid+'/'+filename);
 	fileExist(filename,parentid);
 	var item = "joblog";
 	//var sid = Titanium.App.Properties.getString(item,"none");
 	// Get joblog specific to project - END
-	var sid = Titanium.App.Properties.getString('sid');
+	//var sid = Titanium.App.Properties.getString('sid');
 	// sid check
-	var file = Ti.Filesystem.getFile(
-				Ti.Filesystem.tempDirectory, "joblogsid.txt"
-			);
-	var joblogsidcontent = file.read();
 	var sidmatch = matchjoblogsidfromDB(filename);
-	console.log("check joblogsid content after read: "+JSON.stringify(joblogsidcontent));
-	console.log("sidmatch: "+sidmatch);
+	var sid = sidmatch;
+	console.log("projectdetail.js::sidmatch: sid "+sidmatch+' : '+sid);
 	Alloy.Globals.getPrivateData(sid,item);
+	console.log("projectdetail.js:: Alloy.Collections.joblog.fetch()");
+	Alloy.Collections.joblog.fetch();
 	var tabViewOneController = Alloy.createController("enterjobdetail",{
 			title: args,
 			sid: sid
@@ -107,8 +105,8 @@ $.addbutton.addEventListener("click", function(e){
 });
 
 function addHandler(e,args){
-	console.log("JSON stringify e on addHandler: "+JSON.stringify(e));
-	console.log("JSON stringify e on addHandler args: "+JSON.stringify(args));
+	console.log("projectdetail.js::JSON stringify e on addHandler: "+JSON.stringify(e));
+	console.log("projectdetail.js::JSON stringify e on addHandler args: "+JSON.stringify(args));
 	Alloy.Globals.getPrivateData(sid,item);
 	var tabViewOneController = Alloy.createController("enterjobdetail",{
 			title: args
@@ -127,10 +125,10 @@ function fileExist(filename,parentid){
 	    	} catch(e){
 				Ti.API.info("cathing e: "+JSON.stringify(e));
 			}
-			console.log("jsonlist.items.length: "+jsonlist.items.length);
+			console.log("projectdetail.js::jsonlist.items.length: "+jsonlist.items.length);
 			filelist = [];
 			if (jsonlist.items.length == "0" ){
-				console.log("File DOES NOT EXIST");
+				console.log("projectdetail.js::File DOES NOT EXIST");
 				var fileexist = "false";
 				createSpreadsheet(filename,parentid);  // create file when does not exists
 				//PopulateHeader
@@ -163,7 +161,7 @@ function getParentFolder(args) {
 	    		Ti.API.info("response is: "+JSON.stringify(json));
 	    		var parentid = json.items[0].id;
 	    		Titanium.App.Properties.setString('parentid',parentid);
-	    		console.log("args inside getParentFolder: "+JSON.stringify(args));
+	    		console.log("projectdetail.js::args inside getParentFolder: "+JSON.stringify(args));
 	    	} catch(e){
 				Ti.API.info("cathing e: "+JSON.stringify(e));
 			}
@@ -241,7 +239,7 @@ function xmlToJson(xml) {
 
 function getSSCell(sid,rowno,colno,value) {
 	var pos = "R"+rowno+"C"+colno;
-	console.log("get SS Cell on :  https://spreadsheets.google.com/feeds/cells/"+sid+"/od6/private/full/"+pos);
+	console.log("projectdetail.js::get SS Cell on :  https://spreadsheets.google.com/feeds/cells/"+sid+"/od6/private/full/"+pos);
 	var xhr = Ti.Network.createHTTPClient({
 	    onload: function(e) {
 	    try {
@@ -250,7 +248,7 @@ function getSSCell(sid,rowno,colno,value) {
 	    		Ti.API.info("getSSCell:: xml response is: "+xml);
 	    		var entry = xml.documentElement.getElementsByTagName("entry");
 	    		var link = xml.documentElement.getElementsByTagName("link");
-	    		console.log(" number of link found: " +link+ " length: "+link.length);
+	    		console.log("projectdetail.js:: number of link found: " +link+ " length: "+link.length);
 	    		for (i=0;i<link.length;i++){			
 	    			var listitem = link.item(i);
 	    			if (listitem.getAttribute("rel") == "edit"){ var edithref = listitem.getAttribute("href");}
@@ -291,7 +289,7 @@ $.GetSSCell.addEventListener("click", function(e){
 getParentFolder();
 
 function createSpreadsheet(filename,parentid) {
-	console.log("create ss with filename: "+filename+" and parentid: "+parentid);
+	console.log("projectdetail.js::create ss with filename: "+filename+" and parentid: "+parentid);
 	var jsonpost = '{'
 		 +'\"title\": \"'+filename+'\",'
 		 +'\"parents\": ['
@@ -321,7 +319,7 @@ function createSpreadsheet(filename,parentid) {
 						getSSCell(sid,r,2,"Please enter work logs.");
 					};
 					
-	    		console.log("sid : "+sid);
+	    		console.log("projectdetail.js::sid : "+sid);
 	    	} catch(e){
 				Ti.API.info("cathing e: "+JSON.stringify(e));
 			}
@@ -333,7 +331,7 @@ function createSpreadsheet(filename,parentid) {
 	xhr.open("POST", 'https://www.googleapis.com/drive/v2/files');	
 	xhr.setRequestHeader("Content-type", "application/json");
     xhr.setRequestHeader("Authorization", 'Bearer '+ googleAuthSheet.getAccessToken());
-    console.log("json post: "+jsonpost);
+    console.log("projectdetail.js::json post: "+jsonpost);
 	xhr.send(jsonpost);
 }
 
@@ -346,7 +344,7 @@ function populateSpreadsheetHeader(sid,rowno,colno,edithref,selfhref,value){
  		+'<gs:cell row=\''+rowno+'\' col=\''+colno+'\' inputValue=\''+value+'\'>'
  		+'</gs:cell>'
  		+'</entry>'].join('');
- 		console.log("xmldatastring: "+xmldatastring);
+ 		console.log("projectdetail.js::xmldatastring: "+xmldatastring);
        var xhr =  Titanium.Network.createHTTPClient({
     onload: function() {
         try {
@@ -375,7 +373,7 @@ function checkjoblogsidfromDB(){
 	Ti.API.info(" thejoblogsid : "+JSON.stringify(thejoblogsid));
 	if (thejoblogsid.length > 0) {
 		var joblogsidjson = thejoblogsid.toJSON();
-		console.log("JSON.stringify(joblogsidjson): " +JSON.stringify(joblogsidjson));
+		console.log("projectdetail.js::JSON.stringify(joblogsidjson): " +JSON.stringify(joblogsidjson));
 		for( var i=0; i < joblogsidjson.length; i++){
 			var projectid  = joblogsidjson[i].col1;
 			var projectname = joblogsidjson[i].col2;
@@ -385,9 +383,9 @@ function checkjoblogsidfromDB(){
 			Alloy.Globals.appendFile(content,"joblogsid.txt");
 		}
 		
-		console.log("thejoblogsidarray.length : "+thejoblogsidarray.length);
+		console.log("projectdetail.js::thejoblogsidarray.length : "+thejoblogsidarray.length);
 		if ( thejoblogsidarray.length > 0 ){
-			console.log("thejoblogsidarray : "+JSON.stringify(thejoblogsidarray));
+			console.log("projectdetail.js::thejoblogsidarray : "+JSON.stringify(thejoblogsidarray));
 		}
 	} 
 
@@ -400,7 +398,7 @@ function matchjoblogsidfromDB(filename){
 	Ti.API.info(" matchjoblogsidfromDB::thejoblogsid : "+JSON.stringify(thejoblogsid));
 	if (thejoblogsid.length > 0) {
 		var joblogsidjson = thejoblogsid.toJSON();
-		console.log("matchjoblogsidfromDB::JSON.stringify(joblogsidjson): " +JSON.stringify(joblogsidjson));
+		console.log("projectdetail.js::matchjoblogsidfromDB::JSON.stringify(joblogsidjson): " +JSON.stringify(joblogsidjson));
 		for( var i=0; i < joblogsidjson.length; i++){
 			var projectname = joblogsidjson[i].col1;
 			var sid = joblogsidjson[i].col2.trim();
@@ -408,9 +406,9 @@ function matchjoblogsidfromDB(filename){
 				return sid;
 			}
 		}	
-		console.log("matchjoblogsidfromDB::thejoblogsidarray.length : "+thejoblogsidarray.length);
+		console.log("projectdetail.js::matchjoblogsidfromDB::thejoblogsidarray.length : "+thejoblogsidarray.length);
 		if ( thejoblogsidarray.length > 0 ){
-			console.log("matchjoblogsidfromDB::thejoblogsidarray : "+JSON.stringify(thejoblogsidarray));
+			console.log("projectdetail.js::matchjoblogsidfromDB::thejoblogsidarray : "+JSON.stringify(thejoblogsidarray));
 		}
 	} 
 

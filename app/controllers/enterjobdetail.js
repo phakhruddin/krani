@@ -4,6 +4,15 @@ exports.openMainWindow = function(_tab) {
   Ti.API.info("This is child widow checking _tab on : " +JSON.stringify(_tab));
   Ti.API.info(" input details after tab enterjobdetail : "+JSON.stringify(args));
   // $.labor_table.search = $.search_history;
+  console.log("enterjobdetail.js::content.length: inside openMainWindow "+content.length);
+for (i=0;i<content.length;i++){
+	if ( content[i].col10 == sid ){
+		var notesbody = content[i].col2;
+        var imageurl = content[i].col4;
+        var date = content[i].col1;
+        jobDetailAddRow (date,notesbody,imageurl);      
+	}
+}
         
 };
 
@@ -13,7 +22,7 @@ function transformFunction(model) {
         var currentaddr;
 
         var transform = model.toJSON();
-        console.log("transform is ::" +JSON.stringify(transform));
+        console.log("enterjobdetail.js::transform is ::" +JSON.stringify(transform));
         transform.title = transform.col1+":"+transform.col2+":"+transform.col5+":"+transform.col6+":"+transform.col7+":"
                                                 +transform.col8+":"+transform.col9+":"+transform.col10+":"+transform.col11+":"+transform.col12+":"+transform.col13
                                                 +":"+transform.col14+":"+transform.col15+":"+transform.col16;
@@ -37,7 +46,7 @@ function transformFunction(model) {
 
 var joblog  = Alloy.Collections.instance('joblog');
 var content = joblog.toJSON();
-console.log("JSON stringify joblog: "+JSON.stringify(content));
+console.log("enterjobdetail.js::JSON stringify joblog: "+JSON.stringify(content));
 
 function jobDetailAddRow (date,notesbody,imageurl) {
         var datelabel = Ti.UI.createLabel ({
@@ -103,8 +112,8 @@ function jobDetailAddRow (date,notesbody,imageurl) {
 };
 
 var sid = args.sid;
-console.log("sid right before key in contents value: "+sid);
-
+console.log("enterjobdetail.js::sid right before key in contents value: "+sid);
+console.log("enterjobdetail.js::content.length: "+content.length);
 for (i=0;i<content.length;i++){
 	if ( content[i].col10 == sid ){
 		var notesbody = content[i].col2;
@@ -116,15 +125,15 @@ for (i=0;i<content.length;i++){
 
 
 function closeWin(e) {
-        console.log("e is: "+JSON.stringify(e));
+        console.log("enterjobdetail.js::e is: "+JSON.stringify(e));
 }
 
 function UploadPhotoToServer(e){
-        console.log("Upload photo to the server.");
+        console.log("enterjobdetail.js::Upload photo to the server.");
 }
 
 function uploadFile(e){
-        console.log("JSON stringify e uploadFile : " +JSON.stringify(e));
+        console.log("enterjobdetail.js::JSON stringify e uploadFile : " +JSON.stringify(e));
        Titanium.Media.openPhotoGallery({
            success:function(event)
            {             
@@ -151,7 +160,7 @@ function uploadFile(e){
                                 });
 
 function takePic(e){ 
-        console.log("JSON stringify e takePic:" +JSON.stringify(e));
+        console.log("enterjobdetail.js::JSON stringify e takePic:" +JSON.stringify(e));
         Titanium.Media.showCamera({
                 success:function(e){
                         if(e.mediaType === Titanium.Media.MEDIA_TYPE_PHOTO){
@@ -229,10 +238,10 @@ function takePic(e){
 
 
 var sid = args.sid;
-console.log("before notes_textarea hintText: JSON.stringify(args): "+JSON.stringify(args)+" sid:"+sid);
+console.log("enterjobdetail.js::before notes_textarea hintText: JSON.stringify(args): "+JSON.stringify(args)+" sid:"+sid);
 $.notes_textarea._hintText = sid;           
 $.notes_textarea.addEventListener("blur",function(e){
-        console.log("JSON.stringify(e)  :" +JSON.stringify(e));
+        console.log("enterjobdetail.js::JSON.stringify(e)  :" +JSON.stringify(e));
         e.source.keyboardToolbar.items = null;
         enterNotes(e);
         e.source.value = "";
@@ -240,7 +249,7 @@ $.notes_textarea.addEventListener("blur",function(e){
 });
         
 function enterNotes(e) {
-        console.log("JSON.stringify(e) enterNotes  :" +JSON.stringify(e));
+        console.log("enterjobdetail.js::JSON.stringify(e) enterNotes  :" +JSON.stringify(e));
         //$.enterjobdetail_window.show($.notes_textarea);
         //$.enterjobdetail_window.add(textfield);
         var date = new Date();
@@ -260,9 +269,9 @@ function enterNotes(e) {
         Alloy.Collections.joblog.fetch();
         var joblog  = Alloy.Collections.instance('joblog');
         var content = joblog.toJSON();
-        console.log("JSON stringify joblog after write: "+JSON.stringify(content));
+        console.log("enterjobdetail.js::JSON stringify joblog after write: "+JSON.stringify(content));
         var thedate = date.toString().replace(".","").split(' ',4).toString().replace(/,/g,' ')+' '+Alloy.Globals.formatAMPM(date);
-        //console.log("thedate is: " +thedate);
+        //console.log("enterjobdetail.js::thedate is: " +thedate);
         jobDetailAddRow (thedate,notesbody,imageurl); //add to the local db
         submit(thedate,notesbody,imageurl); //submit to the cloud
         
@@ -315,13 +324,13 @@ var googleAuthSheet = new GoogleAuth({
 });
 
 //var jsonargs = JSON.stringify(args);
-console.log("jsonargs : "+JSON.stringify(args));
+console.log("enterjobdetail.js::jsonargs : "+JSON.stringify(args));
 var projectid = args.title.title.split(':')[15];
 var firstname = args.title.title.split(':')[1];
 var lastname = args.title.title.split(':')[2];
 var filename = 'project_'+projectid+'_'+firstname+'_'+lastname;
 Titanium.App.Properties.setString('filename',filename);
-console.log("value derived from args: projectid: "+projectid+" firstname: "+firstname+" lastname: "+lastname);
+console.log("enterjobdetail.js::value derived from args: projectid: "+projectid+" firstname: "+firstname+" lastname: "+lastname);
 //var filename = "project"+jsonargs.title.split(':')[15];
 function getParentFolder(args) {
 	var sid = Titanium.App.Properties.getString('joblog');
@@ -332,7 +341,7 @@ function getParentFolder(args) {
 	    		Ti.API.info("response is: "+JSON.stringify(json));
 	    		var parentid = json.items[0].id;
 	    		Titanium.App.Properties.setString('parentid',parentid);
-	    		console.log("args inside getParentFolder: "+JSON.stringify(args));
+	    		console.log("enterjobdetail.js::args inside getParentFolder: "+JSON.stringify(args));
 	    		//var filename = 'test03';
 	    		//createSpreadsheet(filename,parentid);    		
 	    	} catch(e){
@@ -352,7 +361,7 @@ function getParentFolder(args) {
 
 
 function createSpreadsheet(filename,parentid) {
-	console.log("create ss with filename: "+filename+" and parentid: "+parentid);
+	console.log("enterjobdetail.js::create ss with filename: "+filename+" and parentid: "+parentid);
 	var jsonpost = '{'
 		 +'\"title\": \"'+filename+'\",'
 		 +'\"parents\": ['
@@ -368,7 +377,7 @@ function createSpreadsheet(filename,parentid) {
 	    		Ti.API.info("response is: "+this.responseText);
 	    		var json = JSON.parse(this.responseText);
 	    		var sid = json.id;
-	    		console.log("sid : "+sid);
+	    		console.log("enterjobdetail.js::sid : "+sid);
 	    		populatejoblogSIDtoDB(filename,sid);
 	    	} catch(e){
 				Ti.API.info("cathing e: "+JSON.stringify(e));
@@ -381,7 +390,7 @@ function createSpreadsheet(filename,parentid) {
 	xhr.open("POST", 'https://www.googleapis.com/drive/v2/files');	
 	xhr.setRequestHeader("Content-type", "application/json");
     xhr.setRequestHeader("Authorization", 'Bearer '+ googleAuthSheet.getAccessToken());
-    console.log("json post: "+jsonpost);
+    console.log("enterjobdetail.js::json post: "+jsonpost);
 	xhr.send(jsonpost);
 }
 
@@ -397,16 +406,16 @@ function fileExist(){
 	    	} catch(e){
 				Ti.API.info("cathing e: "+JSON.stringify(e));
 			}
-			console.log("jsonlist.items.length: "+jsonlist.items.length);
+			console.log("enterjobdetail.js::jsonlist.items.length: "+jsonlist.items.length);
 			var filename = Titanium.App.Properties.getString('filename');
 			filelist = [];
 			if (jsonlist.items.length == "0" ){
-				console.log("File DOES NOT EXIST");
+				console.log("enterjobdetail.js::File DOES NOT EXIST");
 				var fileexist = "false";
 				createSpreadsheet(filename,parentid);  // create file when does not exists
 			} else {
 				var fileexist = "true";
-				console.log("enterjobdetail.js::fileExist:: File exist. sid is: "+jsonlist.items[0].id+" Skipped.");
+				console.log("enterjobdetail.js::enterjobdetail.js::fileExist:: File exist. sid is: "+jsonlist.items[0].id+" Skipped.");
 				populatejoblogSIDtoDB(filename,sid);
 			};
 		}
@@ -425,7 +434,7 @@ function fileExist(){
 
 //fileExist();
 var parentid = Titanium.App.Properties.getString('parentid');
-//console.log("create spreadsheet with filename: "+filename+" and parentid: "+parentid); 
+//console.log("enterjobdetail.js::create spreadsheet with filename: "+filename+" and parentid: "+parentid); 
 //createSpreadsheet(filename,parentid); 
 
 
@@ -434,8 +443,8 @@ var file = Ti.Filesystem.getFile(
 			);
 		var joblogsidfile =	file.read().text;
 		//var joblogsidfilejson =	JSON.parse(joblogsidfile);
-console.log("joblogsidfile" +joblogsidfile);
-//console.log("JSON.stringify(joblogsidfilejson)" +joblogsidfilejson);
+console.log("enterjobdetail.js::joblogsidfile" +joblogsidfile);
+//console.log("enterjobdetail.js::JSON.stringify(joblogsidfilejson)" +joblogsidfilejson);
 
 function populatejoblogSIDtoDB(filename,sid) {
 	       var dataModel = Alloy.createModel("joblogsid",{
@@ -458,12 +467,12 @@ Alloy.Globals.getPrivateData(sid,"joblog");
 
 /*
 $.jobdetailtf.addEventListener("focus", function(e){
-                console.log("JSON.stringify(e)  :" +JSON.stringify(e));
+                console.log("enterjobdetail.js::JSON.stringify(e)  :" +JSON.stringify(e));
                 
     });*/
 /*
 function largeTF(e){
-        console.log("JSON.stringify(e) largeTF  :" +JSON.stringify(e));
+        console.log("enterjobdetail.js::JSON.stringify(e) largeTF  :" +JSON.stringify(e));
         //$.itemjobdetail.add(textfield);
 }
 */

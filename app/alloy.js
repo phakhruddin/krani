@@ -25,7 +25,7 @@ var joblogsid = '1SLNRI176qK51rkFWWCQvqToXswdNYlqINsdB2HM0ozk'; Titanium.App.Pro
 
 
 
-console.log("TempDir: "+JSON.stringify(Ti.Filesystem.tempDirectory));
+console.log("alloy.js::TempDir: "+JSON.stringify(Ti.Filesystem.tempDirectory));
 			
 Alloy.Globals.writeFile = function (content, filename){
 			var file = Ti.Filesystem.getFile(
@@ -71,7 +71,7 @@ Alloy.Globals.UpdateMap = function(latitude,longitude,title) {
 	var latitude = latitude;
 	var longitude = longitude;
 	var subtitle = "None";
-	console.log("map obtained with latitude: "+latitude+" longitude: "+longitude);
+	console.log("alloy.js::map obtained with latitude: "+latitude+" longitude: "+longitude);
 	
   if(Ti.Platform.osname == 'android'){
   		var Map = Titanium.Map;
@@ -117,7 +117,7 @@ Alloy.Globals.UpdateMap = function(latitude,longitude,title) {
   				var longitude = laborjson[i].col9.trim();
   				addrdata.push({latitude: latitude,longitude:  longitude,title: title});
   			}
-  			console.log("addrdata after push: "+JSON.stringify(addrdata));
+  			console.log("alloy.js::addrdata after push: "+JSON.stringify(addrdata));
 		} else {
 			var addrdata = [ {latitude: latitude,longitude:  longitude,title: title} ];
 		}
@@ -133,7 +133,7 @@ Alloy.Globals.UpdateMap = function(latitude,longitude,title) {
 			});
 		};
 		
-		console.log("addrdata are: "+JSON.stringify(addrdata));
+		console.log("alloy.js::addrdata are: "+JSON.stringify(addrdata));
 	    
 	    var addrAnnotations = [];
 		_.each(addr, function (addr) {
@@ -146,7 +146,7 @@ Alloy.Globals.UpdateMap = function(latitude,longitude,title) {
 		  }));  
 		});
 		
-			console.log("addrAnnotations are: "+JSON.stringify(addrAnnotations));
+			console.log("alloy.js::addrAnnotations are: "+JSON.stringify(addrAnnotations));
 
 		var mapview = Map.createView({
 	    mapType: Map.NORMAL_TYPE,
@@ -293,7 +293,7 @@ Alloy.Globals.getPrivateData = function(sid,type) {
 	Alloy.Globals.checkNetworkAndGoogleAuthorized('1gnkP116nsTVxtrw6d_mXVdOiesQEPH7LVUIyHUfx9EE');
 	//Google Auth check.
 	var needAuth = Titanium.App.Properties.getString('needAuth');
-	console.log("needAuth is :  " +needAuth);
+	console.log("alloy.js::needAuth is :  " +needAuth);
 	if (needAuth == "true") {googleAuthSheet.authorize();};
 	var url = "https://spreadsheets.google.com/feeds/list/"+sid+"/od6/private/full";
 	var thefile = "gss"+sid+".xml";
@@ -301,11 +301,11 @@ Alloy.Globals.getPrivateData = function(sid,type) {
 	    onload: function(e) {
 	    try {
 			var xml = Titanium.XML.parseString(this.responseText);
-			console.log("pop db:: response txt is: "+this.responseText);
-			console.log("pop db:: this xml is: " +xml);	   
+			console.log("alloy.js::pop db:: response txt is: "+this.responseText);
+			console.log("alloy.js::pop db:: this xml is: " +xml);	   
 			var feed = xml.documentElement.getElementsByTagName("feed");
 			var entry = xml.documentElement.getElementsByTagName("entry"); 
-			console.log("this entry length is: " +entry.length);
+			console.log("alloy.js::this entry length is: " +entry.length);
 			// deleting existing entry in database start
 			(type == 'client') && Alloy.Collections.client.deleteAll();
 			(type == 'project') && Alloy.Collections.project.deleteAll();
@@ -323,7 +323,8 @@ Alloy.Globals.getPrivateData = function(sid,type) {
 				var col2 = entry.item(i).getElementsByTagName("gsx:col2").item(0).text;
 				var col4 = entry.item(i).getElementsByTagName("gsx:col4").item(0).text;
 				data.push({"identification":col1,"next column":col2,"col4":col4});
-				console.log("updating database with data :"+JSON.stringify(data));
+				//console.log("alloy.js::updating database with data :"+JSON.stringify(data));
+				console.log("alloy.js::updating database with data :"+col1);
 				var dataModel = Alloy.createModel(type,{
 					col1 :  entry.item(i).getElementsByTagName("gsx:col1").item(0).text || "none",
 					col2 : entry.item(i).getElementsByTagName("gsx:col2").item(0).text || "none",
@@ -352,7 +353,7 @@ Alloy.Globals.getPrivateData = function(sid,type) {
 			    Ti.API.info((success==true) ? 'success' : 'fail'); // outputs 'success'
 			}
 			file.write(this.responseText);
-			console.log("checking data " +JSON.stringify(data));
+			console.log("alloy.js::checking data " +JSON.stringify(data));
 			//
 			} catch(e){
 				Ti.API.info("cathing e: "+JSON.stringify(e));
@@ -596,7 +597,7 @@ Alloy.Globals.postCreateEvent = function(startdateTime,enddateTime,location,summ
 	+	'\}'	
 	+recurrences
 	+'\}';
-	console.log("event strings are: "+event);
+	console.log("alloy.js::event strings are: "+event);
 	var xhr =  Titanium.Network.createHTTPClient({
     onload: function() {
     	try {
@@ -682,16 +683,16 @@ Alloy.Globals.checkFileExistThenCreateSS = function(filename){
 	    	} catch(e){
 				Ti.API.info("cathing e: "+JSON.stringify(e));
 			}
-			console.log("Alloy.Globals.checkFileExistThenCreateSS::jsonlist.items.length: "+jsonlist.items.length);
+			console.log("alloy.js::Alloy.Globals.checkFileExistThenCreateSS::jsonlist.items.length: "+jsonlist.items.length);
 			if (jsonlist.items.length == "0" ){
-				console.log("File DOES NOT EXIST");
+				console.log("alloy.js::File DOES NOT EXIST");
 				var fileexist = "false";
 				Alloy.Globals.createSpreadsheet(filename);  // create file when does not exists
 				Titanium.App.Properties.setString(filename,sid); // stamp the ssid.
 			} else {
 				var fileexist = "true";
 				var sid = jsonlist.items[0].id;
-				console.log("Alloy.Globals.checkFileExistThenCreateSS::File exist. sid is: "+jsonlist.items[0].id+" Skipped.");
+				console.log("alloy.js::Alloy.Globals.checkFileExistThenCreateSS::File exist. sid is: "+jsonlist.items[0].id+" Skipped.");
 				Titanium.App.Properties.setString(filename,sid);
 			};
 		}
@@ -716,14 +717,14 @@ Alloy.Globals.checkFileExistThenUpdateSID = function(filename){
 	    	} catch(e){
 				Ti.API.info("Alloy.Globals.checkFileExistThenUpdateSID::cathing e: "+JSON.stringify(e));
 			}
-			console.log("Alloy.Globals.checkFileExistThenUpdateSID::jsonlist.items.length: "+jsonlist.items.length);
+			console.log("alloy.js::Alloy.Globals.checkFileExistThenUpdateSID::jsonlist.items.length: "+jsonlist.items.length);
 			if (jsonlist.items.length == "0" ){
-				console.log("Alloy.Globals.checkFileExistThenUpdateSID::File DOES NOT EXIST");
+				console.log("alloy.js::Alloy.Globals.checkFileExistThenUpdateSID::File DOES NOT EXIST");
 				var fileexist = "false";
 			} else {
 				var fileexist = "true";
 				var sid = jsonlist.items[0].id;
-				console.log("Alloy.Globals.checkFileExistThenUpdateSID::File exist. sid is: "+jsonlist.items[0].id+" Skipped.");
+				console.log("alloy.js::Alloy.Globals.checkFileExistThenUpdateSID::File exist. sid is: "+jsonlist.items[0].id+" Skipped.");
 				Titanium.App.Properties.setString(filename,sid);
 				// Write contents.
 				var content = filename+','+sid;
@@ -743,7 +744,7 @@ Alloy.Globals.checkFileExistThenUpdateSID = function(filename){
 
 
 Alloy.Globals.createSpreadsheet = function(filename) {
-	console.log("create ss with filename: "+filename);
+	console.log("alloy.js::create ss with filename: "+filename);
 	var jsonpost = '{'
 		 +'\"title\": \"'+filename+'\",'
 		 +'\"mimeType\": \"application/vnd.google-apps.spreadsheet\"'
@@ -764,7 +765,7 @@ Alloy.Globals.createSpreadsheet = function(filename) {
 				Alloy.Globals.editTheCell(sid,2,4,"Date Created");
 				Alloy.Globals.editTheCell(sid,2,5,"Date Modified");
 	    		Titanium.App.Properties.setString('sid',sid); // 1st sid created.
-	    		console.log("sid : "+sid);
+	    		console.log("alloy.js::sid : "+sid);
 	    	} catch(e){
 				Ti.API.info("cathing e: "+JSON.stringify(e));
 			}
@@ -776,13 +777,13 @@ Alloy.Globals.createSpreadsheet = function(filename) {
 	xhr.open("POST", 'https://www.googleapis.com/drive/v2/files');	
 	xhr.setRequestHeader("Content-type", "application/json");
     xhr.setRequestHeader("Authorization", 'Bearer '+ googleAuthSheet.getAccessToken());
-    console.log("json post: "+jsonpost);
+    console.log("alloy.js::json post: "+jsonpost);
 	xhr.send(jsonpost);
 };
 
 Alloy.Globals.editTheCell = function(sid,rowno,colno,value) {
 	var pos = "R"+rowno+"C"+colno;
-	console.log("get SS Cell on :  https://spreadsheets.google.com/feeds/cells/"+sid+"/od6/private/full/"+pos);
+	console.log("alloy.js::get SS Cell on :  https://spreadsheets.google.com/feeds/cells/"+sid+"/od6/private/full/"+pos);
 	var xhr = Ti.Network.createHTTPClient({
 	    onload: function(e) {
 	    try {
@@ -791,7 +792,7 @@ Alloy.Globals.editTheCell = function(sid,rowno,colno,value) {
 	    		Ti.API.info("Alloy.Globals.editTheCell:: xml response is: "+xml);
 	    		var entry = xml.documentElement.getElementsByTagName("entry");
 	    		var link = xml.documentElement.getElementsByTagName("link");
-	    		console.log(" number of link found: " +link+ " length: "+link.length);
+	    		console.log("alloy.js:: number of link found: " +link+ " length: "+link.length);
 	    		for (i=0;i<link.length;i++){			
 	    			var listitem = link.item(i);
 	    			if (listitem.getAttribute("rel") == "edit"){ var edithref = listitem.getAttribute("href");}
@@ -823,7 +824,7 @@ Alloy.Globals.editCell = function(sid,rowno,colno,edithref,selfhref,value){
  		+'<gs:cell row=\''+rowno+'\' col=\''+colno+'\' inputValue=\''+value+'\'>'
  		+'</gs:cell>'
  		+'</entry>'].join('');
- 		console.log("xmldatastring: "+xmldatastring);
+ 		console.log("alloy.js::xmldatastring: "+xmldatastring);
        var xhr =  Titanium.Network.createHTTPClient({
     onload: function() {
         try {
