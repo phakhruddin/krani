@@ -4,15 +4,6 @@ exports.openMainWindow = function(_tab) {
   Ti.API.info("This is child widow checking _tab on : " +JSON.stringify(_tab));
   Ti.API.info(" input details after tab enterjobdetail : "+JSON.stringify(args));
   // $.labor_table.search = $.search_history;
-  console.log("enterjobdetail.js::content.length: inside openMainWindow "+content.length);
-for (i=0;i<content.length;i++){
-	if ( content[i].col10 == sid ){
-		var notesbody = content[i].col2;
-        var imageurl = content[i].col4;
-        var date = content[i].col1;
-        jobDetailAddRow (date,notesbody,imageurl);      
-	}
-}
         
 };
 

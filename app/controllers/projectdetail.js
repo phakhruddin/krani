@@ -6,6 +6,7 @@ exports.openMainWindow = function(_tab) {
   Alloy.Globals.checkFileExistThenUpdateSID(filename);
   Alloy.Collections.joblog.fetch();
   //Titanium.App.Properties.setString('sid',"none"); // reset the job log sid.
+  prefetchJoblog();
 };
 
 var someDummy = Alloy.Models.dummy;
@@ -72,11 +73,30 @@ function JobDetail(e){
 	tabViewOneController.openMainWindow($.tab_projectdetail);	
 }
 
+function prefetchJoblog(){
+	var item = "joblog";
+	var projectid = args.title.split(':')[15];
+	var firstname = args.title.split(':')[1];
+	var lastname = args.title.split(':')[2];
+	var filename = 'project_'+projectid+'_'+firstname+'_'+lastname;
+	var parentid = Titanium.App.Properties.getString('parentid');
+	console.log("projectdetail.js::prefetchJoblog::need to check if parent/filename exist: "+parentid+'/'+filename);
+	fileExist(filename,parentid);
+	var item = "joblog";
+	var sidmatch = matchjoblogsidfromDB(filename);
+	var sid = sidmatch;
+	console.log("projectdetail.js::prefetchJoblog::sidmatch: sid "+sidmatch+' : '+sid);
+	Alloy.Globals.getPrivateData(sid,item);
+	console.log("projectdetail.js::prefetchJoblog:: Alloy.Collections.joblog.fetch()");
+	Alloy.Collections.joblog.fetch();	
+}
+
 $.addbutton.setTitleid(args);
 
 $.addbutton.addEventListener("click", function(e){
 	console.log("projectdetail.js::JSON stringify e on addHandler: "+JSON.stringify(e));
 	console.log("projectdetail.js::JSON stringify e on addHandler args: "+JSON.stringify(args));
+	/*
 	var item = "joblog";
     	//Get joblog specific to project - START
 	var projectid = args.title.split(':')[15];
@@ -96,7 +116,8 @@ $.addbutton.addEventListener("click", function(e){
 	console.log("projectdetail.js::sidmatch: sid "+sidmatch+' : '+sid);
 	Alloy.Globals.getPrivateData(sid,item);
 	console.log("projectdetail.js:: Alloy.Collections.joblog.fetch()");
-	Alloy.Collections.joblog.fetch();
+	Alloy.Collections.joblog.fetch();*/
+	var sid = matchjoblogsidfromDB(filename);
 	var tabViewOneController = Alloy.createController("enterjobdetail",{
 			title: args,
 			sid: sid
