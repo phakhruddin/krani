@@ -90,6 +90,14 @@ $.addbutton.addEventListener("click", function(e){
 	//var sid = Titanium.App.Properties.getString(item,"none");
 	// Get joblog specific to project - END
 	var sid = Titanium.App.Properties.getString('sid');
+	// sid check
+	var file = Ti.Filesystem.getFile(
+				Ti.Filesystem.tempDirectory, "joblogsid.txt"
+			);
+	var joblogsidcontent = file.read();
+	var sidmatch = matchjoblogsidfromDB(filename);
+	console.log("check joblogsid content after read: "+JSON.stringify(joblogsidcontent));
+	console.log("sidmatch: "+sidmatch);
 	Alloy.Globals.getPrivateData(sid,item);
 	var tabViewOneController = Alloy.createController("enterjobdetail",{
 			title: args,
@@ -380,6 +388,29 @@ function checkjoblogsidfromDB(){
 		console.log("thejoblogsidarray.length : "+thejoblogsidarray.length);
 		if ( thejoblogsidarray.length > 0 ){
 			console.log("thejoblogsidarray : "+JSON.stringify(thejoblogsidarray));
+		}
+	} 
+
+}
+
+function matchjoblogsidfromDB(filename){
+	thejoblogsidarray = [];
+	var thejoblogsid = Alloy.Collections.instance('joblogsid');
+	thejoblogsid.fetch();
+	Ti.API.info(" matchjoblogsidfromDB::thejoblogsid : "+JSON.stringify(thejoblogsid));
+	if (thejoblogsid.length > 0) {
+		var joblogsidjson = thejoblogsid.toJSON();
+		console.log("matchjoblogsidfromDB::JSON.stringify(joblogsidjson): " +JSON.stringify(joblogsidjson));
+		for( var i=0; i < joblogsidjson.length; i++){
+			var projectname = joblogsidjson[i].col1;
+			var sid = joblogsidjson[i].col2.trim();
+			if (filename == projectname){
+				return sid;
+			}
+		}	
+		console.log("matchjoblogsidfromDB::thejoblogsidarray.length : "+thejoblogsidarray.length);
+		if ( thejoblogsidarray.length > 0 ){
+			console.log("matchjoblogsidfromDB::thejoblogsidarray : "+JSON.stringify(thejoblogsidarray));
 		}
 	} 
 
