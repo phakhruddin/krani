@@ -494,11 +494,11 @@ function uploadPictoGoogle(image,filename){
         parts.push('Content-Type: application/json');
         parts.push('');
         parts.push(JSON.stringify(jsonpost));
-        parts.push('--' + bound);
+        /*parts.push('--' + bound);
         parts.push('Content-Type: image/jpeg');
         parts.push('Content-Transfer-Encoding: base64');
         parts.push('');
-        parts.push(image);
+        parts.push(image);*/ 
         parts.push('--' + bound + '--');
         
 		var xhr = Ti.Network.createHTTPClient({
@@ -517,14 +517,15 @@ function uploadPictoGoogle(image,filename){
 	xhr.onerror = function(e){
 		alert("Unable to connect to the cloud.");
 	};
+	//xhr.open("POST", 'https://www.googleapis.com/drive/v2/files?uploadType=multipart');
 	xhr.open("POST", 'https://www.googleapis.com/drive/v2/files');	
-	xhr.setRequestHeader("Content-type", "application/json");
+	//xhr.setRequestHeader("Content-type", "application/json");
     xhr.setRequestHeader("Authorization", 'Bearer '+ googleAuthSheet.getAccessToken());
     xhr.setRequestHeader("Content-Type", "multipart/mixed; boundary=" + bound);
     console.log("enterjobdetail.js::uploadPictoGoogle::enterjobdetail.js::json post: "+jsonpost);
    // console.log("enterjobdetail.js::uploadPictoGoogle::enterjobdetail.js::parts post: "+parts);
-	//xhr.send(jsonpost);
-	xhr.send(parts.join("\r\n"));
+    xhr.send(jsonpost);
+	//xhr.send(parts.join("\r\n"));
 }
 
 /*
