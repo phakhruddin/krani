@@ -129,7 +129,7 @@ function UploadPhotoToServer(imagemedia){
         var image = imageView.toImage();
         console.log("enterjobdetail.js::beginning to upload to the cloud.");
         var imagedatabase64 =  Ti.Utils.base64encode(image);
-        uploadPictoGoogle(image,"uploadphoto1.jpeg");
+        uploadPictoGoogle(image,"uploadphoto3.jpeg");
 }
 
 function uploadFile(e){
@@ -374,6 +374,7 @@ function createSpreadsheet(filename,parentid) {
 	console.log("enterjobdetail.js::create ss with filename: "+filename+" and parentid: "+parentid);
 	var jsonpost = '{'
 		 +'\"title\": \"'+filename+'\",'
+		 +'\"shared\": \"true\",'
 		 +'\"parents\": ['
 		  +'{'
 		   +'\"id\": \"0AHXMbMJnSVEGUk9PVA\"'
@@ -477,55 +478,44 @@ Alloy.Globals.getPrivateData(sid,"joblog");
 
 function uploadPictoGoogle(image,filename){
 	console.log("enterjobdetail.js::uploadPictoGoogle::create ss with filename: "+filename);
-	var jsonpost = '{'
-		 +'\"title\": \"'+filename+'\",'
-		 +'\"parents\": ['
-		  +'{'
-		   +'\"id\": \"0AHXMbMJnSVEGUk9PVA\"'
-		 +' }'
-		 +'],'
-		 +'\"mimeType\": \"image/jpeg\"'
-		+'}';
-		
-		var bound = 287032396531387;
-
-        var parts = [];
-        parts.push('--' + bound);
-        parts.push('Content-Type: application/json');
-        parts.push('');
-        parts.push(JSON.stringify(jsonpost));
-        /*parts.push('--' + bound);
-        parts.push('Content-Type: image/jpeg');
-        parts.push('Content-Transfer-Encoding: base64');
-        parts.push('');
-        parts.push(image);*/ 
-        parts.push('--' + bound + '--');
-        
-		var xhr = Ti.Network.createHTTPClient({
-	    onload: function(e) {
-	    try {
-	    		Ti.API.info("enterjobdetail.js::uploadPictoGoogle::response is: "+this.responseText);
-	    		var json = JSON.parse(this.responseText);
-	    		var sid = json.id;
-	    		console.log("enterjobdetail.js::uploadPictoGoogle::sid : "+sid);
-	    		populatejoblogSIDtoDB(filename,sid);
-	    	} catch(e){
-				Ti.API.info("enterjobdetail.js::uploadPictoGoogle::cathing e: "+JSON.stringify(e));
-			}
-		}
-		});
-	xhr.onerror = function(e){
-		alert("Unable to connect to the cloud.");
-	};
-	//xhr.open("POST", 'https://www.googleapis.com/drive/v2/files?uploadType=multipart');
-	xhr.open("POST", 'https://www.googleapis.com/drive/v2/files');	
-	//xhr.setRequestHeader("Content-type", "application/json");
-    xhr.setRequestHeader("Authorization", 'Bearer '+ googleAuthSheet.getAccessToken());
-    xhr.setRequestHeader("Content-Type", "multipart/mixed; boundary=" + bound);
-    console.log("enterjobdetail.js::uploadPictoGoogle::enterjobdetail.js::json post: "+jsonpost);
-   // console.log("enterjobdetail.js::uploadPictoGoogle::enterjobdetail.js::parts post: "+parts);
-    xhr.send(jsonpost);
-	//xhr.send(parts.join("\r\n"));
+	var base64Data = Ti.Utils.base64encode(image);
+	 		var parts = [];
+	 		var bound = 287032396531387;
+	 		var meta = '\{'
+	 		+	'\"shared\": true,'
+	 		+	'\"title\": \"'+filename+'\"'	 		
+			+	'\}';
+			var parts = [];
+	        parts.push('--' + bound);
+	        parts.push('Content-Type: application/json');
+	        parts.push('');
+	        parts.push(meta);
+	        parts.push('--' + bound);
+			parts.push('Content-Type: image/jpeg');
+	        parts.push('Content-Transfer-Encoding: base64');
+	        parts.push('');
+	        parts.push(base64Data);
+	        parts.push('--' + bound + '--');
+	 		var url = "https://www.googleapis.com/upload/drive/v2/files?uploadType=multipart";
+	 		var xhr =  Titanium.Network.createHTTPClient({
+			    onload: function() {
+			    	try {
+			    		Ti.API.info(this.responseText); 
+			    	} catch(e){
+			    		Ti.API.info("cathing e: "+JSON.stringify(e));
+			    	}     
+			    },
+			    onerror: function(e) {
+			    	Ti.API.info("error e: "+JSON.stringify(e));
+			        alert("unable to talk to the cloud, will try later"); 
+			    }
+			});
+			xhr.open("POST", url);
+			xhr.setRequestHeader("Content-type", "multipart/mixed; boundary=" + bound);
+			xhr.setRequestHeader("Authorization", 'Bearer '+Alloy.Globals.googleAuthSheet.getAccessToken());
+			//xhr.setRequestHeader("Content-Length", "2000000");
+			xhr.send(parts.join("\r\n"));
+			Ti.API.info('done POSTed');
 }
 
 /*
