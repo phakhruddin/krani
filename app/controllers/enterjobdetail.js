@@ -129,7 +129,11 @@ function UploadPhotoToServer(imagemedia){
         var image = imageView.toImage();
         console.log("enterjobdetail.js::beginning to upload to the cloud.");
         var imagedatabase64 =  Ti.Utils.base64encode(image);
-        uploadPictoGoogle(image,"uploadphoto3.jpeg");
+        var date = new Date();
+        var imagefilename = filename+"_"+date.toString().replace(/ /g,'_');;
+       // uploadPictoGoogle(image,"uploadphoto3.jpeg");
+        uploadPictoGoogle(image,imagefilename);
+        //console.log("enterjobdetail.js::UploadPhotoToServer::image sid is : " +imagesid);
 }
 
 function uploadFile(e){
@@ -179,8 +183,8 @@ function takePic(e){
                                 });
                                 var image = imageView.toImage();
                                 console.log("enterjobdetail.js::beginning to upload to the cloud.");
-                                var imagedatabase64 =  Ti.Utils.base64encode(image);
-                                uploadPictoGoogle(imagedatabase64,"testimage1.jpg");
+                                //var imagedatabase64 =  Ti.Utils.base64encode(image);
+                                uploadPictoGoogle(image,"testimage1.jpg");
                         } else if (e.mediaType === Titanium.Media.MEDIA_TYPE_VIDEO){
                                 var w = Titanium.UI.createWindow({
                                         title:"Job Video",
@@ -500,10 +504,14 @@ function uploadPictoGoogle(image,filename){
 	 		var xhr =  Titanium.Network.createHTTPClient({
 			    onload: function() {
 			    	try {
-			    		Ti.API.info(this.responseText); 
+			    		var json = JSON.parse(this.responseText);
+	    				Ti.API.info("enterjobdetail.js::uploadPictoGoogle::response is: "+JSON.stringify(json));
+	    				var id = json.id;
+	    				Ti.API.info("enterjobdetail.js::uploadPictoGoogle::id is: "+id);
 			    	} catch(e){
 			    		Ti.API.info("cathing e: "+JSON.stringify(e));
-			    	}     
+			    	} 
+			    	return id;    
 			    },
 			    onerror: function(e) {
 			    	Ti.API.info("error e: "+JSON.stringify(e));
@@ -516,6 +524,7 @@ function uploadPictoGoogle(image,filename){
 			//xhr.setRequestHeader("Content-Length", "2000000");
 			xhr.send(parts.join("\r\n"));
 			Ti.API.info('done POSTed');
+			//Ti.API.info("enterjobdetail.js::uploadPictoGoogle::sid outside is: "+id);
 }
 
 /*
