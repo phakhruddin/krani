@@ -119,8 +119,10 @@ function closeWin(e) {
         console.log("enterjobdetail.js::e is: "+JSON.stringify(e));
 }
 
-function UploadPhotoToServer(e){
-        console.log("enterjobdetail.js::Upload photo to the server.");
+function UploadPhotoToServer(image){
+        console.log("enterjobdetail.js::UploadPhotoToServer:: Upload photo to the server.");
+        var image64 =  Ti.Utils.base64encode(image);
+        uploadPictoGoogle(image64,"uploadphoto1.jpeg");
 }
 
 function uploadFile(e){
@@ -155,14 +157,17 @@ function takePic(e){
         Titanium.Media.showCamera({
                 success:function(e){
                         if(e.mediaType === Titanium.Media.MEDIA_TYPE_PHOTO){
-                                var ImageView = Titanium.UI.createImageView({
+                               /* var ImageView = Titanium.UI.createImageView({
                                         image:e.media,
                                         width:288,
                                         height:215,
                                         top:12,
                                         zIndex:1
                                 });
-                                win.add(ImageView);
+                                win.add(ImageView);*/
+                                console.log("enterjobdetail.js::beginning to upload to the cloud.");
+                                var imagedatabase64 =  Ti.Utils.base64encode(e.media);
+                                uploadPictoGoogle(imagedatabase64,"testimage1.jpg");
                         } else if (e.mediaType === Titanium.Media.MEDIA_TYPE_VIDEO){
                                 var w = Titanium.UI.createWindow({
                                         title:"Job Video",
@@ -191,6 +196,7 @@ function takePic(e){
                 mediaTypes:[Titanium.Media.MEDIA_TYPE_PHOTO,Titanium.Media.MEDIA_TYPE_VIDEO],
                 videoQuality:Titanium.Media.QUALITY_HIGH
         });
+        //win.open();
         }
         
         
@@ -455,6 +461,58 @@ function populatejoblogSIDtoDB(filename,sid) {
 var sid = args.sid;
 Ti.API.info("sid for joblog in enterjobdetail.js : "+sid);
 Alloy.Globals.getPrivateData(sid,"joblog");
+
+function uploadPictoGoogle(image,filename){
+	console.log("enterjobdetail.js::uploadPictoGoogle::create ss with filename: "+filename);
+	var jsonpost = '{'
+		 +'\"title\": \"'+filename+'\",'
+		 +'\"parents\": ['
+		  +'{'
+		   +'\"id\": \"0AHXMbMJnSVEGUk9PVA\"'
+		 +' }'
+		 +'],'
+		 +'\"mimeType\": \"image/jpeg\"'
+		+'}';
+		
+		var bound = 287032396531387;
+
+        var parts = [];
+        parts.push('--' + bound);
+        parts.push('Content-Type: application/json');
+        parts.push('');
+        parts.push(JSON.stringify(jsonpost));
+        parts.push('--' + bound);
+        parts.push('Content-Type: image/jpeg');
+        parts.push('Content-Transfer-Encoding: base64');
+        parts.push('');
+        parts.push(image);
+        parts.push('--' + bound + '--');
+        
+		var xhr = Ti.Network.createHTTPClient({
+	    onload: function(e) {
+	    try {
+	    		Ti.API.info("enterjobdetail.js::uploadPictoGoogle::response is: "+this.responseText);
+	    		var json = JSON.parse(this.responseText);
+	    		var sid = json.id;
+	    		console.log("enterjobdetail.js::uploadPictoGoogle::sid : "+sid);
+	    		populatejoblogSIDtoDB(filename,sid);
+	    	} catch(e){
+				Ti.API.info("enterjobdetail.js::uploadPictoGoogle::cathing e: "+JSON.stringify(e));
+			}
+		}
+		});
+	xhr.onerror = function(e){
+		alert("Unable to connect to the cloud.");
+	};
+	xhr.open("POST", 'https://www.googleapis.com/drive/v2/files');	
+	xhr.setRequestHeader("Content-type", "application/json");
+    xhr.setRequestHeader("Authorization", 'Bearer '+ googleAuthSheet.getAccessToken());
+    xhr.setRequestHeader("Content-Type", "multipart/mixed; boundary=" + bound);
+    console.log("enterjobdetail.js::uploadPictoGoogle::enterjobdetail.js::json post: "+jsonpost);
+   // console.log("enterjobdetail.js::uploadPictoGoogle::enterjobdetail.js::parts post: "+parts);
+	//xhr.send(jsonpost);
+	xhr.send(parts.join("\r\n"));
+}
 
 /*
 $.jobdetailtf.addEventListener("focus", function(e){
