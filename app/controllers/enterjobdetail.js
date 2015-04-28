@@ -119,10 +119,17 @@ function closeWin(e) {
         console.log("enterjobdetail.js::e is: "+JSON.stringify(e));
 }
 
-function UploadPhotoToServer(image){
+function UploadPhotoToServer(imagemedia){
         console.log("enterjobdetail.js::UploadPhotoToServer:: Upload photo to the server.");
-        var image64 =  Ti.Utils.base64encode(image);
-        uploadPictoGoogle(image64,"uploadphoto1.jpeg");
+        var imageView = Titanium.UI.createImageView({
+            image:imagemedia,
+            width:100,
+            height:100
+        });
+        var image = imageView.toImage();
+        console.log("enterjobdetail.js::beginning to upload to the cloud.");
+        var imagedatabase64 =  Ti.Utils.base64encode(image);
+        uploadPictoGoogle(image,"uploadphoto1.jpeg");
 }
 
 function uploadFile(e){
@@ -165,8 +172,14 @@ function takePic(e){
                                         zIndex:1
                                 });
                                 win.add(ImageView);*/
+                               var imageView = Titanium.UI.createImageView({
+                                        image:e.media,
+                                        width:100,
+                                        height:100
+                                });
+                                var image = imageView.toImage();
                                 console.log("enterjobdetail.js::beginning to upload to the cloud.");
-                                var imagedatabase64 =  Ti.Utils.base64encode(e.media);
+                                var imagedatabase64 =  Ti.Utils.base64encode(image);
                                 uploadPictoGoogle(imagedatabase64,"testimage1.jpg");
                         } else if (e.mediaType === Titanium.Media.MEDIA_TYPE_VIDEO){
                                 var w = Titanium.UI.createWindow({
