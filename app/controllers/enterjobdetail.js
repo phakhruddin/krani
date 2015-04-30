@@ -7,6 +7,15 @@ exports.openMainWindow = function(_tab) {
         
 };
 
+var GoogleAuth = require('googleAuth');
+var googleAuthSheet = new GoogleAuth({
+        clientId : '306793301753-8ej6duert04ksb3abjutpie916l8hcc7.apps.googleusercontent.com',
+        clientSecret : 'fjrsVudiK3ClrOKWxO5QvXYL',
+        propertyName : 'googleToken',
+        scope : scope,
+        quiet: false
+});
+
 Alloy.Collections.joblog.fetch();
 
 function transformFunction(model) {
@@ -108,7 +117,8 @@ console.log("enterjobdetail.js::content.length: "+content.length);
 for (i=0;i<content.length;i++){
 	if ( content[i].col10 == sid ){
 		var notesbody = content[i].col2;
-        var imageurl = content[i].col4;
+        //var imageurl = content[i].col4;
+        var imageurl = content[i].col4+"?key="+googleAuthSheet.getAccessToken();
         var date = content[i].col1;
         jobDetailAddRow (date,notesbody,imageurl);      
 	}
@@ -328,14 +338,7 @@ scope.push ("https://www.googleapis.com/auth/drive.apps.readonly");
 scope.push ("https://www.googleapis.com/auth/drive.file");
 //scope.push ("https://www.googleapis.com/auth/plus.login");
 
-var GoogleAuth = require('googleAuth');
-var googleAuthSheet = new GoogleAuth({
-        clientId : '306793301753-8ej6duert04ksb3abjutpie916l8hcc7.apps.googleusercontent.com',
-        clientSecret : 'fjrsVudiK3ClrOKWxO5QvXYL',
-        propertyName : 'googleToken',
-        scope : scope,
-        quiet: false
-});
+
 
 //var jsonargs = JSON.stringify(args);
 console.log("enterjobdetail.js::jsonargs : "+JSON.stringify(args));
@@ -520,7 +523,7 @@ function uploadPictoGoogle(image,filename){
 			});
 			xhr.open("POST", url);
 			xhr.setRequestHeader("Content-type", "multipart/mixed; boundary=" + bound);
-			xhr.setRequestHeader("Authorization", 'Bearer '+Alloy.Globals.googleAuthSheet.getAccessToken());
+			xhr.setRequestHeader("Authorization", 'Bearer '+googleAuthSheet.getAccessToken());
 			//xhr.setRequestHeader("Content-Length", "2000000");
 			xhr.send(parts.join("\r\n"));
 			Ti.API.info('done POSTed');
