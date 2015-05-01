@@ -117,8 +117,7 @@ console.log("enterjobdetail.js::content.length: "+content.length);
 for (i=0;i<content.length;i++){
 	if ( content[i].col10 == sid ){
 		var notesbody = content[i].col2;
-        //var imageurl = content[i].col4;
-        var imageurl = content[i].col4+"?key="+googleAuthSheet.getAccessToken();
+        var imageurl = content[i].col4;
         var date = content[i].col1;
         jobDetailAddRow (date,notesbody,imageurl);      
 	}
@@ -489,7 +488,6 @@ function uploadPictoGoogle(image,filename){
 	 		var parts = [];
 	 		var bound = 287032396531387;
 	 		var meta = '\{'
-	 		+	'\"shared\": true,'
 	 		+	'\"title\": \"'+filename+'\"'	 		
 			+	'\}';
 			var parts = [];
@@ -511,6 +509,7 @@ function uploadPictoGoogle(image,filename){
 	    				Ti.API.info("enterjobdetail.js::uploadPictoGoogle::response is: "+JSON.stringify(json));
 	    				var id = json.id;
 	    				Ti.API.info("enterjobdetail.js::uploadPictoGoogle::id is: "+id);
+	    				shareAnyonePermission(id);
 			    	} catch(e){
 			    		Ti.API.info("cathing e: "+JSON.stringify(e));
 			    	} 
@@ -528,6 +527,31 @@ function uploadPictoGoogle(image,filename){
 			xhr.send(parts.join("\r\n"));
 			Ti.API.info('done POSTed');
 			//Ti.API.info("enterjobdetail.js::uploadPictoGoogle::sid outside is: "+id);
+}
+
+function shareAnyonePermission(sid){
+	console.log("enterjobdetail.js::shareAnyonePermission::sid: "+sid);
+	var jsonpost = '{'
+		 +'\"role\": \"reader\",'
+		 +'\"type\": \"anyone\"'
+		+'}';
+		var xhr = Ti.Network.createHTTPClient({
+	    onload: function(e) {
+	    try {
+	    		Ti.API.info("enterjobdetail.js::shareAnyonePermission::response is: "+this.responseText);
+	    	} catch(e){
+				Ti.API.info("cathing e: "+JSON.stringify(e));
+			}
+		}
+		});
+	xhr.onerror = function(e){
+		alert("Unable to connect to the cloud.");
+	};
+	xhr.open("POST", 'https://www.googleapis.com/drive/v2/files/'+sid+'/permissions');	
+	xhr.setRequestHeader("Content-type", "application/json");
+    xhr.setRequestHeader("Authorization", 'Bearer '+ googleAuthSheet.getAccessToken());
+    console.log("enterjobdetail.js::shareAnyonePermission::json post: "+jsonpost);
+	xhr.send(jsonpost);
 }
 
 /*
