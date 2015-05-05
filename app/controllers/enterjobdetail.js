@@ -36,8 +36,8 @@ function transformFunction(model) {
         var newRow = Ti.UI.createTableViewRow({});
         var newImageView = Ti.UI.createImageView({
                 image : transform.img,
-                height: 100,
-                width: 100
+                height: 200,
+                width: 200
         });     
         var imageRow = newRow.add(newImageView);
         //$.labor_table.setData($.joblog_row);
@@ -67,8 +67,8 @@ function jobDetailAddRow (date,notesbody,imageurl) {
         });
         var imagelabel = Ti.UI.createImageView ({
                 image : imageurl,
-                height : "100",
-                width : "100"
+                height : "200",
+                width : "200"
         });
         var innerview = Ti.UI.createView({
                 width:"90%",
@@ -96,7 +96,8 @@ function jobDetailAddRow (date,notesbody,imageurl) {
                 opacity:"0",
                 color:"transparent",
                 width: Ti.UI.FILL,
-                height: Ti.UI.SIZE
+                height: "200"
+                ///height: Ti.UI.SIZE
                 //title:"{title}"
         });
         jobrow.add(innerview);
@@ -132,8 +133,8 @@ function UploadPhotoToServer(imagemedia){
         console.log("enterjobdetail.js::UploadPhotoToServer:: Upload photo to the server.");
         var imageView = Titanium.UI.createImageView({
             image:imagemedia,
-            width:100,
-            height:100
+            width:200,
+            height:200
         });
         var image = imageView.toImage();
         console.log("enterjobdetail.js::beginning to upload to the cloud.");
@@ -187,8 +188,8 @@ function takePic(e){
                                 win.add(ImageView);*/
                                var imageView = Titanium.UI.createImageView({
                                         image:e.media,
-                                        width:100,
-                                        height:100
+                                        width:200,
+                                        height:200
                                 });
                                 var image = imageView.toImage();
                                 console.log("enterjobdetail.js::beginning to upload to the cloud.");
@@ -271,14 +272,14 @@ $.notes_textarea.addEventListener("blur",function(e){
         //$.ktb_textarea.hide();
 });
         
-function enterNotes(e) {
+function enterNotes(e,imgurl) {
         console.log("enterjobdetail.js::JSON.stringify(e) enterNotes  :" +JSON.stringify(e));
         //$.enterjobdetail_window.show($.notes_textarea);
         //$.enterjobdetail_window.add(textfield);
         var date = new Date();
         var notesbody = e.value;
         var sourcesid = e.source._hintText;
-        var imageurl = "none";
+        var imageurl = imgurl?imgurl:"none";
         var dataModel = Alloy.createModel("joblog",{
                                         col1 :  date || "none",
                                         col2 : notesbody || "none",
@@ -303,9 +304,11 @@ function enterNotes(e) {
  function submit(thedate,notesbody,imageurl) {  
         var thenone = "none";   
         var sid = args.sid;
+        var imageurl = imageurl.replace('&','&amp;');
+        //var imageurl = 'https://docs.google.com/uc?id=0B3XMbMJnSVEGS0lBXzVaLUFlZHM&amp;export=download';
         var xmldatastring = ['<entry xmlns=\'http://www.w3.org/2005/Atom\' xmlns:gsx=\'http://schemas.google.com/spreadsheets/2006/extended\'>'
         +'<gsx:col1>'+thedate+'</gsx:col1><gsx:col2>'+notesbody+'</gsx:col2><gsx:col3>'
-        +imageurl+'</gsx:col3><gsx:col4>'+thenone+'</gsx:col4><gsx:col5>'
+        +thenone+'</gsx:col3><gsx:col4>'+imageurl+'</gsx:col4><gsx:col5>'
         +thenone+'</gsx:col5><gsx:col6>'+thenone+'</gsx:col6><gsx:col7>'+thenone+'</gsx:col7><gsx:col8>'+thenone+'</gsx:col8><gsx:col9>'+thenone
         +'</gsx:col9><gsx:col10>'+sid+'</gsx:col10><gsx:col11>'+thenone+'</gsx:col11><gsx:col12>NA</gsx:col12><gsx:col13>NA</gsx:col13><gsx:col14>NA</gsx:col14><gsx:col15>NA</gsx:col15><gsx:col16>NA</gsx:col16></entry>'].join('');
         Ti.API.info('xmldatastring to POST: '+xmldatastring);
@@ -314,11 +317,11 @@ function enterNotes(e) {
         try {
                 Ti.API.info(this.responseText); 
         } catch(e){
-                Ti.API.info("cathing e: "+JSON.stringify(e));
+                Ti.API.info("enterjobdetail.js::submit::cathing e: "+JSON.stringify(e));
         }     
     },
     onerror: function(e) {
-        Ti.API.info("error e: "+JSON.stringify(e));
+        Ti.API.info("enterjobdetail.js::submit::error e: "+JSON.stringify(e));
         alert("Unable to communicate to the cloud. Please try again"); 
     }
 });
@@ -508,15 +511,19 @@ function uploadPictoGoogle(image,filename){
 			    		var json = JSON.parse(this.responseText);
 	    				Ti.API.info("enterjobdetail.js::uploadPictoGoogle::response is: "+JSON.stringify(json));
 	    				var id = json.id;
-	    				Ti.API.info("enterjobdetail.js::uploadPictoGoogle::id is: "+id);
+	    				var webcontentlink = json.webContentLink;
+	    				Ti.API.info("enterjobdetail.js::uploadPictoGoogle::id is: "+id+" webcontentlink: "+webcontentlink);
 	    				shareAnyonePermission(id);
+	    				var e = {"value":"Please refer to pic above","source":{"_hintText":id}};
+	    				console.log("enterjobdetail.js::uploadPictoGoogle::entering urlimage with info below e: "+JSON.stringify(e));
+	    				enterNotes(e,webcontentlink);
 			    	} catch(e){
-			    		Ti.API.info("cathing e: "+JSON.stringify(e));
+			    		Ti.API.info("enterjobdetail.js::uploadPictoGoogle::cathing e: "+JSON.stringify(e));
 			    	} 
 			    	return id;    
 			    },
 			    onerror: function(e) {
-			    	Ti.API.info("error e: "+JSON.stringify(e));
+			    	Ti.API.info("enterjobdetail.js::uploadPictoGoogle::error e: "+JSON.stringify(e));
 			        alert("unable to talk to the cloud, will try later"); 
 			    }
 			});
