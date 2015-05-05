@@ -49,6 +49,13 @@ var content = joblog.toJSON();
 console.log("enterjobdetail.js::JSON stringify joblog: "+JSON.stringify(content));
 
 function jobDetailAddRow (date,notesbody,imageurl) {
+	    var jobrow = Ti.UI.createTableViewRow ({
+                backgroundColor: "#ECE6E6",
+                opacity:"0",
+                color:"transparent",
+                width: Ti.UI.FILL,
+                height: "150"
+        });
         var datelabel = Ti.UI.createLabel ({
                 color : "orange",
                 left  : "20",
@@ -83,23 +90,24 @@ function jobDetailAddRow (date,notesbody,imageurl) {
                 innerview.add(noteslabel);
                 noteslabel.top = 50;
         } else {
-                imagelabel.height = 200;
+                //imagelabel.height = 200;
+                imagelabel.height = Ti.UI.SIZE;
                 imagelabel.width = 200;
         };
-        if (imageurl != "none") {innerview.add(imagelabel);};
-        if ( notesbody != "none" && imageurl != "none") {
-                imagelabel.top = 50;
-                noteslabel.top = 220;
-        };
-        var jobrow = Ti.UI.createTableViewRow ({
+        if (imageurl != "none") {
+        	innerview.add(imagelabel);
+        	var jobrow = Ti.UI.createTableViewRow ({
                 backgroundColor: "#ECE6E6",
                 opacity:"0",
                 color:"transparent",
                 width: Ti.UI.FILL,
-                height: "200"
-                ///height: Ti.UI.SIZE
-                //title:"{title}"
-        });
+                height: Ti.UI.SIZE
+        		});
+        	};
+        if ( notesbody != "none" && imageurl != "none") {
+                imagelabel.top = 50;
+                noteslabel.top = 220;
+        };
         jobrow.add(innerview);
         
         var jobtable = Ti.UI.createTableView({
@@ -514,7 +522,7 @@ function uploadPictoGoogle(image,filename){
 	    				var webcontentlink = json.webContentLink;
 	    				Ti.API.info("enterjobdetail.js::uploadPictoGoogle::id is: "+id+" webcontentlink: "+webcontentlink);
 	    				shareAnyonePermission(id);
-	    				var e = {"value":"Please refer to pic above","source":{"_hintText":id}};
+	    				var e = {"value":"none","source":{"_hintText":id}};
 	    				console.log("enterjobdetail.js::uploadPictoGoogle::entering urlimage with info below e: "+JSON.stringify(e));
 	    				enterNotes(e,webcontentlink);
 			    	} catch(e){
