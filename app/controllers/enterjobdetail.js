@@ -36,8 +36,8 @@ function transformFunction(model) {
         var newRow = Ti.UI.createTableViewRow({});
         var newImageView = Ti.UI.createImageView({
                 image : transform.img,
-                height: 200,
-                width: 200
+                height: 300,
+                width: 300
         });     
         var imageRow = newRow.add(newImageView);
         //$.labor_table.setData($.joblog_row);
@@ -74,8 +74,8 @@ function jobDetailAddRow (date,notesbody,imageurl) {
         });
         var imagelabel = Ti.UI.createImageView ({
                 image : imageurl,
-                height : "200",
-                width : "200"
+                height : "300",
+                width : "300"
         });
         var innerview = Ti.UI.createView({
                 width:"90%",
@@ -141,8 +141,8 @@ function UploadPhotoToServer(imagemedia){
         console.log("enterjobdetail.js::UploadPhotoToServer:: Upload photo to the server.");
         var imageView = Titanium.UI.createImageView({
             image:imagemedia,
-            width:200,
-            height:200
+            width:300,
+            height:300
         });
         var image = imageView.toImage();
         console.log("enterjobdetail.js::beginning to upload to the cloud.");
@@ -186,23 +186,16 @@ function takePic(e){
         Titanium.Media.showCamera({
                 success:function(e){
                         if(e.mediaType === Titanium.Media.MEDIA_TYPE_PHOTO){
-                               /* var ImageView = Titanium.UI.createImageView({
-                                        image:e.media,
-                                        width:288,
-                                        height:215,
-                                        top:12,
-                                        zIndex:1
-                                });
-                                win.add(ImageView);*/
                                var imageView = Titanium.UI.createImageView({
                                         image:e.media,
-                                        width:200,
-                                        height:200
+                                        width:300,
+                                        height:300
                                 });
                                 var image = imageView.toImage();
                                 console.log("enterjobdetail.js::beginning to upload to the cloud.");
-                                //var imagedatabase64 =  Ti.Utils.base64encode(image);
-                                uploadPictoGoogle(image,"testimage1.jpg");
+                                var date = new Date();
+        						var imagefilename = filename+"_"+date.toString().replace(/ /g,'_');;
+						        uploadPictoGoogle(image,imagefilename);
                         } else if (e.mediaType === Titanium.Media.MEDIA_TYPE_VIDEO){
                                 var w = Titanium.UI.createWindow({
                                         title:"Job Video",
