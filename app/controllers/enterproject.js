@@ -47,7 +47,7 @@ function addItem(e,itemTextField){
 		color: "#3B708A"
 		});
 	var itemTextField = Titanium.UI.createTextField({
-		id:"itemlist_tf",
+		id:"lineitem_tf",
 		borderColor : 'white', // border color
     	width: Ti.UI.FILL,
     	left:'120',
@@ -55,7 +55,7 @@ function addItem(e,itemTextField){
     	font: {fontSize: '14'}
 		});
 	var itemLabelqty = Ti.UI.createLabel({
-		id:"tflabelqty" , 
+		id:"linetflabelqty" , 
 		text:'qty(opt) : ',
 		font : {
 			fontSize: '14',
@@ -66,7 +66,7 @@ function addItem(e,itemTextField){
 		color: "#3B708A"
 		});
 	var itemTextFieldqty = Titanium.UI.createTextField({
-		id:"itemqty_tf",
+		id:"lineitemqty_tf",
 		borderColor : 'white', // border color
     	top: '32',
     	left: '90',
@@ -78,7 +78,7 @@ function addItem(e,itemTextField){
     	font: {fontSize: '14'}
 		});
 	var itemLabelprice = Ti.UI.createLabel({
-		id:"tflabelqty" , 
+		id:"linetflabelqty" , 
 		text:'price(opt) : ',
 		font : {
 			fontSize: '14',
@@ -89,7 +89,7 @@ function addItem(e,itemTextField){
 		color: "#3B708A"
 		});
 	var itemTextFieldprice = Titanium.UI.createTextField({
-		id:"itemprice_tf",
+		id:"lineitemprice_tf",
 		borderColor : 'white', // border color
        	top: '32',
 		left: '260',
@@ -137,8 +137,8 @@ function addItem(e,itemTextField){
 
 }
 
-$.itemlist_tf.addEventListener('blur', function(_e) {
-    var clientproject = $.itemlist_tf.value;
+$.lineitem_tf.addEventListener('blur', function(_e) {
+    var clientproject = $.lineitem_tf.value;
     Ti.API.info("clientproject entered is: "+clientproject);
     Titanium.App.Properties.setString('clientproject',clientproject);
     Ti.API.info("clientproject obtained is: "+Titanium.App.Properties.getString('clientproject',"none"));
@@ -152,53 +152,50 @@ $.itemlist_tf.addEventListener('blur', function(_e) {
  	console.log("saving all data ");
  	console.log("isSelectClientTrue is:"+isSelectClientTrue);
  	var tabledata = [];	
+ 	var getvalue = ["clientfirstname","clientlastname","clientphone","clientemail","clientstreetaddress","clientcity","clientstate","clientcompany"];
  	for (i=0;i<$.enterproject_table.data[0].rowCount;i++) {		
  		console.log("children count : "	+$.enterproject_table.data[0].rows[i].children.length);
  		for (j=0;j<+$.enterproject_table.data[0].rows[i].children.length;j++) { 			
-			//Ti.API.info($.enterproject_table.data[0].rows[i].children[0]);		
 			console.log("JSON stringify table 0 row "+i+' : ' +JSON.stringify($.enterproject_table.data[0].rows[i]));
 			console.log("JSON stringify table 0 row "+i+'w/children '+j+' : ' +JSON.stringify($.enterproject_table.data[0].rows[i].children[j]));
 			tabledata.push({data1:$.enterproject_table.data[0].rows[i].children[j].id || "none",data2:$.enterproject_table.data[0].rows[i].children[j].value || "none"});
-			console.log("tabledata are: "+JSON.stringify(tabledata));
+			for (z=0;z<getvalue.length;z++){
+				var subject = getvalue[z];
+				if ( $.enterproject_table.data[0].rows[i].children[j].id == subject+"_tf") {					
+					 	eval("var "+subject+" = $.enterproject_table.data[0].rows[i].children[j].value || $.enterproject_table.data[0].rows[i].children[j].text;");		 
+				};
+			}		
 		};
 	};
+	console.log("tabledata are: "+JSON.stringify(tabledata));
+	console.log("enterproject.js::saveHandler:: detect array dyn variable: "+clientfirstname+","+clientlastname+","+clientphone+","+clientemail+","+clientstreetaddress
+	+","+clientcity+","+clientstate+","+clientcompany);
 	//once tabledata is populated, find submission value
-	var item = [];
-	var itemqty = [];
-	var itemprice = [];
+	var projectname = [];
+	var projectdescr = [];
+	var lineitem = [];
+	var lineitemqty = [];
+	var lineitemprice = [];
 	for (i=0;i<tabledata.length;i++){
-		if (tabledata[i].data1 == "itemlist_tf") {  item.push({ descr:tabledata[i].data2 }); };
-		if (tabledata[i].data1 == "itemqty_tf") {  itemqty.push({ qty:tabledata[i].data2 }); };
-		if (tabledata[i].data1 == "itemprice_tf") {  itemprice.push({ price:tabledata[i].data2 }); };
+		if (tabledata[i].data1 == "projectname_tf") {  projectname.push({ name:tabledata[i].data2 }); };
+		if (tabledata[i].data1 == "projectdescr_tf") {  projectdescr.push({ descr:tabledata[i].data2 }); };
+		if (tabledata[i].data1 == "lineitem_tf") {  lineitem.push({ item:tabledata[i].data2}); };
+		if (tabledata[i].data1 == "lineitemqty_tf") {  lineitemqty.push({ itemqty:tabledata[i].data2 }); };
+		if (tabledata[i].data1 == "lineitemprice_tf") {  lineitemprice.push({ itemprice:tabledata[i].data2 }); };
 	}
-	var clientfirstname = tabledata[3].data2;
-	var clientlastname = tabledata[5].data2;
-	var clientphone = tabledata[7].data2; 
-	var clientemail = tabledata[9].data2;
-	var clientstreetaddress = tabledata[11].data2; 
-	var clientcity = tabledata[13].data2;
-	var clientstate = tabledata[15].data2;
-	var clientcompany = tabledata[17].data2;	
-	//console.log("checking clientfirstname ::: "+clientfirstname);
-	if (clientfirstname == " ") { //no entry done. Get from existing.
-		console.log("No client firstname, get them from others.");
-		var someDummy = Alloy.Models.dummy;
-		var fullname = someDummy.get('fullname');
-		var clientfirstname = someDummy.get('firstname');
-		var clientlastname = someDummy.get('lastname');
-		var clientcompany = someDummy.get('company');
-		var clientphone = someDummy.get('phone');
-		var clientemail = someDummy.get('email');
-		var clientstreetaddress = someDummy.get('address');
-		var fulladdress = someDummy.get('fulladdress');
-		var clientcity = someDummy.get('city');
-		var clientstate = someDummy.get('state');
-		var country = someDummy.get('country');
-		console.log("after dummy  get, fullname is: "+fullname+" lastname is : "+clientlastname);	
+	console.log("lineitem: "+JSON.stringify(lineitem));
+	console.log("lineitemqty: "+JSON.stringify(lineitemqty));
+	console.log("lineitemprice: "+JSON.stringify(lineitemprice));
+	var item = [];
+	item.push({'descr':projectdescr[0].descr});
+	for (i=0;i<lineitem.length;i++){
+		item.push({
+			'lineitem':lineitem[i].item,
+			'qty':lineitemqty[i].itemqty,
+			'price':lineitemprice[i].itemprice
+		});
 	}
-	console.log("item: "+JSON.stringify(item));
-	console.log("itemqty: "+JSON.stringify(itemqty));
-	console.log("itemprice: "+JSON.stringify(itemprice));
+	console.log("enterproject::saveHandler:JSON.stringify(item): "+JSON.stringify(item));
 	var projectnumber = "10";
 	var name = clientfirstname+' '+clientlastname;
 	var customerno = "2";
@@ -210,31 +207,23 @@ $.itemlist_tf.addEventListener('blur', function(_e) {
 	var duedate = "6/1/2015";
 	var currency = "USD";
 	var status = "owed";
-	console.log("clientfirstname: "+clientfirstname+" clientlastname "+clientlastname);	
-	submit(projectnumber,name,customerno,total,bal,paid,lastpaiddate,followupdate,clientphone,clientemail,duedate,currency,status);
-	console.log('submit('+projectnumber+','+name+','+customerno+','+total+','+bal+','+paid+','+lastpaiddate+','+followupdate+','+clientphone+','+clientemail+','+duedate+','
-	+currency+','+status+')');
+	var country = "USA";
+	var clientproject = projectname[0].name;
+	var notes = JSON.stringify(item);
+	console.log("enterproject.js::saveHandler::clientproject: "+clientproject+" clientfirstname: "+clientfirstname+" clientlastname "+clientlastname);	
+	submit(clientproject,clientfirstname,clientlastname,clientcompany,clientphone,clientemail,clientstreetaddress,clientcity,clientstate,country,"pending",notes,"0","6/1/2015","7/1/2015");
+	///console.log('submit('+projectnumber+','+name+','+customerno+','+total+','+bal+','+paid+','+lastpaiddate+','+followupdate+','+clientphone+','+clientemail+','+duedate+','
+	///+currency+','+status+')');
  }; 
  
- function submit(projectnumber,name,customerno,total,bal,paid,lastpaiddate,followupdate,clientphone,clientemail,duedate,currency,status) {	
+ function submit(clientproject,clientfirstname,clientlastname,clientcompany,clientphone,clientemail,clientstreetaddress,clientcity,clientstate,country,status,notes,percentcompletion,nextappt,datedue) {	
  	var now = new Date();
- 	var clientphone = Titanium.App.Properties.getString('clientphone',"none");
- 	var clientemail = Titanium.App.Properties.getString('clientemail',"none");
- 	var clientstreetaddress = Titanium.App.Properties.getString('clientstreetaddress',"none");
- 	var clientcity = Titanium.App.Properties.getString('clientcity',"none");
- 	var clientstate = Titanium.App.Properties.getString('clientstate',"none");
- 	var clientproject = Titanium.App.Properties.getString('clientproject',"none");
- 	var clientcompany = Titanium.App.Properties.getString('clientcompany',"none");
- 	//alert("On "+now+" : Info on: "+clientfirstname+" "+clientlastname+" with "+clientphone+" and email "+clientemail+" at "+clientstreetaddress+", "+clientcity+", "+clientstate+". submitted");
- 	/*var fcsv = Ti.Filesystem.getFile(Ti.Filesystem.tempDirectory,'enterclient.csv');
- 	var ftxt = Ti.Filesystem.getFile(Ti.Filesystem.tempDirectory,'enterclient.txt');
-	fcsv.write(now+", "+clientfirstname+", "+clientlastname+", "+clientphone+", "+clientemail+", "+clientstreetaddress+", "+clientcity+", "+clientstate+'\n', true); // write to the file
-	ftxt.write(now+", "+clientfirstname+", "+clientlastname+", "+clientphone+", "+clientemail+", "+clientstreetaddress+", "+clientcity+", "+clientstate+'\n', true); // write to the file*/
 	var xmldatastring = '<entry xmlns=\'http://www.w3.org/2005/Atom\' xmlns:gsx=\'http://schemas.google.com/spreadsheets/2006/extended\'>'
-	+'<gsx:col1>'+projectnumber+'</gsx:col1><gsx:col2>'+name+'</gsx:col2><gsx:col3>'
-	+customerno+'</gsx:col3><gsx:col4>'+total+'</gsx:col4><gsx:col5>'
-	+bal+'</gsx:col5><gsx:col6>'+paid+'</gsx:col6><gsx:col7>'+lastpaiddate+'</gsx:col7><gsx:col8>'+followupdate+'</gsx:col8><gsx:col9>'+clientphone
-	+'</gsx:col9><gsx:col10>'+clientemail+'</gsx:col10><gsx:col11>'+duedate+'</gsx:col11><gsx:col12>'+currency+'</gsx:col12><gsx:col13>'+status+'</gsx:col13><gsx:col14>NA</gsx:col14><gsx:col15>NA</gsx:col15><gsx:col16>NA</gsx:col16></entry>';
+	+'<gsx:col1>'+clientproject+'</gsx:col1><gsx:col2>'+clientfirstname+'</gsx:col2><gsx:col3>'
+	+clientlastname+'</gsx:col3><gsx:col4>'+clientcompany+'</gsx:col4><gsx:col5>'
+	+clientphone+'</gsx:col5><gsx:col6>'+clientemail+'</gsx:col6><gsx:col7>'+clientstreetaddress+'</gsx:col7><gsx:col8>'+clientcity+'</gsx:col8><gsx:col9>'+clientstate
+	+'</gsx:col9><gsx:col10>'+country+'</gsx:col10><gsx:col11>'+status+'</gsx:col11><gsx:col12>'+notes+'</gsx:col12><gsx:col13>'+percentcompletion+'</gsx:col13><gsx:col14>'+nextappt+'</gsx:col14><gsx:col15>'+datedue
+	+'</gsx:col15><gsx:col16>'+now+'</gsx:col16></entry>';
 	Ti.API.info('xmldatastring to POST: '+xmldatastring);
 	var xhr =  Titanium.Network.createHTTPClient({
     onload: function() {
@@ -260,9 +249,9 @@ $.itemlist_tf.addEventListener('blur', function(_e) {
  }
  
  $.enterproject_window.addEventListener('click',function(e){
-	 	$.itemlist_tf.blur();
-	 	$.itemqty_tf.blur();
-	 	$.itemprice_tf.blur();
+	 	$.lineitem_tf.blur();
+	 	$.lineitemqty_tf.blur();
+	 	$.lineitemprice_tf.blur();
 	 });
 	 
  $.clientdetail_row.addEventListener('click',function(e){
@@ -270,9 +259,9 @@ $.itemlist_tf.addEventListener('blur', function(_e) {
 	 });
  
   function allTFBlur(){
- 		$.itemlist_tf.blur();
-	 	$.itemqty_tf.blur();
-	 	$.itemprice_tf.blur();
+ 		$.lineitem_tf.blur();
+	 	$.lineitemqty_tf.blur();
+	 	$.lineitemprice_tf.blur();
  };
  
  var addnewclientrow = [ $.existing, $.clientdetail_row, $.itemline_row, $.itemdetail_row, $.addrow_row, $.itemlineend_row,$.totalrow ];
@@ -361,9 +350,9 @@ var googleAuth = new GoogleAuth({
 
 $.enterproject_table.addEventListener('click', function(e){
 	console.log("JSON stringify after table row is clicked : " +JSON.stringify(e));
-		 	$.itemlist_tf.blur();
-	 	$.itemqty_tf.blur();
-	 	$.itemprice_tf.blur();
+		 	$.lineitem_tf.blur();
+	 	$.lineitemqty_tf.blur();
+	 	$.lineitemprice_tf.blur();
 });
  
 

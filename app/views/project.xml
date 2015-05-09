@@ -12,8 +12,8 @@
 		  	<Label id="label_sub1" color="#333"  textAlign="Ti.UI.TEXT_ALIGNMENT_CENTER" top="30" text="{name}"/>
 		  	<Label id="label_sub1" color="#330"  textAlign="Ti.UI.TEXT_ALIGNMENT_CENTER" top="45" text="{phone}"/>
 			<Label  id="label_sub2" color="gray"  textAlign="Ti.UI.TEXT_ALIGNMENT_CENTER" top="60" text="{email}"/>
-			<Label  id="label_sub3" color="#333"  textAlign="Ti.UI.TEXT_ALIGNMENT_CENTER" top="75" text="{address}"/>
-			<Label  id="label_sub3" color="orange"  textAlign="Ti.UI.TEXT_ALIGNMENT_CENTER" top="90" text="{assign}"/>
+			<Label  id="label_sub3" color="orange"  textAlign="Ti.UI.TEXT_ALIGNMENT_CENTER" top="75" text="{address}"/>
+			<Label  id="label_sub3" color="#333"  textAlign="Ti.UI.TEXT_ALIGNMENT_CENTER" top="90" text="{datedue}"/>
 		  </TableViewRow>
 	  </TableView>
 	  </Widget>
