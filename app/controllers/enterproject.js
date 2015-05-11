@@ -209,7 +209,7 @@ $.lineitem_tf.addEventListener('blur', function(_e) {
 	var status = "owed";
 	var country = "USA";
 	var clientproject = projectname[0].name;
-	var notes = JSON.stringify(item);
+	var notes = JSON.stringify(item).toString().replace(/:/g,'cOlOn');
 	console.log("enterproject.js::saveHandler::clientproject: "+clientproject+" clientfirstname: "+clientfirstname+" clientlastname "+clientlastname);	
 	submit(clientproject,clientfirstname,clientlastname,clientcompany,clientphone,clientemail,clientstreetaddress,clientcity,clientstate,country,"pending",notes,"0","6/1/2015","7/1/2015");
 	///console.log('submit('+projectnumber+','+name+','+customerno+','+total+','+bal+','+paid+','+lastpaiddate+','+followupdate+','+clientphone+','+clientemail+','+duedate+','
@@ -217,7 +217,7 @@ $.lineitem_tf.addEventListener('blur', function(_e) {
  }; 
  
  function submit(clientproject,clientfirstname,clientlastname,clientcompany,clientphone,clientemail,clientstreetaddress,clientcity,clientstate,country,status,notes,percentcompletion,nextappt,datedue) {	
- 	var now = new Date();
+ 	var now = Date.now();
 	var xmldatastring = '<entry xmlns=\'http://www.w3.org/2005/Atom\' xmlns:gsx=\'http://schemas.google.com/spreadsheets/2006/extended\'>'
 	+'<gsx:col1>'+clientproject+'</gsx:col1><gsx:col2>'+clientfirstname+'</gsx:col2><gsx:col3>'
 	+clientlastname+'</gsx:col3><gsx:col4>'+clientcompany+'</gsx:col4><gsx:col5>'

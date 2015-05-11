@@ -3,8 +3,6 @@ exports.openMainWindow = function(_tab) {
   _tab.open($.enterjobdetail_window);
   Ti.API.info("This is child widow checking _tab on : " +JSON.stringify(_tab));
   Ti.API.info(" input details after tab enterjobdetail : "+JSON.stringify(args));
-  // $.labor_table.search = $.search_history;
-        
 };
 
 var GoogleAuth = require('googleAuth');
@@ -124,13 +122,11 @@ var sid = args.sid;
 console.log("enterjobdetail.js::sid right before key in contents value: "+sid);
 console.log("enterjobdetail.js::content.length: "+content.length);
 for (i=0;i<content.length;i++){
-	if ( content[i].col10 == sid ){
 		var notesbody = content[i].col2;
         var imageurl = content[i].col4;
         var date = content[i].col1;
         jobDetailAddRow (date,notesbody,imageurl);      
-	}
-}
+        }
 
 
 function closeWin(e) {
@@ -562,6 +558,9 @@ function shareAnyonePermission(sid){
 	xhr.send(jsonpost);
 }
 
+var headertitle = args.title.title.split(':')[0];
+console.log("enterjobdetails:headerTitle:: " +headertitle);
+$.joblogsection.headerTitle = headertitle;
 /*
 $.jobdetailtf.addEventListener("focus", function(e){
                 console.log("enterjobdetail.js::JSON.stringify(e)  :" +JSON.stringify(e));

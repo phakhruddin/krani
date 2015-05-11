@@ -3,16 +3,9 @@
 	<Collection src="joblog"/>
 	<Collection src="joblogsid"/>
   <Window id="enterjobdetail_window" title="Job Logs" backgroundColor="white">
-  	<!--TableView id="labor_table" backgroundColor="white"  separatorStyle="Titanium.UI.iPhone.TableViewSeparatorStyle.NONE"  backgroundColor="transparent" dataCollection="joblog" search="search_history" dataTransform="transformFunction" filterAttribute="title"-->
 	<TableView id="labor_table" height=Ti.UI.SIZE backgroundColor="white"  separatorStyle="Titanium.UI.iPhone.TableViewSeparatorStyle.NONE"  backgroundColor="transparent" >
-  		<!--SearchBar id="search_history" height="47" />
-  		<TableViewRow id="joblog_row" backgroundColor="#ECE6E6" opacity="0" color="transparent" title="{title}">
-			<View width="90%" height="80%" backgroundColor="white" borderRadius="4" borderWidth="0.1" borderColor="white">
-				<Label id="label_sub1" color="#330" left="20" textAlign="Ti.UI.TEXT_ALIGNMENT_LEFT" top="10" text="{date}"/>
-				<Label  id="label_sub2" color="orange" left="20"  textAlign="Ti.UI.TEXT_ALIGNMENT_LEFT" top="40" text="{notes}"/>
-				<ImageView id="jd_image" image="{img}" height="100" width="100"></ImageView>
-			</View>
-		</TableViewRow-->
+		<TableViewSection headerTitle="Please enter job details for:" />
+		<TableViewSection id="joblogsection" >
 		<FooterView>
 	        <View backgroundColor="#DDD" height="150">
 	        	<TextArea id="notes_textarea" width="300" height="100" top="5" borderWidth="2" borderColor="#bbb" borderRadius="5" 
@@ -28,6 +21,7 @@
 	        		</TextArea>
 	        </View>
         </FooterView>
+        </TableViewSection>
   	</TableView>
           <Toolbar id="jobdetailtoolbar" platform="ios" bottom="0" borderTop="true" borderBottom="false">
             <Items id="itemjobdetail">

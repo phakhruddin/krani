@@ -51,6 +51,56 @@ someDummy.set('percentcomplete', percentcomplete);
 someDummy.set('nextappt', nextappt);
 someDummy.set('datedue', datedue);
 
+var nextapptlabel = Ti.UI.createLabel ({
+		color : "green",
+		left  : "200",
+		textAlign : "Ti.UI.TEXT_ALIGNMENT_LEFT",
+		top : "10",
+		font:{
+			fontSize:12
+		},
+		text : nextappt
+});
+        
+var dateduelabel = Ti.UI.createLabel ({
+        color : "green",
+        left  : "200",
+        textAlign : "Ti.UI.TEXT_ALIGNMENT_LEFT",
+        top : "30",
+        font:{
+        	fontSize:12
+        },
+        text : datedue
+});
+        
+var statuslabel = Ti.UI.createLabel ({
+        color : (status == "done")?"green":"orange",
+        left  : "20",
+        textAlign : "Ti.UI.TEXT_ALIGNMENT_LEFT",
+        top : "10",
+        font:{
+        	fontSize:18
+        },
+        text : status
+});
+
+var percentcompletelabel = Ti.UI.createLabel ({
+        color : (percentcomplete == "100")?"green":"orange",
+        left  : "200",
+        textAlign : "Ti.UI.TEXT_ALIGNMENT_LEFT",
+        top : "10",
+        font:{
+        	fontSize:18
+        },
+        text : percentcomplete+"%"
+});
+
+$.status_row.add(statuslabel);
+$.status_row.add(percentcompletelabel);
+$.nextapptdetail_row.add(dateduelabel);
+$.nextapptdetail_row.add(nextapptlabel);
+
+
 function nameAction(e) {
 	console.log("projectdetail.js::JSON stringify e: "+JSON.stringify(e));
 };
