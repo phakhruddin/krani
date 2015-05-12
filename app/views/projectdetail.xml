@@ -13,20 +13,20 @@
 		  <TableViewRow id="projectdetail_row"  height="180">
 		  	  <Label id="label_header" left="20" color="#333" top="5" text="{dummy.projectname}" />
 		  	  <Label left="20" color="#333" top="40" text="Client:" />
-	   		  <Button left="100" top="35" title="{dummy.fullname}" onClick="nameAction" />
+	   		  <Button left="100" top="35" title="{dummy.fullname}" onClick="nameAction"/>
 	   		  <Label left="20" color="#333" top="60" text="Phone:" />
 	   		  <Button left="100" top="55" title="{dummy.phone}" onClick="phoneAction"/>
 	   		  <Label left="20" color="#333" top="80" text="Email:" />
 	   		  <Button left="100" top="75" title="{dummy.email}" onClick="emailAction"/>
 	   		  <Label left="20" color="#333" top="100" text="Company:" />
-	   		  <Button left="100" top="95" title="{dummy.company}" />
+	   		  <Label left="100" top="100" text="{dummy.company}" />
 	   		  <Label left="20" color="#333" top="120" text="Address:" />
 	   		  <Button left="100" top="115" title="{dummy.address}" onClick="addressAction"/>
 	   		  <Button left="100" top="135" title="{dummy.citystate}" onClick="addressAction" />
 		  </TableViewRow>
 	  </TableViewSection>
 	  <TableViewSection  headerTitle="Status summary" >
-		  <TableViewRow id="status_row"/>
+		  <TableViewRow id="status_row" height="Ti.UI.Size"/>
 	  </TableViewSection>
 	  <TableViewSection headerTitle="Dates" >
 		  <TableViewRow id="nextapptdetail_row" Title="nextapptDetail" height="54">
@@ -34,16 +34,17 @@
 	   		  <Label top="30" left="20" color="#333" text="Due Date: " />
 		  </TableViewRow>
 	  </TableViewSection>
-	 <TableViewSection headerTitle="Job Details">
-		  <TableViewRow id="jobdetail_row" Title="JobDetail">
-	   		  <Label id="JobDetails" text="Job Details > " onClick="JobDetail" />
-	   		</TableViewRow>
-	   		<TableViewRow id="getSSkey_row" Title="GetSSKey">
-	   		  <Label id="GetSSKey" text="Get Spreadsheet Key" onClick="getSSKey" />
+	  <TableViewSection headerTitle="Job Logs" >
+		  <TableViewRow id="joblog_row"  color="blue">
+		  	  <Button id="joblog_button" title="Job Logs > "/>
 		  </TableViewRow>
-		  <TableViewRow id="getSScell_row" Title="GetSSKey">
-	   		  <Label id="GetSSCell" text="Get Spreadsheet Cell"/>
+		  <TableViewRow id="jobdetail_row">
+		  	  <Button id="jobdetail_label" title="Job Details > " onClick="JobDetail" />
 		  </TableViewRow>
+	  </TableViewSection>
+	 <TableViewSection headerTitle="Job Items">
+		  <TableViewRow id="jobdescr_row"/>
+		  <TableViewRow id="jobitem_row" height="Ti.UI.Size"/>
 	  </TableViewSection>
 	  </TableView>
   </Window>
