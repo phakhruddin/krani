@@ -2,7 +2,7 @@
 	left:'140',
 	borderColor : 'white', // border color
     width: Ti.UI.FILL,
-    font: {fontSize: '20'}
+    font: {fontSize: '18'}
 },
 "#clientlastname_tf[platform=android]" : {
 		height:Ti.UI.SIZE ,
@@ -35,11 +35,16 @@
 	color: "#3B708A",
 	left: "20",
 		font:{
-		fontSize : "20"
+		fontSize : "18"
 	}
 },
 "#itemline_row" : {
 	font:{
-		fontSize : "20"
+		fontSize : "18"
+	}
+},
+"#notes_tf" : {
+	font:{
+		fontSize : "16"
 	}
 }

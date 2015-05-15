@@ -28,37 +28,13 @@
 		  	<Label id="tflabel" top="220">Company: </Label>
 		  	<TextField  top="222" id="clientcompany_tf"></TextField>
 		  </TableViewRow>
-		  <TableViewRow id="itemline_row" height="20" borderColor="white" opacity="0.1" backgroundColor="#80c342" color="white" title="client Details"/>
+		  <TableViewRow id="itemline_row" height="20" borderColor="white" opacity="0.1" backgroundColor="#80c342" color="white" title="Additional Details"/>
 	  	  <TableViewRow id="cover_row" borderColor="white" backgroundColor="transparent" height="500" opacity="0.1"/>	
-		  <TableViewRow id="itemdetail_row" borderColor="white" backgroundColor="white" height="110">
-		  	<Label id="tflabelclientname" top="10" text="client Name :"/>
-		  	<TextField id="clientname_tf" width="160" left="120" top="12" height="20" ></TextField>	
-		  	<Label id="tflabelclientdescr" top="32" text="Description :"/>
-		  	<TextField id="clientdescr_tf" width="160" left="120" top="32" height="20" ></TextField>	
-		  	<Label id="tflabellineitem" top="60" text="Line Item 1 :"/>
-		  	<TextField id="lineitem_tf" width="200" left="120" top="62" height="20" ></TextField>	
-		  	<Label id="tflineitemqty" top="80" text="qty(opt) : "/>
-		  	<TextField id="lineitemqty_tf" top="82" left="90" hintText="2" width="60" keyboardType="Ti.UI.KEYBOARD_NUMBER_PAD"></TextField>	
-		  	<Label id="tflineitemprice" left="180" top="80" text="price(opt) : "/>
-		  	<TextField id="lineitemprice_tf" left="260" top="82" width="80" hintText="120" returnKeyType="Ti.UI.RETURNKEY_DONE" keyboardType="Ti.UI.KEYBOARD_DECIMAL_PAD">
-				<KeyboardToolbar>
-			    <Toolbar id="donetoolbar" platform="ios" bottom="0" borderTop="true" borderBottom="false">
-	            <Items>
-	            	<FlexSpace/>
-	            	<Button systemButton="DONE" onClick="allTFBlur"/>
-	            </Items>
-       		    </Toolbar>
-       		    </KeyboardToolbar>
-		  	</TextField> 		  	
-		  </TableViewRow>
-		  <TableViewRow id="addrow_row" borderColor="white">
-		  	<Button id="addrow_button" image="light_add.png" width="20" height="20" right="20" onClick="addItem" />	
+		  <TableViewRow id="itemdetail_row" borderColor="white" backgroundColor="white" height="Ti.UI.SIZE">
+		  	<Label id="tflabel" top="5">Notes: </Label>
+        	<TextArea id="notes_tf" width="320" height="200" top="30" color="#888" textAlign="left" suppressReturn="false"/ >     			
 		  </TableViewRow>
 		  <TableViewRow id="itemlineend_row" height="2" borderColor="white" backgroundColor="#80c342" />
-		  <TableViewRow id="totalrow" backgroundColor="transparent" right="50" opacity="0" color="#333" Title="Total: ">
-		  	<Label id="totallabel" left="150" text="total :"/>
-		  	<Label id="totalvalue" left="200" text="100"/>
-		  </TableViewRow>
 	  </TableView>
   </Window>
   </Tab>
