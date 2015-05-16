@@ -3,6 +3,9 @@ exports.openMainWindow = function(_tab) {
   _tab.open($.enterclient_window);
   Ti.API.info("This is child widow schedule.js" +JSON.stringify(_tab));
     Alloy.Globals.checkNetworkAndGoogleAuthorized('1gnkP116nsTVxtrw6d_mXVdOiesQEPH7LVUIyHUfx9EE');
+    Ti.App.Properties.removeProperty('edithref'); //clear ref to previous spreadsheet
+    Ti.App.Properties.removeProperty('idtag'); //clear ref to previous spreadsheet
+    Ti.App.Properties.removeProperty('selfhref'); //clear ref to previous spreadsheet
 	googleAuth.authorize();
 	
 };
@@ -32,6 +35,7 @@ Titanium.App.Properties.setInt('count',count);
  function saveHandler(){
  	console.log("saving all data ");
  	var tabledata = [];	
+ 	var noentry = "none";
  	var getvalue = ["clientfirstname","clientlastname","clientphone","clientemail","clientstreetaddress","clientcity","clientstate","clientcompany","notes"];
  	for (i=0;i<$.enterclient_table.data[0].rowCount;i++) {		
  		console.log("children count : "	+$.enterclient_table.data[0].rows[i].children.length);
@@ -42,7 +46,7 @@ Titanium.App.Properties.setInt('count',count);
 			for (z=0;z<getvalue.length;z++){
 				var subject = getvalue[z];
 				if ( $.enterclient_table.data[0].rows[i].children[j].id == subject+"_tf") {					
-					 	eval("var "+subject+" = $.enterclient_table.data[0].rows[i].children[j].value || $.enterclient_table.data[0].rows[i].children[j].text;");		 
+					 	eval("var "+subject+" = $.enterclient_table.data[0].rows[i].children[j].value || $.enterclient_table.data[0].rows[i].children[j].text || noentry;");		 
 				};
 			}		
 		};
@@ -60,6 +64,7 @@ Titanium.App.Properties.setInt('count',count);
  
  function submit(clientfirstname,clientlastname,clientcompany,clientphone,clientemail,clientstreetaddress,clientcity,clientstate,country,status,notes,percentcompletion,nextappt,datedue) {	
  	var now = Date.now();
+ 	var captimestamp = now;
 	var xmldatastring = '<entry xmlns=\'http://www.w3.org/2005/Atom\' xmlns:gsx=\'http://schemas.google.com/spreadsheets/2006/extended\'>'
 	+'<gsx:col1>'+now+'</gsx:col1><gsx:col2>'+clientfirstname+'</gsx:col2><gsx:col3>'
 	+clientlastname+'</gsx:col3><gsx:col4>'+clientcompany+'</gsx:col4><gsx:col5>'
@@ -70,7 +75,22 @@ Titanium.App.Properties.setInt('count',count);
 	var xhr =  Titanium.Network.createHTTPClient({
     onload: function() {
     	try {
-    		Ti.API.info(this.responseText); 
+    		Ti.API.info(this.responseText);
+    		var xml = Titanium.XML.parseString(this.responseText);
+    		var entry = xml.documentElement.getElementsByTagName("entry");
+    		var link = xml.documentElement.getElementsByTagName("link");
+    		var idtag = xml.documentElement.getElementsByTagName("id").item(0).text;
+    		console.log("enterclient.js::submit: number of link found: " +link+ " length: "+link.length);
+    		for (i=0;i<link.length;i++){			
+    			var listitem = link.item(i);
+    			if (listitem.getAttribute("rel") == "edit"){ var edithref = listitem.getAttribute("href");}
+    			if (listitem.getAttribute("rel") == "self"){ var selfhref = listitem.getAttribute("href");}
+    		}
+    		Titanium.App.Properties.setString('edithref',edithref);
+    		Titanium.App.Properties.setString('idtag',idtag);
+    		Titanium.App.Properties.setString('selfhref',selfhref);
+    		Ti.API.info("enterclient.js::submit: self href is : "+selfhref+" edit href is: "+edithref);
+    		Ti.API.info("enterclient.js::submit: idtag is : "+idtag);
     	} catch(e){
     		Ti.API.info("cathing e: "+JSON.stringify(e));
     	}     
@@ -82,7 +102,32 @@ Titanium.App.Properties.setInt('count',count);
 });
     //var spreadsheet_id = '1-Wz7Apn4AvVpfqcNyMgfqyKA8OAoLNy5Bl0d_jQ9IZk';
     var spreadsheet_id = Titanium.App.Properties.getString('client');
-	xhr.open("POST", 'https://spreadsheets.google.com/feeds/list/'+spreadsheet_id+'/od6/private/full');
+    var existingedithref = Titanium.App.Properties.getString('edithref');
+    var idtag = Titanium.App.Properties.getString('idtag');
+    var edithref = existingedithref;
+    var selfhref = Titanium.App.Properties.getString('selfhref');
+    console.log("enterclient.js::submit::existing edit href is: "+existingedithref);
+	if (existingedithref) {
+			console.log("enterclient.js::submit::POST on existing edit href is: "+existingedithref);
+			xhr.open("PUT", existingedithref);
+			var xmldatastring = '<entry xmlns=\'http://www.w3.org/2005/Atom\' xmlns:gsx=\'http://schemas.google.com/spreadsheets/2006/extended\'>'
+				+'<id>'+idtag+'</id>'
+				+'<updated>2015-05-16T08:01:19.680Z</updated>'
+				+'<category scheme=\'http://schemas.google.com/spreadsheets/2006\' term=\'http://schemas.google.com/spreadsheets/2006#list\'/>'
+				+'<title type=\'text\'>'+captimestamp+'</title>'
+				+'<content type=\'text\'>col2: '+clientfirstname+', col3: '+clientlastname+', col4: '+clientcompany+', col5: '+clientphone+', col6: '+clientemail+', col7: '+clientstreetaddress
+				+', col8: '+clientcity+', col9: '+clientstate+', col10: '+country+', col11: NA, col12: NA, col13: NA, col14: '+captimestamp+', col15: none, col16: '+now+'</content>'
+				+'<link rel=\'self\' type=\'application/atom+xml\' href=\''+selfhref+'\'/>'
+				+'<link rel=\'edit\' type=\'application/atom+xml\' href=\''+edithref+'\'/>'
+				+'<gsx:col1>'+now+'</gsx:col1><gsx:col2>'+clientfirstname+'</gsx:col2><gsx:col3>'
+				+clientlastname+'</gsx:col3><gsx:col4>'+clientcompany+'</gsx:col4><gsx:col5>'
+				+clientphone+'</gsx:col5><gsx:col6>'+clientemail+'</gsx:col6><gsx:col7>'+clientstreetaddress+'</gsx:col7><gsx:col8>'+clientcity+'</gsx:col8>'
+				+'<gsx:col9>'+clientstate+'</gsx:col9><gsx:col10>'+country+'</gsx:col10><gsx:col11>NA</gsx:col11><gsx:col12>NA</gsx:col12><gsx:col13>NA</gsx:col13><gsx:col14>'+now+'</gsx:col14>'
+				+'<gsx:col15>'+notes+'</gsx:col15><gsx:col16>'+now+'</gsx:col16></entry>';
+			Ti.API.info('xmldatastring existing to PUT: '+xmldatastring);
+		} else {
+			xhr.open("POST", 'https://spreadsheets.google.com/feeds/list/'+spreadsheet_id+'/od6/private/full');
+		} 
 	xhr.setRequestHeader("Content-type", "application/atom+xml");
 	xhr.setRequestHeader("Authorization", 'Bearer '+ googleAuth.getAccessToken());
 	xhr.send(xmldatastring);
