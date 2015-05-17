@@ -322,9 +322,16 @@ Alloy.Globals.getPrivateData = function(sid,type) {
 				var col1 = entry.item(i).getElementsByTagName("gsx:col1").item(0).text;
 				var col2 = entry.item(i).getElementsByTagName("gsx:col2").item(0).text;
 				var col4 = entry.item(i).getElementsByTagName("gsx:col4").item(0).text;
+				var idtag = entry.item(i).getElementsByTagName("id").item(0).text.replace(':','yCoLoNy');
+				var link = entry.item(i).getElementsByTagName("link");
+				for (y=0;y<link.length;y++){			
+	    			var listitem = link.item(y);
+	    			if (listitem.getAttribute("rel") == "edit"){ var edithref = listitem.getAttribute("href").replace(':','yCoLoNy');}
+	    			if (listitem.getAttribute("rel") == "self"){ var selfhref = listitem.getAttribute("href").replace(':','yCoLoNy');}
+    			}
 				data.push({"identification":col1,"next column":col2,"col4":col4});
 				//console.log("alloy.js::updating database with data :"+JSON.stringify(data));
-				console.log("alloy.js::updating database with data :"+col1);
+				console.log("alloy.js::updating database with data :"+col1+" url:"+idtag+" "+edithref);
 				var dataModel = Alloy.createModel(type,{
 					col1 :  entry.item(i).getElementsByTagName("gsx:col1").item(0).text || "none",
 					col2 : entry.item(i).getElementsByTagName("gsx:col2").item(0).text || "none",
@@ -339,7 +346,8 @@ Alloy.Globals.getPrivateData = function(sid,type) {
 					col11 :  entry.item(i).getElementsByTagName("gsx:col11").item(0).text || "none",
 					col12 :  entry.item(i).getElementsByTagName("gsx:col12").item(0).text || "none",
 					col13 :  entry.item(i).getElementsByTagName("gsx:col13").item(0).text || "none",
-					col14 :  entry.item(i).getElementsByTagName("gsx:col14").item(0).text || "none",
+					//col14 :  entry.item(i).getElementsByTagName("gsx:col14").item(0).text || "none",
+					col14 :  idtag+"xCoLoNx"+selfhref+"xCoLoNx"+edithref+"xCoLoNx"+selfhref || "none",
 					col15 :  entry.item(i).getElementsByTagName("gsx:col15").item(0).text || "none",
 					col16 :  entry.item(i).getElementsByTagName("gsx:col16").item(0).text || "none",		
 				});	

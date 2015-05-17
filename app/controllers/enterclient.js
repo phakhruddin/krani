@@ -125,14 +125,14 @@ Titanium.App.Properties.setInt('count',count);
 				+'<gsx:col9>'+clientstate+'</gsx:col9><gsx:col10>'+country+'</gsx:col10><gsx:col11>NA</gsx:col11><gsx:col12>NA</gsx:col12><gsx:col13>NA</gsx:col13><gsx:col14>'+now+'</gsx:col14>'
 				+'<gsx:col15>'+notes+'</gsx:col15><gsx:col16>'+now+'</gsx:col16></entry>';
 			Ti.API.info('xmldatastring existing to PUT: '+xmldatastring);
+			alert('Modified & Saved Successfully!');
 		} else {
 			xhr.open("POST", 'https://spreadsheets.google.com/feeds/list/'+spreadsheet_id+'/od6/private/full');
+			alert('Saved Successfully!');
 		} 
 	xhr.setRequestHeader("Content-type", "application/atom+xml");
 	xhr.setRequestHeader("Authorization", 'Bearer '+ googleAuth.getAccessToken());
 	xhr.send(xmldatastring);
-	Ti.API.info('done POSTed');
-
  }
  
  

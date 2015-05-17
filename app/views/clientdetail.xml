@@ -1,8 +1,11 @@
 <Alloy>
 	<Model src="dummy" />
   <Window id="clientdetail_window" title="Client Detail" backgroundColor="white">
+  	<RightNavButton platform="ios">
+	   <Button systemButton="Ti.UI.iPhone.SystemButton.EDIT" onClick="editHandler" /> 
+	</RightNavButton>
 	  <TableView id="clientdetail_table"  backgroundColor="transparent">
-	  	<TableViewSection headerTitle="ContactDetails">
+	  	<TableViewSection id="contactdetail_section" headerTitle="ContactDetails">
 		  <TableViewRow id="clientdetail_row" backgroundColor="transparent" opacity="0" height="200" color="#333">
 		  	  <Label id="Firstname" text="Firstname:" left="20" top="10"/>
 		  	  <Label id="Firstname" text="{dummy.firstname}" left="120" top="10"/>
@@ -18,17 +21,23 @@
 	   		  <Label id="company" text="{dummy.company}" left="120" top="130"/>
 		  </TableViewRow>
 	  </TableViewSection>
-	  <TableViewSection headerTitle="Pending Invoice">
+	  <TableViewSection id="editcontactdetail_section" headerTitle="ContactDetails">
+		  <TableViewRow id="editclientdetail_row" backgroundColor="transparent" opacity="0" height="200" color="#333">
+		  	  <Label id="Firstname" text="Firstname:" left="20" top="10"/>
+		  	  <TextField id="Firstname_tf" value="{dummy.firstname}" left="120" top="10"/>
+		  </TableViewRow>
+	  </TableViewSection>
+	  <TableViewSection id="pendinginvoice_section" headerTitle="Pending Invoice">
 		  <TableViewRow id="invoiceclientdetail_row" Title="invoiceClientDetail">
 	   		  <Label id="invoice" text="{dummy.invoice}" />
 		  </TableViewRow>
 	  </TableViewSection>
-	  <TableViewSection headerTitle="Pending Project">
+	  <TableViewSection id="pendingproject_section" headerTitle="Pending Project">
 		  <TableViewRow id="projectclientdetail_row" Title="projectClientDetail">
 	   		  <Label id="project" text="{dummy.project}" />
 		  </TableViewRow>
 	  </TableViewSection>
-	  <TableViewSection headerTitle="Pending Proposal">
+	  <TableViewSection id="pendingproposal_section" headerTitle="Pending Proposal">
 		  <TableViewRow id="proposalclientdetail_row" Title="proposalClientDetail">
 	   		  <Label id="proposal" text="{dummy.proposal}" />
 		  </TableViewRow>

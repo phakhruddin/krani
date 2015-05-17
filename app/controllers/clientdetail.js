@@ -6,7 +6,7 @@ exports.openMainWindow = function(_tab) {
 };
 
 var someDummy = Alloy.Models.dummy;
-console.log("stringify dummy :"+JSON.stringify(someDummy));
+console.log("clientdetail.js::stringify dummy :"+JSON.stringify(someDummy));
 someDummy.set('id', '1234');
 someDummy.fetch();
 
@@ -26,6 +26,11 @@ var fulladdress = address+", "+city+". "+state+", "+country;
 var invoice = data[10];
 var project = data[11];
 var proposal = data[12];
+//var idtag = data[13].replace("xCoLoNx",",").split(',')[0].replace("yCoLoNy",":");
+var idtag = data[13].replace(/xCoLoNx/g,',').split(',')[0].replace('yCoLoNy',':');
+var edithref = data[13].replace(/xCoLoNx/g,',').split(',')[1].replace('yCoLoNy',':');
+var selfhref = data[13].replace(/xCoLoNx/g,',').split(',')[2].replace('yCoLoNy',':');
+console.log("clientdetail.js::idtag :"+idtag+" edithref: "+edithref+" selfhref: "+selfhref);
 
 someDummy.set('fullname', fullname);
 someDummy.set('firstname', firstname);
@@ -44,3 +49,11 @@ someDummy.set('name', name);
 someDummy.set('invoice', invoice);
 someDummy.set('project', project);
 someDummy.set('proposal', proposal);
+
+function editHandler(){
+	var editData = [$.editcontactdetail_section, $.pendinginvoice_section ];
+	$.clientdetail_table.setData(editData);
+}
+
+var displayData = [ $.contactdetail_section, $.pendinginvoice_section, $.pendingproject_section, $.pendingproposal_section];
+$.clientdetail_table.setData(displayData);
