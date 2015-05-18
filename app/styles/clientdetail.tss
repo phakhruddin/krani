@@ -2,7 +2,14 @@
 	color: "#3B708A",
 	left: "20",
 		font:{
-		fontSize : "14"
+		fontSize : "18"
+	}
+},
+"TextField" :{
+	color: "red",
+	left: "20",
+		font:{
+		fontSize : "18"
 	}
 },
 "Window": {
