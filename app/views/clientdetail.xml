@@ -1,12 +1,13 @@
 <Alloy>
 	<Model src="dummy" />
+	<Tab id="tab_clientdetail" title="clientdetail">
   <Window id="clientdetail_window" title="Client Detail" backgroundColor="white">
   	<RightNavButton platform="ios">
-	   <Button systemButton="Ti.UI.iPhone.SystemButton.EDIT" onClick="stageHandler" /> 
+	   <Button id="edit_rightnavbutton" systemButton="Ti.UI.iPhone.SystemButton.EDIT" onClick="editAction" /> 
 	</RightNavButton>
-	  <TableView id="clientdetail_table"  backgroundColor="transparent" >
+	  <TableView id="clientdetail_table"  backgroundColor="white" >
 	  	<TableViewSection id="contactdetail_section" headerTitle="ContactDetails">
-		  <TableViewRow id="clientdetail_row" backgroundColor="transparent" opacity="0" height="Ti.UI.SIZE" color="#333">
+		  <TableViewRow id="clientdetail_row" backgroundColor="white" height="Ti.UI.SIZE" color="#333">
 		  	  <Label id="Firstname" text="Firstname:" left="20" top="10"/>
 		  	  <Label id="Firstname" text="{dummy.firstname}" left="120" top="10"/>
 		  	  <Label id="Lastname" text="Lastname:" left="20" top="40"/>
@@ -15,10 +16,12 @@
 	   		  <Label id="phone" text="{dummy.phone}" left="120" top="70"/>
 	   		  <Label id="email" text="Email:" left="20" top="100"/>
 	   		  <Label id="email" text="{dummy.email}" left="120" top="100"/>
-	   		  <Label id="fulladdress" text="Address:" left="20" top="130" />
-	   		  <Label id="fulladdress" text="{dummy.fulladdress}" left="120" top="130" />
-	   		  <Label id="company" text="Company:" left="20" top="180"/>
-	   		  <Label id="company" text="{dummy.company}" left="120" top="180"/>
+	   		  <Label id="address" text="Address:" left="20" top="130" />
+	   		  <Label id="address" text="{dummy.address}" left="120" top="130" />
+	   		  <Label id="citystate" text="City/State:" left="20" top="160" />
+	   		  <Label id="citystate" text="{dummy.citystate}" left="120" top="160" />
+	   		  <Label id="company" text="Company:" left="20" top="190"/>
+	   		  <Label id="company" text="{dummy.company}" left="120" top="190"/>
 		  </TableViewRow>
 	  </TableViewSection>
 	  <TableViewSection id="pendinginvoice_section" headerTitle="Pending invoice">
@@ -38,4 +41,5 @@
 	  </TableViewSection>
 	  </TableView>
   </Window>
+ </Tab>
 </Alloy>

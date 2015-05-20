@@ -9,7 +9,7 @@
   <Tab id="tab_one" title="MAIN" icon="home45.png">
     <Window title="Krani" class='container'>
       <TableView id="table" backgroundColor="white" >
- 	      <TableViewRow id="schedule" opacity="0" Title="location">
+ 	      <TableViewRow id="schedule" opacity="1.0" Title="location">
  	      	<Label id="label_schedule"/>
 		   		  <Label id="label_schedule" color="orange"  left="80" text="Schedule"/>
 		   		  <ImageView image="calendar90.png" left="12" height="50" width="50"/>

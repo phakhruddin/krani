@@ -1,7 +1,7 @@
 <Alloy>
 <Model src="dummy" />
 <Tab id="enterclient_tab">
-  <Window id="enterclient_window"backgroundColor="white" title="client Entry">
+  <Window id="enterclient_window" backgroundColor="white" title="client Entry">
   	<RightNavButton platform="ios">
 	   <Button systemButton="Ti.UI.iPhone.SystemButton.SAVE" onClick="saveHandler" /> 
 	</RightNavButton>

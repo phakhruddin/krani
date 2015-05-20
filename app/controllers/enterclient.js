@@ -1,14 +1,25 @@
 var args = arguments[0] || {};
 exports.openMainWindow = function(_tab) {
   _tab.open($.enterclient_window);
-  Ti.API.info("This is child widow schedule.js" +JSON.stringify(_tab));
+  Ti.API.info("This is child widow enterclient.js" +JSON.stringify(_tab));
     Alloy.Globals.checkNetworkAndGoogleAuthorized('1gnkP116nsTVxtrw6d_mXVdOiesQEPH7LVUIyHUfx9EE');
-    Ti.App.Properties.removeProperty('edithref'); //clear ref to previous spreadsheet
-    Ti.App.Properties.removeProperty('idtag'); //clear ref to previous spreadsheet
-    Ti.App.Properties.removeProperty('selfhref'); //clear ref to previous spreadsheet
 	googleAuth.authorize();
 	
 };
+
+    Ti.App.Properties.removeProperty('edithref'); //clear ref to previous spreadsheet
+    Ti.App.Properties.removeProperty('idtag'); //clear ref to previous spreadsheet
+    Ti.App.Properties.removeProperty('selfhref'); //clear ref to previous spreadsheet
+    
+console.log("clientdetail.js:: JSON.stringify(args) :"+JSON.stringify(args));
+var edithref = args.edithref;
+var selfhref = args.selfhref;
+var idtag = args.idtag;
+console.log("clientdetail.js:: existing edithref: " +edithref);
+(edithref)?Titanium.App.Properties.setString('edithref',edithref):Ti.App.Properties.removeProperty('edithref');
+(selfhref)?Titanium.App.Properties.setString('selfhref',selfhref):Ti.App.Properties.removeProperty('selfhref');
+(idtag)?Titanium.App.Properties.setString('idtag',idtag):Ti.App.Properties.removeProperty('idtag');
+console.log("clientdetail.js:: existing Titanium.App.Properties.getString('edithref'): " +Titanium.App.Properties.getString('edithref'));
 
 function addRows(){
  console.log("JSON stringify e : " +JSON.stringify(e));
@@ -32,8 +43,8 @@ Titanium.App.Properties.setInt('count',count);
  
  var itemvalue =[];
 
- function saveHandler(){
- 	console.log("saving all data ");
+ function saveHandler(e){
+ 	console.log("enterclient.js::saveHandler::saving all data JSON e: "+JSON.stringify(e));
  	var tabledata = [];	
  	var noentry = "none";
  	var getvalue = ["clientfirstname","clientlastname","clientphone","clientemail","clientstreetaddress","clientcity","clientstate","clientcompany","notes"];
@@ -63,52 +74,48 @@ Titanium.App.Properties.setInt('count',count);
  }; 
  
  function submit(clientfirstname,clientlastname,clientcompany,clientphone,clientemail,clientstreetaddress,clientcity,clientstate,country,status,notes,percentcompletion,nextappt,datedue) {	
- 	var now = Date.now();
- 	var captimestamp = now;
-	var xmldatastring = '<entry xmlns=\'http://www.w3.org/2005/Atom\' xmlns:gsx=\'http://schemas.google.com/spreadsheets/2006/extended\'>'
-	+'<gsx:col1>'+now+'</gsx:col1><gsx:col2>'+clientfirstname+'</gsx:col2><gsx:col3>'
-	+clientlastname+'</gsx:col3><gsx:col4>'+clientcompany+'</gsx:col4><gsx:col5>'
-	+clientphone+'</gsx:col5><gsx:col6>'+clientemail+'</gsx:col6><gsx:col7>'+clientstreetaddress+'</gsx:col7><gsx:col8>'+clientcity+'</gsx:col8>'
-	+'<gsx:col9>'+clientstate+'</gsx:col9><gsx:col10>'+country+'</gsx:col10><gsx:col11>NA</gsx:col11><gsx:col12>NA</gsx:col12><gsx:col13>NA</gsx:col13><gsx:col14>'+now+'</gsx:col14>'
-	+'<gsx:col15>'+notes+'</gsx:col15><gsx:col16>'+now+'</gsx:col16></entry>';
-	Ti.API.info('xmldatastring to POST: '+xmldatastring);
-	var xhr =  Titanium.Network.createHTTPClient({
-    onload: function() {
-    	try {
-    		Ti.API.info(this.responseText);
-    		var xml = Titanium.XML.parseString(this.responseText);
-    		var entry = xml.documentElement.getElementsByTagName("entry");
-    		var link = xml.documentElement.getElementsByTagName("link");
-    		var idtag = xml.documentElement.getElementsByTagName("id").item(0).text;
-    		console.log("enterclient.js::submit: number of link found: " +link+ " length: "+link.length);
-    		for (i=0;i<link.length;i++){			
-    			var listitem = link.item(i);
-    			if (listitem.getAttribute("rel") == "edit"){ var edithref = listitem.getAttribute("href");}
-    			if (listitem.getAttribute("rel") == "self"){ var selfhref = listitem.getAttribute("href");}
-    		}
-    		Titanium.App.Properties.setString('edithref',edithref);
-    		Titanium.App.Properties.setString('idtag',idtag);
-    		Titanium.App.Properties.setString('selfhref',selfhref);
-    		Ti.API.info("enterclient.js::submit: self href is : "+selfhref+" edit href is: "+edithref);
-    		Ti.API.info("enterclient.js::submit: idtag is : "+idtag);
-    	} catch(e){
-    		Ti.API.info("cathing e: "+JSON.stringify(e));
-    	}     
-    },
-    onerror: function(e) {
-    	Ti.API.info("error e: "+JSON.stringify(e));
-        alert("Unable to communicate to the cloud. Please try again."); 
-    }
-});
-    //var spreadsheet_id = '1-Wz7Apn4AvVpfqcNyMgfqyKA8OAoLNy5Bl0d_jQ9IZk';
+ 	//var spreadsheet_id = '1-Wz7Apn4AvVpfqcNyMgfqyKA8OAoLNy5Bl0d_jQ9IZk';
     var spreadsheet_id = Titanium.App.Properties.getString('client');
     var existingedithref = Titanium.App.Properties.getString('edithref');
+    var edithref = Titanium.App.Properties.getString('edithref');
+   /// var existingedithref = edithref;
     var idtag = Titanium.App.Properties.getString('idtag');
-    var edithref = existingedithref;
+    //var edithref = existingedithref;
     var selfhref = Titanium.App.Properties.getString('selfhref');
-    console.log("enterclient.js::submit::existing edit href is: "+existingedithref);
+    var now = Date.now();
+ 	var captimestamp = now;
+    console.log("enterclient.js::submit::existing edit href is: "+existingedithref+' idtag :'+idtag);
+	var xhr =  Titanium.Network.createHTTPClient({
+	    onload: function() {
+	    	try {
+	    		Ti.API.info(this.responseText);
+	    		var xml = Titanium.XML.parseString(this.responseText);
+	    		var entry = xml.documentElement.getElementsByTagName("entry");
+	    		var link = xml.documentElement.getElementsByTagName("link");
+	    		var idtag = xml.documentElement.getElementsByTagName("id").item(0).text;
+	    		console.log("enterclient.js::submit: number of link found: " +link+ " length: "+link.length);
+	    		for (i=0;i<link.length;i++){			
+	    			var listitem = link.item(i);
+	    			if (listitem.getAttribute("rel") == "edit"){ var edithref = listitem.getAttribute("href");}
+	    			if (listitem.getAttribute("rel") == "self"){ var selfhref = listitem.getAttribute("href");}
+	    		}
+	    		Titanium.App.Properties.setString('edithref',edithref);
+	    		Titanium.App.Properties.setString('idtag',idtag);
+	    		Titanium.App.Properties.setString('selfhref',selfhref);
+	    		Ti.API.info("enterclient.js::submit: self href is : "+selfhref+" edit href is: "+edithref);
+	    		Ti.API.info("enterclient.js::submit: idtag is : "+idtag);
+	    	} catch(e){
+	    		Ti.API.info("cathing e: "+JSON.stringify(e));
+	    	}     
+	    },
+	    onerror: function(e) {
+	    	Ti.API.info("error e: "+JSON.stringify(e));
+	        alert("Unable to communicate to the cloud. Please try again."); 
+	    }
+	});
+
 	if (existingedithref) {
-			console.log("enterclient.js::submit::POST on existing edit href is: "+existingedithref);
+			console.log("enterclient.js::submit::PUT on existing edit href is: "+existingedithref);
 			xhr.open("PUT", existingedithref);
 			var xmldatastring = '<entry xmlns=\'http://www.w3.org/2005/Atom\' xmlns:gsx=\'http://schemas.google.com/spreadsheets/2006/extended\'>'
 				+'<id>'+idtag+'</id>'
@@ -127,6 +134,14 @@ Titanium.App.Properties.setInt('count',count);
 			Ti.API.info('xmldatastring existing to PUT: '+xmldatastring);
 			alert('Modified & Saved Successfully!');
 		} else {
+			var xmldatastring = '<entry xmlns=\'http://www.w3.org/2005/Atom\' xmlns:gsx=\'http://schemas.google.com/spreadsheets/2006/extended\'>'
+				+'<gsx:col1>'+now+'</gsx:col1><gsx:col2>'+clientfirstname+'</gsx:col2><gsx:col3>'
+				+clientlastname+'</gsx:col3><gsx:col4>'+clientcompany+'</gsx:col4><gsx:col5>'
+				+clientphone+'</gsx:col5><gsx:col6>'+clientemail+'</gsx:col6><gsx:col7>'+clientstreetaddress+'</gsx:col7><gsx:col8>'+clientcity+'</gsx:col8>'
+				+'<gsx:col9>'+clientstate+'</gsx:col9><gsx:col10>'+country+'</gsx:col10><gsx:col11>NA</gsx:col11><gsx:col12>NA</gsx:col12><gsx:col13>NA</gsx:col13><gsx:col14>'+now+'</gsx:col14>'
+				+'<gsx:col15>'+notes+'</gsx:col15><gsx:col16>'+now+'</gsx:col16></entry>';
+				Ti.API.info('xmldatastring to POST: '+xmldatastring);
+
 			xhr.open("POST", 'https://spreadsheets.google.com/feeds/list/'+spreadsheet_id+'/od6/private/full');
 			alert('Saved Successfully!');
 		} 
@@ -168,6 +183,15 @@ $.enterclient_table.addEventListener('click', function(e){
 	console.log("JSON stringify after table row is clicked : " +JSON.stringify(e));
 	$.notes_tf.blur();
 });
+
+(args.firstname)?$.clientfirstname_tf.value=args.firstname:$.clientfirstname_tf.value=" ";
+(args.lastname)?$.clientlastname_tf.value=args.lastname:$.clientlastname_tf.value=" ";
+(args.company)?$.clientcompany_tf.value=args.company:$.clientcompany_tf.value=" ";
+(args.phone)?$.clientphone_tf.value=args.phone:$.clientphone_tf.value=" ";
+(args.email)?$.clientemail_tf.value=args.email:$.clientemail_tf.value=" ";
+(args.address)?$.clientstreetaddress_tf.value=args.address:$.clientstreetaddress_tf.value=" ";
+(args.city)?$.clientcity_tf.value=args.city:$.clientcity_tf.value=" ";
+(args.state)?$.clientstate_tf.value=args.state:$.clientstate_tf.value=" ";
  
 
 
