@@ -30,6 +30,7 @@ $.schedule.addEventListener ("click", function(e){
 });
  	
 $.client.addEventListener ("click", function(e){
+	$.activityIndicator.show();
 	Alloy.Globals.openDetail(e);
 	Ti.API.info("e info : "+JSON.stringify(e));
 	var item = e.row.id;
@@ -68,6 +69,12 @@ $.proposal.addEventListener ("click", function(e){
 	Alloy.Globals.openDetail(e);
 	var item = e.row.id;
 	openNextTab(item);
+});
+
+$.settings.addEventListener ("click", function(e){
+	Alloy.Globals.openDetail(e);
+	var tabViewOneController = Alloy.createController("settings");
+	tabViewOneController.openMainWindow($.tab_one);	
 });
 
 

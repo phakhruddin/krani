@@ -111,7 +111,7 @@ var percentcompletelabel = Ti.UI.createLabel ({
 $.status_row.add(statuslabel);
 $.status_row.add(percentcompletelabel);
 $.nextapptdetail_row.add(dateduelabel);
-$.nextapptdetail_row.add(nextapptlabel);
+//$.nextapptdetail_row.add(nextapptlabel);
 
 
 function nameAction(e) {

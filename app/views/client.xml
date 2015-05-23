@@ -1,7 +1,8 @@
 <Alloy>
 <Collection src="client"/>
   <Tab id="tab_clientlist" title="clientlist">
-	  <Window id="clientlist_window" backgroundColor="white" title="clientlist List">	
+	  <Window id="clientlist_window" backgroundColor="white" title="clientlist List">
+	  	<ActivityIndicator id="activityIndicator" style="Ti.UI.iPhone.ActivityIndicatorStyle.DARK" message="Loading.."/>	
 	  <RightNavButton platform="ios">
 	   <Button systemButton="Ti.UI.iPhone.SystemButton.ADD" onClick="addHandler" /> 
 	</RightNavButton>

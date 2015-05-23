@@ -38,9 +38,9 @@
 		  <TableViewRow id="joblog_row"  color="blue">
 		  	  <Button id="joblog_button" title="Job Logs > "/>
 		  </TableViewRow>
-		  <TableViewRow id="jobdetail_row">
+		  <!--TableViewRow id="jobdetail_row">
 		  	  <Button id="jobdetail_label" title="Job Details > " onClick="JobDetail" />
-		  </TableViewRow>
+		  </TableViewRow-->
 	  </TableViewSection>
 	 <TableViewSection headerTitle="Job Items">
 		  <TableViewRow id="jobdescr_row"/>

@@ -229,6 +229,21 @@ $.lineitem_tf.addEventListener('blur', function(_e) {
     onload: function() {
     	try {
     		Ti.API.info(this.responseText); 
+			var xml = Titanium.XML.parseString(this.responseText);
+    		var entry = xml.documentElement.getElementsByTagName("entry");
+    		var link = xml.documentElement.getElementsByTagName("link");
+    		var idtag = xml.documentElement.getElementsByTagName("id").item(0).text;
+    		console.log("enterclient.js::submit: number of link found: " +link+ " length: "+link.length);
+    		for (i=0;i<link.length;i++){			
+    			var listitem = link.item(i);
+    			if (listitem.getAttribute("rel") == "edit"){ var edithref = listitem.getAttribute("href");}
+    			if (listitem.getAttribute("rel") == "self"){ var selfhref = listitem.getAttribute("href");}
+    		}
+    		Titanium.App.Properties.setString('edithref',edithref);
+    		Titanium.App.Properties.setString('idtag',idtag);
+    		Titanium.App.Properties.setString('selfhref',selfhref);
+    		Ti.API.info("enterproject.js::submit: self href is : "+selfhref+" edit href is: "+edithref);
+    		Ti.API.info("enterproject.js::submit: idtag is : "+idtag);
     	} catch(e){
     		Ti.API.info("cathing e: "+JSON.stringify(e));
     	}     

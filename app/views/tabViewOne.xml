@@ -8,6 +8,7 @@
   <Collection src="proposal"/>
   <Tab id="tab_one" title="MAIN" icon="home45.png">
     <Window title="Krani" class='container'>
+    <ActivityIndicator id="activityIndicator" style="Ti.UI.iPhone.ActivityIndicatorStyle.PLAIN"/>
       <TableView id="table" backgroundColor="white" >
  	      <TableViewRow id="schedule" opacity="1.0" Title="location">
  	      	<Label id="label_schedule"/>
@@ -47,6 +48,10 @@
 		   <TableViewRow id="report" backgroundColor="transparent" Title="Report">
 		   		  <Label id="label_report" color="#333"  left="80" text="Report"/>
 		   		  <ImageView image="business155.png" left="20" height="30" width="30"/>
+		   </TableViewRow>
+		   <TableViewRow id="settings" backgroundColor="transparent" Title="Settings">
+		   		  <Label id="label_settings" color="orange"  left="80" text="Settings"/>
+		   		  <ImageView image="gear16.png" left="20" height="30" width="30"/>
 		   </TableViewRow>
 		   <TableViewRow id="google" Title="google"/>
 		   <TableViewRow id="bootstrap" Title="bootstrap"/>

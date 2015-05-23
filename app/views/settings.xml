@@ -1,0 +1,18 @@
+<Alloy>
+  <Window id="settings_window" backgroundColor="white" title="Settings">
+ 	  <TableView id="settings_table" backgroundColor="transparent">
+ 	  	<TableViewSection headerTitle="Debug">
+		 <TableViewRow id="row_mindebug" Title="Min Debug">
+			 <Label id="label_mindebug" color="#333" top="5" left="20" text="Minimum Debug">Turn ON Minimum Debug</Label>
+			 <Label id="label_mindebug1" color="gray" top="30" left="20" text="FG LOC">Minimum debug</Label>
+		     <Switch id="switch_mindebug" right="20" titleOff="OFF" titleOn="ON" value=false/>
+		 </TableViewRow>
+		 <TableViewRow id="row_maxdebug" Title="max Debug">
+			 <Label id="label_maxdebug" color="#333" top="5" left="20" text="maximum Debug">Turn ON Maximum Debug</Label>
+			 <Label id="label_maxdebug1" color="gray" top="30" left="20" text="FG LOC">Maximum debug</Label>
+		     <Switch id="switch_maxdebug" right="20" titleOff="OFF" titleOn="ON" value=false/>
+		 </TableViewRow>
+		 </TableViewSection>
+	  </TableView>
+  </Window>
+</Alloy>

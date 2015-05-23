@@ -24,7 +24,6 @@ var laborsid = '1-YaHKOuTqpRG1X83_1tZ6zHWrO1krEmV99HS7S130Hc'; Titanium.App.Prop
 var joblogsid = '1SLNRI176qK51rkFWWCQvqToXswdNYlqINsdB2HM0ozk'; Titanium.App.Properties.setString('joblog',joblogsid);
 
 
-
 console.log("alloy.js::TempDir: "+JSON.stringify(Ti.Filesystem.tempDirectory));
 			
 Alloy.Globals.writeFile = function (content, filename){
@@ -289,11 +288,13 @@ Alloy.Globals.createController = function(controller,sourcetab){
 
 Alloy.Globals.getPrivateData = function(sid,type) {	
 	var data = [];
+	var maxdebug = Titanium.App.Properties.getInt('maxdebug');
+	var mindebug = Titanium.App.Properties.getInt('mindebug');
 	//Alloy.Globals.checkGoogleisAuthorized();
 	Alloy.Globals.checkNetworkAndGoogleAuthorized('1gnkP116nsTVxtrw6d_mXVdOiesQEPH7LVUIyHUfx9EE');
 	//Google Auth check.
 	var needAuth = Titanium.App.Properties.getString('needAuth');
-	console.log("alloy.js::needAuth is :  " +needAuth);
+	if(mindebug==1){console.log("alloy.js::needAuth is :  " +needAuth);};
 	if (needAuth == "true") {googleAuthSheet.authorize();};
 	var url = "https://spreadsheets.google.com/feeds/list/"+sid+"/od6/private/full";
 	var thefile = "gss"+sid+".xml";
@@ -301,11 +302,11 @@ Alloy.Globals.getPrivateData = function(sid,type) {
 	    onload: function(e) {
 	    try {
 			var xml = Titanium.XML.parseString(this.responseText);
-			console.log("alloy.js::pop db:: response txt is: "+this.responseText);
-			console.log("alloy.js::pop db:: this xml is: " +xml);	   
+			if(maxdebug==1){console.log("alloy.js::pop db:: response txt is: "+this.responseText);};
+			if(maxdebug==1){console.log("alloy.js::pop db:: this xml is: " +xml);	};   
 			var feed = xml.documentElement.getElementsByTagName("feed");
 			var entry = xml.documentElement.getElementsByTagName("entry"); 
-			console.log("alloy.js::this entry length is: " +entry.length);
+			(mindebug == 1) && console.log("alloy.js::this entry length is: " +entry.length);
 			// deleting existing entry in database start
 			(type == 'client') && Alloy.Collections.client.deleteAll();
 			(type == 'project') && Alloy.Collections.project.deleteAll();
@@ -330,8 +331,8 @@ Alloy.Globals.getPrivateData = function(sid,type) {
 	    			if (listitem.getAttribute("rel") == "self"){ var selfhref = listitem.getAttribute("href").replace(':','yCoLoNy');}
     			}
 				data.push({"identification":col1,"next column":col2,"col4":col4});
-				//console.log("alloy.js::updating database with data :"+JSON.stringify(data));
-				console.log("alloy.js::updating database with data :"+col1+" url:"+idtag+" "+edithref);
+				(maxdebug==1) && console.log("alloy.js::updating database with data :"+JSON.stringify(data));
+				(maxdebug==1) && console.log("alloy.js::updating database with data :"+col1+" url:"+idtag+" "+edithref);
 				var dataModel = Alloy.createModel(type,{
 					col1 :  entry.item(i).getElementsByTagName("gsx:col1").item(0).text || "none",
 					col2 : entry.item(i).getElementsByTagName("gsx:col2").item(0).text || "none",
