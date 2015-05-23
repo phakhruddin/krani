@@ -20,7 +20,7 @@ $.proposallist_window.addEventListener("click", function(e){
 
 function transformFunction(model) {
 	var transform = model.toJSON();
-	console.log("transform is ::" +JSON.stringify(transform));
+	///console.log("transform is ::" +JSON.stringify(transform));
 	transform.title = transform.col1+":"+transform.col2+":"+transform.col3+":"+transform.col4+":"+transform.col5+":"+transform.col6+":"+transform.col7+":"+transform.col8+":"+transform.col9+":"+transform.col10+":"+transform.col11+":"+transform.col12+":"+transform.col13+":"+transform.col14+":"+transform.col15+":"+transform.col16;
 	transform.custom = transform.col1;
 	transform.name = transform.col2+"  "+transform.col3;

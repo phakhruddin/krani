@@ -3,7 +3,7 @@
 <Tab id="enterclient_tab">
   <Window id="enterclient_window" backgroundColor="white" title="client Entry">
   	<RightNavButton platform="ios">
-	   <Button systemButton="Ti.UI.iPhone.SystemButton.SAVE" onClick="saveHandler" /> 
+	   <Button id="save_button" systemButton="Ti.UI.iPhone.SystemButton.SAVE" onClick="saveHandler" /> 
 	</RightNavButton>
 	  <TableView id="enterclient_table" backgroundColor="transparent" separatorColor="transparent" >
 	  	<TableViewRow id="existing" borderColor="white" backgroundColor="#80c342" height="30" opacity="1" Title="Existing">

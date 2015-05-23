@@ -11,7 +11,7 @@ someDummy.set('id', '1234');
 someDummy.fetch();
 
 var data = args.title.split(':');
-var name = data[0];
+var customerid = data[0];
 var firstname = data[1];
 var lastname = data[2];
 var fullname = firstname+" "+lastname;
@@ -33,6 +33,19 @@ var edithref = data[13].replace(/xCoLoNx/g,',').split(',')[2].replace('yCoLoNy',
 
 console.log("clientdetail.js::idtag :"+idtag+" edithref: "+edithref+" selfhref: "+selfhref);
 
+if (customerid) {
+	var clients = Alloy.Collections.instance('client');
+	clients.fetch();		
+	var theclient = clients.where({col1:customerid}); //FILTER
+	if (theclient.length > 0 ){
+		for (j=0;j<theclient.length;j++){
+			   var theclientjson = theclient[j].toJSON(); // EXTRACT ONE ROW. IF MANY. FOR LOOP.
+    		   console.log("clientdetail.js::theclientjson.col1 :"+theclientjson.col1+" col2: "+theclientjson.col2);
+		}
+	}
+ 
+}
+
 someDummy.set('fullname', fullname);
 someDummy.set('firstname', firstname);
 someDummy.set('lastname', lastname);
@@ -46,7 +59,7 @@ someDummy.set('citystate', citystate);
 someDummy.set('country', country);
 someDummy.set('firstname', firstname);
 someDummy.set('lastname', lastname);
-someDummy.set('name', name);
+someDummy.set('customerid', customerid);
 someDummy.set('invoice', invoice);
 someDummy.set('project', project);
 someDummy.set('proposal', proposal);
@@ -54,6 +67,7 @@ someDummy.set('proposal', proposal);
 function editAction(e){
 		console.log("clientdetail.js:: editAction e : "+JSON.stringify(e));
 		var clientController = Alloy.createController('enterclient',{
+			customerid : customerid,
 			firstname : firstname,
 			lastname : lastname,
 			fullname : fullname,

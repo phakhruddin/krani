@@ -20,7 +20,7 @@ function transformFunction(model) {
         var currentaddr;
 
         var transform = model.toJSON();
-        console.log("enterjobdetail.js::transform is ::" +JSON.stringify(transform));
+        ///console.log("enterjobdetail.js::transform is ::" +JSON.stringify(transform));
         transform.title = transform.col1+":"+transform.col2+":"+transform.col5+":"+transform.col6+":"+transform.col7+":"
                                                 +transform.col8+":"+transform.col9+":"+transform.col10+":"+transform.col11+":"+transform.col12+":"+transform.col13
                                                 +":"+transform.col14+":"+transform.col15+":"+transform.col16;

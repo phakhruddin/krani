@@ -6,44 +6,6 @@ exports.openMainWindow = function(_tab) {
   Alloy.Collections.schedule.fetch();
   Alloy.Collections.labor.fetch();	
   
-/*
-  $.events.addEventListener ("click", function(e){
-		Ti.API.info('index = ' + JSON.stringify(e.index));
-		Ti.API.info("in open_button click event title :"+e.row.Title);
-		CheckEvents();
-	});
-  
-  $.createevent.addEventListener ("click", function(e){
-		Ti.API.info('index = ' + JSON.stringify(e.index));
-		Ti.API.info("in open_button click event title :"+e.row.Title);	
-		CreateEvents();
-	});
-	
-  $.createeventfuture.addEventListener ("click", function(e){
-		Ti.API.info('index = ' + JSON.stringify(e.index));
-		Ti.API.info("in open_button click event title :"+e.row.Title);	
-		Alloy.Globals.createController('createevent',$.schedule_tab);
-	});
-	
-  $.createmultipleevent.addEventListener ("click", function(e){
-		Ti.API.info('index = ' + JSON.stringify(e.index));
-		Ti.API.info("in open_button click event title :"+e.row.Title);	
-		multiplepicker();
-	});
-	
-  $.sharedcalendar.addEventListener ("click", function(e){
-		Ti.API.info('index = ' + JSON.stringify(e.index));
-		Ti.API.info("in open_button click event title :"+e.row.Title);
-			googleAuthCalendar;
-			console.log('Access Token for Calendar is: ' + googleAuthCalendar.getAccessToken());
-			googleAuthCalendar.isAuthorized(function() {
-				console.log('Access Token: ' + googleAuthCalendar.getAccessToken());
-			}, function() {
-				console.log('Authorized first, see next window: ');
-			});
-		Alloy.Globals.createController('sharedcalendar',$.schedule_tab);
-	});*/
-
 };
 
 $.ptr.refresh();
@@ -466,7 +428,7 @@ $.ptr.refresh();
 	var dummyRow = Titanium.UI.createTableViewRow({height:5, backgroundColor:'gray', className:'dummyRow'}); 
 	//var titleLabel = Ti.UI.createLabel({color:'gray', text:"Title", font:{fontSize:20, fontWeight:'normal'}, top:8, left:12, height:24, width:99});
 	//var titleText = Titanium.UI.createTextField({value:"  ", color:'#336699', borderColor:'#888', borderWidth:0.1, borderStyle:Titanium.UI.INPUT_BORDERSTYLE_ROUNDED, font:{fontSize:16, fontWeight:'normal'},top:8, left:100, height:32, width:184});
-	var titleText = Titanium.UI.createTextField({color:'#336699', borderColor:'#888', borderWidth:0.1, hintText:'Title', font:{fontSize:16, fontWeight:'normal'},top:8, left:12, height:32, width:290});
+	var titleText = Titanium.UI.createTextField({color:'#336699', borderColor:'white', borderWidth:0, hintText:'\t\t\t\t\tTITLE', font:{fontSize:18, fontWeight:'normal'},top:0, left:20, height:40, width:320});
 	var valueLabel = Ti.UI.createLabel({color:'gray', text:"Labor", font:{fontSize:16, color:"gray", fontWeight:'normal'}, top:8, left:12, height:24, width:170});
 	var dateLabel = Ti.UI.createLabel({color:'gray', text:"Start Date", font:{fontSize:16,  color: "gray", fontWeight:'normal'}, top:8, left:12, height:24, width:170});
 	var valueData = Ti.UI.createLabel({color:'#3D4460', text:"", font:{fontSize:16, fontWeight:'normal'}, top:11, left:112, height:20, width:180, textAlign:'right'});	
@@ -689,7 +651,7 @@ function sharedCalendar() {
 
 function transformFunction(model) {
 	var transform = model.toJSON();
-	console.log("transform is ::" +JSON.stringify(transform));
+	///console.log("transform is ::" +JSON.stringify(transform));
 	transform.title = transform.col1+":"+transform.col2+":"+transform.col3+":"+transform.col4+":"+transform.col5+":"+transform.col6+":"+transform.col7+":"+transform.col8+":"+transform.col9+":"+transform.col10
 	+":"+transform.col11+":"+transform.col12+":"+transform.col13+":"+transform.col14+":"+transform.col15+":"+transform.col16;
     //date conversion

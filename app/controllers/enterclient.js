@@ -2,10 +2,31 @@ var args = arguments[0] || {};
 exports.openMainWindow = function(_tab) {
   _tab.open($.enterclient_window);
   Ti.API.info("This is child widow enterclient.js" +JSON.stringify(_tab));
-    Alloy.Globals.checkNetworkAndGoogleAuthorized('1gnkP116nsTVxtrw6d_mXVdOiesQEPH7LVUIyHUfx9EE');
-	googleAuth.authorize();
-	
+    //Alloy.Globals.checkNetworkAndGoogleAuthorized('1gnkP116nsTVxtrw6d_mXVdOiesQEPH7LVUIyHUfx9EE');
+    	googleAuth.isAuthorized(function() {		
+		}, function() {
+			//authorize first
+			Ti.API.info('Authorized first, see next window: ');
+			googleAuth.authorize();
+		});
 };
+
+if (args) {
+	var customerid = args.customerid;
+	var clients = Alloy.Collections.instance('client');
+	clients.fetch();	
+	$.save_button.titleid = customerid;
+	
+	var theclient = clients.where({col1:customerid}); //FILTER
+	if (theclient.length > 0 ){
+		for (j=0;j<theclient.length;j++){
+			   var theclientjson = theclient[j].toJSON(); // EXTRACT ONE ROW. IF MANY. FOR LOOP.
+    		   console.log("enterclient.js::theclientjson.col1 :"+theclientjson.col1+" col2: "+theclientjson.col2);
+		}
+	}
+ 
+}
+
 
     Ti.App.Properties.removeProperty('edithref'); //clear ref to previous spreadsheet
     Ti.App.Properties.removeProperty('idtag'); //clear ref to previous spreadsheet
@@ -67,13 +88,14 @@ Titanium.App.Properties.setInt('count',count);
 	+","+clientcity+","+clientstate+","+clientcompany);
 	//once tabledata is populated, find submission value
 	var name = clientfirstname+' '+clientlastname;
+	var customerid = e.source.titleid;
 	console.log("enterclient.js::saveHandler::clientfirstname: "+clientfirstname+" clientlastname "+clientlastname);	
-	submit(clientfirstname,clientlastname,clientcompany,clientphone,clientemail,clientstreetaddress,clientcity,clientstate,"USA","pending",notes,"0","6/1/2015","7/1/2015");
+	submit(clientfirstname,clientlastname,clientcompany,clientphone,clientemail,clientstreetaddress,clientcity,clientstate,"USA","pending",notes,"0","6/1/2015","7/1/2015",customerid);
 	///console.log('submit('+clientnumber+','+name+','+customerno+','+total+','+bal+','+paid+','+lastpaiddate+','+followupdate+','+clientphone+','+clientemail+','+duedate+','
 	///+currency+','+status+')');
  }; 
  
- function submit(clientfirstname,clientlastname,clientcompany,clientphone,clientemail,clientstreetaddress,clientcity,clientstate,country,status,notes,percentcompletion,nextappt,datedue) {	
+ function submit(clientfirstname,clientlastname,clientcompany,clientphone,clientemail,clientstreetaddress,clientcity,clientstate,country,status,notes,percentcompletion,nextappt,datedue,customerid) {	
  	//var spreadsheet_id = '1-Wz7Apn4AvVpfqcNyMgfqyKA8OAoLNy5Bl0d_jQ9IZk';
     var spreadsheet_id = Titanium.App.Properties.getString('client');
     var existingedithref = Titanium.App.Properties.getString('edithref');
@@ -114,6 +136,7 @@ Titanium.App.Properties.setInt('count',count);
 	    }
 	});
 
+	var clients = Alloy.Collections.instance('client');
 	if (existingedithref) {
 			console.log("enterclient.js::submit::PUT on existing edit href is: "+existingedithref);
 			xhr.open("PUT", existingedithref);
@@ -121,28 +144,63 @@ Titanium.App.Properties.setInt('count',count);
 				+'<id>'+idtag+'</id>'
 				+'<updated>2015-05-16T08:01:19.680Z</updated>'
 				+'<category scheme=\'http://schemas.google.com/spreadsheets/2006\' term=\'http://schemas.google.com/spreadsheets/2006#list\'/>'
-				+'<title type=\'text\'>'+captimestamp+'</title>'
+				+'<title type=\'text\'>'+customerid+'</title>'
 				+'<content type=\'text\'>col2: '+clientfirstname+', col3: '+clientlastname+', col4: '+clientcompany+', col5: '+clientphone+', col6: '+clientemail+', col7: '+clientstreetaddress
 				+', col8: '+clientcity+', col9: '+clientstate+', col10: '+country+', col11: NA, col12: NA, col13: NA, col14: '+captimestamp+', col15: none, col16: '+now+'</content>'
 				+'<link rel=\'self\' type=\'application/atom+xml\' href=\''+selfhref+'\'/>'
 				+'<link rel=\'edit\' type=\'application/atom+xml\' href=\''+edithref+'\'/>'
-				+'<gsx:col1>'+now+'</gsx:col1><gsx:col2>'+clientfirstname+'</gsx:col2><gsx:col3>'
+				+'<gsx:col1>'+customerid+'</gsx:col1><gsx:col2>'+clientfirstname+'</gsx:col2><gsx:col3>'
 				+clientlastname+'</gsx:col3><gsx:col4>'+clientcompany+'</gsx:col4><gsx:col5>'
 				+clientphone+'</gsx:col5><gsx:col6>'+clientemail+'</gsx:col6><gsx:col7>'+clientstreetaddress+'</gsx:col7><gsx:col8>'+clientcity+'</gsx:col8>'
-				+'<gsx:col9>'+clientstate+'</gsx:col9><gsx:col10>'+country+'</gsx:col10><gsx:col11>NA</gsx:col11><gsx:col12>NA</gsx:col12><gsx:col13>NA</gsx:col13><gsx:col14>'+now+'</gsx:col14>'
-				+'<gsx:col15>'+notes+'</gsx:col15><gsx:col16>'+now+'</gsx:col16></entry>';
+				+'<gsx:col9>'+clientstate+'</gsx:col9><gsx:col10>'+country+'</gsx:col10><gsx:col11>NA</gsx:col11><gsx:col12>NA</gsx:col12><gsx:col13>NA</gsx:col13><gsx:col14>'+customerid+'</gsx:col14>'
+				+'<gsx:col15>'+notes+'</gsx:col15><gsx:col16>'+customerid+'</gsx:col16></entry>';
 			Ti.API.info('xmldatastring existing to PUT: '+xmldatastring);
+			clients.fetch();
+			console.log("enterclient.js::submit:: update DB with customerid :" +customerid);
+				clients.get(customerid).set({
+					col1: 	customerid.toString(),
+					col2:	clientfirstname,
+					col3:	clientlastname,
+					col4:	clientcompany,
+					col5:	clientphone,
+					col6:	clientemail,
+					col7:	clientstreetaddress,
+					col8:	clientcity,
+					col9:	clientstate,
+					col10:	country
+				}).save();
 			alert('Modified & Saved Successfully!');
 		} else {
+			var customerid = now;
+			$.save_button.titleid = customerid; //feed id the save button of the customer id.
 			var xmldatastring = '<entry xmlns=\'http://www.w3.org/2005/Atom\' xmlns:gsx=\'http://schemas.google.com/spreadsheets/2006/extended\'>'
-				+'<gsx:col1>'+now+'</gsx:col1><gsx:col2>'+clientfirstname+'</gsx:col2><gsx:col3>'
+				+'<gsx:col1>'+customerid+'</gsx:col1><gsx:col2>'+clientfirstname+'</gsx:col2><gsx:col3>'
 				+clientlastname+'</gsx:col3><gsx:col4>'+clientcompany+'</gsx:col4><gsx:col5>'
 				+clientphone+'</gsx:col5><gsx:col6>'+clientemail+'</gsx:col6><gsx:col7>'+clientstreetaddress+'</gsx:col7><gsx:col8>'+clientcity+'</gsx:col8>'
-				+'<gsx:col9>'+clientstate+'</gsx:col9><gsx:col10>'+country+'</gsx:col10><gsx:col11>NA</gsx:col11><gsx:col12>NA</gsx:col12><gsx:col13>NA</gsx:col13><gsx:col14>'+now+'</gsx:col14>'
-				+'<gsx:col15>'+notes+'</gsx:col15><gsx:col16>'+now+'</gsx:col16></entry>';
+				+'<gsx:col9>'+clientstate+'</gsx:col9><gsx:col10>'+country+'</gsx:col10><gsx:col11>NA</gsx:col11><gsx:col12>NA</gsx:col12><gsx:col13>NA</gsx:col13><gsx:col14>'+customerid+'</gsx:col14>'
+				+'<gsx:col15>'+notes+'</gsx:col15><gsx:col16>'+customerid+'</gsx:col16></entry>';
 				Ti.API.info('xmldatastring to POST: '+xmldatastring);
-
 			xhr.open("POST", 'https://spreadsheets.google.com/feeds/list/'+spreadsheet_id+'/od6/private/full');
+			console.log("enterclient.js::submit:: add DB with customerid :" +customerid);
+			var dataModel = Alloy.createModel('client',{
+					col1: 	customerid.toString(),
+					col2:	(clientfirstname == " ")?'none':clientfirstname,
+					col3:	(clientlastname == " ")?'none':clientlastname,
+					col4:	(clientcompany == " ")?'none':clientcompany,
+					col5:	(clientphone == " ")?'none':clientphone,
+					col6:	(clientemail == " ")?'none':clientemail,
+					col7:	(clientstreetaddress == " ")?'none':clientstreetaddress,
+					col8:	(clientcity == " ")?'none':clientcity,
+					col9:	(clientstate == " ")?'none':clientstate,
+					col10:	(country == " ")?'none':country,
+					col11: "none",
+					col12: "none",
+					col13: "none",
+					col14: "none",
+					col15: "none",
+					col16: "none"
+				});			
+				dataModel.save();
 			alert('Saved Successfully!');
 		} 
 	xhr.setRequestHeader("Content-type", "application/atom+xml");
