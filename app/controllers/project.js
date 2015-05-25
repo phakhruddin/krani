@@ -29,7 +29,9 @@ function transformFunction(model) {
 	transform.phone = "phone: "+transform.col5;
 	transform.email = "email: "+transform.col6;
 	transform.address = transform.col7+","+transform.col8+","+transform.col9;
-	transform.datedue = "due date: "+transform.col15;
+	datesraw = transform.col15;
+	datesdata = datesraw.replace(/cOlOn/g,":");
+	transform.datedue = "due date: "+JSON.parse(datesdata)[0].duedate;;
 	return transform;
 }
 

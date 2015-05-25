@@ -29,7 +29,7 @@ $.switch_maxdebug.addEventListener("change", function(e){
 		alert("Maximum Debug is "+maxdebugstatus);
 	} else {
 		Titanium.App.Properties.setInt('maxdebug',0);
-		var maxdebugstatus = "ON";
+		var maxdebugstatus = "OFF";
 		alert("Maximum Debug is "+maxdebugstatus);
 	};
 });

@@ -30,7 +30,11 @@ var status = data[10];
 var notesraw = data[11];
 var percentcomplete = data[12];
 var nextappt = data[13];
-var datedue = data[14];
+var dates = data[14];
+var datesdata = dates.replace(/cOlOn/g,":");
+var datedue = JSON.parse(datesdata)[0].duedate;
+//var datedue = 0;
+console.log("projectdetail.js::projectdetail:: dates" +dates+" datesdata :" +datesdata+" datedue : "+datedue);
 var projectid = data[15];
 var filename = 'project_'+projectid+'_'+firstname+'_'+lastname;
 console.log("projectdetail.js::projectdetail:: filename : "+filename);
@@ -443,11 +447,12 @@ function matchjoblogsidfromDB(filename){
 			if (filename == projectname){
 				return sid;
 			}
-		}	
+		}
+		/*	
 		console.log("projectdetail.js::matchjoblogsidfromDB::thejoblogsidarray.length : "+thejoblogsidarray.length);
 		if ( thejoblogsidarray.length > 0 ){
 			console.log("projectdetail.js::matchjoblogsidfromDB::thejoblogsidarray : "+JSON.stringify(thejoblogsidarray));
-		}
+		}*/
 	} 
 
 }
@@ -501,6 +506,7 @@ function getjoblogSID(thefilename){
 /// processing array in notes
 if (notesraw != "none") {
 	var notesstring = notesraw.replace(/cOlOn/g,':');   // replacing all cOlOn to ':'
+	console.log("projectdetail.js::notesstring: "+notesstring);
 	var notes = JSON.parse(notesstring);
 	var descr = notes[0].descr;
 	var descrtitlelabel = Ti.UI.createLabel ({
