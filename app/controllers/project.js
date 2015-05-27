@@ -43,7 +43,7 @@ function addHandler(e) {
 
 function myRefresher(e) {
 	console.log("refreshing after pull : " +JSON.stringify(e));
-    Alloy.Collections.client.fetch({
+    Alloy.Collections.project.fetch({
         success: e.hide,
         error: e.hide
     });

@@ -2,8 +2,11 @@
 <Model src="dummy" />
 <Tab id="enterproject_tab">
   <Window id="enterproject_window"backgroundColor="white" title="Project Entry">
+  	<LeftNavButton platform="ios">
+	   <Button id="back_button" systemButton="Ti.UI.iPhone.SystemButton.PLAIN" title="Back" onClick="goBack" /> 
+	</LeftNavButton>
   	<RightNavButton platform="ios">
-	   <Button systemButton="Ti.UI.iPhone.SystemButton.SAVE" onClick="saveHandler" /> 
+	   <Button id="save_button" systemButton="Ti.UI.iPhone.SystemButton.SAVE" onClick="saveHandler" /> 
 	</RightNavButton>
 	  <TableView id="enterproject_table" backgroundColor="transparent" separatorColor="transparent" >
 	  	<TableViewRow id="existing" borderColor="white" backgroundColor="#80c342" height="30" opacity="1" Title="Existing">
@@ -12,21 +15,21 @@
 	  	  </TableViewRow>
 		  <TableViewRow id="clientdetail_row" backgroundColor="transparent" opacity="0" height="200" color="#333">
 		  	<Label id="tflabel" top="10">Firstname: </Label>
-		  	<TextField  top="12" id="clientfirstname_tf"/>
+		  	<TextField  top="12" id="projectclientfirstname_tf"/>
 		  	<Label id="tflabel" top="30">Lastname: </Label>
-		  	<TextField top="32"  id="clientlastname_tf"></TextField>
+		  	<TextField top="32"  id="projectclientlastname_tf"></TextField>
 		  	<Label id="tflabel" top="50">Phone: </Label>
-		  	<TextField top="52" id="clientphone_tf" keyboardType="Ti.UI.KEYBOARD_NUMBER_PAD"></TextField>
+		  	<TextField top="52" id="projectclientphone_tf" keyboardType="Ti.UI.KEYBOARD_NUMBER_PAD"></TextField>
 		  	<Label id="tflabel" top="70">Email: </Label>
-		  	<TextField top="72" id="clientemail_tf"></TextField>
+		  	<TextField top="72" id="projectclientemail_tf"></TextField>
 		  	<Label id="tflabel" top="90">Street addr: </Label>
-		  	<TextField   top="92" id="clientstreetaddress_tf"></TextField>
+		  	<TextField   top="92" id="projectclientstreetaddress_tf"></TextField>
 		  	<Label id="tflabel" top="110">City: </Label>
-		  	<TextField  top="112" id="clientcity_tf"></TextField>
+		  	<TextField  top="112" id="projectclientcity_tf"></TextField>
 		  	<Label id="tflabel" top="130">State: </Label>
-		  	<TextField  top="132" id="clientstate_tf"></TextField>
+		  	<TextField  top="132" id="projectclientstate_tf"></TextField>
 		  	<Label id="tflabel" top="150">Company: </Label>
-		  	<TextField  top="152" id="clientcompany_tf"></TextField>
+		  	<TextField  top="152" id="projectclientcompany_tf"></TextField>
 		  </TableViewRow>
 		  <TableViewRow id="clientselect_row" backgroundColor="transparent" opacity="0" height="200" color="#333">
 		  	  <Label id="Firstname" text="Firstname:" left="20" top="10"/>

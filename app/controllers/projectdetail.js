@@ -9,6 +9,10 @@ exports.openMainWindow = function(_tab) {
   prefetchJoblog();
 };
 
+
+
+console.log("projectdetail.js::JSON.stringify(args) :"+JSON.stringify(args));
+
 var someDummy = Alloy.Models.dummy;
 console.log("projectdetail.js::stringify dummy :"+JSON.stringify(someDummy));
 someDummy.set('id', '1234');
@@ -30,9 +34,12 @@ var status = data[10];
 var notesraw = data[11];
 var percentcomplete = data[12];
 var nextappt = data[13];
-var dates = data[14];
-var datesdata = dates.replace(/cOlOn/g,":");
+var dates = data[14];console.log("projectdetail.js::dates: "+dates);
+var datesdata = dates.replace(/cOlOn/g,":");console.log("projectdetail.js::datesdata: "+datesdata);
 var datedue = JSON.parse(datesdata)[0].duedate;
+var idtag = data[13].replace(/xCoLoNx/g,',').split(',')[0].replace('yCoLoNy',':');
+var selfhref = data[13].replace(/xCoLoNx/g,',').split(',')[1].replace('yCoLoNy',':');
+var edithref = data[13].replace(/xCoLoNx/g,',').split(',')[2].replace('yCoLoNy',':');
 //var datedue = 0;
 console.log("projectdetail.js::projectdetail:: dates" +dates+" datesdata :" +datesdata+" datedue : "+datedue);
 var projectid = data[15];
@@ -138,7 +145,7 @@ function JobDetail(e){
 	console.log("projectdetail.js::JSON stringify e: "+JSON.stringify(e));
 	var tabViewOneController = Alloy.createController("jobdetail");
 	tabViewOneController.openMainWindow($.tab_projectdetail);	
-}
+                                                                                                       }
 
 function prefetchJoblog(){
 	var item = "joblog";
@@ -157,7 +164,7 @@ function prefetchJoblog(){
 	console.log("projectdetail.js::prefetchJoblog:: Alloy.Collections.joblog.fetch()");
 	Alloy.Collections.joblog.fetch();	
 }
-
+/*
 $.addbutton.setTitleid(args);
 
 $.addbutton.addEventListener("click", function(e){
@@ -169,7 +176,7 @@ $.addbutton.addEventListener("click", function(e){
 			sid: sid
 		});
 	tabViewOneController.openMainWindow($.tab_projectdetail);	
-});
+});*/
 
 $.joblog_button.addEventListener("click", function(e){
 	console.log("projectdetail.js::JSON stringify e on jobLog: "+JSON.stringify(e));
@@ -183,13 +190,15 @@ $.joblog_button.addEventListener("click", function(e){
 });
 
 function addHandler(e,args){
+	function alertExecute() {alert("Execute return");};
 	console.log("projectdetail.js::JSON stringify e on addHandler: "+JSON.stringify(e));
 	console.log("projectdetail.js::JSON stringify e on addHandler args: "+JSON.stringify(args));
 	Alloy.Globals.getPrivateData(sid,item);
 	var tabViewOneController = Alloy.createController("enterjobdetail",{
 			title: args
-		});
-	tabViewOneController.openMainWindow($.tab_projectdetail);	
+		}).alertExecute();
+	tabViewOneController.openMainWindow($.tab_projectdetail);
+	(Titanium.App.Properties.getString("dbNeedSync"))?alert("Please pull to refresh"):console.log("NonAction");
 }
 
 //MAIN if spreadsheet exist ignore, NOT create the spreadsheet
@@ -555,6 +564,36 @@ if (notesraw != "none") {
 		$.jobitem_row.add(itembodylabel);
 		var topvalue = topvalue + 18;
 	}
+}
+
+function editAction(e){
+		function alertExecute() {alert("Execute return");};
+		console.log("projectdetail.js:: editAction e : "+JSON.stringify(e));
+		var projectController = Alloy.createController('enterproject',{
+			projectname : projectname,
+			projectid : projectid,
+			firstname : firstname,
+			lastname : lastname,
+			fullname : fullname,
+			company : company,
+			phone : phone,
+			email : email,
+			address : address,
+			city : city,
+			state : state,
+			country : country,
+			idtag : idtag,
+			edithref : edithref,
+			selfhref : selfhref,
+			status : status,
+			notesraw : notesraw,
+			percentcomplete : percentcomplete,
+			nextappt : nextappt,
+			dates : dates,
+			datesdata : datesdata,
+			datedue : datedue
+		});
+		projectController.openMainWindow($.tab_projectdetail);	
 }
 
 

@@ -2,11 +2,49 @@ var args = arguments[0] || {};
 Titanium.App.Properties.setString('selectclient',"false");
 exports.openMainWindow = function(_tab) {
   _tab.open($.enterproject_window);
-  Ti.API.info("This is child widow schedule.js" +JSON.stringify(_tab));
-    Alloy.Globals.checkNetworkAndGoogleAuthorized('1gnkP116nsTVxtrw6d_mXVdOiesQEPH7LVUIyHUfx9EE');
-	googleAuth.authorize();
-	
+  Ti.API.info("enterproject.js::openMainWindow::this is child widow " +JSON.stringify(_tab));
+  googleAuth.authorize();
+  var backButtonTitle = _tab.window.title; 
+  console.log("enterproject.js::openMainWindow:: set back_button title to: "+backButtonTitle);
+  $.back_button.title = "< "+backButtonTitle;	
 };
+
+$.back_button.sid = "1234";
+
+Alloy.Globals.checkNetworkAndGoogleAuthorized('1gnkP116nsTVxtrw6d_mXVdOiesQEPH7LVUIyHUfx9EE');
+
+//reset all variables.
+	Ti.App.Properties.removeProperty('dbNeedSync');
+    Ti.App.Properties.removeProperty('edithref'); //clear ref to previous spreadsheet
+    Ti.App.Properties.removeProperty('idtag'); //clear ref to previous spreadsheet
+    Ti.App.Properties.removeProperty('selfhref'); //clear ref to previous spreadsheet
+    
+
+console.log("enterproject.js::JSON.stringify(args): "+JSON.stringify(args));
+
+(args.firstname)?$.projectclientfirstname_tf.value=args.firstname:$.projectclientfirstname_tf.value=" ";
+(args.lastname)?$.projectclientlastname_tf.value=args.lastname:$.projectclientlastname_tf.value=" ";
+(args.company)?$.projectclientcompany_tf.value=args.company:$.projectclientcompany_tf.value=" ";
+(args.phone)?$.projectclientphone_tf.value=args.phone:$.projectclientphone_tf.value=" ";
+(args.email)?$.projectclientemail_tf.value=args.email:$.projectclientemail_tf.value=" ";
+(args.address)?$.projectclientstreetaddress_tf.value=args.address:$.projectclientstreetaddress_tf.value=" ";
+(args.city)?$.projectclientcity_tf.value=args.city:$.projectclientcity_tf.value=" ";
+(args.state)?$.projectclientstate_tf.value=args.state:$.projectclientstate_tf.value=" ";
+(args.projectname)?$.projectname_tf.value=args.projectname:$.projectname_tf.value=" ";
+
+
+
+if (args) {
+	var projectid = args.projectid;
+	var projects = Alloy.Collections.instance('project');
+	projects.fetch();	
+	$.save_button.titleid = projectid;
+	
+	Titanium.App.Properties.setString('edithref',args.edithref);
+	Titanium.App.Properties.setString('idtag',args.idtag);
+	Titanium.App.Properties.setString('selfhref',args.selfhref);
+}
+    
 
 function addRows(){
  console.log("JSON stringify e : " +JSON.stringify(e));
@@ -23,11 +61,12 @@ $.enterproject_table.appendRow(newRow);
 var count = 3; //row where line item is entered
 Titanium.App.Properties.setInt('count',count);
 
-function addItem(e,itemTextField){
+function addItem(e,itemvalues){
 	var count = Titanium.App.Properties.getInt('count',3);
     console.log("count :" +count);
 	//log
-	console.log("JSON stringify e : " +JSON.stringify(e));
+	console.log("enterproject.js::addItem:: JSON stringify e : " +JSON.stringify(e));
+	console.log("enterproject.js::addItem:: itemvalues: " +JSON.stringify(itemvalues));
 	Ti.API.info("data length " +$.enterproject_table.data.length);		
 	Ti.API.info("table data 0 "+$.enterproject_table.data[0]);
 	Ti.API.info("table row count : "+$.enterproject_table.data[0].rowCount);
@@ -52,7 +91,8 @@ function addItem(e,itemTextField){
     	width: Ti.UI.FILL,
     	left:'120',
     	top: '12',
-    	font: {fontSize: '14'}
+    	font: {fontSize: '14'},
+    	value: (e == "modify")?itemvalues.lineitem:""
 		});
 	var itemLabelqty = Ti.UI.createLabel({
 		id:"linetflabelqty" , 
@@ -75,7 +115,8 @@ function addItem(e,itemTextField){
     	width: '60',
     	keyboardType: Ti.UI.KEYBOARD_NUMBER_PAD,
     	returnKeyType : Ti.UI.RETURNKEY_DONE,
-    	font: {fontSize: '14'}
+    	font: {fontSize: '14'},
+    	value: (e == "modify")?itemvalues.qty:""
 		});
 	var itemLabelprice = Ti.UI.createLabel({
 		id:"linetflabelqty" , 
@@ -99,7 +140,8 @@ function addItem(e,itemTextField){
 		returnKeyType: Ti.UI.RETURNKEY_DONE, 
 		border: 1, 
 		width: 100,
-    	font: {fontSize: '14'}
+    	font: {fontSize: '14'},
+    	value: (e == "modify")?itemvalues.price:""
 		});
 	var toolbarDone = Ti.UI.createButton({systemButton: Titanium.UI.iPhone.SystemButton.DONE});
 	var flexSpace = Titanium.UI.createButton({systemButton : Titanium.UI.iPhone.SystemButton.FLEXIBLE_SPACE});
@@ -147,7 +189,8 @@ $.lineitem_tf.addEventListener('blur', function(_e) {
  
  var itemvalue =[];
 
- function saveHandler(){
+ function saveHandler(e){
+ 	$.back_button.titleid = "dbNeedSync";
  	var isSelectClientTrue = Titanium.App.Properties.getString('selectclient');
  	console.log("saving all data ");
  	console.log("isSelectClientTrue is:"+isSelectClientTrue);
@@ -161,7 +204,7 @@ $.lineitem_tf.addEventListener('blur', function(_e) {
 			tabledata.push({data1:$.enterproject_table.data[0].rows[i].children[j].id || "none",data2:$.enterproject_table.data[0].rows[i].children[j].value || "none"});
 			for (z=0;z<getvalue.length;z++){
 				var subject = getvalue[z];
-				if ( $.enterproject_table.data[0].rows[i].children[j].id == subject+"_tf") {					
+				if ( $.enterproject_table.data[0].rows[i].children[j].id == "project"+subject+"_tf") {					
 					 	eval("var "+subject+" = $.enterproject_table.data[0].rows[i].children[j].value || $.enterproject_table.data[0].rows[i].children[j].text;");		 
 				};
 			}		
@@ -208,13 +251,14 @@ $.lineitem_tf.addEventListener('blur', function(_e) {
 	var country = "USA";
 	var clientproject = projectname[0].name;
 	var notes = JSON.stringify(item).toString().replace(/:/g,'cOlOn');
-	console.log("enterproject.js::saveHandler::clientproject: "+clientproject+" clientfirstname: "+clientfirstname+" clientlastname "+clientlastname);	
-	submit(clientproject,clientfirstname,clientlastname,clientcompany,clientphone,clientemail,clientstreetaddress,clientcity,clientstate,country,"pending",notes,"0","6/1/2015","7/1/2015");
+	var projectid = e.source.titleid;
+	console.log("enterproject.js::saveHandler::clientproject: "+clientproject+" clientfirstname: "+clientfirstname+" projectid: "+projectid);	
+	submit(clientproject,clientfirstname,clientlastname,clientcompany,clientphone,clientemail,clientstreetaddress,clientcity,clientstate,country,"pending",notes,"0","none",dates,projectid);
 	///console.log('submit('+projectnumber+','+name+','+customerno+','+total+','+bal+','+paid+','+lastpaiddate+','+followupdate+','+clientphone+','+clientemail+','+duedate+','
 	///+currency+','+status+')');
  }; 
  
- function submit(clientproject,clientfirstname,clientlastname,clientcompany,clientphone,clientemail,clientstreetaddress,clientcity,clientstate,country,status,notes,percentcompletion,nextappt,datedue) {	
+ function submit(clientproject,clientfirstname,clientlastname,clientcompany,clientphone,clientemail,clientstreetaddress,clientcity,clientstate,country,status,notes,percentcompletion,nextappt,datedue,projectid) {	
     var existingedithref = Titanium.App.Properties.getString('edithref');
     var edithref = Titanium.App.Properties.getString('edithref');
     var idtag = Titanium.App.Properties.getString('idtag');
@@ -241,6 +285,7 @@ $.lineitem_tf.addEventListener('blur', function(_e) {
     		Titanium.App.Properties.setString('selfhref',selfhref);
     		Ti.API.info("enterproject.js::submit: self href is : "+selfhref+" edit href is: "+edithref);
     		Ti.API.info("enterproject.js::submit: idtag is : "+idtag);
+    		// Once success, feed data to DB
     	} catch(e){
     		Ti.API.info("cathing e: "+JSON.stringify(e));
     	}     
@@ -251,58 +296,48 @@ $.lineitem_tf.addEventListener('blur', function(_e) {
     }
 });
 
-if (existingedithref) {
-			console.log("enterclient.js::submit::PUT on existing edit href is: "+existingedithref);
-			xhr.open("PUT", existingedithref);
-			var xmldatastring = '<entry xmlns=\'http://www.w3.org/2005/Atom\' xmlns:gsx=\'http://schemas.google.com/spreadsheets/2006/extended\'>'
-				+'<id>'+idtag+'</id>'
-				+'<updated>2015-05-16T08:01:19.680Z</updated>'
-				+'<category scheme=\'http://schemas.google.com/spreadsheets/2006\' term=\'http://schemas.google.com/spreadsheets/2006#list\'/>'
-				+'<title type=\'text\'>'+projectid+'</title>'
-				+'<content type=\'text\'>col2: '+clientfirstname+', col3: '+clientlastname+', col4: '+clientcompany+', col5: '+clientphone+', col6: '+clientemail+', col7: '+clientstreetaddress
-				+', col8: '+clientcity+', col9: '+clientstate+', col10: '+country+', col11: NA, col12: NA, col13: NA, col14: '+captimestamp+', col15: none, col16: '+now+'</content>'
-				+'<link rel=\'self\' type=\'application/atom+xml\' href=\''+selfhref+'\'/>'
-				+'<link rel=\'edit\' type=\'application/atom+xml\' href=\''+edithref+'\'/>'
+	var clients = Alloy.Collections.instance('client');
+	var projects = Alloy.Collections.instance('project');
+	if (existingedithref) {
+				console.log("enterclient.js::submit::PUT on existing edit href is: "+existingedithref);
+				xhr.open("PUT", existingedithref);
+				var xmldatastring = '<entry xmlns=\'http://www.w3.org/2005/Atom\' xmlns:gsx=\'http://schemas.google.com/spreadsheets/2006/extended\'>'
+					+'<id>'+idtag+'</id>'
+					+'<updated>2015-05-16T08:01:19.680Z</updated>'
+					+'<category scheme=\'http://schemas.google.com/spreadsheets/2006\' term=\'http://schemas.google.com/spreadsheets/2006#list\'/>'
+					+'<title type=\'text\'>'+clientproject+'</title>'
+					+'<content type=\'text\'>col2: '+clientfirstname+', col3: '+clientlastname+', col4: '+clientcompany+', col5: '+clientphone+', col6: '+clientemail+', col7: '+clientstreetaddress
+					+', col8: '+clientcity+', col9: '+clientstate+', col10: '+country+', col11: '+status+', col12: '+notes+', col13: '+percentcompletion+', col14: '+nextappt+', col15: '+datedue+', col16: '+projectid+'</content>'
+					+'<link rel=\'self\' type=\'application/atom+xml\' href=\''+selfhref+'\'/>'
+					+'<link rel=\'edit\' type=\'application/atom+xml\' href=\''+edithref+'\'/>'
+					+'<gsx:col1>'+clientproject+'</gsx:col1><gsx:col2>'+clientfirstname+'</gsx:col2><gsx:col3>'
+					+clientlastname+'</gsx:col3><gsx:col4>'+clientcompany+'</gsx:col4><gsx:col5>'
+					+clientphone+'</gsx:col5><gsx:col6>'+clientemail+'</gsx:col6><gsx:col7>'+clientstreetaddress+'</gsx:col7><gsx:col8>'+clientcity+'</gsx:col8><gsx:col9>'+clientstate
+					+'</gsx:col9><gsx:col10>'+country+'</gsx:col10><gsx:col11>'+status+'</gsx:col11><gsx:col12>'+notes+'</gsx:col12><gsx:col13>'+percentcompletion+'</gsx:col13><gsx:col14>'+nextappt+'</gsx:col14><gsx:col15>'+datedue
+					+'</gsx:col15><gsx:col16>'+projectid+'</gsx:col16></entry>';
+				Ti.API.info('xmldatastring existing to PUT: '+xmldatastring);
+				alert('Modified & Saved Successfully!');
+				Titanium.App.Properties.setString('dbNeedSync',"project");
+			} else {
+				var projectid = now;
+				$.save_button.titleid = projectid;
+				var xmldatastring = '<entry xmlns=\'http://www.w3.org/2005/Atom\' xmlns:gsx=\'http://schemas.google.com/spreadsheets/2006/extended\'>'
 				+'<gsx:col1>'+clientproject+'</gsx:col1><gsx:col2>'+clientfirstname+'</gsx:col2><gsx:col3>'
 				+clientlastname+'</gsx:col3><gsx:col4>'+clientcompany+'</gsx:col4><gsx:col5>'
 				+clientphone+'</gsx:col5><gsx:col6>'+clientemail+'</gsx:col6><gsx:col7>'+clientstreetaddress+'</gsx:col7><gsx:col8>'+clientcity+'</gsx:col8><gsx:col9>'+clientstate
 				+'</gsx:col9><gsx:col10>'+country+'</gsx:col10><gsx:col11>'+status+'</gsx:col11><gsx:col12>'+notes+'</gsx:col12><gsx:col13>'+percentcompletion+'</gsx:col13><gsx:col14>'+nextappt+'</gsx:col14><gsx:col15>'+datedue
 				+'</gsx:col15><gsx:col16>'+projectid+'</gsx:col16></entry>';
-			Ti.API.info('xmldatastring existing to PUT: '+xmldatastring);
-			alert('Modified & Saved Successfully!');
-			clients.fetch();
-			console.log("enterclient.js::submit:: update DB with projectid :" +projectid);
-				clients.get(projectid).set({
-					col1: 	clientproject,
-					col2:	clientfirstname,
-					col3:	clientlastname,
-					col4:	clientcompany,
-					col5:	clientphone,
-					col6:	clientemail,
-					col7:	clientstreetaddress,
-					col8:	clientcity,
-					col9:	clientstate,
-					col10:	country,
-					col16:	projectid.toString()
-				}).save();		
-		} else {
-			var xmldatastring = '<entry xmlns=\'http://www.w3.org/2005/Atom\' xmlns:gsx=\'http://schemas.google.com/spreadsheets/2006/extended\'>'
-			+'<gsx:col1>'+clientproject+'</gsx:col1><gsx:col2>'+clientfirstname+'</gsx:col2><gsx:col3>'
-			+clientlastname+'</gsx:col3><gsx:col4>'+clientcompany+'</gsx:col4><gsx:col5>'
-			+clientphone+'</gsx:col5><gsx:col6>'+clientemail+'</gsx:col6><gsx:col7>'+clientstreetaddress+'</gsx:col7><gsx:col8>'+clientcity+'</gsx:col8><gsx:col9>'+clientstate
-			+'</gsx:col9><gsx:col10>'+country+'</gsx:col10><gsx:col11>'+status+'</gsx:col11><gsx:col12>'+notes+'</gsx:col12><gsx:col13>'+percentcompletion+'</gsx:col13><gsx:col14>'+nextappt+'</gsx:col14><gsx:col15>'+datedue
-			+'</gsx:col15><gsx:col16>'+now+'</gsx:col16></entry>';
-			Ti.API.info('xmldatastring to POST: '+xmldatastring);
-		    //var spreadsheet_id = '1-Wz7Apn4AvVpfqcNyMgfqyKA8OAoLNy5Bl0d_jQ9IZk';
-		    var spreadsheet_id = Titanium.App.Properties.getString('project');
-			xhr.open("POST", 'https://spreadsheets.google.com/feeds/list/'+spreadsheet_id+'/od6/private/full');
-			alert('Saved Successfully!');
-		}
-
-	xhr.setRequestHeader("Content-type", "application/atom+xml");
-	xhr.setRequestHeader("Authorization", 'Bearer '+ googleAuth.getAccessToken());
-	xhr.send(xmldatastring);
-	Ti.API.info('done POSTed');
+				Ti.API.info('xmldatastring to POST: '+xmldatastring);
+			    //var spreadsheet_id = '1-Wz7Apn4AvVpfqcNyMgfqyKA8OAoLNy5Bl0d_jQ9IZk';
+			    var spreadsheet_id = Titanium.App.Properties.getString('project');
+				xhr.open("POST", 'https://spreadsheets.google.com/feeds/list/'+spreadsheet_id+'/od6/private/full');
+				alert('Saved Successfully!');
+			}
+	
+		xhr.setRequestHeader("Content-type", "application/atom+xml");
+		xhr.setRequestHeader("Authorization", 'Bearer '+ googleAuth.getAccessToken());
+		xhr.send(xmldatastring);
+		Ti.API.info('done POSTed');
 
  }
  
@@ -412,6 +447,44 @@ $.enterproject_table.addEventListener('click', function(e){
 	 	$.lineitemqty_tf.blur();
 	 	$.lineitemprice_tf.blur();
 });
+ 
+function goBack(e) {
+	console.log("enterproject.js::goBack:: JSON.stringify(e) " +JSON.stringify(e));
+	if(e.source.titleid == "dbNeedSync") {
+		var item = "project";
+		var sid = Titanium.App.Properties.getString(item,"none");
+		Alloy.Globals.getPrivateData(sid,item);
+	}
+	$.enterproject_window.close({transition:Ti.UI.iPhone.AnimationStyle.CURL_DOWN});
+}
+
+if (args.notesraw) {
+	var notesraw = args.notesraw.toString();
+	var notes = notesraw.replace(/cOlOn/g,":");
+	var notesJSON = JSON.parse(notes);
+	var itemdescrvalue = notesJSON[0].descr;
+	for (c=1;c<notesJSON.length;c++){
+		eval("var lineitemvalue"+c+" = notesJSON["+c+"].lineitem");
+		eval("var lineitemqtyvalue"+c+" = notesJSON["+c+"].qty");
+		eval("var lineitempricevalue"+c+" = notesJSON["+c+"].price");
+		//console.log("enterproject.js::lineitemvalue1: "+lineitemvalue1+" "+lineitemqtyvalue1+" "+lineitempricevalue1);
+		eval('console.log("enterproject.js::lineitemvalue'+c+': "+lineitemvalue'+c+'+" "+lineitemqtyvalue'+c+'+" "+lineitempricevalue'+c+');');
+		//var itemvalues = notesJSON[1];
+		eval('var itemvalues = notesJSON['+c+'];');	
+		if (c==1){
+			$.lineitem_tf.value =itemvalues.lineitem; 
+			$.lineitemqty_tf.value =itemvalues.qty; 
+			$.lineitemprice_tf.value =itemvalues.price; 			
+		}	else {
+			var e = "modify";
+			addItem(e,itemvalues);
+		}
+
+	}
+}
+//(args.state)?$.projectclientstate_tf.value=args.state:$.projectclientstate_tf.value=" ";
+(itemdescrvalue)?$.projectdescr_tf.value=itemdescrvalue:$.projectdescr_tf.value=" ";
+ 
  
 
 
