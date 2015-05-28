@@ -21,6 +21,9 @@
 		  <TableViewRow id="checkuniqueid" backgroundColor="transparent" opacity="0" color="white" Title="checkuniqueid">
 		  	<Label id="checkuniqueid_label" color="yellow" top="5" left="50" text="Check Unique ID"/>
 		  </TableViewRow>
+		  <TableViewRow id="adhoctest" backgroundColor="transparent" opacity="0" color="white" Title="adhoctest">
+		  	<Button id="adhoctest_button"  top="5" left="50" title="AdHoc Test" onClick="AdHocTest"/>
+		  </TableViewRow>
 	  </TableView>
   </Window>
   </Tab>

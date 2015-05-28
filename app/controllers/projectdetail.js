@@ -162,7 +162,10 @@ function prefetchJoblog(){
 	console.log("projectdetail.js::prefetchJoblog::sidmatch: sid "+sidmatch+' : '+sid);
 	Alloy.Globals.getPrivateData(sid,item);
 	console.log("projectdetail.js::prefetchJoblog:: Alloy.Collections.joblog.fetch()");
-	Alloy.Collections.joblog.fetch();	
+	//Alloy.Collections.joblog.fetch();	
+	var joblog  = Alloy.Collections.instance('joblog');
+        joblog.fetch();
+        console.log("projectdetail.js::JSON stringify joblog data on prefetch: "+JSON.stringify(joblog));
 }
 /*
 $.addbutton.setTitleid(args);
@@ -182,6 +185,7 @@ $.joblog_button.addEventListener("click", function(e){
 	console.log("projectdetail.js::JSON stringify e on jobLog: "+JSON.stringify(e));
 	console.log("projectdetail.js::JSON stringify e on jobLog args: "+JSON.stringify(args));
 	var sid = matchjoblogsidfromDB(filename);
+	console.log("projectdetail.js::matched sid is: "+sid);
 	var tabViewOneController = Alloy.createController("enterjobdetail",{
 			title: args,
 			sid: sid
@@ -190,15 +194,13 @@ $.joblog_button.addEventListener("click", function(e){
 });
 
 function addHandler(e,args){
-	function alertExecute() {alert("Execute return");};
 	console.log("projectdetail.js::JSON stringify e on addHandler: "+JSON.stringify(e));
 	console.log("projectdetail.js::JSON stringify e on addHandler args: "+JSON.stringify(args));
 	Alloy.Globals.getPrivateData(sid,item);
 	var tabViewOneController = Alloy.createController("enterjobdetail",{
 			title: args
-		}).alertExecute();
+		});
 	tabViewOneController.openMainWindow($.tab_projectdetail);
-	(Titanium.App.Properties.getString("dbNeedSync"))?alert("Please pull to refresh"):console.log("NonAction");
 }
 
 //MAIN if spreadsheet exist ignore, NOT create the spreadsheet
@@ -368,6 +370,7 @@ function createSpreadsheet(filename,parentid) {
 					for (r=3;r<6;r++) {
 						getSSCell(sid,r,1,date);
 						getSSCell(sid,r,2,"Please enter work logs.");
+						getSSCell(sid,r,16,Date.now()); //jobitemid
 					};
 					
 	    		console.log("projectdetail.js::sid : "+sid);

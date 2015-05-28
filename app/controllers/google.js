@@ -208,3 +208,11 @@ $.checkuniqueid.addEventListener('click', function() {
 		var checkuniqueidval = Titanium.Platform.id; 
 		alert('Phone Unique ID is : '+checkuniqueidval);
 		});
+		
+
+function AdHocTest(e){
+	var joblog = Alloy.Collections.instance('joblog');
+	joblog.fetch();
+	console.log("google.js::JSON stringify joblog.length: "+joblog.length);
+	console.log("google.js::JSON stringify joblog: "+JSON.stringify(joblog));
+}

@@ -3,7 +3,7 @@
 	<Collection src="joblog"/>
 	<Collection src="joblogsid"/>
   <Window id="enterjobdetail_window" title="Job Logs" backgroundColor="white">
-	<TableView id="labor_table" height=Ti.UI.SIZE backgroundColor="white"  separatorStyle="Titanium.UI.iPhone.TableViewSeparatorStyle.NONE"  backgroundColor="transparent" >
+	<TableView id="labor_table" height="Ti.UI.SIZE" separatorStyle="Titanium.UI.iPhone.TableViewSeparatorStyle.NONE"  backgroundColor="transparent" editable="true" moveable="true"   >
 		<TableViewSection headerTitle="Please enter job details for:" />
 		<TableViewSection id="joblogsection" >
 		<FooterView>

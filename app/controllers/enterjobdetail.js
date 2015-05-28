@@ -5,6 +5,7 @@ exports.openMainWindow = function(_tab) {
   Ti.API.info(" input details after tab enterjobdetail : "+JSON.stringify(args));
 };
 
+
 var GoogleAuth = require('googleAuth');
 var googleAuthSheet = new GoogleAuth({
         clientId : '306793301753-8ej6duert04ksb3abjutpie916l8hcc7.apps.googleusercontent.com',
@@ -13,8 +14,6 @@ var googleAuthSheet = new GoogleAuth({
         scope : scope,
         quiet: false
 });
-
-Alloy.Collections.joblog.fetch();
 
 function transformFunction(model) {
         var currentaddr;
@@ -42,9 +41,10 @@ function transformFunction(model) {
         return transform;
 }
 
-var joblog  = Alloy.Collections.instance('joblog');
+var joblog = Alloy.Collections.instance('joblog');
+joblog.fetch();
 var content = joblog.toJSON();
-console.log("enterjobdetail.js::JSON stringify joblog: "+JSON.stringify(content));
+console.log("enterjobdetail.js::JSON stringify content: "+JSON.stringify(content));
 
 function jobDetailAddRow (date,notesbody,imageurl) {
 	    var jobrow = Ti.UI.createTableViewRow ({
@@ -118,6 +118,7 @@ function jobDetailAddRow (date,notesbody,imageurl) {
 
 };
 
+//Add row here.
 var sid = args.sid;
 console.log("enterjobdetail.js::sid right before key in contents value: "+sid);
 console.log("enterjobdetail.js::content.length: "+content.length);
@@ -274,6 +275,7 @@ function enterNotes(e,imgurl) {
         //$.enterjobdetail_window.show($.notes_textarea);
         //$.enterjobdetail_window.add(textfield);
         var date = new Date();
+        var now = Date.now();var jobitemid = now;
         var notesbody = e.value;
         var sourcesid = e.source._hintText;
         var imageurl = imgurl?imgurl:"none";
@@ -283,22 +285,23 @@ function enterNotes(e,imgurl) {
                                         col3 : imageurl,        
                                         col4 : "none", col5:"none",	col6:"none", col7:"none", col8:"none", col9:"none", 
                                         col10: sourcesid, 
-                                        col11:"none",	col12:"none", col13:"none",	col14:"none", col15:"none",	col16:"none"
+                                        col11:"none",	col12:"none", col13:"none",	col14:"none", col15:"none",	
+                                        col16: jobitemid 
  
                                 });     
         dataModel.save();
-        Alloy.Collections.joblog.fetch();
         var joblog  = Alloy.Collections.instance('joblog');
+        joblog.fetch();
         var content = joblog.toJSON();
         console.log("enterjobdetail.js::JSON stringify joblog after write: "+JSON.stringify(content));
         var thedate = date.toString().replace(".","").split(' ',4).toString().replace(/,/g,' ')+' '+Alloy.Globals.formatAMPM(date);
         //console.log("enterjobdetail.js::thedate is: " +thedate);
         jobDetailAddRow (thedate,notesbody,imageurl); //add to the local db
-        submit(thedate,notesbody,imageurl); //submit to the cloud
+        submit(thedate,notesbody,imageurl,jobitemid); //submit to the cloud
         
 };
 
- function submit(thedate,notesbody,imageurl) {  
+ function submit(thedate,notesbody,imageurl,jobitemid) {  
         var thenone = "none";   
         var sid = args.sid;
         var imageurl = imageurl.replace('&','&amp;');
@@ -307,12 +310,33 @@ function enterNotes(e,imgurl) {
         +'<gsx:col1>'+thedate+'</gsx:col1><gsx:col2>'+notesbody+'</gsx:col2><gsx:col3>'
         +thenone+'</gsx:col3><gsx:col4>'+imageurl+'</gsx:col4><gsx:col5>'
         +thenone+'</gsx:col5><gsx:col6>'+thenone+'</gsx:col6><gsx:col7>'+thenone+'</gsx:col7><gsx:col8>'+thenone+'</gsx:col8><gsx:col9>'+thenone
-        +'</gsx:col9><gsx:col10>'+sid+'</gsx:col10><gsx:col11>'+thenone+'</gsx:col11><gsx:col12>NA</gsx:col12><gsx:col13>NA</gsx:col13><gsx:col14>NA</gsx:col14><gsx:col15>NA</gsx:col15><gsx:col16>NA</gsx:col16></entry>'].join('');
+        +'</gsx:col9><gsx:col10>'+sid+'</gsx:col10><gsx:col11>'+thenone+'</gsx:col11><gsx:col12>NA</gsx:col12><gsx:col13>NA</gsx:col13><gsx:col14>NA</gsx:col14>'
+        +'<gsx:col15>NA</gsx:col15><gsx:col16>'+jobitemid+'</gsx:col16></entry>'].join('');
         Ti.API.info('xmldatastring to POST: '+xmldatastring);
         var xhr =  Titanium.Network.createHTTPClient({
     onload: function() {
         try {
                 Ti.API.info(this.responseText); 
+    			var xml = Titanium.XML.parseString(this.responseText);
+	    		var entry = xml.documentElement.getElementsByTagName("entry");
+	    		var link = xml.documentElement.getElementsByTagName("link");
+	    		var idtag = xml.documentElement.getElementsByTagName("id").item(0).text;
+	    		console.log("enterjobdetail.js::submit: number of link found: " +link+ " length: "+link.length);
+	    		for (i=0;i<link.length;i++){			
+	    			var listitem = link.item(i);
+	    			if (listitem.getAttribute("rel") == "edit"){ var edithref = listitem.getAttribute("href");}
+	    			if (listitem.getAttribute("rel") == "self"){ var selfhref = listitem.getAttribute("href");}
+	    		}
+	    		Titanium.App.Properties.setString('edithref',edithref);
+	    		Titanium.App.Properties.setString('idtag',idtag);
+	    		Titanium.App.Properties.setString('selfhref',selfhref);
+	    		Ti.API.info("enterjobdetail.js::submit: self href is : "+selfhref+" edit href is: "+edithref);
+	    		Ti.API.info("enterjobdetail.js::submit: idtag is : "+idtag);
+	    		console.log("enterjobdetail.js::submit:: update DB with jobitemid :" +jobitemid);
+				clients.get(jobitemid).set({
+					col16:	idtag+"xCoLoNx"+selfhref+"xCoLoNx"+edithref+"xCoLoNx"+selfhref || "none",
+				}).save();
+			alert('Modified & Saved Successfully!');
         } catch(e){
                 Ti.API.info("enterjobdetail.js::submit::cathing e: "+JSON.stringify(e));
         }     
