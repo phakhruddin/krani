@@ -46,6 +46,9 @@ joblog.fetch();
 var content = joblog.toJSON();
 console.log("enterjobdetail.js::JSON stringify content: "+JSON.stringify(content));
 
+
+
+
 function jobDetailAddRow (date,notesbody,imageurl) {
 	    var jobrow = Ti.UI.createTableViewRow ({
                 backgroundColor: "#ECE6E6",
@@ -107,6 +110,7 @@ function jobDetailAddRow (date,notesbody,imageurl) {
                 noteslabel.top = 220;
         };
         jobrow.add(innerview);
+        jobrow.metadata = jobcommentdata; // add metadata info
         
         var jobtable = Ti.UI.createTableView({
                 backgroundColor: "white",
@@ -126,7 +130,8 @@ for (i=0;i<content.length;i++){
 		var notesbody = content[i].col2;
         var imageurl = content[i].col4;
         var date = content[i].col1;
-        jobDetailAddRow (date,notesbody,imageurl);      
+        var jobcommentdata = content[i].col14+":"+content[i].col16;
+        jobDetailAddRow (date,notesbody,imageurl,jobcommentdata);      
         }
 
 
@@ -585,6 +590,32 @@ function shareAnyonePermission(sid){
 var headertitle = args.title.title.split(':')[0];
 console.log("enterjobdetails:headerTitle:: " +headertitle);
 $.joblogsection.headerTitle = headertitle;
+
+$.labor_table.addEventListener("delete", function(e){
+	console.log("enterjobdetail.js::$.labor_table delete: "+JSON.stringify(e));
+	var metadata = e.row.metadata;
+	var urls = metadata.replace(/yCoLoNy/g,':').replace(/xCoLoNx/g,',');
+	var existingurlsidtag = urls.split(',')[0];
+	var existingurlsselfhref = urls.split(',')[1];
+	var existingurlsedithref = urls.split(',')[2];
+	console.log("enterjobdetail.js::$.labor_table delete: idtag:"+existingurlsidtag+" selfhref: "+existingurlsselfhref+" edithref: "+existingurlsedithref);
+	var xhr = Ti.Network.createHTTPClient({
+	    onload: function(e) {
+	    try {
+	    		Ti.API.info("enterjobdetail.js::$.labor_table delete:success e: "+JSON.stringify(e));
+	    		Ti.API.info("enterjobdetail.js::$.labor_table delete:response is: "+this.responseText);
+	    	} catch(e){
+				Ti.API.info("enterjobdetail.js::$.labor_table delete:cathing e: "+JSON.stringify(e));
+			}
+		}
+	});
+	xhr.open("DELETE", existingurlsedithref);	
+	//xhr.setRequestHeader("Content-type", "application/json");
+    xhr.setRequestHeader("Authorization", 'Bearer '+ googleAuthSheet.getAccessToken());
+	xhr.send();
+	console.log("enterjobdetail.js::$.labor_table delete: DONE: DELETE "+existingurlsedithref);
+});
+
 /*
 $.jobdetailtf.addEventListener("focus", function(e){
                 console.log("enterjobdetail.js::JSON.stringify(e)  :" +JSON.stringify(e));

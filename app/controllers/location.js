@@ -1,3 +1,4 @@
+var args = arguments[0] || {};
 exports.openMainWindow = function(_tab) {
   _tab.open($.labor_window);
   Ti.API.info("This is child widow checking _tab : " +JSON.stringify(_tab));
@@ -18,6 +19,22 @@ exports.openMainWindow = function(_tab) {
 		//Alloy.Globals.UpdateMap('41.981233','-87.868259',"None");	
 		
 		Alloy.Globals.UpdateMap(latitude,longitude,name);
+		
+		var checked = Ti.UI.createImageView({
+			top: 10,
+			left: 300,
+			height : 30,
+			width : 30,
+			image : "check70.png"
+		});
+		
+		if (args.source == "settings"){
+			console.log("location.js: source is : "+args.source);
+			console.log("location.js: JSON.stringify(e) : "+ JSON.stringify(e));
+			e.row.titleid = "rowidimage";
+			console.log("location.js: JSON.stringify(e) : "+ JSON.stringify(e));
+		}
+
 });
 
   
@@ -69,3 +86,5 @@ function checkAllLoc() {
 function updateLoc() {
 	Alloy.Globals.CheckLoc();
 }
+
+

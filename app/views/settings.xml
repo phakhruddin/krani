@@ -1,4 +1,5 @@
 <Alloy>
+	<Tab id="tab_settings">
   <Window id="settings_window" backgroundColor="white" title="Settings">
  	  <TableView id="settings_table" backgroundColor="transparent">
  	  	<TableViewSection headerTitle="Debug">
@@ -12,7 +13,11 @@
 			 <Label id="label_maxdebug1" color="gray" top="30" left="20" text="FG LOC">Maximum debug</Label>
 		     <Switch id="switch_maxdebug" right="20" titleOff="OFF" titleOn="ON" value=false/>
 		 </TableViewRow>
+		 <TableViewRow id="row_empselect" Title="employee seletion">
+			 <Button id="button_empselect" systemButton="Ti.UI.iPhone.SystemButton.PLAIN" left="20" title="Select Employee >"/>
+		 </TableViewRow>
 		 </TableViewSection>
 	  </TableView>
   </Window>
+  </Tab>
 </Alloy>

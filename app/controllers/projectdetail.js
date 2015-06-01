@@ -205,6 +205,7 @@ function addHandler(e,args){
 
 //MAIN if spreadsheet exist ignore, NOT create the spreadsheet
 function fileExist(filename,parentid){
+		console.log("executing fileExist("+filename+","+parentid+") ");
 		var jsonlist = " ";
 		var xhr = Ti.Network.createHTTPClient({
 	    onload: function(e) {
@@ -505,7 +506,7 @@ function getjoblogSID(thefilename){
     if (thejoblogsid.length > 0) {
     	var joblogsidjson = thejoblogsid.toJSON();
     	for( var i=0; i < joblogsidjson.length; i++ ){
-    		var filename = joblogsidjson[i].col1.trim();
+    		var filename = joblogsidjson[i].col1.trim().replace(/\s+/g, '');;
     		var sid = joblogsidjson[i].col2.trim();
     		if ( thefilename == filename ){
     			console.log("projectdetail.js::getjoblogSID::needupdate: "+filename+" match "+thefilename+" with sid: "+sid);

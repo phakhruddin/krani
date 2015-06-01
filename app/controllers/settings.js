@@ -33,3 +33,13 @@ $.switch_maxdebug.addEventListener("change", function(e){
 		alert("Maximum Debug is "+maxdebugstatus);
 	};
 });
+
+$.row_empselect.addEventListener("click", function(e){
+	var item = "labor";
+	var sid = Titanium.App.Properties.getString(item,"none");
+	Alloy.Globals.getPrivateData(sid,item);
+  	var empSelectController = Alloy.createController("employee",{
+			source : 'settings'
+	});
+  	empSelectController.openMainWindow($.tab_settings);	
+});
