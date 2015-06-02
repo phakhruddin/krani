@@ -12,7 +12,7 @@ exports.openMainWindow = function(_tab) {
 			e.row.titleid = "rowidimage";
 			console.log("location.js: source is : "+args.source);
 			console.log("location.js: JSON.stringify(e) : "+ JSON.stringify(e));
-			if (indexselect){
+			if (indexselect || indexselect == "0"){
 				if (indexselect == e.index){
 					console.log("location.js: previous e.source.image : "+ e.source.image+" indexselect : "+indexselect);
 					e.source.image = "square82.png";

@@ -54,19 +54,31 @@ function jobDetailAddRow (date,notesbody,imageurl) {
                 backgroundColor: "#ECE6E6",
                 opacity:"0",
                 color:"transparent",
-                width: Ti.UI.FILL,
-                height: "150"
+                width: Ti.UI.SIZE,
+                height: Ti.UI.SIZE
         });
         var datelabel = Ti.UI.createLabel ({
                 color : "orange",
+                font : {
+                	fontSize : 12
+                },
                 left  : "20",
                 textAlign : "Ti.UI.TEXT_ALIGNMENT_LEFT",
                 top : "10",
                 text : date
         });
+        var blueline = Ti.UI.createImageView ({
+                left  : "20",
+                textAlign : "Ti.UI.TEXT_ALIGNMENT_LEFT",
+                top : "30",
+                width : "85%",
+                height : "3",
+                image : "blueline.png"
+        });
         var noteslabel = Ti.UI.createLabel ({
                 color : "#888",
                 left  : "20",
+                width : "300",
                 textAlign : "Ti.UI.TEXT_ALIGNMENT_LEFT",
                 font: {
                         fontSize: "12"
@@ -75,25 +87,31 @@ function jobDetailAddRow (date,notesbody,imageurl) {
         });
         var imagelabel = Ti.UI.createImageView ({
                 image : imageurl,
-                height : "300",
-                width : "300"
+                top : 50,
+                height : Ti.UI.SIZE,
+                width : Ti.UI.FILL
         });
         var innerview = Ti.UI.createView({
                 width:"90%",
-                height:"80%",
+                height:"85%",
                 backgroundColor:"white",
                 borderRadius:"10",
                 borderWidth:"0.1",
                 borderColor:"white"
         });
         innerview.add(datelabel);
+        innerview.add(blueline);
         if ( notesbody != "none" ) {
                 innerview.add(noteslabel);
                 noteslabel.top = 50;
+                var noteslabelheight = (Math.round(notesbody.split('').length/50)*14)+14;
+                //console.log("enterjobdetail.js::noteslabelheight: "+noteslabelheight+" notesbody count: "+notesbody.split(' ').length);
+                innerview.height = 60+noteslabelheight;
+               // innerview.height = "100";
         } else {
                 //imagelabel.height = 200;
                 imagelabel.height = Ti.UI.SIZE;
-                imagelabel.width = 200;
+                imagelabel.width = 340;
         };
         if (imageurl != "none") {
         	innerview.add(imagelabel);
@@ -302,11 +320,11 @@ function enterNotes(e,imgurl) {
         var thedate = date.toString().replace(".","").split(' ',4).toString().replace(/,/g,' ')+' '+Alloy.Globals.formatAMPM(date);
         //console.log("enterjobdetail.js::thedate is: " +thedate);
         jobDetailAddRow (thedate,notesbody,imageurl); //add to the local db
-        submit(thedate,notesbody,imageurl,jobitemid); //submit to the cloud
+        submit(thedate,notesbody,imageurl,jobitemid,joblog); //submit to the cloud
         
 };
 
- function submit(thedate,notesbody,imageurl,jobitemid) {  
+ function submit(thedate,notesbody,imageurl,jobitemid,joblog) {  
         var thenone = "none";   
         var sid = args.sid;
         var imageurl = imageurl.replace('&','&amp;');
@@ -338,7 +356,7 @@ function enterNotes(e,imgurl) {
 	    		Ti.API.info("enterjobdetail.js::submit: self href is : "+selfhref+" edit href is: "+edithref);
 	    		Ti.API.info("enterjobdetail.js::submit: idtag is : "+idtag);
 	    		console.log("enterjobdetail.js::submit:: update DB with jobitemid :" +jobitemid);
-				clients.get(jobitemid).set({
+				joblog.get(jobitemid).set({
 					col16:	idtag+"xCoLoNx"+selfhref+"xCoLoNx"+edithref+"xCoLoNx"+selfhref || "none",
 				}).save();
 			alert('Modified & Saved Successfully!');

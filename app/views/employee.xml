@@ -12,7 +12,7 @@
 			<Label id="label_sub1" color="#330"  textAlign="Ti.UI.TEXT_ALIGNMENT_CENTER" top="30" text="{phone}"/>
 			<Label  id="label_sub2" color="orange"  textAlign="Ti.UI.TEXT_ALIGNMENT_CENTER" top="45" text="{email}"/>
 			<Label  id="label_sub3" color="#333"  textAlign="Ti.UI.TEXT_ALIGNMENT_CENTER" top="60" text="{address}"/>
-			<Button  image="square82.png" id="unchecked_button" height="30" width="30" top="20" left="20"/>
+			<Button  image="square82.png" id="unchecked_button" height="30" width="30" top="20" right="30"/>
 		</TableViewRow>
 	</TableView>
   </Window>
