@@ -35,7 +35,7 @@
 	  </TableViewSection>
 	  <TableViewSection headerTitle="Job Logs" >
 		  <TableViewRow id="joblog_row"  color="blue">
-		  	  <Button id="joblog_button" title="Job Logs > "/>
+		  	  <Button id="joblog_button" left="100" title="View/Update Job Logs > "/>
 		  </TableViewRow>
 		  <!--TableViewRow id="jobdetail_row">
 		  	  <Button id="jobdetail_label" title="Job Details > " onClick="JobDetail" />

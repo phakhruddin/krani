@@ -4,6 +4,7 @@ exports.openMainWindow = function(_tab) {
   Ti.API.info("This is child widow checking _tab on : " +JSON.stringify(_tab));
   Ti.API.info(" input details : "+JSON.stringify(args));
   Alloy.Globals.checkFileExistThenUpdateSID(filename);
+  console.log("projectdetail.js::JSON.stringify(Alloy.Globals.Status) :"+JSON.stringify(Alloy.Globals.Status)+" Titanium.App.Properties.getString(\"status\"): " +Titanium.App.Properties.getString("status"));
   Alloy.Collections.joblog.fetch();
   //Titanium.App.Properties.setString('sid',"none"); // reset the job log sid.
   prefetchJoblog();
@@ -160,7 +161,9 @@ function prefetchJoblog(){
 	var sidmatch = matchjoblogsidfromDB(filename);
 	var sid = sidmatch;
 	console.log("projectdetail.js::prefetchJoblog::sidmatch: sid "+sidmatch+' : '+sid);
-	Alloy.Globals.getPrivateData(sid,item);
+	if(sid){Alloy.Globals.getPrivateData(sid,item);} else {
+		console.log("projectdetail.js::prefetchJoblog: creating sid. very first new project");
+	};  // a very first new project would not have sid. suppress error.
 	console.log("projectdetail.js::prefetchJoblog:: Alloy.Collections.joblog.fetch()");
 	//Alloy.Collections.joblog.fetch();	
 	var joblog  = Alloy.Collections.instance('joblog');
@@ -233,7 +236,7 @@ function fileExist(filename,parentid){
 		}
 		});
 	xhr.onerror = function(e){
-		alert("Unable to connect to the cloud.");
+		alert("Creating new document in the cloud");
 	};
 	var rawquerystring = '?q=title+%3D+\''+filename+'\'+and+mimeType+%3D+\'application%2Fvnd.google-apps.spreadsheet\'+and+trashed+%3D+false&fields=items(id%2CmimeType%2Clabels%2Ctitle)';
 	xhr.open("GET", 'https://www.googleapis.com/drive/v2/files'+rawquerystring);
@@ -553,7 +556,7 @@ if (notesraw != "none") {
 		text : 'List Item :'
 	});
 	if ( notes.length > 1) {$.jobitem_row.add(itemtitlelabel); }
-	var topvalue = 22;
+	var topvalue = 24;
 	for (i=1;i<notes.length;i++){
 		var itembodylabel = Ti.UI.createLabel ({
 			color : "#333",
@@ -565,8 +568,30 @@ if (notesraw != "none") {
 			},
 			text : i+' :    '+notes[i].lineitem
 		});		
+		var itemqtylabel = Ti.UI.createLabel ({
+			color : "#333",
+			left  : "200",
+			textAlign : "Ti.UI.TEXT_ALIGNMENT_LEFT",
+			top : topvalue+12+4,
+			font:{
+				fontSize:10
+			},
+			text : 'Qty :'+notes[i].qty
+		});
+		var itempricelabel = Ti.UI.createLabel ({
+			color : "#333",
+			left  : "320",
+			textAlign : "Ti.UI.TEXT_ALIGNMENT_LEFT",
+			top : topvalue+12+4,
+			font:{
+				fontSize:10
+			},
+			text : 'Price : '+notes[i].price
+		});		
 		$.jobitem_row.add(itembodylabel);
-		var topvalue = topvalue + 18;
+		$.jobitem_row.add(itemqtylabel);
+		$.jobitem_row.add(itempricelabel);
+		var topvalue = topvalue + 34;
 	}
 }
 

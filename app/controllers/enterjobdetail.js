@@ -49,7 +49,7 @@ console.log("enterjobdetail.js::JSON stringify content: "+JSON.stringify(content
 
 
 
-function jobDetailAddRow (date,notesbody,imageurl) {
+function jobDetailAddRow (date,notesbody,imageurl,jobcommentdata,employee) {
 	    var jobrow = Ti.UI.createTableViewRow ({
                 backgroundColor: "#ECE6E6",
                 opacity:"0",
@@ -60,12 +60,22 @@ function jobDetailAddRow (date,notesbody,imageurl) {
         var datelabel = Ti.UI.createLabel ({
                 color : "orange",
                 font : {
-                	fontSize : 12
+                	fontSize : 10
                 },
                 left  : "20",
                 textAlign : "Ti.UI.TEXT_ALIGNMENT_LEFT",
                 top : "10",
                 text : date
+        });
+        var employeelabel = Ti.UI.createLabel ({
+                color : "orange",
+                font : {
+                	fontSize : 10
+                },
+                right  : "20",
+                textAlign : "Ti.UI.TEXT_ALIGNMENT_LEFT",
+                top : "10",
+                text : employee
         });
         var blueline = Ti.UI.createImageView ({
                 left  : "20",
@@ -100,11 +110,12 @@ function jobDetailAddRow (date,notesbody,imageurl) {
                 borderColor:"white"
         });
         innerview.add(datelabel);
+        innerview.add(employeelabel);
         innerview.add(blueline);
         if ( notesbody != "none" ) {
                 innerview.add(noteslabel);
                 noteslabel.top = 50;
-                var noteslabelheight = (Math.round(notesbody.split('').length/50)*14)+14;
+                var noteslabelheight = ((Math.round(notesbody.split('').length/50)+(notesbody.split(/\r?\n|\r/).length))*14)+14;
                 //console.log("enterjobdetail.js::noteslabelheight: "+noteslabelheight+" notesbody count: "+notesbody.split(' ').length);
                 innerview.height = 60+noteslabelheight;
                // innerview.height = "100";
@@ -149,7 +160,8 @@ for (i=0;i<content.length;i++){
         var imageurl = content[i].col4;
         var date = content[i].col1;
         var jobcommentdata = content[i].col14+":"+content[i].col16;
-        jobDetailAddRow (date,notesbody,imageurl,jobcommentdata);      
+        var employee = content[i].col5;
+        jobDetailAddRow (date,notesbody,imageurl,jobcommentdata,employee);      
         }
 
 
@@ -299,6 +311,7 @@ function enterNotes(e,imgurl) {
         //$.enterjobdetail_window.add(textfield);
         var date = new Date();
         var now = Date.now();var jobitemid = now;
+        var employee = Titanium.App.Properties.getString('employee');
         var notesbody = e.value;
         var sourcesid = e.source._hintText;
         var imageurl = imgurl?imgurl:"none";
@@ -306,7 +319,9 @@ function enterNotes(e,imgurl) {
                                         col1 :  date || "none",
                                         col2 : notesbody || "none",
                                         col3 : imageurl,        
-                                        col4 : "none", col5:"none",	col6:"none", col7:"none", col8:"none", col9:"none", 
+                                        col4 : "none", 
+                                        col5 : employee,	
+                                        col6:"none", col7:"none", col8:"none", col9:"none", 
                                         col10: sourcesid, 
                                         col11:"none",	col12:"none", col13:"none",	col14:"none", col15:"none",	
                                         col16: jobitemid 
@@ -319,12 +334,12 @@ function enterNotes(e,imgurl) {
         console.log("enterjobdetail.js::JSON stringify joblog after write: "+JSON.stringify(content));
         var thedate = date.toString().replace(".","").split(' ',4).toString().replace(/,/g,' ')+' '+Alloy.Globals.formatAMPM(date);
         //console.log("enterjobdetail.js::thedate is: " +thedate);
-        jobDetailAddRow (thedate,notesbody,imageurl); //add to the local db
-        submit(thedate,notesbody,imageurl,jobitemid,joblog); //submit to the cloud
+        jobDetailAddRow (thedate,notesbody,imageurl,"none",employee); //add to the local db
+        submit(thedate,notesbody,imageurl,jobitemid,joblog,employee); //submit to the cloud
         
 };
 
- function submit(thedate,notesbody,imageurl,jobitemid,joblog) {  
+ function submit(thedate,notesbody,imageurl,jobitemid,joblog,employee) {  
         var thenone = "none";   
         var sid = args.sid;
         var imageurl = imageurl.replace('&','&amp;');
@@ -332,7 +347,7 @@ function enterNotes(e,imgurl) {
         var xmldatastring = ['<entry xmlns=\'http://www.w3.org/2005/Atom\' xmlns:gsx=\'http://schemas.google.com/spreadsheets/2006/extended\'>'
         +'<gsx:col1>'+thedate+'</gsx:col1><gsx:col2>'+notesbody+'</gsx:col2><gsx:col3>'
         +thenone+'</gsx:col3><gsx:col4>'+imageurl+'</gsx:col4><gsx:col5>'
-        +thenone+'</gsx:col5><gsx:col6>'+thenone+'</gsx:col6><gsx:col7>'+thenone+'</gsx:col7><gsx:col8>'+thenone+'</gsx:col8><gsx:col9>'+thenone
+        +employee+'</gsx:col5><gsx:col6>'+thenone+'</gsx:col6><gsx:col7>'+thenone+'</gsx:col7><gsx:col8>'+thenone+'</gsx:col8><gsx:col9>'+thenone
         +'</gsx:col9><gsx:col10>'+sid+'</gsx:col10><gsx:col11>'+thenone+'</gsx:col11><gsx:col12>NA</gsx:col12><gsx:col13>NA</gsx:col13><gsx:col14>NA</gsx:col14>'
         +'<gsx:col15>NA</gsx:col15><gsx:col16>'+jobitemid+'</gsx:col16></entry>'].join('');
         Ti.API.info('xmldatastring to POST: '+xmldatastring);
@@ -630,7 +645,7 @@ $.labor_table.addEventListener("delete", function(e){
 	xhr.open("DELETE", existingurlsedithref);	
 	//xhr.setRequestHeader("Content-type", "application/json");
     xhr.setRequestHeader("Authorization", 'Bearer '+ googleAuthSheet.getAccessToken());
-	xhr.send();
+	if (existingurlsedithref) {xhr.send();} else {console.log("enterjobdetail.js::$.labor_table delete: NO edithref. abort delete ");}
 	console.log("enterjobdetail.js::$.labor_table delete: DONE: DELETE "+existingurlsedithref);
 });
 

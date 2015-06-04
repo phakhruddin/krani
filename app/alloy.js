@@ -22,6 +22,7 @@ var mastersid = '1WUtkBcD1q3ezozI98w0sq42rl1TwIOTMq25Yayj-sEk'; Titanium.App.Pro
 var schedulesid = '1c5Nj6XOMIEtlqmHLDoyGocdNu5MRG-WQhckIseVlU2I'; Titanium.App.Properties.setString('schedule',schedulesid);
 var laborsid = '1-YaHKOuTqpRG1X83_1tZ6zHWrO1krEmV99HS7S130Hc'; Titanium.App.Properties.setString('labor',laborsid);
 var joblogsid = '1SLNRI176qK51rkFWWCQvqToXswdNYlqINsdB2HM0ozk'; Titanium.App.Properties.setString('joblog',joblogsid);
+Titanium.App.Properties.setString('employee',"Joe Fanney");
 
 
 console.log("alloy.js::TempDir: "+JSON.stringify(Ti.Filesystem.tempDirectory));
@@ -373,7 +374,7 @@ Alloy.Globals.getPrivateData = function(sid,type) {
 	xhr.onerror = function(e){
 		//alert(e);
 		console.log("alloy.js::Alloy.Globals.getPrivateData::Unable to connect to the network. The "+type+" info displayed here is NOT the latest.");
-		alert("Unable to connect to the network. The "+type+" info displayed here is NOT the latest.");
+		alert("	. The "+type+" info displayed here is NOT the latest.");
 	};
 	xhr.open("GET", url);
 	xhr.send();
@@ -725,13 +726,16 @@ Alloy.Globals.checkFileExistThenUpdateSID = function(filename){
 	    try {
 	    		var jsonlist = JSON.parse(this.responseText);
 	    		Ti.API.info("Alloy.Globals.checkFileExistThenUpdateSID::response of jsonlist is: "+JSON.stringify(jsonlist));
+	    		Titanium.App.Properties.setString("status","passed"); 	 		
 	    	} catch(e){
 				Ti.API.info("Alloy.Globals.checkFileExistThenUpdateSID::cathing e: "+JSON.stringify(e));
+				Titanium.App.Properties.setString("status","failed"); 	; 	
 			}
 			console.log("alloy.js::Alloy.Globals.checkFileExistThenUpdateSID::jsonlist.items.length: "+jsonlist.items.length);
 			if (jsonlist.items.length == "0" ){
 				console.log("alloy.js::Alloy.Globals.checkFileExistThenUpdateSID::File DOES NOT EXIST");
 				var fileexist = "false";
+				Titanium.App.Properties.setString("status","failed"); 	
 			} else {
 				var fileexist = "true";
 				var sid = jsonlist.items[0].id;
@@ -740,17 +744,22 @@ Alloy.Globals.checkFileExistThenUpdateSID = function(filename){
 				// Write contents.
 				var content = filename+','+sid;
 				Alloy.Globals.appendFile(content,"joblogsid.txt");
+				Titanium.App.Properties.setString("status","passed"); 	
 			};
 		}
 		});
 	xhr.onerror = function(e){
 		alert("Unable to connect to the cloud.");
+		Alloy.Globals.Status ={ "success" : "failed"};
+		Titanium.App.Properties.setString("status","failed");	
 	};
 	var rawquerystring = '?q=title+%3D+\''+filename+'\'+and+mimeType+%3D+\'application%2Fvnd.google-apps.spreadsheet\'+and+trashed+%3D+false&fields=items(id%2CmimeType%2Clabels%2Ctitle)';
 	xhr.open("GET", 'https://www.googleapis.com/drive/v2/files'+rawquerystring);
 	xhr.setRequestHeader("Content-type", "application/json");
     xhr.setRequestHeader("Authorization", 'Bearer '+ googleAuthSheet.getAccessToken());
 	xhr.send();
+	console.log("alloy.js::::JSON.stringify(Alloy.Globals.Status) :"+JSON.stringify(Alloy.Globals.Status)+" Titanium.App.Properties.getString(\"status\"): " +Titanium.App.Properties.getString("status"));
+	
 };
 
 
