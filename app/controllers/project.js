@@ -20,7 +20,7 @@ $.projectlist_window.addEventListener("click", function(e){
 
 function transformFunction(model) {
 	var transform = model.toJSON();
-	///console.log("transform is ::" +JSON.stringify(transform));
+	console.log("project.js::transform is ::" +JSON.stringify(transform));
 	transform.title = transform.col1.trim()+":"+transform.col2.trim()+":"+transform.col3.trim()+":"+transform.col4.trim()+":"+transform.col5.trim()+":"+transform.col6+":"+transform.col7+":"
 	+transform.col8+":"+transform.col9+":"+transform.col10+":"+transform.col11+":"+transform.col12+":"+transform.col13+":"+transform.col14+":"
 	+transform.col15+":"+transform.col16;
@@ -28,7 +28,16 @@ function transformFunction(model) {
 	transform.name = transform.col2+" "+transform.col3;
 	transform.phone = "phone: "+transform.col5;
 	transform.email = "email: "+transform.col6;
-	transform.address = transform.col7+","+transform.col8+","+transform.col9;
+	transform.addresscolor = "orange";
+	var address = transform.col7.trim();
+	var city = transform.col8.trim();
+	var state = transform.col9.trim();
+	if ( address && city && state && address != "undefined" && address != "none") {
+		transform.fulladdress = address+' , '+city+' , '+state;
+	} else {
+		transform.fulladdress = "Please enter address";
+		transform.addresscolor = "red";
+	}
 	datesraw = transform.col15;
 	datesdata = datesraw.replace(/cOlOn/g,":");
 	transform.datedue = "due date: "+JSON.parse(datesdata)[0].duedate;;
