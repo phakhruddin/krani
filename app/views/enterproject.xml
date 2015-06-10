@@ -2,9 +2,9 @@
 <Model src="dummy" />
 <Tab id="enterproject_tab">
   <Window id="enterproject_window"backgroundColor="white" title="Project Entry">
-  	<LeftNavButton platform="ios">
+  	<!--LeftNavButton platform="ios">
 	   <Button id="back_button" systemButton="Ti.UI.iPhone.SystemButton.PLAIN" title="Back" onClick="goBack" /> 
-	</LeftNavButton>
+	</LeftNavButton-->
   	<RightNavButton platform="ios">
 	   <Button id="save_button" systemButton="Ti.UI.iPhone.SystemButton.SAVE" onClick="saveHandler" /> 
 	</RightNavButton>

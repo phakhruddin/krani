@@ -1,6 +1,6 @@
 "TextField" : {
 	left:'120',
-	borderColor : 'white', // border color
+	borderColor : 'transparent', // border color
     width: Ti.UI.FILL,
     font: {fontSize: '14'}
 },
@@ -41,5 +41,15 @@
 "#itemline_row" : {
 	font:{
 		fontSize : "14"
+	}
+},
+"#selectclient_button" :{
+	font:{
+		fontSize : "40"
+	}
+},
+"#searchagain_label" :{
+	font:{
+		fontSize : "12"
 	}
 }

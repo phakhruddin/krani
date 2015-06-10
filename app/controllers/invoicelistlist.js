@@ -13,7 +13,8 @@ function transformFunction(model) {
 	///console.log("transform is ::" +JSON.stringify(transform));
 	transform.title = transform.col1+":"+transform.col2+":"+transform.col3+":"+transform.col4+":"+transform.col5+":"+transform.col6+":"+transform.col7+":"+transform.col8+":"+transform.col9+":"
 		+transform.col10+":"+transform.col11+":"+transform.col12+":"+transform.col13+":"+transform.col14+":"+transform.col15+":"+transform.col16;
-	transform.custom = "Invoice#: "+transform.col1+" - "+transform.col2;
+	transform.custom = transform.col2+" "+transform.col3;
+	transform.invoicenumber = "Invoice#: "+transform.col1;
 	transform.total ='TOTAL: '+transform.col4;
 	transform.bal ='BALANCE: '+transform.col5;
 	transform.paid ='PAID: '+transform.col6;
@@ -30,7 +31,7 @@ function transformFunction(model) {
 function doClick(e) {
 	console.log("JSON.stringify e : " +JSON.stringify(e));	
 	//Alloy.Globals.openDetail(e);
-		var title = e.source.text;
+		var title = e.source.input;
 		console.log("title is: "+title);
 		var clientController = Alloy.createController('invoicedetail',{
 			title: title
@@ -79,7 +80,7 @@ function mailAction(e) {
 }
 
 function selectItem(e) {
-	console.log("info after select item : "+JSON.stringify(e));
+	console.log("invoicelistlist.js::info after select item : "+JSON.stringify(e));
 }
 
 function uploadFile(){

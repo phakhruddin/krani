@@ -10,8 +10,17 @@ exports.openMainWindow = function(_tab) {
 	setTimeout(function(){
         $.activityIndicator.hide();
     }, 10);
-
+    
+    $.clientlist_window.addEventListener("close", function(e){
+    	console.log("client.js::openMainWindow:: closing clientlist_window JSON.stringify(e) : "+JSON.stringify(e));
+    	console.log("client.js::openMainWindow:: closing clientlist_window info on _tab : "+JSON.stringify(_tab));
+    });
 };
+
+//action taken when window is closed.
+
+
+console.log("client.js::JSON.stringify(args): " +JSON.stringify(args));
 
 function showIndicator(e){
     $.activityIndicator.show();
@@ -145,5 +154,12 @@ function myRefresher(e) {
         error: e.hide
     });
 }
-	
+
+exports.logfromSource = function(e){
+	console.log("logfromSource::source is client.js JSON.stringify(e):"+JSON.stringify(e));
+};
+
+function logfromSource0(e) {
+	console.log("logfromSource0::source is client.js (e) :"+e);
+}
 	

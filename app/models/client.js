@@ -59,7 +59,7 @@ exports.definition = {
 				collection.trigger('sync');
 				 
 				},
-				 
+				
 			 saveAll : function() {
 				var collection = this;
 				 

@@ -2,51 +2,58 @@
 <Model src="dummy" />
 <Tab id="enterinvoice_tab">
   <Window id="enterinvoice_window"backgroundColor="white" title="Invoice Entry">
-  	<RightNavButton platform="ios">
-	   <Button systemButton="Ti.UI.iPhone.SystemButton.SAVE" onClick="saveHandler" /> 
+  	<RightNavButton id="rightnavbutton" platform="ios">
+	   <Button  id="savebutton" systemButton="Ti.UI.iPhone.SystemButton.SAVE" onClick="saveHandler" /> 
 	</RightNavButton>
+	<View id="coverview" backgroundColor="#222" height="Ti.UI.Fill" opacity="0.1" />
 	  <TableView id="enterinvoice_table" backgroundColor="transparent" separatorColor="transparent" >
 	  	<TableViewRow id="existing" borderColor="white" backgroundColor="#80c342" height="30" opacity="1" Title="Existing">
 	  		<Label id="titleinvoiceinput_label" color="white" left="20" text="Client Details"/>
-	  		<Button id="check_client" width="20" height="20" right="20" image="dark_search@2x.png"/>
+	  		<Label id="searchagain_label" color="white" left="210" text="{dummy.searchagain}"/>
+	  		<Button id="check_client" width="20" height="20" right="20" image="dark_search@2x.png" onClick="matchClient"/>
 	  	  </TableViewRow>
 		  <TableViewRow id="clientdetail_row" backgroundColor="transparent" opacity="0" height="200" color="#333">
+		  	<!--Button id="selectclient_button" title="Select Client > " top="70" onClick="matchClient"/-->
 		  	<Label id="tflabel" top="10">Firstname: </Label>
-		  	<TextField  top="12" id="clientfirstname_tf"/>
+		  	<TextField  top="12" id="invoiceclientfirstname_tf" width="240"/>
 		  	<Label id="tflabel" top="30">Lastname: </Label>
-		  	<TextField top="32"  id="clientlastname_tf"></TextField>
+		  	<TextField top="32"  id="invoiceclientlastname_tf"></TextField>
 		  	<Label id="tflabel" top="50">Phone: </Label>
-		  	<TextField top="52" id="clientphone_tf" keyboardType="Ti.UI.KEYBOARD_NUMBER_PAD"></TextField>
+		  	<TextField top="52" id="invoiceclientphone_tf" keyboardType="Ti.UI.KEYBOARD_NUMBER_PAD"></TextField>
 		  	<Label id="tflabel" top="70">Email: </Label>
-		  	<TextField top="72" id="clientemail_tf"></TextField>
+		  	<TextField top="72" id="invoiceclientemail_tf"></TextField>
 		  	<Label id="tflabel" top="90">Street addr: </Label>
-		  	<TextField   top="92" id="clientstreetaddress_tf"></TextField>
+		  	<TextField   top="92" id="invoiceclientstreetaddress_tf"></TextField>
 		  	<Label id="tflabel" top="110">City: </Label>
-		  	<TextField  top="112" id="clientcity_tf"></TextField>
+		  	<TextField  top="112" id="invoiceclientcity_tf"></TextField>
 		  	<Label id="tflabel" top="130">State: </Label>
-		  	<TextField  top="132" id="clientstate_tf"></TextField>
+		  	<TextField  top="132" id="invoiceclientstate_tf"></TextField>
 		  	<Label id="tflabel" top="150">Company: </Label>
-		  	<TextField  top="152" id="clientcompany_tf"></TextField>
+		  	<TextField  top="152" id="invoiceclientcompany_tf"></TextField>
 		  </TableViewRow>
 		  <TableViewRow id="clientselect_row" backgroundColor="transparent" opacity="0" height="200" color="#333">
 		  	  <Label id="Firstname" text="Firstname:" left="20" top="10"/>
-		  	  <Label id="Firstname" text="{dummy.firstname}" left="120" top="10"/>
+		  	  <Label id="clientfirstname_tf" text="{dummy.firstname}" left="120" top="10"/>
 		  	  <Label id="Lastname" text="Lastname:" left="20" top="30"/>
-		  	  <Label id="Lastname" text="{dummy.lastname}" left="120" top="30"/>
+		  	  <Label id="clientlastname_tf" text="{dummy.lastname}" left="120" top="30"/>
 		  	  <Label id="phone" text="Phone:" left="20" top="50"/>
-	   		  <Label id="phone" text="{dummy.phone}" left="120" top="50"/>
+	   		  <Label id="clientphone_tf" text="{dummy.phone}" left="120" top="50"/>
 	   		  <Label id="email" text="Email:" left="20" top="70"/>
-	   		  <Label id="email" text="{dummy.email}" left="120" top="70"/>
-	   		  <Label id="fulladdress" text="Address:" left="20" top="90" />
-	   		  <Label id="fulladdress" text="{dummy.fulladdress}" left="120" top="90" />
-	   		  <Label id="company" text="Company:" left="20" top="130"/>
-	   		  <Label id="company" text="{dummy.company}" left="120" top="130"/>
+	   		  <Label id="clientemail_tf" text="{dummy.email}" left="120" top="70"/>
+	   		  <Label id="streetaddress" text="Street addr:" left="20" top="90" />
+	   		  <Label id="clientstreetaddress_tf" text="{dummy.address}" left="120" top="90" />
+	   		  <Label id="clientcity" text="City:" left="20" top="110" />
+	   		  <Label id="clientcity_tf" text="{dummy.city}" left="120" top="110" />
+	   		  <Label id="clientstate" text="State:" left="20" top="130" />
+	   		  <Label id="clientstate_tf" text="{dummy.state}" left="120" top="130" />
+	   		  <Label id="company" text="Company:" left="20" top="150"/>
+	   		  <Label id="clientcompany_tf" text="{dummy.company}" left="120" top="150"/>	
 		  </TableViewRow>
 		  <TableViewRow id="itemline_row" height="20" borderColor="white" opacity="0.1" backgroundColor="#80c342" color="white" title="Item Details"/>
 	  	  <TableViewRow id="cover_row" borderColor="white" backgroundColor="transparent" height="500" opacity="0.1"/>	
-		  <TableViewRow id="itemdetail_row" borderColor="white" backgroundColor="white" height="50">
+		  <TableViewRow id="itemdetail_row" borderColor="white" backgroundColor="transparent" height="50">
 		  	<Label id="tflabellist" top="10" text="item 1 :"/>
-		  	<TextField id="itemlist_tf" width="200" left="80" top="12" height="20" ></TextField>	
+		  	<TextField id="itemlist_tf" width="200" left="80" top="12" height="20"></TextField>	
 		  	<Label id="tflabelqty" top="30" text="qty : "/>
 		  	<TextField id="itemqty_tf" top="32" left="60" hintText="2" width="60" keyboardType="Ti.UI.KEYBOARD_NUMBER_PAD"></TextField>	
 		  	<Label id="tflabelprice" left="150" top="30" text="price : "/>
@@ -70,6 +77,7 @@
 		  	<Label id="totalvalue" left="200" text="100"/>
 		  </TableViewRow>
 	  </TableView>
+	  <Button id="selectclient_button" title="Select Client > " top="70" onClick="matchClient"/>
   </Window>
   </Tab>
 </Alloy>

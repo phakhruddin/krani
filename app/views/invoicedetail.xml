@@ -1,15 +1,15 @@
 <Alloy>
 	<Model src="dummy" />
-  <Window id="invoicedetail_window" title="invoice Detail" backgroundColor="white">
+  <Window id="invoicedetail_window" title="Invoice by Customer Name" backgroundColor="white">
 	  <TableView id="invoicedetail_table"  backgroundColor="transparent">
-	  	<TableViewSection headerTitle="Summary">
+	  	<TableViewSection  headerTitle="Summary">
 		  <TableViewRow id="invoicenumber_row" color="gray" Title="Summary" height="100">
-		  	  <Label id="header" color="#404040" textAlign="Ti.UI.TEXT_ALIGNMENT_CENTER" top="10" text="{dummy.invoicenumber}" />
-	   		  <Label id="header" color="#404040" textAlign="Ti.UI.TEXT_ALIGNMENT_CENTER" top="35" text="{dummy.fullname}" />
-	   		  <Label id="customernumber" color="#404040" textAlign="Ti.UI.TEXT_ALIGNMENT_CENTER" top="65" text="{dummy.customernumber}" />
+		  	  <Label id="invoicenumber" color="#404040" textAlign="Ti.UI.TEXT_ALIGNMENT_CENTER" top="10" text="{dummy.invoicenumber}" />
+	   		  <Label id="header" color="#404040" textAlign="Ti.UI.TEXT_ALIGNMENT_CENTER" top="25" text="{dummy.firstname} {dummy.lastname}" />
+	   		  <Label id="customernumber" color="gray" textAlign="Ti.UI.TEXT_ALIGNMENT_CENTER" top="65" text="{dummy.customernumber}" />
 	   	  </TableViewRow>
 	  </TableViewSection>
-	  <TableViewSection headerTitle="Details">
+	  <TableViewSection  headerTitle="Details">
 	  	<TableViewRow id="totalbalance_row" height="180">
 	  		<Label id="bal_title" color="gray" textAlign="Ti.UI.TEXT_ALIGNMENT_CENTER" top="10" text="balance" />
 	  		  <Label id="balance1" color="red" textAlign="Ti.UI.TEXT_ALIGNMENT_CENTER" top="20" text="{dummy.balance}" />
@@ -22,12 +22,16 @@
 	   		   <Label id="followupdate" color="gray" right="20" top="150" text="{dummy.followupdate}" />
 		  </TableViewRow>
 	  </TableViewSection>
-	  <TableViewSection headerTitle="Action">
-	  	  <TableViewRow id="action_row" Title="duedate" height="200">
-	   		  <Button id="phone_button" left="10" top="10" height="30" width="300" color="gray" image="light_phone@2x.png" title="{dummy.phone}"/>
-	   		  <Button id="email_button" left="20" top="40" height="30" width="300" color="gray" image="light_mail@2x.png" title="{dummy.email}"/>
+	  <TableViewSection  headerTitle="Action">
+	  	  <TableViewRow id="action_row" Title="duedate" height="Ti.UI.Size">
+	   		  <Button id="phone_button" left="30" top="10" height="30" width="300" color="gray" image="light_phone@2x.png" title="{dummy.phone}"/>
+	   		  <Button id="email_button" left="70" top="40" height="30" width="300" color="gray" image="light_mail@2x.png" title="{dummy.email}"/>
+	   		  <Button id="invoice_button" left="100" top="70" title="Generate Invoice in PDF" image="light_mail@2x.png" textAlign="Ti.UI.TEXT_ALIGNMENT_CENTER" onClick="genInvoice"/>
 	   		  <Label id="noaction_button" color="blue" textAlign="Ti.UI.TEXT_ALIGNMENT_CENTER" top="20" text="NO ACTION" />
 		  </TableViewRow>  		 
+	  </TableViewSection>
+	  <TableViewSection headerTitle="Project Items">
+	  	<TableViewRow id="jobitem_row" height="Ti.UI.Size"/>
 	  </TableViewSection>
 	  </TableView>
   </Window>

@@ -2,65 +2,41 @@ var args = arguments[0] || {};
 Titanium.App.Properties.setString('selectclient',"false");
 exports.openMainWindow = function(_tab) {
   _tab.open($.enterinvoice_window);
-  Ti.API.info("This is child widow schedule.js" +JSON.stringify(_tab));
+  Ti.API.info("This is child widow enterinvoice.js" +JSON.stringify(_tab));
     Alloy.Globals.checkNetworkAndGoogleAuthorized('1gnkP116nsTVxtrw6d_mXVdOiesQEPH7LVUIyHUfx9EE');
 	//Alloy.Globals.checkGoogleisAuthorized();
 	googleAuth.authorize();
-	
-	/*$.save_clientfirstname_button.addEventListener('click', function(_e) {
-    $.clientfirstname_tf.blur();
-    var clientfirstname = $.clientfirstname_tf.value;
-    Ti.API.info("clientfirstname entered is: "+clientfirstname);
-    Titanium.App.Properties.setString('clientfirstname',clientfirstname);
-    Ti.API.info("clientfirstname obtained is: "+Titanium.App.Properties.getString('clientfirstname',"none"));
-    $.save_clientfirstname_button.hide();
- });*/
-/*
- 	$.submit_button.addEventListener("click", function(){
-		
- 	var now = new Date();
- 	var clientlastname = Titanium.App.Properties.getString('clientlastname',"none");
- 	var clientfirstname = Titanium.App.Properties.getString('clientfirstname',"none");
- 	var clientphone = Titanium.App.Properties.getString('clientphone',"none");
- 	var clientemail = Titanium.App.Properties.getString('clientemail',"none");
- 	var clientstreetaddress = Titanium.App.Properties.getString('clientstreetaddress',"none");
- 	var clientcity = Titanium.App.Properties.getString('clientcity',"none");
- 	var clientstate = Titanium.App.Properties.getString('clientstate',"none");
- 	var clientproject = Titanium.App.Properties.getString('clientproject',"none");
- 	var clientcompany = Titanium.App.Properties.getString('clientcompany',"none");
- 	alert("On "+now+" : Info on: "+clientfirstname+" "+clientlastname+" with "+clientphone+" and email "+clientemail+" at "+clientstreetaddress+", "+clientcity+", "+clientstate+". submitted");
- 	var fcsv = Ti.Filesystem.getFile(Ti.Filesystem.tempDirectory,'enterclient.csv');
- 	var ftxt = Ti.Filesystem.getFile(Ti.Filesystem.tempDirectory,'enterclient.txt');
-	fcsv.write(now+", "+clientfirstname+", "+clientlastname+", "+clientphone+", "+clientemail+", "+clientstreetaddress+", "+clientcity+", "+clientstate+'\n', true); // write to the file
-	ftxt.write(now+", "+clientfirstname+", "+clientlastname+", "+clientphone+", "+clientemail+", "+clientstreetaddress+", "+clientcity+", "+clientstate+'\n', true); // write to the file
-	var xmldatastring = '<entry xmlns=\'http://www.w3.org/2005/Atom\' xmlns:gsx=\'http://schemas.google.com/spreadsheets/2006/extended\'>'
-	+'<gsx:col1>'+clientfirstname+'</gsx:col1><gsx:col2>'+clientfirstname+'</gsx:col2><gsx:col3>'
-	+clientlastname+'</gsx:col3><gsx:col4>'+clientcompany+'</gsx:col4><gsx:col5>'
-	+clientphone+'</gsx:col5><gsx:col6>'+clientemail+'</gsx:col6><gsx:col7>'+clientstreetaddress+'</gsx:col7><gsx:col8>'+clientcity+'</gsx:col8><gsx:col9>'+clientstate
-	+'</gsx:col9><gsx:col10>'+'USA'+'</gsx:col10><gsx:col11>'+'NA'+'</gsx:col11><gsx:col12>NA</gsx:col12><gsx:col13>NA</gsx:col13><gsx:col14>NA</gsx:col14><gsx:col15>NA</gsx:col15><gsx:col16>NA</gsx:col16></entry>';
-	Ti.API.info('xmldatastring to POST: '+xmldatastring);
-	var xhr =  Titanium.Network.createHTTPClient({
-    onload: function() {
-    	try {
-    		Ti.API.info(this.responseText); 
-    	} catch(e){
-    		Ti.API.info("cathing e: "+JSON.stringify(e));
-    	}     
-    },
-    onerror: function(e) {
-    	Ti.API.info("error e: "+JSON.stringify(e));
-        alert("Danger, Will Robinson!"); 
-    }
-});
-	xhr.open("POST", 'https://spreadsheets.google.com/feeds/list/1ECkNoyzgeSu8WkVs3kBnlY8MjJRIAc787nVs6IJsA9w/od6/private/full');
-	xhr.setRequestHeader("Content-type", "application/atom+xml");
-	xhr.setRequestHeader("Authorization", 'Bearer '+ Alloy.Globals.googleAuthSheet.getAccessToken());
-	xhr.send(xmldatastring);
-	Ti.API.info('done POSTed');
 
-
- });*/
 };
+
+console.log("enterinvoice.js::JSON.stringify(args) : "+JSON.stringify(args));
+
+
+if(args.title){
+	var data = args.title.split(':');
+	var name = data[0];
+	var firstname = data[1];
+	var lastname = data[2];
+	var name = firstname+" "+lastname;
+	var company = data[3];
+	var phone = data[4];
+	var email = data[5];
+	var address = data[6];
+	var city = data[7];
+	var state = data[8];
+	var country = data[9];
+	var customerid = data[15];
+	(firstname)?$.invoiceclientfirstname_tf.value=firstname:$.invoiceclientfirstname_tf.value=" ";
+	(lastname)?$.invoiceclientlastname_tf.value=lastname:$.invoiceclientlastname_tf.value=" ";
+	(company)?$.invoiceclientcompany_tf.value=company:$.invoiceclientcompany_tf.value=" ";
+	(phone)?$.invoiceclientphone_tf.value=phone:$.invoiceclientphone_tf.value=" ";
+	(email)?$.invoiceclientemail_tf.value=email:$.invoiceclientemail_tf.value=" ";
+	(address)?$.invoiceclientstreetaddress_tf.value=address:$.invoiceclientstreetaddress_tf.value=" ";
+	(city)?$.invoiceclientcity_tf.value=city:$.invoiceclientcity_tf.value=" ";
+	(state)?$.invoiceclientstate_tf.value=state:$.invoiceclientstate_tf.value=" ";
+	(firstname)?$.savebutton.input = firstname+":"+lastname:"";
+}
+
 
 function addRows(){
  console.log("JSON stringify e : " +JSON.stringify(e));
@@ -205,59 +181,58 @@ $.itemlist_tf.addEventListener('blur', function(_e) {
  
  var itemvalue =[];
 
- function saveHandler(){
+ function saveHandler(e,args){
+ 	console.log("enterinvoice.js::saveHandler::JSON.stringify(e): "+JSON.stringify(e));
+ 	console.log("enterinvoice.js::saveHandler::JSON.stringify(args): "+JSON.stringify(args));
+ 	var clientfirstname = e.source.input.split(':')[0];
+ 	var clientlastname = e.source.input.split(':')[1];
+ 	console.log("enterinvoice.js::saveHandler::clientfirstname: clientlastname "+clientfirstname+" : "+clientlastname);
  	var isSelectClientTrue = Titanium.App.Properties.getString('selectclient');
  	console.log("saving all data ");
  	console.log("isSelectClientTrue is:"+isSelectClientTrue);
  	var tabledata = [];	
+ 	if (isSelectClientTrue == false) {
+ 		var getvalue = ["clientfirstname","clientlastname","clientphone","clientemail","clientstreetaddress","clientcity","clientstate","clientcompany"];
  	for (i=0;i<$.enterinvoice_table.data[0].rowCount;i++) {		
  		console.log("children count : "	+$.enterinvoice_table.data[0].rows[i].children.length);
  		for (j=0;j<+$.enterinvoice_table.data[0].rows[i].children.length;j++) { 			
-			//Ti.API.info($.enterinvoice_table.data[0].rows[i].children[0]);		
 			console.log("JSON stringify table 0 row "+i+' : ' +JSON.stringify($.enterinvoice_table.data[0].rows[i]));
 			console.log("JSON stringify table 0 row "+i+'w/children '+j+' : ' +JSON.stringify($.enterinvoice_table.data[0].rows[i].children[j]));
 			tabledata.push({data1:$.enterinvoice_table.data[0].rows[i].children[j].id || "none",data2:$.enterinvoice_table.data[0].rows[i].children[j].value || "none"});
-			console.log("tabledata are: "+JSON.stringify(tabledata));
+			for (z=0;z<getvalue.length;z++){
+				var subject = getvalue[z];
+				if ( $.enterinvoice_table.data[0].rows[i].children[j].id == "invoice"+subject+"_tf") {					
+					 	eval("var "+subject+" = $.enterinvoice_table.data[0].rows[i].children[j].value || $.enterinvoice_table.data[0].rows[i].children[j].text;");		 
+				};
+			}		
 		};
 	};
+	console.log("tabledata are: "+JSON.stringify(tabledata));
+	console.log("enterinvoice.js::saveHandler:: detect array dyn variable: "+clientfirstname+","+clientlastname+","+clientphone+","+clientemail+","+clientstreetaddress
+	+","+clientcity+","+clientstate+","+clientcompany);
 	//once tabledata is populated, find submission value
+ 	}
+ 	
+	var projectname = [];
+	var projectdescr = [];
 	var item = [];
 	var itemqty = [];
 	var itemprice = [];
 	for (i=0;i<tabledata.length;i++){
-		if (tabledata[i].data1 == "itemlist_tf") {  item.push({ descr:tabledata[i].data2 }); };
-		if (tabledata[i].data1 == "itemqty_tf") {  itemqty.push({ qty:tabledata[i].data2 }); };
-		if (tabledata[i].data1 == "itemprice_tf") {  itemprice.push({ price:tabledata[i].data2 }); };
-	}
-	var clientfirstname = tabledata[3].data2;
-	var clientlastname = tabledata[5].data2;
-	var clientphone = tabledata[7].data2; 
-	var clientemail = tabledata[9].data2;
-	var clientstreetaddress = tabledata[11].data2; 
-	var clientcity = tabledata[13].data2;
-	var clientstate = tabledata[15].data2;
-	var clientcompany = tabledata[17].data2;	
-	//console.log("checking clientfirstname ::: "+clientfirstname);
-	if (clientfirstname == " ") { //no entry done. Get from existing.
-		console.log("No client firstname, get them from others.");
-		var someDummy = Alloy.Models.dummy;
-		var fullname = someDummy.get('fullname');
-		var clientfirstname = someDummy.get('firstname');
-		var clientlastname = someDummy.get('lastname');
-		var clientcompany = someDummy.get('company');
-		var clientphone = someDummy.get('phone');
-		var clientemail = someDummy.get('email');
-		var clientstreetaddress = someDummy.get('address');
-		var fulladdress = someDummy.get('fulladdress');
-		var clientcity = someDummy.get('city');
-		var clientstate = someDummy.get('state');
-		var country = someDummy.get('country');
-		console.log("after dummy  get, fullname is: "+fullname+" lastname is : "+clientlastname);	
+		if (tabledata[i].data1 == "projectname_tf") {  projectname.push({ name:tabledata[i].data2 }); };
+		if (tabledata[i].data1 == "projectdescr_tf") {  projectdescr.push({ descr:tabledata[i].data2 }); };
+		if (tabledata[i].data1 == "item_tf") {  item.push({ item:tabledata[i].data2}); };
+		if (tabledata[i].data1 == "itemqty_tf") {  itemqty.push({ itemqty:tabledata[i].data2 }); };
+		if (tabledata[i].data1 == "itemprice_tf") {  itemprice.push({ itemprice:tabledata[i].data2 }); };
 	}
 	console.log("item: "+JSON.stringify(item));
 	console.log("itemqty: "+JSON.stringify(itemqty));
 	console.log("itemprice: "+JSON.stringify(itemprice));
-	var invoicenumber = "10";
+ 	
+	console.log("item: "+JSON.stringify(item));
+	console.log("itemqty: "+JSON.stringify(itemqty));
+	console.log("itemprice: "+JSON.stringify(itemprice));
+	var invoicenumber = Date.now();
 	var name = clientfirstname+' '+clientlastname;
 	var customerno = "2";
 	var total = "200";
@@ -269,7 +244,7 @@ $.itemlist_tf.addEventListener('blur', function(_e) {
 	var currency = "USD";
 	var status = "owed";
 	console.log("clientfirstname: "+clientfirstname+" clientlastname "+clientlastname);	
-	submit(invoicenumber,name,customerno,total,bal,paid,lastpaiddate,followupdate,clientphone,clientemail,duedate,currency,status);
+	(name.match(/[A-Za-z].+/)) && submit(invoicenumber,name,customerno,total,bal,paid,lastpaiddate,followupdate,clientphone,clientemail,duedate,currency,status);
 	console.log('submit('+invoicenumber+','+name+','+customerno+','+total+','+bal+','+paid+','+lastpaiddate+','+followupdate+','+clientphone+','+clientemail+','+duedate+','
 	+currency+','+status+')');
  }; 
@@ -339,9 +314,12 @@ $.itemlist_tf.addEventListener('blur', function(_e) {
 if (args.title) {
 	selectClient(args);
 	$.enterinvoice_table.setData(selectclientrow)	;
+	$.coverview.hide();
+	$.selectclient_button.hide();
 } else {
 	$.enterinvoice_table.setData(addnewclientrow)	;
 	Titanium.App.Properties.setString('selectclient',"false");
+	// required entry
 }
 
 function setClientExisting(args) {
@@ -393,13 +371,34 @@ function selectClient(args) {
 	someDummy.set('proposal', proposal);
 }
 
-$.check_client.addEventListener('click', function(e){
+function matchClient() {
 	var clientController = Alloy.createController('client',{
 			sourcecall: 'enterinvoice'
 		});
+	console.log("enterinvoice.js:: examine clientController: "+JSON.stringify(clientController));
 	clientController.openMainWindow($.enterinvoice_tab);
-	
+	$.selectclient_button.hide();
+	$.coverview.hide();
+	var someDummy = Alloy.Models.dummy;
+	console.log("stringify dummy after selectClient :"+JSON.stringify(someDummy));
+	someDummy.set('id', '1234');
+	someDummy.fetch();
+	someDummy.set('searchagain', 'Click here to search again.');
+}
+
+$.invoiceclientfirstname_tf.addEventListener("focus",function(e){
+	e.source.borderColor = "red";
+	$.itemlist_tf.borderColor = "red";
+	$.enterinvoice_window.setRightNavButton($.savebutton);
 });
+
+$.itemlist_tf.addEventListener("focus",function(e){
+	e.source.borderColor = "red";
+	$.invoiceclientfirstname_tf.borderColor = "red";
+	$.enterinvoice_window.setRightNavButton($.savebutton);
+});
+
+$.enterinvoice_window.setRightNavButton();
 
 var scope = ['https://spreadsheets.google.com/feeds', 'https://docs.google.com/feeds','https://www.googleapis.com/auth/calendar','https://www.googleapis.com/auth/calendar.readonly','https://www.googleapis.com/auth/drive'];
 scope.push ("https://www.googleapis.com/auth/drive.appdata");

@@ -54,4 +54,14 @@
 		fontSize: '30',
 		fontStyle: 'bold'
 	}
+},
+"#customernumber" : {
+	font: {
+		fontSize: '12',
+	}
+},
+"#invoice_button" : {
+	font: {
+		fontSize: '18',
+	}
 }

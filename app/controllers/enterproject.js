@@ -4,12 +4,12 @@ exports.openMainWindow = function(_tab) {
   _tab.open($.enterproject_window);
   Ti.API.info("enterproject.js::openMainWindow::this is child widow " +JSON.stringify(_tab));
   googleAuth.authorize();
-  var backButtonTitle = _tab.window.title; 
-  console.log("enterproject.js::openMainWindow:: set back_button title to: "+backButtonTitle);
-  $.back_button.title = "< "+backButtonTitle;	
+  //var backButtonTitle = _tab.window.title; 
+ // console.log("enterproject.js::openMainWindow:: set back_button title to: "+backButtonTitle);
+  //$.back_button.title = "< "+backButtonTitle;	
 };
 
-$.back_button.sid = "1234";
+//$.back_button.sid = "1234";
 
 Alloy.Globals.checkNetworkAndGoogleAuthorized('1gnkP116nsTVxtrw6d_mXVdOiesQEPH7LVUIyHUfx9EE');
 
@@ -190,7 +190,8 @@ $.lineitem_tf.addEventListener('blur', function(_e) {
  var itemvalue =[];
 
  function saveHandler(e){
- 	$.back_button.titleid = "dbNeedSync";
+ 	//$.back_button.titleid = "dbNeedSync";
+ 	console.log("enterproject.js::saveHandler::JSON.stringify(e): "+JSON.stringify(e));
  	var isSelectClientTrue = Titanium.App.Properties.getString('selectclient');
  	console.log("saving all data ");
  	console.log("isSelectClientTrue is:"+isSelectClientTrue);
@@ -338,6 +339,8 @@ $.lineitem_tf.addEventListener('blur', function(_e) {
 		xhr.setRequestHeader("Authorization", 'Bearer '+ googleAuth.getAccessToken());
 		xhr.send(xmldatastring);
 		Ti.API.info('done POSTed');
+		//update the DB
+		var item = "project"; var sid = Titanium.App.Properties.getString(item,"none"); Alloy.Globals.getPrivateData(sid,item);
 
  }
  
@@ -422,7 +425,8 @@ $.check_client.addEventListener('click', function(e){
 			sourcecall: 'enterproject'
 		});
 	clientController.openMainWindow($.enterproject_tab);
-	
+	clientController.logfromSource(e);
+
 });
 
 var scope = ['https://spreadsheets.google.com/feeds', 'https://docs.google.com/feeds','https://www.googleapis.com/auth/calendar','https://www.googleapis.com/auth/calendar.readonly','https://www.googleapis.com/auth/drive'];
@@ -448,6 +452,7 @@ $.enterproject_table.addEventListener('click', function(e){
 	 	$.lineitemprice_tf.blur();
 });
  
+ /*
 function goBack(e) {
 	console.log("enterproject.js::goBack:: JSON.stringify(e) " +JSON.stringify(e));
 	if(e.source.titleid == "dbNeedSync") {
@@ -457,7 +462,7 @@ function goBack(e) {
 	}
 	$.enterproject_window.close({transition:Ti.UI.iPhone.AnimationStyle.CURL_DOWN});
 }
-
+*/
 if (args.notesraw) {
 	var notesraw = args.notesraw.toString();
 	var notes = notesraw.replace(/cOlOn/g,":");

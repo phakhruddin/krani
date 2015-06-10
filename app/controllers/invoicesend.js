@@ -196,7 +196,7 @@ function emailpdf(){
 	strVar += "		<article>";
 	strVar += "			<h1>Recipient<\/h1>";
 	strVar += "			<address contenteditable>";
-	strVar += "				<p>Some Company<br>c\/o Some Guy<\/p>";
+	strVar += "				<p>Some Company<br>c\/o Some Guy<br>c\/o Some Guy<br>c\/o Some Guy<br>c\/o Some Guy<\/p>";
 	strVar += "			<\/address>";
 	strVar += "			<table class=\"meta\">";
 	strVar += "				<tr>";

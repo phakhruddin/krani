@@ -24,6 +24,11 @@ var laborsid = '1-YaHKOuTqpRG1X83_1tZ6zHWrO1krEmV99HS7S130Hc'; Titanium.App.Prop
 var joblogsid = '1SLNRI176qK51rkFWWCQvqToXswdNYlqINsdB2HM0ozk'; Titanium.App.Properties.setString('joblog',joblogsid);
 Titanium.App.Properties.setString('employee',"Joe Fanney");
 
+var coName = Titanium.App.Properties.getString('coName','Jack Mow Inc.');
+var coAddress =  Titanium.App.Properties.getString('coAddress',"1125 Bluemound Rd., Brookfield, WI 53222");
+var coPhone = Titanium.App.Properties.getString('coPhone',"262-290-3141");;
+var coFax = Titanium.App.Properties.getString('coFax',"262-290-3142");
+var coEmail = Titanium.App.Properties.getString('coEmail',"sales@jackmowinc.com");
 
 console.log("alloy.js::TempDir: "+JSON.stringify(Ti.Filesystem.tempDirectory));
 			

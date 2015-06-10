@@ -15,17 +15,20 @@
                 </View>>
             </HeaderView>
 		<Templates>
-			<ItemTemplate name="template" backgroundColor="white" height="60" onClick="selectItem" >
-				<Label id="label_header" color="#333"  left="20" top="10" bindId="info" onClick="doClick"/>
-				<Label id="label_sub1" color="#330"  left="20" top="30" bindId="total" onClick="doClick"/>
-				<Label  id="label_sub2" color="orange"  right="60" top="30" bindId="bal" onClick="doClick"/>
-				<Label  id="label_sub3" color="#333"  right="60" top="40" bindId="paid" onClick="doClick"/>
-				<ImageView bindId="img" id="icon" height="10" width="60" left="20" top="43" onClick="doClick"/>
-				<Button id="next_button" bindId="all" image="light_info.png" right="20" top="30" width="20" height="20" onClick="doClick"/>
+			<ItemTemplate name="template" backgroundColor="white" height="65" onClick="doClick" >
+				<Label id="label_header" color="#333"  left="20" top="10" bindId="info"   />
+				<Label id="label_sub1" color="#330"  left="20" top="35" bindId="invoicenumber"/>
+				<Label id="label_sub1" color="#330"  left="20" top="50" bindId="total"/>				
+				<Label  id="label_sub2" color="orange"  left="160" top="35" bindId="bal"/>
+				<Label  id="label_sub3" color="#333"  left="160" top="50" bindId="paid" />
+				<ImageView bindId="img" id="icon" height="10" width="70" left="250" top="45"/>
+				<Button id="next_button" bindId="all" image="light_info.png" right="20" top="40" width="20" height="20"/>
 			</ItemTemplate>
 		</Templates>
-		<ListSection id="invoicelist_section" headerTitle="Invoice List" dataCollection="invoice" dataTransform="transformFunction" onClick="selectItem" >
-			<ListItem id="invoice_listitem" all:text="{title}" info:text="{custom}" total:text="{total}" bal:text="{bal}" paid:text="{paid}" status:text="{status}" img:image="{img}"/>
+		<ListSection id="invoicelist_section" headerTitle="Invoice List" dataCollection="invoice" dataTransform="transformFunction">
+			<ListItem id="invoice_listitem" all:text="{title}" all:input="{title}" info:text="{custom}" info:input="{title}" total:text="{total}" total:input="{title}" 
+				bal:text="{bal}" bal:input="{title}" paid:text="{paid}" paid:input="{title}" status:text="{status}" status:input="{title}" img:image="{img}" img:input="{title}"
+				invoicenumber:text="{invoicenumber}" invoicenumber:input="{title}" />
 		</ListSection>
 			<FooterView>
                 <View backgroundColor="#DDD" height="50">
