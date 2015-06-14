@@ -4,7 +4,7 @@ exports.openMainWindow = function(_tab) {
   Ti.API.info("This is child widow checking _tab on : " +JSON.stringify(_tab));
   Ti.API.info(" input details : "+JSON.stringify(args));
 };
-
+Alloy.Collections.adhoc.deleteAll(); //reset adhoc tables.
 var someDummy = Alloy.Models.dummy;
 console.log("stringify dummy :"+JSON.stringify(someDummy));
 someDummy.set('id', '1234');
@@ -127,6 +127,23 @@ if (projectitemsarray.length>0) {
 		console.log("invocedetail.js:: createRow: JSON.stringify(projectitems): "+JSON.stringify(projectitems));
 		console.log("invoicedetail.js::topvalue at START : "+topvalue);
 		topvalue = topvalue + 4;
+		var projectidentification=projectnamesarray[x].trim().replace(/\s/g,'_'); //
+		var projectinfoarray=[];
+		var unchecked = Ti.UI.createButton({
+			id: projectidentification,
+			top: topvalue,
+			left: "85%",
+			height : 30,
+			width : 30,
+			image : "square82.png"
+		});
+		var checked = Ti.UI.createButton({
+			top: topvalue,
+			left: "85%",
+			height : 30,
+			width : 30,
+			image : "check70.png"
+		});
 		var projectnamelabel = Ti.UI.createLabel ({
 			color : "#333",
 			textAlign : "Ti.UI.TEXT_ALIGNMENT_LEFT",
@@ -136,7 +153,7 @@ if (projectitemsarray.length>0) {
 				fontSize:16,
 				fontWeight: "bold"
 			},
-			text : projectnamesarray[x]
+			text : projectnamesarray[x].trim()
 		});
 		var descr = projectitems[0].descr;
 		topvalue = topvalue + 20;
@@ -168,6 +185,7 @@ if (projectitemsarray.length>0) {
 	        borderColor:"white"
 		});	
 		$.jobitem_row.add(projectnamelabel);
+		$.jobitem_row.add(unchecked);
 		$.jobitem_row.add(descrtitlelabel);
 		$.jobitem_row.add(descrbodylabel);
 		topvalue=topvalue+18;
@@ -196,7 +214,7 @@ if (projectitemsarray.length>0) {
 			topvalue=topvalue+14;
 			var itemqtylabel = Ti.UI.createLabel ({
 				color : "#333",
-				left  : "200",
+				left  : "50%",
 				textAlign : "Ti.UI.TEXT_ALIGNMENT_LEFT",
 				top : topvalue,
 				font:{
@@ -206,7 +224,7 @@ if (projectitemsarray.length>0) {
 			});
 			var itempricelabel = Ti.UI.createLabel ({
 				color : "#333",
-				left  : "320",
+				left  : "75%",
 				textAlign : "Ti.UI.TEXT_ALIGNMENT_LEFT",
 				top : topvalue,
 				font:{
@@ -218,6 +236,11 @@ if (projectitemsarray.length>0) {
 			$.jobitem_row.add(itembodylabel);
 			$.jobitem_row.add(itemqtylabel);
 			$.jobitem_row.add(itempricelabel);
+			$.jobitem_row.iteminfo=[projectitems[i].lineitem,projectitems[i].qty,projectitems[i].price];
+			var info={"names":projectnamesarray[x].trim(),"descr":projectitems[0].descr,"lineitem":projectitems[i].lineitem,"qty":projectitems[i].qty,"price":projectitems[i].price};
+			projectinfoarray.push(info);
+			unchecked.titleid=projectinfoarray;
+			checked.titleid=projectinfoarray;
 			console.log("invoicedetail.js::topvalue at Sub END : "+topvalue);
 		}
 		topvalue=topvalue+20;
@@ -229,11 +252,57 @@ if (projectitemsarray.length>0) {
 			top: topvalue
 		});	
 		$.jobitem_row.add(grayline);
+		projectinfoarray=[];
 		topvalue = topvalue + 4;
 		console.log("invoicedetail.js::topvalue at END : "+topvalue);	
 	}
 };
-	
+
+//prep adhoc tables.
+var adhocs = Alloy.Collections.instance('adhoc');
+
+//selection on invoce.
+$.jobitem_row.addEventListener("click",function(e){
+	console.log("invoicedetail.js::jobitem_row event listener: JSON.stringify(e): "+JSON.stringify(e));
+	if (e.source.image=="square82.png"){
+		console.log("invoicedetail.js::after "+e.source.image+" clicked: JSON.stringify(e): "+JSON.stringify(e));
+		console.log("invoicedetail.js::after "+e.source.image+" clicked: retrieved JSON.stringify(e.source.titleid): "+JSON.stringify(e.source.titleid));
+		var info=e.source.titleid;
+		var infostring = JSON.stringify(e.source.titleid);
+		var infostringmod = infostring.replace(/\[/g,"xSqBracketOpen").replace(/\]/g,"xSqBracketClose");
+		console.log("invoicedetail.js::after "+e.source.image+" clicked: retrieved project name at Pos 0 again: "+info[0].names);
+		e.source.image="check70.png";
+		var itemid = Date.now().toString();
+		//update adhoc table.
+		var dataModel = Alloy.createModel("adhoc",{
+                                        col1 :  itemid,
+                                        col2 : info[0].names,
+                                        col3 : infostringmod, 
+                                        //col4:	projectitems[i].price
+                                });     
+        dataModel.save();
+		adhocs.fetch();
+		console.log("invoicedetail.js:: aftere adhocs add & fetch: "+JSON.stringify(adhocs));
+		// tag source with itemid
+		e.source.itemid=itemid;
+		console.log("invoicedetail.js::itemid, "+itemid+", stamp to "+e.source.image+" clicked: JSON.stringify(e): "+JSON.stringify(e));
+	} else {
+		console.log("invoicedetail.js::after "+e.source.image+" clicked: JSON.stringify(e): "+JSON.stringify(e));
+		e.source.image="square82.png";
+		var itemid=e.source.itemid;
+		adhocs.fetch();
+		var theadhoc = adhocs.where({
+			col1:itemid
+			}); 
+		console.log("invoicedetail.js::to uncheck: theadhoc is: "+JSON.stringify(theadhoc));
+		console.log("invoicedetail.js::to uncheck: adhocs is: "+JSON.stringify(adhocs));
+		Alloy.Collections.adhoc.deleteCol1(itemid);
+		adhocs.fetch();
+		console.log("invoicedetail.js::to uncheck: adhocs after delete : "+JSON.stringify(adhocs));
+	}
+});
+
+
 // PDF GENERATOR
 var price = 100;
 var qty = 10;
@@ -273,6 +342,44 @@ function emailpdf(firstname,lastname,address,city,state,phone,email,invoicenumbe
 	var coEmail = "sales@jackmowinc.com";
 	
 	var invoiceno = "002345";
+	
+	adhocs.fetch();
+	console.log("invoicedetail.js::emailpdf:: adhocs contents "+JSON.stringify(adhocs)); 
+	console.log("invoicedetail.js::emailpdf:: adhocs.length: "+adhocs.length); 
+	var strVarItems="";
+	for (i=0;i<adhocs.length;i++){
+		console.log("invoicedetail.js::emailpdf:: adhocs.models["+i+"].toJSON().col3: "+adhocs.models[i].toJSON().col3);
+		var jobitemstring=adhocs.models[i].toJSON().col3.replace(/xSqBracketOpen/,'[').replace(/xSqBracketClose/,']');
+		console.log("invoicedetail.js::emailpdf:: adhocs extraction: jobitemstring.length "+jobitemstring.length+ "jobitemstring : "+jobitemstring);
+		var jobitemjson = JSON.parse(jobitemstring);
+		for (j=0;j<jobitemjson.length;j++){
+			var names=jobitemjson[0].names;
+			console.log("invoicedetail.js::emailpdf:: adhocs extraction:  names : "+jobitemjson[j].names+" : "+jobitemjson[j].descr+" : "+jobitemjson[j].lineitem+" : "+jobitemjson[j].price+" : "+jobitemjson[j].qty);
+			strVarItems += "				<tbody>";
+			strVarItems += "					<tr>";
+			if(j>0){
+				console.log("invoicedetail.js::emailpdf:: names comparison:  "+jobitemjson[j].names+" vs. "+jobitemjson[j-1].names);
+				if(jobitemjson[j].names==jobitemjson[j-1].names){
+					strVarItems += "						<td><a class=\"cut\">-<\/a><span contenteditable> <\/span><\/td>";
+				} else {
+					strVarItems += "						<td><a class=\"cut\">-<\/a><span contenteditable>"+jobitemjson[j].names+"<\/span><\/td>";
+				}
+				if(jobitemjson[j].descr==jobitemjson[j-1].descr){
+					strVarItems += "						<td><span contenteditable> <\/span><\/td>";
+				} else {
+					strVarItems += "						<td><span contenteditable>"+jobitemjson[j].descr+"<\/span><\/td>";
+				}
+			} else {
+				strVarItems += "						<td><a class=\"cut\">-<\/a><span contenteditable>"+jobitemjson[j].names+"<\/span><\/td>";
+				strVarItems += "						<td><span contenteditable>"+jobitemjson[j].descr+"<\/span><\/td>";
+			}
+			strVarItems += "						<td><span contenteditable>"+jobitemjson[j].lineitem+"<\/span><\/td>";
+			strVarItems += "						<td><span contenteditable>"+jobitemjson[j].qty+"<\/span><\/td>";
+			(isNaN(jobitemjson[j].price))?strVarItems += "						<td><span>"+jobitemjson[j].price+"<\/span><\/td>":strVarItems += "						<td><span data-prefix>$<\/span><span>"+jobitemjson[j].price+"<\/span><\/td>";
+			strVarItems += "					<\/tr>";
+			strVarItems += "				<\/tbody>";
+		}
+	}
   
 	var strVar="";
 	strVar += "<html>";
@@ -428,31 +535,14 @@ function emailpdf(firstname,lastname,address,city,state,phone,email,invoicenumbe
 	strVar += "			<table class=\"inventory\">";
 	strVar += "				<thead>";
 	strVar += "					<tr>";
-	strVar += "						<th><span contenteditable>Item<\/span><\/th>";
+	strVar += "						<th><span contenteditable>Project<\/span><\/th>";
 	strVar += "						<th><span contenteditable>Description<\/span><\/th>";
-	strVar += "						<th><span contenteditable>Rate<\/span><\/th>";
+	strVar += "						<th><span contenteditable>Item<\/span><\/th>";
 	strVar += "						<th><span contenteditable>Quantity<\/span><\/th>";
 	strVar += "						<th><span contenteditable>Price<\/span><\/th>";
 	strVar += "					<\/tr>";
 	strVar += "				<\/thead>";
-	strVar += "				<tbody>";
-	strVar += "					<tr>";
-	strVar += "						<td><a class=\"cut\">-<\/a><span contenteditable>Front End Consultation<\/span><\/td>";
-	strVar += "						<td><span contenteditable>Experience Review<\/span><\/td>";
-	strVar += "						<td><span data-prefix>$<\/span><span contenteditable>"+price+"<\/span><\/td>";
-	strVar += "						<td><span contenteditable>"+qty+"<\/span><\/td>";
-	strVar += "						<td><span data-prefix>$<\/span><span>"+subtotal+"<\/span><\/td>";
-	strVar += "					<\/tr>";
-	strVar += "				<\/tbody>";
-	strVar += "				<tbody>";
-	strVar += "					<tr>";
-	strVar += "						<td><a class=\"cut\">-<\/a><span contenteditable>Front End Consultation<\/span><\/td>";
-	strVar += "						<td><span contenteditable>Experience Review<\/span><\/td>";
-	strVar += "						<td><span data-prefix>$<\/span><span contenteditable>"+price+"<\/span><\/td>";
-	strVar += "						<td><span contenteditable>"+qty+"<\/span><\/td>";
-	strVar += "						<td><span data-prefix>$<\/span><span>"+subtotal+"<\/span><\/td>";
-	strVar += "					<\/tr>";
-	strVar += "				<\/tbody>";
+	strVar += strVarItems;
 	strVar += "			<\/table>";
 	strVar += "			<table class=\"balance\">";
 	strVar += "				<tr>";

@@ -49,8 +49,7 @@
 	   		  <Label id="company" text="Company:" left="20" top="150"/>
 	   		  <Label id="clientcompany_tf" text="{dummy.company}" left="120" top="150"/>	
 		  </TableViewRow>
-		  <TableViewRow id="itemline_row" height="20" borderColor="white" opacity="0.1" backgroundColor="#80c342" color="white" title="Item Details"/>
-	  	  <TableViewRow id="cover_row" borderColor="white" backgroundColor="transparent" height="500" opacity="0.1"/>	
+		 <TableViewRow id="itemline_row" height="20" borderColor="white" opacity="0.1" backgroundColor="#80c342" color="white" title="Item Details"/>
 		  <TableViewRow id="itemdetail_row" borderColor="white" backgroundColor="transparent" height="50">
 		  	<Label id="tflabellist" top="10" text="item 1 :"/>
 		  	<TextField id="itemlist_tf" width="200" left="80" top="12" height="20"></TextField>	
@@ -76,6 +75,7 @@
 		  	<Label id="totallabel" left="150" text="total :"/>
 		  	<Label id="totalvalue" left="200" text="100"/>
 		  </TableViewRow>
+		  <TableViewRow id="jobitem_row" height="Ti.UI.Size"/>
 	  </TableView>
 	  <Button id="selectclient_button" title="Select Client > " top="70" onClick="matchClient"/>
   </Window>

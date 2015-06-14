@@ -1,3 +1,4 @@
+var args = arguments[0] || {};
 exports.openMainWindow = function(_tab) {
   _tab.open($.projectlist_window);
   Ti.API.info("This is child widow projectlist.js" +JSON.stringify(_tab));
@@ -7,16 +8,6 @@ exports.openMainWindow = function(_tab) {
 };
 
 $.ptr.refresh();
-
-$.projectlist_window.addEventListener("click", function(e){
-		Alloy.Globals.openDetail(e);
-		var title = e.row.title;
-		var clientController = Alloy.createController('projectdetail',{
-			title: title
-		});
-		clientController.openMainWindow($.tab_projectlist);
-});
-
 
 function transformFunction(model) {
 	var transform = model.toJSON();
@@ -56,5 +47,26 @@ function myRefresher(e) {
         success: e.hide,
         error: e.hide
     });
+}
+
+console.log("args sourcecall detected is: " +args.sourcecall);
+if (args.sourcecall) {
+	$.projectlist_window.addEventListener("click", function(e){
+		Alloy.Globals.openDetail(e);
+		var title = e.row.title;
+		var enterinvoiceController = Alloy.createController(args.sourcecall,{
+			title: title
+		});
+		enterinvoiceController.openMainWindow($.tab_enterinvoicelist);
+});
+} else {
+	$.projectlist_window.addEventListener("click", function(e){
+		Alloy.Globals.openDetail(e);
+		var title = e.row.title;
+		var clientController = Alloy.createController('projectdetail',{
+			title: title
+		});
+		clientController.openMainWindow($.tab_projectlist);
+	});
 }
 	

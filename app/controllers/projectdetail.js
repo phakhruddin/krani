@@ -33,7 +33,8 @@ var state = data[8];
 var country = data[9];
 var fulladdress = ( address && city && state ) && address+' , '+city+' , '+state || "Please enter address";
 var fulladdress = ( address == "none" || city == "none" || state == "none" ) && "Please enter address"  || address+' , '+city+' , '+state ;
-var percentcomplete = data[12];
+var percentcomplete = data[10];
+var customerid = data[12];
 var notesraw = data[11];
 var nextappt = data[13];
 var dates = data[14];console.log("projectdetail.js::dates: "+dates);
@@ -602,6 +603,7 @@ function editAction(e){
 		var projectController = Alloy.createController('enterproject',{
 			projectname : projectname,
 			projectid : projectid,
+			customerid : customerid,
 			firstname : firstname,
 			lastname : lastname,
 			fullname : fullname,

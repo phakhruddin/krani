@@ -1,5 +1,6 @@
 <Alloy>
 	<Model src="dummy" />
+	<Collection src="adhoc" />
   <Window id="invoicedetail_window" title="Invoice by Customer Name" backgroundColor="white">
 	  <TableView id="invoicedetail_table"  backgroundColor="transparent">
 	  	<TableViewSection  headerTitle="Summary">
@@ -30,7 +31,7 @@
 	   		  <Label id="noaction_button" color="blue" textAlign="Ti.UI.TEXT_ALIGNMENT_CENTER" top="20" text="NO ACTION" />
 		  </TableViewRow>  		 
 	  </TableViewSection>
-	  <TableViewSection headerTitle="Project Items">
+	  <TableViewSection id="projitem_section" headerTitle="Project Items">
 	  	<TableViewRow id="jobitem_row" height="Ti.UI.Size"/>
 	  </TableViewSection>
 	  </TableView>

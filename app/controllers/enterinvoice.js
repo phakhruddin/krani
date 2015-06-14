@@ -6,14 +6,51 @@ exports.openMainWindow = function(_tab) {
     Alloy.Globals.checkNetworkAndGoogleAuthorized('1gnkP116nsTVxtrw6d_mXVdOiesQEPH7LVUIyHUfx9EE');
 	//Alloy.Globals.checkGoogleisAuthorized();
 	googleAuth.authorize();
-
+	console.log("enterinvoice.js::openMainWindow:: $.enterinvoice_table.data[0] count "+$.enterinvoice_table.data[0].rowCount+" contents: "+JSON.stringify($.enterinvoice_table.data[0].rows));
+ 	if (args.clienttitle) {
+		selectClient(args);
+		//console.log("enterinvoice.js::after selectClient:: selectclientrow "+JSON.stringify(selectclientrow));
+		console.log("enterinvoice.js::after selectClient::openMainWindow:: b4 exe $.enterinvoice_table.data[0].rowCount : "+$.enterinvoice_table.data[0].rowCount);
+		console.log("enterinvoice.js::after selectClient::openMainWindow:: b4 exe $.enterinvoice_table.data[0] "+JSON.stringify($.enterinvoice_table.data[0].rows));
+		$.coverview.hide();
+		$.selectclient_button.hide();
+		//$.enterinvoice_table.deleteRow()
+		var tohide = [$.itemdetail_row, $.addrow_row, $.itemlineend_row,$.totalrow];
+		for (x=0;x<tohide.length;x++){
+			$.enterinvoice_table.deleteRow(tohide[x]);
+		};
+		console.log("enterinvoice.js::after selectClient::openMainWindow:: after exe $.enterinvoice_table.data[0].rowCount : "+$.enterinvoice_table.data[0].rowCount);
+		console.log("enterinvoice.js::after selectClient::openMainWindow:: after exe $.enterinvoice_table.data[0] "+JSON.stringify($.enterinvoice_table.data[0].rows));
+		addJobItemFromClientSelection();
+		console.log("enterinvoice.js::after selectClient::openMainWindow:: checking $.jobitem_row "+JSON.stringify($.jobitem_row));	
+	} else {
+		//$.enterinvoice_table.setData(addnewclientrow)	;
+		Titanium.App.Properties.setString('selectclient',"false");
+		var toshow = [$.itemdetail_row, $.addrow_row, $.itemlineend_row,$.totalrow];
+		for (x=0;x<toshow.length;x++){
+			$.enterinvoice_table.appendRow(toshow[x]);
+		};
+		// required entry
+	}
+	
+	console.log("enterinvoice.js::after selectClient::openMainWindow:: END $.enterinvoice_table.data[0].rows "+JSON.stringify($.enterinvoice_table.data[0].rows));
+	for (i=0;i<$.enterinvoice_table.data[0].rowCount;i++) {		
+ 		console.log("children count : "	+$.enterinvoice_table.data[0].rows[i].children.length);
+ 		for (j=0;j<+$.enterinvoice_table.data[0].rows[i].children.length;j++) { 			
+			console.log("enterinvoice.js::after selectClient::openMainWindow::END:JSON stringify table 0 row "+i+' : ' +JSON.stringify($.enterinvoice_table.data[0].rows[i]));
+			console.log("nterinvoice.js::after selectClient::openMainWindow::END:JSON stringify table 0 row "+i+'w/children '+j+' : ' +JSON.stringify($.enterinvoice_table.data[0].rows[i].children[j]));		
+		};
+	};
+	
 };
+
+console.log("enterinvoice.js::outside openMainWindow:: $.enterinvoice_table.data[0] count "+$.enterinvoice_table.data[0].rowCount+" contents: "+JSON.stringify($.enterinvoice_table.data[0].rows));
 
 console.log("enterinvoice.js::JSON.stringify(args) : "+JSON.stringify(args));
 
 
-if(args.title){
-	var data = args.title.split(':');
+if(args.clienttitle){
+	var data = args.clienttitle.split(':');
 	var name = data[0];
 	var firstname = data[1];
 	var lastname = data[2];
@@ -26,6 +63,7 @@ if(args.title){
 	var state = data[8];
 	var country = data[9];
 	var customerid = data[15];
+	var uniqueid = customerid;
 	(firstname)?$.invoiceclientfirstname_tf.value=firstname:$.invoiceclientfirstname_tf.value=" ";
 	(lastname)?$.invoiceclientlastname_tf.value=lastname:$.invoiceclientlastname_tf.value=" ";
 	(company)?$.invoiceclientcompany_tf.value=company:$.invoiceclientcompany_tf.value=" ";
@@ -46,7 +84,7 @@ title : 'Row ' + ($.enterinvoice_table.data[0].rowCount + 1)
 });
  
 // Adding row to the table view
-$.enterinvoice_table.appendRow(newRow);
+///$.enterinvoice_table.appendRow(newRow);
 }
 
 
@@ -184,8 +222,8 @@ $.itemlist_tf.addEventListener('blur', function(_e) {
  function saveHandler(e,args){
  	console.log("enterinvoice.js::saveHandler::JSON.stringify(e): "+JSON.stringify(e));
  	console.log("enterinvoice.js::saveHandler::JSON.stringify(args): "+JSON.stringify(args));
- 	var clientfirstname = e.source.input.split(':')[0];
- 	var clientlastname = e.source.input.split(':')[1];
+ 	var clientfirstname = e.source.input.split(':')[0].trim();
+ 	var clientlastname = e.source.input.split(':')[1].trim();
  	console.log("enterinvoice.js::saveHandler::clientfirstname: clientlastname "+clientfirstname+" : "+clientlastname);
  	var isSelectClientTrue = Titanium.App.Properties.getString('selectclient');
  	console.log("saving all data ");
@@ -243,16 +281,16 @@ $.itemlist_tf.addEventListener('blur', function(_e) {
 	var duedate = "6/1/2015";
 	var currency = "USD";
 	var status = "owed";
+	var clientphone = Titanium.App.Properties.getString('clientphone',"none");
+ 	var clientemail = Titanium.App.Properties.getString('clientemail',"none");
 	console.log("clientfirstname: "+clientfirstname+" clientlastname "+clientlastname);	
-	(name.match(/[A-Za-z].+/)) && submit(invoicenumber,name,customerno,total,bal,paid,lastpaiddate,followupdate,clientphone,clientemail,duedate,currency,status);
-	console.log('submit('+invoicenumber+','+name+','+customerno+','+total+','+bal+','+paid+','+lastpaiddate+','+followupdate+','+clientphone+','+clientemail+','+duedate+','
+	(name.match(/[A-Za-z].+/)) && submit(invoicenumber,clientfirstname,clientlastname,total,bal,paid,lastpaiddate,followupdate,customerid,clientemail,duedate,currency,status);
+	console.log('submit('+invoicenumber+','+clientfirstname+','+clientlastname+','+total+','+bal+','+paid+','+lastpaiddate+','+followupdate+','+customerid+','+clientemail+','+duedate+','
 	+currency+','+status+')');
  }; 
  
- function submit(invoicenumber,name,customerno,total,bal,paid,lastpaiddate,followupdate,clientphone,clientemail,duedate,currency,status) {	
+ function submit(invoicenumber,clientfirstname,clientlastname,total,bal,paid,lastpaiddate,followupdate,clientphone,clientemail,duedate,currency,status) {	
  	var now = new Date();
- 	var clientphone = Titanium.App.Properties.getString('clientphone',"none");
- 	var clientemail = Titanium.App.Properties.getString('clientemail',"none");
  	var clientstreetaddress = Titanium.App.Properties.getString('clientstreetaddress',"none");
  	var clientcity = Titanium.App.Properties.getString('clientcity',"none");
  	var clientstate = Titanium.App.Properties.getString('clientstate',"none");
@@ -264,8 +302,8 @@ $.itemlist_tf.addEventListener('blur', function(_e) {
 	fcsv.write(now+", "+clientfirstname+", "+clientlastname+", "+clientphone+", "+clientemail+", "+clientstreetaddress+", "+clientcity+", "+clientstate+'\n', true); // write to the file
 	ftxt.write(now+", "+clientfirstname+", "+clientlastname+", "+clientphone+", "+clientemail+", "+clientstreetaddress+", "+clientcity+", "+clientstate+'\n', true); // write to the file*/
 	var xmldatastring = '<entry xmlns=\'http://www.w3.org/2005/Atom\' xmlns:gsx=\'http://schemas.google.com/spreadsheets/2006/extended\'>'
-	+'<gsx:col1>'+invoicenumber+'</gsx:col1><gsx:col2>'+name+'</gsx:col2><gsx:col3>'
-	+customerno+'</gsx:col3><gsx:col4>'+total+'</gsx:col4><gsx:col5>'
+	+'<gsx:col1>'+invoicenumber+'</gsx:col1><gsx:col2>'+clientfirstname+'</gsx:col2><gsx:col3>'
+	+clientlastname+'</gsx:col3><gsx:col4>'+total+'</gsx:col4><gsx:col5>'
 	+bal+'</gsx:col5><gsx:col6>'+paid+'</gsx:col6><gsx:col7>'+lastpaiddate+'</gsx:col7><gsx:col8>'+followupdate+'</gsx:col8><gsx:col9>'+clientphone
 	+'</gsx:col9><gsx:col10>'+clientemail+'</gsx:col10><gsx:col11>'+duedate+'</gsx:col11><gsx:col12>'+currency+'</gsx:col12><gsx:col13>'+status+'</gsx:col13><gsx:col14>NA</gsx:col14><gsx:col15>NA</gsx:col15><gsx:col16>NA</gsx:col16></entry>';
 	Ti.API.info('xmldatastring to POST: '+xmldatastring);
@@ -307,20 +345,27 @@ $.itemlist_tf.addEventListener('blur', function(_e) {
 	 	$.itemqty_tf.blur();
 	 	$.itemprice_tf.blur();
  };
- 
- var addnewclientrow = [ $.existing, $.clientdetail_row, $.itemline_row, $.itemdetail_row, $.addrow_row, $.itemlineend_row,$.totalrow ];
- var selectclientrow = [ $.existing, $.clientselect_row, $.itemline_row, $.itemdetail_row, $.addrow_row, $.itemlineend_row,$.totalrow ];
 
-if (args.title) {
+// next phase not needed now start
+ var selectprojectrow = [ $.existing, $.clientselect_row,$.projectselect_row ];
+ var addnewprojecttrow = [ $.existing, $.clientdetail_row, $.itemline_row, $.itemdetail_row, $.addrow_row, $.itemlineend_row,$.totalrow ];
+ // end
+
+
+// next phase not needed now start
+// for project seletction
+if (args.projecttitle) {
 	selectClient(args);
-	$.enterinvoice_table.setData(selectclientrow)	;
-	$.coverview.hide();
-	$.selectclient_button.hide();
+	$.enterinvoice_table.setData(selectprojectrow)	;
+	$.coverviewproject.hide();
+	$.selectproject_button.hide();
 } else {
-	$.enterinvoice_table.setData(addnewclientrow)	;
-	Titanium.App.Properties.setString('selectclient',"false");
+	$.enterinvoice_table.setData(addnewprojecttrow)	;
+	Titanium.App.Properties.setString('selectproject',"false");
 	// required entry
 }
+ // end
+
 
 function setClientExisting(args) {
 
@@ -328,12 +373,7 @@ function setClientExisting(args) {
 
 function selectClient(args) {
 	Titanium.App.Properties.setString('selectclient',"true");
-	var someDummy = Alloy.Models.dummy;
-	console.log("stringify dummy after selectClient :"+JSON.stringify(someDummy));
-	someDummy.set('id', '1234');
-	someDummy.fetch();
-	
-			var data = args.title.split(':');
+			var data = args.clienttitle.split(':');
 	var name = data[0];
 	var firstname = data[1];
 	var lastname = data[2];
@@ -349,29 +389,12 @@ function selectClient(args) {
 	var invoice = data[10];
 	var project = data[11];
 	var proposal = data[12];
-	
-	console.log("dummy output is: "+fullname);
-	
-	someDummy.set('fullname', fullname);
-	someDummy.set('firstname', firstname);
-	someDummy.set('lastname', lastname);
-	someDummy.set('company', company);
-	someDummy.set('phone', phone);
-	someDummy.set('email', email);
-	someDummy.set('address', address);
-	someDummy.set('fulladdress', fulladdress);
-	someDummy.set('city', city);
-	someDummy.set('state', state);
-	someDummy.set('country', country);
-	someDummy.set('firstname', firstname);
-	someDummy.set('lastname', lastname);
-	someDummy.set('name', name);
-	someDummy.set('invoice', invoice);
-	someDummy.set('project', project);
-	someDummy.set('proposal', proposal);
+	var customerid = data[15];
 }
 
 function matchClient() {
+	var addnewclientrow = [];
+	$.enterinvoice_table.setData(addnewclientrow)	;
 	var clientController = Alloy.createController('client',{
 			sourcecall: 'enterinvoice'
 		});
@@ -379,11 +402,21 @@ function matchClient() {
 	clientController.openMainWindow($.enterinvoice_tab);
 	$.selectclient_button.hide();
 	$.coverview.hide();
+	
 	var someDummy = Alloy.Models.dummy;
 	console.log("stringify dummy after selectClient :"+JSON.stringify(someDummy));
 	someDummy.set('id', '1234');
 	someDummy.fetch();
 	someDummy.set('searchagain', 'Click here to search again.');
+	someDummy.set('searchprojectagain', 'Click here to search again.');
+}
+
+function matchProject(){
+	var projectController = Alloy.createController('project',{
+			sourcecall: 'enterinvoice'
+		});
+	console.log("enterinvoice.js:: examine projectController: "+JSON.stringify(projectController));
+	projectController.openMainWindow($.enterinvoice_tab);
 }
 
 $.invoiceclientfirstname_tf.addEventListener("focus",function(e){
@@ -423,7 +456,187 @@ $.enterinvoice_table.addEventListener('click', function(e){
 	 	$.itemprice_tf.blur();
 });
  
+ function addJobItemFromClientSelection() {
+ 	
+ 
+ 
+ if(args.clienttitle){  //Locate existing jobs.
+ 
+if (uniqueid.match(/[0-9]/g)){
+	projectitemsarray = [];
+	projectnamesarray = [];
+	var projects = Alloy.Collections.instance('project');
+	projects.fetch();
+	var theproject = projects.where({
+		col13:uniqueid
+		}); //FILTER
+	if(theproject.length > 0){
+		console.log("enterinvoice.js:: JSON.stringify(theproject): "+JSON.stringify(theproject));
+		for (i=0;i<theproject.length;i++){
+			var projectnames = theproject[i].toJSON().col1;
+			var projectitems = theproject[i].toJSON().col12;
+			projectitemsarray.push(projectitems);
+			projectnamesarray.push(projectnames);
+		}
+		console.log("enterinvoice.js:: JSON.stringify(projectitemsarray): "+JSON.stringify(projectitemsarray));
+	}
+}
 
+if(projectitemsarray.length>0){
+	
+for (i=0;i<projectitemsarray.length;i++) {
+	console.log("enterinvoice.js:: JSON.stringify(projectnamesarray): "+JSON.stringify(projectnamesarray));	
+	var projectitems = JSON.parse(projectitemsarray[i].replace(/cOlOn/g,":").toString());
+	console.log("enterinvoice.js:: JSON.stringify(projectitems): "+JSON.stringify(projectitems));
+	for (j=0;j<projectitems.length;j++){
+		if (j==0){console.log("enterinvoice.js:: projectitems[0].descr: "+projectitems[j].descr);};	
+		if (j>0){console.log("enterinvoice.js:: projectitems["+j+"].lineitem: "+projectitems[j].lineitem);};			
+		}	
+	}	
+}
 
+/// processing array in notes
+if (projectitemsarray.length>0) {
+	var topvalue = 10;
+	for (x=0;x<projectitemsarray.length;x++) {
+		var projectitems = JSON.parse(projectitemsarray[x].replace(/cOlOn/g,":").toString());   // replacing all cOlOn to ':'
+		var projectname = projectnamesarray[x];
+		console.log("enterinvoice.js:: createRow: projectnamesarray["+x+"]: "+projectnamesarray[x]);
+		console.log("enterinvoice.js:: createRow: JSON.stringify(projectitems): "+JSON.stringify(projectitems));
+		console.log("enterinvoice.js::topvalue at START : "+topvalue);
+		topvalue = topvalue + 4;
+		var projectidentification=projectnamesarray[x].trim().replace(/\s/g,'_'); //
+		var projectinfoarray=[];
+		var unchecked = Ti.UI.createButton({
+			id: projectidentification,
+			top: topvalue,
+			left: "85%",
+			height : 30,
+			width : 30,
+			image : "square82.png"
+		});
+		var checked = Ti.UI.createButton({
+			top: topvalue,
+			left: "85%",
+			height : 30,
+			width : 30,
+			image : "check70.png"
+		});
+		var projectnamelabel = Ti.UI.createLabel ({
+			color : "#333",
+			textAlign : "Ti.UI.TEXT_ALIGNMENT_LEFT",
+			left : "20",
+			top : topvalue,
+			font:{
+				fontSize:16,
+				fontWeight: "bold"
+			},
+			text : projectnamesarray[x].trim()
+		});
+		var descr = projectitems[0].descr;
+		topvalue = topvalue + 20;
+		var descrtitlelabel = Ti.UI.createLabel ({
+			left  : "20",
+			textAlign : "Ti.UI.TEXT_ALIGNMENT_LEFT",
+			top : topvalue,
+			font:{
+				fontSize:14
+			},
+			text : 'Description: '
+		});
+		var descrbodylabel = Ti.UI.createLabel ({
+			color : "#333",
+			left  : "120",
+			textAlign : "Ti.UI.TEXT_ALIGNMENT_LEFT",
+			top : topvalue,
+			font:{
+				fontSize:12
+			},
+			text : descr
+		});
+		var innerview = Ti.UI.createView({
+	        width:"90%",
+	        height:"85%",
+	        backgroundColor:"white",
+	        borderRadius:"10",
+	        borderWidth:"0.1",
+	        borderColor:"white"
+		});	
+		$.jobitem_row.add(projectnamelabel);
+		$.jobitem_row.add(unchecked);
+		$.jobitem_row.add(descrtitlelabel);
+		$.jobitem_row.add(descrbodylabel);
+		topvalue=topvalue+18;
+		var itemtitlelabel = Ti.UI.createLabel ({
+			left  : "20",
+			textAlign : "Ti.UI.TEXT_ALIGNMENT_LEFT",
+			top : topvalue,
+			font:{
+				fontSize:14
+			},
+			text : 'List Item :'
+		});
+		if ( projectitems.length > 1) {$.jobitem_row.add(itemtitlelabel); }
+		for (i=1;i<projectitems.length;i++){
+			topvalue=topvalue+14;
+			var itembodylabel = Ti.UI.createLabel ({
+				color : "#333",
+				left  : "20",
+				textAlign : "Ti.UI.TEXT_ALIGNMENT_LEFT",
+				top : topvalue,
+				font:{
+					fontSize:12
+				},
+				text : i+' :    '+projectitems[i].lineitem
+			});	
+			topvalue=topvalue+14;
+			var itemqtylabel = Ti.UI.createLabel ({
+				color : "#333",
+				left  : "50%",
+				textAlign : "Ti.UI.TEXT_ALIGNMENT_LEFT",
+				top : topvalue,
+				font:{
+					fontSize:10
+				},
+				text : 'Qty :'+projectitems[i].qty
+			});
+			var itempricelabel = Ti.UI.createLabel ({
+				color : "#333",
+				left  : "75%",
+				textAlign : "Ti.UI.TEXT_ALIGNMENT_LEFT",
+				top : topvalue,
+				font:{
+					fontSize:10
+				},
+				text : 'Price : '+projectitems[i].price
+			});	
+
+			$.jobitem_row.add(itembodylabel);
+			$.jobitem_row.add(itemqtylabel);
+			$.jobitem_row.add(itempricelabel);
+			$.jobitem_row.iteminfo=[projectitems[i].lineitem,projectitems[i].qty,projectitems[i].price];
+			var info={"names":projectnamesarray[x].trim(),"descr":projectitems[0].descr,"lineitem":projectitems[i].lineitem,"qty":projectitems[i].qty,"price":projectitems[i].price};
+			projectinfoarray.push(info);
+			unchecked.titleid=projectinfoarray;
+			checked.titleid=projectinfoarray;
+			console.log("enterinvoice.js::topvalue at Sub END : "+topvalue);
+		}
+		topvalue=topvalue+20;
+		var grayline = Ti.UI.createImageView({
+			image: "grayline.png",
+			height: "2",
+			width: "90%",
+			left: "20",
+			top: topvalue
+		});	
+		$.jobitem_row.add(grayline);
+		$.enterinvoice_table.appendRow($.jobitem_row);
+		projectinfoarray=[];
+		topvalue = topvalue + 4;
+		console.log("enterinvoice.js::topvalue at END : "+topvalue);	
+	}
+};
+}
+}
 
  

@@ -35,10 +35,12 @@ console.log("enterproject.js::JSON.stringify(args): "+JSON.stringify(args));
 
 
 if (args) {
-	var projectid = args.projectid;
+	//tag ids to the button.
+	var projectid = args.projectid.trim(); $.save_button.titleid = projectid;
+	var customerid = args.customerid.trim(); $.save_button.customerid = customerid;
 	var projects = Alloy.Collections.instance('project');
 	projects.fetch();	
-	$.save_button.titleid = projectid;
+	
 	
 	Titanium.App.Properties.setString('edithref',args.edithref);
 	Titanium.App.Properties.setString('idtag',args.idtag);
@@ -253,13 +255,14 @@ $.lineitem_tf.addEventListener('blur', function(_e) {
 	var clientproject = projectname[0].name;
 	var notes = JSON.stringify(item).toString().replace(/:/g,'cOlOn');
 	var projectid = e.source.titleid;
-	console.log("enterproject.js::saveHandler::clientproject: "+clientproject+" clientfirstname: "+clientfirstname+" projectid: "+projectid);	
-	submit(clientproject,clientfirstname,clientlastname,clientcompany,clientphone,clientemail,clientstreetaddress,clientcity,clientstate,country,"pending",notes,"0","none",dates,projectid);
+	var customerid = e.source.customerid;
+	console.log("enterproject.js::saveHandler::clientproject: "+clientproject+" clientfirstname: "+clientfirstname+" projectid: "+projectid+" customerid: "+customerid);	
+	submit(clientproject,clientfirstname,clientlastname,clientcompany,clientphone,clientemail,clientstreetaddress,clientcity,clientstate,country,"pending",notes,"0","none",dates,projectid,customerid);
 	///console.log('submit('+projectnumber+','+name+','+customerno+','+total+','+bal+','+paid+','+lastpaiddate+','+followupdate+','+clientphone+','+clientemail+','+duedate+','
 	///+currency+','+status+')');
  }; 
  
- function submit(clientproject,clientfirstname,clientlastname,clientcompany,clientphone,clientemail,clientstreetaddress,clientcity,clientstate,country,status,notes,percentcompletion,nextappt,datedue,projectid) {	
+ function submit(clientproject,clientfirstname,clientlastname,clientcompany,clientphone,clientemail,clientstreetaddress,clientcity,clientstate,country,status,notes,percentcompletion,nextappt,datedue,projectid,customerid) {	
     var existingedithref = Titanium.App.Properties.getString('edithref');
     var edithref = Titanium.App.Properties.getString('edithref');
     var idtag = Titanium.App.Properties.getString('idtag');
@@ -308,13 +311,13 @@ $.lineitem_tf.addEventListener('blur', function(_e) {
 					+'<category scheme=\'http://schemas.google.com/spreadsheets/2006\' term=\'http://schemas.google.com/spreadsheets/2006#list\'/>'
 					+'<title type=\'text\'>'+clientproject+'</title>'
 					+'<content type=\'text\'>col2: '+clientfirstname+', col3: '+clientlastname+', col4: '+clientcompany+', col5: '+clientphone+', col6: '+clientemail+', col7: '+clientstreetaddress
-					+', col8: '+clientcity+', col9: '+clientstate+', col10: '+country+', col11: '+status+', col12: '+notes+', col13: '+percentcompletion+', col14: '+nextappt+', col15: '+datedue+', col16: '+projectid+'</content>'
+					+', col8: '+clientcity+', col9: '+clientstate+', col10: '+country+', col11: '+status+', col12: '+notes+', col13: '+customerid+' , col14: '+nextappt+', col15: '+datedue+', col16: '+projectid+'</content>'
 					+'<link rel=\'self\' type=\'application/atom+xml\' href=\''+selfhref+'\'/>'
 					+'<link rel=\'edit\' type=\'application/atom+xml\' href=\''+edithref+'\'/>'
 					+'<gsx:col1>'+clientproject+'</gsx:col1><gsx:col2>'+clientfirstname+'</gsx:col2><gsx:col3>'
 					+clientlastname+'</gsx:col3><gsx:col4>'+clientcompany+'</gsx:col4><gsx:col5>'
 					+clientphone+'</gsx:col5><gsx:col6>'+clientemail+'</gsx:col6><gsx:col7>'+clientstreetaddress+'</gsx:col7><gsx:col8>'+clientcity+'</gsx:col8><gsx:col9>'+clientstate
-					+'</gsx:col9><gsx:col10>'+country+'</gsx:col10><gsx:col11>'+status+'</gsx:col11><gsx:col12>'+notes+'</gsx:col12><gsx:col13>'+percentcompletion+'</gsx:col13><gsx:col14>'+nextappt+'</gsx:col14><gsx:col15>'+datedue
+					+'</gsx:col9><gsx:col10>'+country+'</gsx:col10><gsx:col11>'+status+'</gsx:col11><gsx:col12>'+notes+'</gsx:col12><gsx:col13>'+customerid+' </gsx:col13><gsx:col14>'+nextappt+'</gsx:col14><gsx:col15>'+datedue
 					+'</gsx:col15><gsx:col16>'+projectid+'</gsx:col16></entry>';
 				Ti.API.info('xmldatastring existing to PUT: '+xmldatastring);
 				alert('Modified & Saved Successfully!');
@@ -326,7 +329,7 @@ $.lineitem_tf.addEventListener('blur', function(_e) {
 				+'<gsx:col1>'+clientproject+'</gsx:col1><gsx:col2>'+clientfirstname+'</gsx:col2><gsx:col3>'
 				+clientlastname+'</gsx:col3><gsx:col4>'+clientcompany+'</gsx:col4><gsx:col5>'
 				+clientphone+'</gsx:col5><gsx:col6>'+clientemail+'</gsx:col6><gsx:col7>'+clientstreetaddress+'</gsx:col7><gsx:col8>'+clientcity+'</gsx:col8><gsx:col9>'+clientstate
-				+'</gsx:col9><gsx:col10>'+country+'</gsx:col10><gsx:col11>'+status+'</gsx:col11><gsx:col12>'+notes+'</gsx:col12><gsx:col13>'+percentcompletion+'</gsx:col13><gsx:col14>'+nextappt+'</gsx:col14><gsx:col15>'+datedue
+				+'</gsx:col9><gsx:col10>'+country+'</gsx:col10><gsx:col11>'+status+'</gsx:col11><gsx:col12>'+notes+'</gsx:col12><gsx:col13>'+customerid+'</gsx:col13><gsx:col14>'+nextappt+'</gsx:col14><gsx:col15>'+datedue
 				+'</gsx:col15><gsx:col16>'+projectid+'</gsx:col16></entry>';
 				Ti.API.info('xmldatastring to POST: '+xmldatastring);
 			    //var spreadsheet_id = '1-Wz7Apn4AvVpfqcNyMgfqyKA8OAoLNy5Bl0d_jQ9IZk';
@@ -361,7 +364,8 @@ $.lineitem_tf.addEventListener('blur', function(_e) {
  };
  
  var addnewclientrow = [ $.existing, $.clientdetail_row, $.itemline_row, $.itemdetail_row, $.addrow_row, $.itemlineend_row ];
- var selectclientrow = [ $.existing, $.clientselect_row, $.itemline_row, $.itemdetail_row, $.addrow_row, $.itemlineend_row ];
+ //var selectclientrow = [ $.existing, $.clientselect_row, $.itemline_row, $.itemdetail_row, $.addrow_row, $.itemlineend_row ];
+ var selectclientrow = [ $.existing, $.clientdetail_row , $.itemline_row, $.itemdetail_row, $.addrow_row, $.itemlineend_row ];
 
 if (args.title) {
 	selectClient(args);
@@ -383,7 +387,7 @@ function selectClient(args) {
 	someDummy.fetch();
 	
 			var data = args.title.split(':');
-	var name = data[0];
+	var customerid = data[0];
 	var firstname = data[1];
 	var lastname = data[2];
 	var fullname = firstname+" "+lastname;
@@ -398,6 +402,16 @@ function selectClient(args) {
 	var invoice = data[10];
 	var project = data[11];
 	var proposal = data[12];
+	
+	(firstname)?$.projectclientfirstname_tf.value=firstname:$.projectclientfirstname_tf.value=" ";
+	(lastname)?$.projectclientlastname_tf.value=lastname:$.projectclientlastname_tf.value=" ";
+	(company)?$.projectclientcompany_tf.value=company:$.projectclientcompany_tf.value=" ";
+	(phone)?$.projectclientphone_tf.value=phone:$.projectclientphone_tf.value=" ";
+	(email)?$.projectclientemail_tf.value=email:$.projectclientemail_tf.value=" ";
+	(address)?$.projectclientstreetaddress_tf.value=address:$.projectclientstreetaddress_tf.value=" ";
+	(city)?$.projectclientcity_tf.value=city:$.projectclientcity_tf.value=" ";
+	(state)?$.projectclientstate_tf.value=state:$.projectclientstate_tf.value=" ";
+	(customerid)?$.save_button.customerid=customerid.trim():"none";
 	
 	console.log("dummy output is: "+fullname);
 	
@@ -414,7 +428,6 @@ function selectClient(args) {
 	someDummy.set('country', country);
 	someDummy.set('firstname', firstname);
 	someDummy.set('lastname', lastname);
-	someDummy.set('name', name);
 	someDummy.set('invoice', invoice);
 	someDummy.set('project', project);
 	someDummy.set('proposal', proposal);

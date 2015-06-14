@@ -43,7 +43,7 @@
 	  </TableViewSection>
 	 <TableViewSection headerTitle="Job Items">
 		  <TableViewRow id="jobdescr_row"/>
-		  <TableViewRow id="jobitem_row" height="Ti.UI.Size"/>
+		  <TableViewRow id="jobitem_row" height="Ti.UI.Size" />
 	  </TableViewSection>
 	  </TableView>
   </Window>

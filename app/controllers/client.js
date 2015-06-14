@@ -40,7 +40,8 @@ if (args.sourcecall) {
 		Alloy.Globals.openDetail(e);
 		var title = e.row.title;
 		var clientController = Alloy.createController(args.sourcecall,{
-			title: title
+			clienttitle: title,
+			title:title
 		});
 		clientController.openMainWindow($.tab_clientlist);
 });
