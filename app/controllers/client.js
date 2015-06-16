@@ -10,9 +10,10 @@ exports.openMainWindow = function(_tab) {
 	setTimeout(function(){
         $.activityIndicator.hide();
     }, 10);
-    
+   
     $.clientlist_window.addEventListener("close", function(e){
     	console.log("client.js::openMainWindow:: closing clientlist_window JSON.stringify(e) : "+JSON.stringify(e));
+    	_tab.from=e.source.id;
     	console.log("client.js::openMainWindow:: closing clientlist_window info on _tab : "+JSON.stringify(_tab));
     });
 };

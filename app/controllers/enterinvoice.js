@@ -22,6 +22,7 @@ exports.openMainWindow = function(_tab) {
 		console.log("enterinvoice.js::after selectClient::openMainWindow:: after exe $.enterinvoice_table.data[0].rowCount : "+$.enterinvoice_table.data[0].rowCount);
 		console.log("enterinvoice.js::after selectClient::openMainWindow:: after exe $.enterinvoice_table.data[0] "+JSON.stringify($.enterinvoice_table.data[0].rows));
 		addJobItemFromClientSelection();
+		$.enterinvoice_window.setRightNavButton($.savebutton);
 		console.log("enterinvoice.js::after selectClient::openMainWindow:: checking $.jobitem_row "+JSON.stringify($.jobitem_row));	
 	} else {
 		//$.enterinvoice_table.setData(addnewclientrow)	;
@@ -42,7 +43,16 @@ exports.openMainWindow = function(_tab) {
 		};
 	};
 	
+	if(_tab.from == "clientlist_window"){
+		var toshow = [$.itemdetail_row, $.addrow_row, $.itemlineend_row,$.totalrow];
+		for (x=0;x<toshow.length;x++){
+			$.enterinvoice_table.appendRow(toshow[x]);
+		};
+	}
 };
+
+	var maxdebug = Titanium.App.Properties.getInt('maxdebug');
+	var mindebug = Titanium.App.Properties.getInt('mindebug');
 
 console.log("enterinvoice.js::outside openMainWindow:: $.enterinvoice_table.data[0] count "+$.enterinvoice_table.data[0].rowCount+" contents: "+JSON.stringify($.enterinvoice_table.data[0].rows));
 
@@ -393,13 +403,11 @@ function selectClient(args) {
 }
 
 function matchClient() {
-	var addnewclientrow = [];
-	$.enterinvoice_table.setData(addnewclientrow)	;
 	var clientController = Alloy.createController('client',{
 			sourcecall: 'enterinvoice'
 		});
-	console.log("enterinvoice.js:: examine clientController: "+JSON.stringify(clientController));
 	clientController.openMainWindow($.enterinvoice_tab);
+	console.log("enterinvoice.js:: examine clientController: "+JSON.stringify(clientController));
 	$.selectclient_button.hide();
 	$.coverview.hide();
 	
@@ -501,9 +509,11 @@ if (projectitemsarray.length>0) {
 	for (x=0;x<projectitemsarray.length;x++) {
 		var projectitems = JSON.parse(projectitemsarray[x].replace(/cOlOn/g,":").toString());   // replacing all cOlOn to ':'
 		var projectname = projectnamesarray[x];
-		console.log("enterinvoice.js:: createRow: projectnamesarray["+x+"]: "+projectnamesarray[x]);
-		console.log("enterinvoice.js:: createRow: JSON.stringify(projectitems): "+JSON.stringify(projectitems));
-		console.log("enterinvoice.js::topvalue at START : "+topvalue);
+		if(maxdebug==1){
+			console.log("enterinvoice.js:: createRow: projectnamesarray["+x+"]: "+projectnamesarray[x]);
+			console.log("enterinvoice.js:: createRow: JSON.stringify(projectitems): "+JSON.stringify(projectitems));
+			console.log("enterinvoice.js::topvalue at START : "+topvalue);
+		};
 		topvalue = topvalue + 4;
 		var projectidentification=projectnamesarray[x].trim().replace(/\s/g,'_'); //
 		var projectinfoarray=[];
@@ -566,6 +576,12 @@ if (projectitemsarray.length>0) {
 		$.jobitem_row.add(unchecked);
 		$.jobitem_row.add(descrtitlelabel);
 		$.jobitem_row.add(descrbodylabel);
+		if(maxdebug==1){
+			console.log("enterinvoice.js:: addRow: projectnamelabel: "+x+" : " +projectnamesarray[x].trim());		
+			console.log("enterinvoice.js:: addRow: unchecked:  "+x+" : " +JSON.stringify(unchecked));		
+			console.log("enterinvoice.js:: addRow: descrtitlelabel:   "+x+" :" +JSON.stringify(descrtitlelabel));		
+			console.log("enterinvoice.js:: addRow: descrbodylabel:  "+x+" : " +descr);
+		}
 		topvalue=topvalue+18;
 		var itemtitlelabel = Ti.UI.createLabel ({
 			left  : "20",
@@ -614,12 +630,17 @@ if (projectitemsarray.length>0) {
 			$.jobitem_row.add(itembodylabel);
 			$.jobitem_row.add(itemqtylabel);
 			$.jobitem_row.add(itempricelabel);
+			if(maxdebug==1){
+				console.log("enterinvoice.js:: addRow: itembodylabel: "+i+" : " +projectitems[i].lineitem);			
+				console.log("enterinvoice.js:: addRow: itemqtylabel: "+i+" : " +projectitems[i].qty);			
+				console.log("enterinvoice.js:: addRow: itempricelabel: "+i+" : " +projectitems[i].price);
+			}			
 			$.jobitem_row.iteminfo=[projectitems[i].lineitem,projectitems[i].qty,projectitems[i].price];
 			var info={"names":projectnamesarray[x].trim(),"descr":projectitems[0].descr,"lineitem":projectitems[i].lineitem,"qty":projectitems[i].qty,"price":projectitems[i].price};
 			projectinfoarray.push(info);
 			unchecked.titleid=projectinfoarray;
 			checked.titleid=projectinfoarray;
-			console.log("enterinvoice.js::topvalue at Sub END : "+topvalue);
+			if(maxdebug==1){console.log("enterinvoice.js::topvalue at Sub END : "+topvalue);};
 		}
 		topvalue=topvalue+20;
 		var grayline = Ti.UI.createImageView({
@@ -630,12 +651,16 @@ if (projectitemsarray.length>0) {
 			top: topvalue
 		});	
 		$.jobitem_row.add(grayline);
-		$.enterinvoice_table.appendRow($.jobitem_row);
 		projectinfoarray=[];
 		topvalue = topvalue + 4;
-		console.log("enterinvoice.js::topvalue at END : "+topvalue);	
+		if(maxdebug==1){
+			console.log("enterinvoice.js:: addRow: grayline ");	
+			console.log("enterinvoice.js:: table appendRow: " +JSON.stringify($.jobitem_row));		
+			console.log("enterinvoice.js::topvalue at END : "+topvalue);
+		}
 	}
-};
+	$.enterinvoice_table.appendRow($.jobitem_row); // append row once.
+	};
 }
 }
 
