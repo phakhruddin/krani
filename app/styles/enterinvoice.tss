@@ -52,4 +52,9 @@
 	font:{
 		fontSize : "12"
 	}
+},
+"#itemlinerow_notes" : {
+	font:{
+		fontSize : "12"
+	}
 }

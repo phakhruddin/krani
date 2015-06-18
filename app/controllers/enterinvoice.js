@@ -7,22 +7,23 @@ exports.openMainWindow = function(_tab) {
 	//Alloy.Globals.checkGoogleisAuthorized();
 	googleAuth.authorize();
 	console.log("enterinvoice.js::openMainWindow:: $.enterinvoice_table.data[0] count "+$.enterinvoice_table.data[0].rowCount+" contents: "+JSON.stringify($.enterinvoice_table.data[0].rows));
- 	if (args.clienttitle) {
+ 	if (args.clienttitle) {  //when user select existing client
 		selectClient(args);
 		//console.log("enterinvoice.js::after selectClient:: selectclientrow "+JSON.stringify(selectclientrow));
 		console.log("enterinvoice.js::after selectClient::openMainWindow:: b4 exe $.enterinvoice_table.data[0].rowCount : "+$.enterinvoice_table.data[0].rowCount);
 		console.log("enterinvoice.js::after selectClient::openMainWindow:: b4 exe $.enterinvoice_table.data[0] "+JSON.stringify($.enterinvoice_table.data[0].rows));
 		$.coverview.hide();
-		$.selectclient_button.hide();
+		$.selectclient_button.hide();	
 		//$.enterinvoice_table.deleteRow()
+		/*
 		var tohide = [$.itemdetail_row, $.addrow_row, $.itemlineend_row,$.totalrow];
 		for (x=0;x<tohide.length;x++){
 			$.enterinvoice_table.deleteRow(tohide[x]);
-		};
+		}; //hide first*/
 		console.log("enterinvoice.js::after selectClient::openMainWindow:: after exe $.enterinvoice_table.data[0].rowCount : "+$.enterinvoice_table.data[0].rowCount);
 		console.log("enterinvoice.js::after selectClient::openMainWindow:: after exe $.enterinvoice_table.data[0] "+JSON.stringify($.enterinvoice_table.data[0].rows));
-		addJobItemFromClientSelection();
-		$.enterinvoice_window.setRightNavButton($.savebutton);
+		addJobItemFromClientSelection();		
+		$.enterinvoice_window.setRightNavButton($.savebutton);		
 		console.log("enterinvoice.js::after selectClient::openMainWindow:: checking $.jobitem_row "+JSON.stringify($.jobitem_row));	
 	} else {
 		//$.enterinvoice_table.setData(addnewclientrow)	;
@@ -357,7 +358,7 @@ $.itemlist_tf.addEventListener('blur', function(_e) {
  };
 
 // next phase not needed now start
- var selectprojectrow = [ $.existing, $.clientselect_row,$.projectselect_row ];
+ var selectprojectrow = [ $.existing, $.clientselect_row ];
  var addnewprojecttrow = [ $.existing, $.clientdetail_row, $.itemline_row, $.itemdetail_row, $.addrow_row, $.itemlineend_row,$.totalrow ];
  // end
 
@@ -505,6 +506,7 @@ for (i=0;i<projectitemsarray.length;i++) {
 
 /// processing array in notes
 if (projectitemsarray.length>0) {
+	$.itemline_row.title = "Enter new project to invoice or select from existing: ";
 	var topvalue = 10;
 	for (x=0;x<projectitemsarray.length;x++) {
 		var projectitems = JSON.parse(projectitemsarray[x].replace(/cOlOn/g,":").toString());   // replacing all cOlOn to ':'

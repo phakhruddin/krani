@@ -49,14 +49,18 @@
 	   		  <Label id="company" text="Company:" left="20" top="150"/>
 	   		  <Label id="clientcompany_tf" text="{dummy.company}" left="120" top="150"/>	
 		  </TableViewRow>
-		 <TableViewRow id="itemline_row" height="20" borderColor="white" opacity="0.1" backgroundColor="#80c342" color="white" title="Item Details"/>
-		  <TableViewRow id="itemdetail_row" borderColor="white" backgroundColor="transparent" height="50">
-		  	<Label id="tflabellist" top="10" text="item 1 :"/>
-		  	<TextField id="itemlist_tf" width="200" left="80" top="12" height="20"></TextField>	
-		  	<Label id="tflabelqty" top="30" text="qty : "/>
-		  	<TextField id="itemqty_tf" top="32" left="60" hintText="2" width="60" keyboardType="Ti.UI.KEYBOARD_NUMBER_PAD"></TextField>	
-		  	<Label id="tflabelprice" left="150" top="30" text="price : "/>
-		  	<TextField id="itemprice_tf" left="200" top="32" width="80" hintText="120" returnKeyType="Ti.UI.RETURNKEY_DONE" keyboardType="Ti.UI.KEYBOARD_DECIMAL_PAD">
+		 <TableViewRow id="itemline_row" height="20" borderColor="white" opacity="0.1" backgroundColor="#80c342" color="white" top="10" title="Project to Invoice"/>
+		 <TableViewRow id="itemdetail_row" borderColor="white" backgroundColor="transparent" height="Ti.UI.Size">
+		  	<Label id="tflabelprojectname" top="10" text="Project Name :"/>
+		  	<TextField id="projectname_tf" width="160" left="120" top="12" height="20" ></TextField>	
+		  	<Label id="tflabelprojectdescr" top="32" text="Description :"/>
+		  	<TextField id="projectdescr_tf" width="160" left="120" top="32" height="20" ></TextField>	
+		  	<Label id="tflabellist" top="60" text="item 1 :"/>
+		  	<TextField id="itemlist_tf" width="200" left="80" top="62" height="20"></TextField>	
+		  	<Label id="tflabelqty" top="80" text="qty : "/>
+		  	<TextField id="itemqty_tf" top="82" left="60" hintText="2" width="60" keyboardType="Ti.UI.KEYBOARD_NUMBER_PAD"></TextField>	
+		  	<Label id="tflabelprice" left="150" top="80" text="price : "/>
+		  	<TextField id="itemprice_tf" left="200" top="82" width="80" hintText="120" returnKeyType="Ti.UI.RETURNKEY_DONE" keyboardType="Ti.UI.KEYBOARD_DECIMAL_PAD">
 				<KeyboardToolbar>
 			    <Toolbar id="donetoolbar" platform="ios" bottom="0" borderTop="true" borderBottom="false">
 	            <Items>
