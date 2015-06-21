@@ -84,7 +84,7 @@ console.log("invocedetail.js:: firstname and lastname is: "+firstname+" "+lastna
 	someDummy.set('customernumber', 'Customer#: '+(uniqueid)?uniqueid:"0000000000000");
 	
 //Locate jobs.
-if (uniqueid.match(/[0-9]/g)){
+if (uniqueid && uniqueid.match(/[0-9]/g)){
 	projectitemsarray = [];
 	projectnamesarray = [];
 	var projects = Alloy.Collections.instance('project');

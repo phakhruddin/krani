@@ -145,3 +145,14 @@ function prefetchJoblogSID(){
 }
 
 prefetchJoblogSID();
+
+function initialLoad(){
+	checkNetworkAndGoogleAuthorized('1gnkP116nsTVxtrw6d_mXVdOiesQEPH7LVUIyHUfx9EE');
+	var item = 'invoice';
+ 	var sid = Titanium.App.Properties.getString(item,"none");
+ 	Ti.API.info("index.js::sid for "+ item +" : "+sid);
+	Alloy.Globals.getPrivateData(sid,item);
+	Alloy.Collections.instance(item).fetch();
+}
+
+initialLoad();

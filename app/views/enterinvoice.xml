@@ -31,24 +31,6 @@
 		  	<Label id="tflabel" top="150">Company: </Label>
 		  	<TextField  top="152" id="invoiceclientcompany_tf"></TextField>
 		  </TableViewRow>
-		  <TableViewRow id="clientselect_row" backgroundColor="transparent" opacity="0" height="200" color="#333">
-		  	  <Label id="Firstname" text="Firstname:" left="20" top="10"/>
-		  	  <Label id="clientfirstname_tf" text="{dummy.firstname}" left="120" top="10"/>
-		  	  <Label id="Lastname" text="Lastname:" left="20" top="30"/>
-		  	  <Label id="clientlastname_tf" text="{dummy.lastname}" left="120" top="30"/>
-		  	  <Label id="phone" text="Phone:" left="20" top="50"/>
-	   		  <Label id="clientphone_tf" text="{dummy.phone}" left="120" top="50"/>
-	   		  <Label id="email" text="Email:" left="20" top="70"/>
-	   		  <Label id="clientemail_tf" text="{dummy.email}" left="120" top="70"/>
-	   		  <Label id="streetaddress" text="Street addr:" left="20" top="90" />
-	   		  <Label id="clientstreetaddress_tf" text="{dummy.address}" left="120" top="90" />
-	   		  <Label id="clientcity" text="City:" left="20" top="110" />
-	   		  <Label id="clientcity_tf" text="{dummy.city}" left="120" top="110" />
-	   		  <Label id="clientstate" text="State:" left="20" top="130" />
-	   		  <Label id="clientstate_tf" text="{dummy.state}" left="120" top="130" />
-	   		  <Label id="company" text="Company:" left="20" top="150"/>
-	   		  <Label id="clientcompany_tf" text="{dummy.company}" left="120" top="150"/>	
-		  </TableViewRow>
 		 <TableViewRow id="itemline_row" height="20" borderColor="white" opacity="0.1" backgroundColor="#80c342" color="white" top="10" title="Project to Invoice"/>
 		 <TableViewRow id="itemdetail_row" borderColor="white" backgroundColor="transparent" height="Ti.UI.Size">
 		  	<Label id="tflabelprojectname" top="10" text="Project Name :"/>
