@@ -155,4 +155,4 @@ function initialLoad(){
 	Alloy.Collections.instance(item).fetch();
 }
 
-initialLoad();
+//initialLoad();
