@@ -309,7 +309,13 @@ $.itemlist_tf.addEventListener('blur', function(_e) {
 	+currency+','+status+')');
 		submitproject(clientproject,clientfirstname,clientlastname,clientcompany,clientphone,clientemail,clientaddress,clientcity,clientstate,country,"0",notes,customerid,"none",dates,projectid);
 	}
-
+	$.enterinvoice_window.setRightNavButton($.geninvoice);
+	$.geninvoice.invoicenumber = invoicenumber;
+	var subject = ["invoicenumber", "clientfirstname","clientlastname","clientcompany","clientphone","clientemail",
+	"clientaddress","clientcity","clientstate","country","status","notes","customerid","dates","projectid"];
+	for (i=0;i<subject.length;i++){
+		eval("$.geninvoice."+subject[i]+" = "+subject[i]);
+	}
  }; 
  
  function submit(invoicenumber,clientfirstname,clientlastname,total,bal,paid,lastpaiddate,followupdate,clientphone,clientemail,duedate,currency,status) {	
@@ -729,6 +735,10 @@ if (projectitemsarray.length>0) {
 	$.enterinvoice_table.appendRow($.jobitem_row); // append row once.
 	};
 }
+}
+
+function genInvoice(e){
+	console.log("enterinvoice.js::genInvoice: JSON.stringify(e): "+JSON.stringify(e));
 }
 
  

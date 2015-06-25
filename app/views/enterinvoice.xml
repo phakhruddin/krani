@@ -4,6 +4,7 @@
   <Window id="enterinvoice_window"backgroundColor="white" title="Invoice Entry">
   	<RightNavButton id="rightnavbutton" platform="ios">
 	   <Button  id="savebutton" systemButton="Ti.UI.iPhone.SystemButton.SAVE" onClick="saveHandler" /> 
+	   <Button  id="geninvoice" systemButton="Ti.UI.iPhone.SystemButton.PLAIN" title="Generate Invoice" onClick="genInvoice" /> 
 	</RightNavButton>
 	<View id="coverview" backgroundColor="#222" height="Ti.UI.Fill" opacity="0.1" />
 	  <TableView id="enterinvoice_table" backgroundColor="transparent" separatorColor="transparent" >

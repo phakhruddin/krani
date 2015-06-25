@@ -315,20 +315,31 @@ function emailpdf(firstname,lastname,address,city,state,phone,email,invoicenumbe
 	+" balance " + balance 	+" paid " + paid 	+" lastpaiddate " + lastpaiddate 	+" duedate " + duedate 	+" price " + price);
 	
 	var html2pdf = require('com.factisresearch.html2pdf');  
- 	Ti.API.info("module is => " + html2pdf);  
+ 	Ti.API.info("module is => " + html2pdf);
+ 	
+ 	var oldfile = Ti.Filesystem.getFile('invoice.pdf'); if (oldfile.exists()) { oldfile.deleteFile(); } // cleanup old file
    
  	html2pdf.addEventListener('pdfready', function(e) {  
-	   	 var emailDialog = Ti.UI.createEmailDialog();  
-	     var file = Ti.Filesystem.getFile(e.pdf);
-	     var newfile = file.rename('invoice.pdf');
+	     var file = Ti.Filesystem.getFile(e.pdf);   
+	    console.log("invoicedetail.js::html2pdf.addEventListener:: Ti.Filesystem.applicationDataDirectory "+Ti.Filesystem.applicationDataDirectory);
+		var oldfile = Ti.Filesystem.getFile(Ti.Filesystem.applicationDataDirectory,'invoice.pdf');
+		if (oldfile.exists()) { oldfile.deleteFile(); }
+		var orgfile =  Ti.Filesystem.getFile(Ti.Filesystem.applicationDataDirectory,'Expose.pdf');
+        var renamesuccess = orgfile.rename('invoice.pdf');
+        console.log("invoicedetail.js::html2pdf.addEventListener:: renamesuccess "+renamesuccess);
+	     ///var emailDialog = Ti.UI.createEmailDialog();  
+	     ///var newfile = file.rename('invoice.pdf');
 	     //emailDialog.addAttachment(Ti.Filesystem.getFile(e.pdf));
 	     //emailDialog.open();  
-	     file.rename('invoice.pdf');
+	     ///file.rename('invoice.pdf');
 	     var url = '../Documents/invoice.pdf';
 	     //var url = '../Documents/Expose.pdf';
 	     var newurl = Ti.Filesystem.getFile(url);
-	     emailDialog.addAttachment(newurl);
-	     emailDialog.open();  
+	     var file = 'invoice.pdf';
+	     console.log("opening viewpdf(url) on "+file);
+     	 viewpdf(file);
+     	 Alloy.Globals.checkGoogleisAuthorized();
+     	 Alloy.Globals.uploadFile(file,"invdeen1.pdf") ;
  	});  
  	
  	//var html = '<html><body><p>dBayCo Inc. limited </p></body></html>'; 
@@ -596,6 +607,7 @@ function viewpdf(url){
 	
 	// Create a document viewer to preview a PDF file
 	var url = Ti.Filesystem.getFile(Ti.Filesystem.applicationDataDirectory,url);
+	url.rename('invoice.pdf');
 	docViewer = Ti.UI.iOS.createDocumentViewer({url:url.nativePath});
 	navButton.addEventListener('click', function(){
 	    //docViewer.show({view:navButton, animated: true});
@@ -655,10 +667,11 @@ function genInvoice(e){
 		emailpdf(firstname,lastname,address,city,state,phone,email,invoicenumber,company,total,balance,paid,lastpaiddate,duedate,price);
 		//var url = '../Documents/invoice.pdf';
 		//var file = '../Documents/Expose.pdf';
-		var file = 'Expose.pdf';
-		console.log("opening viewpdf(url) on "+file);
-     	viewpdf(file);
-     	Alloy.Globals.checkGoogleisAuthorized();
-     	 Alloy.Globals.uploadFile(file,"invdeen1.pdf") ;
+
+		//var file = 'Expose.pdf';
+		//var orgfile = 'Expose.pdf';
+		//var file = orgfile.rename('invoice.pdf');
+		
+ 
 };
 	
