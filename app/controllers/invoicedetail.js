@@ -3,6 +3,26 @@ exports.openMainWindow = function(_tab) {
   _tab.open($.invoicedetail_window);
   Ti.API.info("This is child widow checking _tab on : " +JSON.stringify(_tab));
   Ti.API.info(" input details : "+JSON.stringify(args));
+  prefetchPayment(); //prefetch payment to get existing sid or to create new
+  $.totalbalance_row.addEventListener("click", function(e){
+  	    var firstname = e.row.firstname;
+  	    var lastname = e.row.lastname;
+  	    var invoicenumber = e.row.invoicenumber;
+	  	var sid = e.row.sid;
+	  	console.log("invoicedetail.js::detailAction:: JSON.stringify(e) "+JSON.stringify(e)+" with : "+firstname+" "+lastname+" : "+invoicenumber+" : "+sid);
+		if (sid){	
+			var tabViewOneController = Alloy.createController("enterpayment",{
+				title: args,
+				firstname : firstname,
+				lastname : lastname,
+				invoicenumber : invoicenumber,
+				sid : sid
+			});
+			tabViewOneController.openMainWindow($.tab_invoicedetail);
+		} else {
+			alert("Loading data from the cloud. Please click OK and try again.");
+		}
+  });
 };
 Alloy.Collections.adhoc.deleteAll(); //reset adhoc tables.
 var someDummy = Alloy.Models.dummy;
@@ -11,9 +31,9 @@ someDummy.set('id', '1234');
 someDummy.fetch();
 
 var data = args.title.split(':');
-var invoicenumber = data[0];
-var firstname = data[1];
-var lastname = data[2];
+var invoicenumber = data[0]; $.totalbalance_row.invoicenumber = invoicenumber;
+var firstname = data[1]; $.totalbalance_row.firstname = firstname;
+var lastname = data[2]; $.totalbalance_row.lastname = lastname;
 var total = data[3];
 var balance = data[4];
 var paid = data[5];
@@ -25,6 +45,10 @@ var duedate = data[10];
 var notes = data[11];
 var status = data[12];
 var currency = data[14];
+var filename = 'payment_'+invoicenumber+'_'+firstname+'_'+lastname; $.totalbalance_row.filename = filename;
+var idtag = data[13].replace(/xCoLoNx/g,',').split(',')[0].replace('yCoLoNy',':');
+var selfhref = data[13].replace(/xCoLoNx/g,',').split(',')[1].replace('yCoLoNy',':');
+var edithref = data[13].replace(/xCoLoNx/g,',').split(',')[2].replace('yCoLoNy',':');
 
 if (balance == 0){
 	$.phone_button.hide();
@@ -126,7 +150,7 @@ if (projectitemsarray.length>0) {
 		console.log("invocedetail.js:: createRow: projectnamesarray["+x+"]: "+projectnamesarray[x]);
 		console.log("invocedetail.js:: createRow: JSON.stringify(projectitems): "+JSON.stringify(projectitems));
 		console.log("invoicedetail.js::topvalue at START : "+topvalue);
-		topvalue = topvalue + 4;
+		topvalue = topvalue + 8;
 		var projectidentification=projectnamesarray[x].trim().replace(/\s/g,'_'); //
 		var projectinfoarray=[];
 		var unchecked = Ti.UI.createButton({
@@ -156,7 +180,7 @@ if (projectitemsarray.length>0) {
 			text : projectnamesarray[x].trim()
 		});
 		var descr = projectitems[0].descr;
-		topvalue = topvalue + 20;
+		topvalue = topvalue + 25;
 		var descrtitlelabel = Ti.UI.createLabel ({
 			left  : "20",
 			textAlign : "Ti.UI.TEXT_ALIGNMENT_LEFT",
@@ -188,7 +212,7 @@ if (projectitemsarray.length>0) {
 		$.jobitem_row.add(unchecked);
 		$.jobitem_row.add(descrtitlelabel);
 		$.jobitem_row.add(descrbodylabel);
-		topvalue=topvalue+18;
+		topvalue=topvalue+20;
 		var itemtitlelabel = Ti.UI.createLabel ({
 			left  : "20",
 			textAlign : "Ti.UI.TEXT_ALIGNMENT_LEFT",
@@ -674,4 +698,310 @@ function genInvoice(e){
 		
  
 };
+
+function detailAction(e){
+	var sid = e.source.sid;
+	if (sid){
+		console.log("invoicedetail.js::detailAction:: JSON.stringify(e) "+JSON.stringify(e)+" with : "+firstname+" "+lastname+" : "+invoicenumber);
+		var tabViewOneController = Alloy.createController("enterpayment",{
+			title: args,
+			firstname : firstname,
+			lastname : lastname,
+			invoicenumber : invoicenumber,
+			sid : sid
+		});
+		tabViewOneController.openMainWindow($.tab_invoicedetail);
+	} else {
+		alert("Loading data from the cloud. Please click OK and try again.");
+	}
+
+}
+
+// Section where payment is tracked.
+
+function populatepaymentSIDtoDB(filename,sid) {
+	var needupdate = "yes";
+	var thepaymentsid = Alloy.Collections.instance('paymentsid');
+	thepaymentsid.fetch();
+    if (thepaymentsid.length > 0) {
+    	var paymentsidjson = thepaymentsid.toJSON();
+    	for( var i=0; i < paymentsidjson.length; i++ ){
+    		var oldsid = paymentsidjson[i].col2.trim();
+    		console.log("invoicedetail.js::populatepaymentSIDtoDB::compare sid : "+oldsid+" vs. "+sid);
+    		if ( sid == oldsid ){
+    			var needupdate = "no";
+    			console.log("invoicedetail.js::populatepaymentSIDtoDB::needupdate: "+needupdate+" , abort!");
+    			return;
+    		} 
+    	}
+    }   
+       	if (needupdate == "yes"){
+		    var dataModel = Alloy.createModel("paymentsid",{
+	            col1 :  filename || "none",
+	            col2 : sid || "none",
+	            col3 : "none",col4:"none", col5:"none",	col6:"none", col7:"none", col8:"none", col9:"none", 
+	            col10:"none", col11:"none",	col12:"none", col13:"none",	col14:"none", col15:"none",	col16:"none"
+	    	});
+    		dataModel.save();
+    	}; 	
+	thepaymentsid.fetch();
+	Ti.API.info(" invoicedetail.js::populatepaymentSIDtoDB::needupdate "+needupdate+" with thepaymentsid: "+thepaymentsid.length+" : "+JSON.stringify(thepaymentsid));
+	}
+
+function getParentFolder(args) {
+	var sid = Titanium.App.Properties.getString('invoice');
+	var xhr = Ti.Network.createHTTPClient({
+	    onload: function(e) {
+	    try {
+	    		var json = JSON.parse(this.responseText);
+	    		Ti.API.info("response is: "+JSON.stringify(json));
+	    		var parentid = json.items[0].id;
+	    		Titanium.App.Properties.setString('parentid',parentid);
+	    		console.log("enterjobdetail.js::args inside getParentFolder: "+JSON.stringify(args));
+	    		//var filename = 'test03';
+	    		//createSpreadsheet(filename,parentid);    		
+	    	} catch(e){
+				Ti.API.info("cathing e: "+JSON.stringify(e));
+			}
+			return parentid;
+		}
+		});
+	xhr.onerror = function(e){
+		alert("Unable to connect to the cloud.");
+	};
+	xhr.open("GET", 'https://www.googleapis.com/drive/v2/files/'+sid+'/parents');
+	xhr.setRequestHeader("Content-type", "application/json");
+    xhr.setRequestHeader("Authorization", 'Bearer '+ googleAuthSheet.getAccessToken());
+	xhr.send();
+};
+
+function fileExist(filename,parentid){
+		console.log("executing fileExist("+filename+","+parentid+") ");
+		var jsonlist = " ";
+		var xhr = Ti.Network.createHTTPClient({
+	    onload: function(e) {
+	    try {
+	    		var jsonlist = JSON.parse(this.responseText);
+	    		Ti.API.info("response of jsonlist is: "+JSON.stringify(jsonlist));
+	    	} catch(e){
+				Ti.API.info("cathing e: "+JSON.stringify(e));
+			}
+			console.log("invoicedetail.js::jsonlist.items.length: "+jsonlist.items.length);
+			filelist = [];
+			if (jsonlist.items.length == "0" ){
+				console.log("invoicedetail.js::File DOES NOT EXIST");
+				var fileexist = "false";
+				createSpreadsheet(filename,parentid);  // create file when does not exists
+				//PopulateHeader
+			} else {
+				var fileexist = "true";
+				var sid = jsonlist.items[0].id;
+				$.totalbalance_row.sid = sid;
+				console.log("invoicedetail.js::fileExist:: File exist. sid is: "+jsonlist.items[0].id+" Skipped.");
+				Titanium.App.Properties.setString('sid',sid);
+				populatepaymentSIDtoDB(filename,sid);
+				//populateSpreadsheetHeader();
+			};
+		}
+		});
+	xhr.onerror = function(e){
+		alert("Creating new document in the cloud");
+	};
+	var rawquerystring = '?q=title+%3D+\''+filename+'\'+and+mimeType+%3D+\'application%2Fvnd.google-apps.spreadsheet\'+and+trashed+%3D+false&fields=items(id%2CmimeType%2Clabels%2Ctitle)';
+	xhr.open("GET", 'https://www.googleapis.com/drive/v2/files'+rawquerystring);
+	xhr.setRequestHeader("Content-type", "application/json");
+    xhr.setRequestHeader("Authorization", 'Bearer '+ googleAuthSheet.getAccessToken());
+	xhr.send();
+}
+
+function xmlToJson(xml) {
 	
+	// Create the return object
+	var obj = {};
+
+	if (xml.nodeType == 1) { // element
+		// do attributes
+		if (xml.attributes.length > 0) {
+		obj["@attributes"] = {};
+			for (var j = 0; j < xml.attributes.length; j++) {
+				var attribute = xml.attributes.item(j);
+				obj["@attributes"][attribute.nodeName] = attribute.nodeValue;
+			}
+		}
+	} else if (xml.nodeType == 3) { // text
+		obj = xml.nodeValue;
+	}
+
+	// do children
+	if (xml.hasChildNodes()) {
+		for(var i = 0; i < xml.childNodes.length; i++) {
+			var item = xml.childNodes.item(i);
+			var nodeName = item.nodeName;
+			if (typeof(obj[nodeName]) == "undefined") {
+				obj[nodeName] = xmlToJson(item);
+			} else {
+				if (typeof(obj[nodeName].push) == "undefined") {
+					var old = obj[nodeName];
+					obj[nodeName] = [];
+					obj[nodeName].push(old);
+				}
+				obj[nodeName].push(xmlToJson(item));
+			}
+		}
+	}
+	return obj;
+};
+
+
+function getSSCell(sid,rowno,colno,value) {
+	var pos = "R"+rowno+"C"+colno;
+	console.log("invoicedetail.js::get SS Cell on :  https://spreadsheets.google.com/feeds/cells/"+sid+"/od6/private/full/"+pos);
+	var xhr = Ti.Network.createHTTPClient({
+	    onload: function(e) {
+	    try {
+	    		var xml = Titanium.XML.parseString(this.responseText);
+	    		Ti.API.info("getSSCell:: response is: "+this.responseText);
+	    		Ti.API.info("getSSCell:: xml response is: "+xml);
+	    		var entry = xml.documentElement.getElementsByTagName("entry");
+	    		var link = xml.documentElement.getElementsByTagName("link");
+	    		console.log("invoicedetail.js:: number of link found: " +link+ " length: "+link.length);
+	    		for (i=0;i<link.length;i++){			
+	    			var listitem = link.item(i);
+	    			if (listitem.getAttribute("rel") == "edit"){ var edithref = listitem.getAttribute("href");}
+	    			if (listitem.getAttribute("rel") == "self"){ var selfhref = listitem.getAttribute("href");}
+	    		}
+	    		Ti.API.info("self href is : "+selfhref);
+				Ti.API.info("edit href is : "+edithref);
+	    		populateSpreadsheetHeader(sid,rowno,colno,edithref,selfhref,value);	    				    			
+	    	} catch(e){
+				Ti.API.info("cathing e: "+JSON.stringify(e));
+			}
+		}
+		});
+	xhr.onerror = function(e){
+		alert("Unable to connect to the cloud. "+e);
+	};
+	xhr.open("GET", 'https://spreadsheets.google.com/feeds/cells/'+sid+'/od6/private/full/'+pos);
+	xhr.setRequestHeader("Content-type", "application/atom+xml");
+    xhr.setRequestHeader("Authorization", 'Bearer '+ googleAuthSheet.getAccessToken());
+	xhr.send();
+};
+
+function createSpreadsheet(filename,parentid) {
+	console.log("invoicedetail.js::create ss with filename: "+filename+" and parentid: "+parentid);
+	var jsonpost = '{'
+		 +'\"title\": \"'+filename+'\",'
+		 +'\"parents\": ['
+		  +'{'
+		   +'\"id\": \"'+parentid+'\"'
+		 +' }'
+		 +'],'
+		 +'\"mimeType\": \"application/vnd.google-apps.spreadsheet\"'
+		+'}';
+		var xhr = Ti.Network.createHTTPClient({
+	    onload: function(e) {
+	    try {
+	    		Ti.API.info("response is: "+this.responseText);
+	    		var json = JSON.parse(this.responseText);
+	    		var sid = json.id;
+	    		$.totalbalance_row.sid = sid; // inject sid to tableviewrow
+	    		populatepaymentSIDtoDB(filename,sid);
+	    		Titanium.App.Properties.setString('sid',sid); // 1st sid created.
+	    		for (i=1;i<17;i++){
+						var value = "col"+i;
+						getSSCell(sid,1,i,value);
+					}
+					getSSCell(sid,2,1,"Date");
+					getSSCell(sid,2,2,"Notes");
+					var date = new Date();				
+					getSSCell(sid,3,1,date);
+					getSSCell(sid,3,2,"0.00");
+					getSSCell(sid,3,16,Date.now()); //jobitemid							
+	    		console.log("invoicedetail.js::sid : "+sid);
+	    	} catch(e){
+				Ti.API.info("cathing e: "+JSON.stringify(e));
+			}
+		}
+		});
+	xhr.onerror = function(e){
+		alert("Unable to connect to the cloud.");
+	};
+	xhr.open("POST", 'https://www.googleapis.com/drive/v2/files');	
+	xhr.setRequestHeader("Content-type", "application/json");
+    xhr.setRequestHeader("Authorization", 'Bearer '+ googleAuthSheet.getAccessToken());
+    console.log("invoicedetail.js::json post: "+jsonpost);
+	xhr.send(jsonpost);
+}
+
+function populateSpreadsheetHeader(sid,rowno,colno,edithref,selfhref,value){ 
+		var xmldatastring = ['<entry xmlns=\'http://www.w3.org/2005/Atom\' '
+ 		+' xmlns:gs=\'http://schemas.google.com/spreadsheets/2006\'>'
+ 		+'<id>'+selfhref+'</id>'
+ 		+'<link rel=\'edit\' type=\'application/atom+xml\''
+ 		+' href=\''+edithref+'\'/>'
+ 		+'<gs:cell row=\''+rowno+'\' col=\''+colno+'\' inputValue=\''+value+'\'>'
+ 		+'</gs:cell>'
+ 		+'</entry>'].join('');
+ 		console.log("invoicedetail.js::xmldatastring: "+xmldatastring);
+       var xhr =  Titanium.Network.createHTTPClient({
+    onload: function() {
+        try {
+                Ti.API.info(this.responseText); 
+        } catch(e){
+                Ti.API.info("cathing e: "+JSON.stringify(e));
+        }     
+    },
+    onerror: function(e) {
+        Ti.API.info("error e: "+JSON.stringify(e));
+        alert("Unable to communicate to the cloud. Please try again"); 
+    }
+});
+        xhr.open("PUT", ''+edithref+'');
+        xhr.setRequestHeader("Content-type", "application/atom+xml");
+        xhr.setRequestHeader("Authorization", 'Bearer '+ googleAuthSheet.getAccessToken());
+        xhr.send(xmldatastring);
+        Ti.API.info('done POSTed');
+}
+
+function matchpaymentsidfromDB(filename){
+	thepaymentsidarray = [];
+	var thepaymentsid = Alloy.Collections.instance('paymentsid');
+	thepaymentsid.fetch();
+	Ti.API.info(" matchpaymentsidfromDB::thepaymentsid : "+JSON.stringify(thepaymentsid));
+	if (thepaymentsid.length > 0) {
+		var paymentsidjson = thepaymentsid.toJSON();
+		console.log("projectdetail.js::matchpaymentsidfromDB::JSON.stringify(paymentsidjson): " +JSON.stringify(paymentsidjson));
+		for( var i=0; i < paymentsidjson.length; i++){
+			var projectname = paymentsidjson[i].col1;
+			var sid = paymentsidjson[i].col2.trim();
+			if (filename == projectname){
+				console.log("projectdetail.js::matchpaymentsidfromDB::sid: " +sid);
+				$.totalbalance_row.sid = sid;
+				return sid;			
+			}
+		}
+	} 
+
+}
+
+
+function prefetchPayment(e){
+	var parentid = Titanium.App.Properties.getString('parentid');
+	console.log("invoicedetail.js::prefetchpayment::need to check if parent/filename exist: "+parentid+'/'+filename);
+	fileExist(filename,parentid);
+	var item = "payment";
+	var sidmatch = matchpaymentsidfromDB(filename);
+	var sid = sidmatch;
+	console.log("invoicedetail.js::prefetchpayment::sidmatch: sid "+sidmatch+' : '+sid);
+	if(sid){
+		console.log("invoicedetail.js::prefetchpayment: updating DB with: item : sid : "+item+" : "+sid);
+		Alloy.Globals.getPrivateData(sid,item);
+	} else {
+		console.log("invoicedetail.js::prefetchpayment: creating sid. very first new project");
+	};  // a very first new project would not have sid. suppress error.
+	console.log("invoicedetail.js::prefetchpayment:: Alloy.Collections.payment.fetch()");
+	//Alloy.Collections.payment.fetch();	
+	var payment  = Alloy.Collections.instance('payment');
+        payment.fetch();
+        console.log("invoicedetail.js::JSON stringify payment data on prefetch: "+JSON.stringify(payment));
+}	

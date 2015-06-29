@@ -19,10 +19,10 @@
 				<Label id="label_header" color="#333"  left="20" top="10" bindId="info"   />
 				<Label id="label_sub1" color="#330"  left="20" top="35" bindId="invoicenumber"/>
 				<Label id="label_sub1" color="#330"  left="20" top="50" bindId="total"/>				
-				<Label  id="label_sub2" color="orange"  left="160" top="35" bindId="bal"/>
-				<Label  id="label_sub3" color="#333"  left="160" top="50" bindId="paid" />
-				<ImageView bindId="img" id="icon" height="10" width="70" left="250" top="45"/>
-				<Button id="next_button" bindId="all" image="light_info.png" right="20" top="40" width="20" height="20"/>
+				<Label  id="label_sub2" color="orange"  left="50%" top="35" bindId="bal"/>
+				<Label  id="label_sub3" color="#333"  left="50%" top="50" bindId="paid" />
+				<ImageView bindId="img" id="icon" height="10" width="20%" left="75%" top="45"/>
+				<Button id="next_button" bindId="all" image="light_info.png" right="20" top="15" width="20" height="20"/>
 			</ItemTemplate>
 		</Templates>
 		<ListSection id="invoicelist_section" headerTitle="Invoice List" dataCollection="invoice" dataTransform="transformFunction">

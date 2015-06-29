@@ -296,7 +296,7 @@ Alloy.Globals.getPrivateData = function(sid,type) {
 	var data = [];
 	var maxdebug = Titanium.App.Properties.getInt('maxdebug');
 	var mindebug = Titanium.App.Properties.getInt('mindebug');
-	console.log("alloy.js::Alloy.Globals.getPrivateData: min max debug: "+mindebug+" : "+maxdebug);
+	console.log("alloy.js::Alloy.Globals.getPrivateData: type: min max debug: "+type+" :"+mindebug+" : "+maxdebug);
 	//Alloy.Globals.checkGoogleisAuthorized();
 	Alloy.Globals.checkNetworkAndGoogleAuthorized('1gnkP116nsTVxtrw6d_mXVdOiesQEPH7LVUIyHUfx9EE');
 	//Google Auth check.
@@ -325,6 +325,8 @@ Alloy.Globals.getPrivateData = function(sid,type) {
 			(type == 'joblog') && Alloy.Collections.joblog.deleteAll();
 			(type == 'master') && Alloy.Collections.master.deleteAll();
 			(type == 'joblogsid') && Alloy.Collections.joblogsid.deleteAll();
+			(type == 'payment') && Alloy.Collections.payment.deleteAll();
+			(type == 'paymentsid') && Alloy.Collections.paymentsid.deleteAll();
 			// deleting existing entry done
 			for (i=1;i<entry.length;i++){
 				var col1 = entry.item(i).getElementsByTagName("gsx:col1").item(0).text;
@@ -1050,19 +1052,21 @@ Alloy.Globals.submit = function(type,clientfirstname,clientlastname,clientcompan
 	
 	var html2pdf = require('com.factisresearch.html2pdf');  
  	Ti.API.info("module is => " + html2pdf);  
+ 	var adhocs = Alloy.Collections.instance('adhoc');
    
  	html2pdf.addEventListener('pdfready', function(e) {  
-	   	// var emailDialog = Ti.UI.createEmailDialog();  
-	     var file = Ti.Filesystem.getFile(e.pdf);
-	     var newfile = file.rename('invoice.pdf');
-	     //emailDialog.addAttachment(Ti.Filesystem.getFile(e.pdf));
-	     //emailDialog.open();  
-	     file.rename('invoice.pdf');
-	     var url = '../Documents/invoice.pdf';
-	     //var url = '../Documents/Expose.pdf';
-	     var newurl = Ti.Filesystem.getFile(url);
-	     emailDialog.addAttachment(newurl);
-	     emailDialog.open();  
+	     var file = Ti.Filesystem.getFile(e.pdf);   
+	    console.log("invoicedetail.js::html2pdf.addEventListener:: Ti.Filesystem.applicationDataDirectory "+Ti.Filesystem.applicationDataDirectory);
+		var oldfile = Ti.Filesystem.getFile(Ti.Filesystem.applicationDataDirectory,'invoice.pdf');
+		if (oldfile.exists()) { oldfile.deleteFile(); }
+		var orgfile =  Ti.Filesystem.getFile(Ti.Filesystem.applicationDataDirectory,'Expose.pdf');
+        var renamesuccess = orgfile.rename('invoice.pdf');
+        console.log("invoicedetail.js::html2pdf.addEventListener:: renamesuccess "+renamesuccess);
+	     var file = 'invoice.pdf';
+	     console.log("opening viewpdf(url) on "+file);
+     	 viewpdf(file);
+     	 Alloy.Globals.checkGoogleisAuthorized();
+     	 Alloy.Globals.uploadFile(file,"invdeen1.pdf") ;
  	});  
  	
  	//var html = '<html><body><p>dBayCo Inc. limited </p></body></html>'; 
