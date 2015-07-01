@@ -1,5 +1,6 @@
 var args = arguments[0] || {};
 Titanium.App.Properties.setString('selectclient',"false");
+var total = 0;
 exports.openMainWindow = function(_tab) {
   _tab.open($.enterinvoice_window);
   Ti.API.info("This is child widow enterinvoice.js" +JSON.stringify(_tab));
@@ -215,6 +216,15 @@ function addItem(e,itemTextField){
  	console.log("e JSON of textfield: "+JSON.stringify(_e));
  });
  
+ 	itemTextFieldprice.addEventListener("blur",function(e){
+		console.log("enterinvoice.js::itempricelabel eventListener:" +JSON.stringify(e));
+		/* NOT NEEDED
+		console.log("enterinvoice.js::itemTextFieldprice: isNaN("+e.source.value+")?total = "+total+":total = "+total+" + "+parseFloat(e.source.value)+";");
+		isNaN(e.source.value)?total = total:total = total + parseFloat(e.source.value);
+		console.log("enterinvoice.js::itemTextFieldprice: total :" + total);*/
+		$.totalvalue.text = total;
+	});
+ 
 	//var textfield = Ti.UI.createTextField({keyboardType: Ti.UI.KEYBOARD_NUMBER_PAD, returnKeyType: Ti.UI.RETURNKEY_DONE, backgroundColor: '#262626', border: 1, width: 100});
 
 }
@@ -276,25 +286,29 @@ $.itemlist_tf.addEventListener('blur', function(_e) {
 	var item = [];
 	item.push({'name':projectname[0].name,'descr':projectdescr[0].descr});
 	for (i=0;i<lineitem.length;i++){
+		var price = lineitemprice[i].itemprice;
 		item.push({
 			'lineitem':lineitem[i].item,
 			'qty':lineitemqty[i].itemqty,
-			'price':lineitemprice[i].itemprice
+			'price':price
 		});
+		console.log("enterinvoice.js:: itemprice_tf: in a Loop line#293:: isNaN("+price+")?total = "+total+":total = "+total+" + "+parseFloat(price)+";");
+		isNaN(price)?total=total:total = total + parseFloat(price);
+		console.log("enterinvoice.js::itemprice_tf: in a Loop line#293::: total :" + total);
 	}
-	console.log("enterproject::saveHandler:JSON.stringify(item): "+JSON.stringify(item));
+	$.totalvalue.text = total;
+	console.log("enterproject::saveHandler:total price and JSON.stringify(item): "+total+" AND "+JSON.stringify(item));
 	var projectdata = item;
 	console.log("enterinvoice.js::saveHandler:projectdata: "+JSON.stringify(projectdata));
 	var invoicenumber = Date.now();
 	var projectid = invoicenumber;
 	var name = clientfirstname+' '+clientlastname;
 	var customerno = "2";
-	var total = "200";
-	var bal = "200";
-	var paid = "50%";
-	var lastpaiddate = "4/1/2015";
-	var followupdate = "5/1/2015";
-	var duedate = "6/1/2015";
+	var bal = "0";
+	var paid = "0";
+	var lastpaiddate = "1/1/2000";
+	var followupdate = "1/1/2000";
+	var duedate = "1/1/2000";
 	var currency = "USD";
 	var status = "owed";
 	var clientproject = projectdata[0].name.trim();
@@ -427,7 +441,18 @@ $.itemlist_tf.addEventListener('blur', function(_e) {
 	 	$.itemqty_tf.blur();
 	 	$.itemprice_tf.blur();
  };
+ 
+ $.itemprice_tf.addEventListener("blur",function(e){
+ 	    /* NOT NEEDED
+ 		console.log("enterinvoice.js:: itemprice_tf::singleton #443: isNaN("+e.source.value+")?total = "+total+":total = "+total+" + "+parseFloat(e.source.value)+";");
+		isNaN(e.source.value)?total = total:total = total + parseFloat(e.source.value);
+		console.log("enterinvoice.js::itemprice_tf::singleton #443: total :" + total);*/
+		$.totalvalue.text = total;
+ });
 
+ 
+ 	
+ 
 // next phase not needed now start
  var selectprojectrow = [ $.existing, $.clientselect_row ];
  var addnewprojecttrow = [ $.existing, $.clientdetail_row, $.itemline_row, $.itemdetail_row, $.addrow_row, $.itemlineend_row,$.totalrow ];
@@ -577,8 +602,33 @@ for (i=0;i<projectitemsarray.length;i++) {
 
 /// processing array in notes
 if (projectitemsarray.length>0) {
-	$.itemline_row.title = "Enter new project to invoice or select from existing: ";
+	$.itemline_row.title = "Enter new project. Existing projects are added by default.";
 	var topvalue = 10;
+	// title start
+	topvalue = topvalue + 10;
+   	var blueline = Ti.UI.createImageView ({
+        left  : "20",
+        textAlign : "Ti.UI.TEXT_ALIGNMENT_LEFT",
+        top : topvalue,
+        width : "85%",
+        height : "3",
+        image : "blueline.png"
+    });
+	topvalue = topvalue + 10;
+	var currentTitle = Ti.UI.createLabel ({
+		color : "#333",
+		textAlign : "Ti.UI.TEXT_ALIGNMENT_LEFT",
+		left : "20",
+		top : topvalue,
+		font:{
+			fontSize:18,
+			fontWeight: "bold"
+		},
+		text : "Current projects:"
+	});
+	$.jobitem_row.add(blueline);
+	$.jobitem_row.add(currentTitle);
+	// title END
 	for (x=0;x<projectitemsarray.length;x++) {
 		var projectitems = JSON.parse(projectitemsarray[x].replace(/cOlOn/g,":").toString());   // replacing all cOlOn to ':'
 		var projectname = projectnamesarray[x];
@@ -587,9 +637,11 @@ if (projectitemsarray.length>0) {
 			console.log("enterinvoice.js:: createRow: JSON.stringify(projectitems): "+JSON.stringify(projectitems));
 			console.log("enterinvoice.js::topvalue at START : "+topvalue);
 		};
-		topvalue = topvalue + 4;
+		topvalue = topvalue + 30;
 		var projectidentification=projectnamesarray[x].trim().replace(/\s/g,'_'); //
 		var projectinfoarray=[];
+
+
 		var unchecked = Ti.UI.createButton({
 			id: projectidentification,
 			top: topvalue,
@@ -646,12 +698,12 @@ if (projectitemsarray.length>0) {
 	        borderColor:"white"
 		});	
 		$.jobitem_row.add(projectnamelabel);
-		$.jobitem_row.add(unchecked);
+		//$.jobitem_row.add(unchecked);
 		$.jobitem_row.add(descrtitlelabel);
 		$.jobitem_row.add(descrbodylabel);
 		if(maxdebug==1){
 			console.log("enterinvoice.js:: addRow: projectnamelabel: "+x+" : " +projectnamesarray[x].trim());		
-			console.log("enterinvoice.js:: addRow: unchecked:  "+x+" : " +JSON.stringify(unchecked));		
+			//console.log("enterinvoice.js:: addRow: unchecked:  "+x+" : " +JSON.stringify(unchecked));		
 			console.log("enterinvoice.js:: addRow: descrtitlelabel:   "+x+" :" +JSON.stringify(descrtitlelabel));		
 			console.log("enterinvoice.js:: addRow: descrbodylabel:  "+x+" : " +descr);
 		}
@@ -699,7 +751,6 @@ if (projectitemsarray.length>0) {
 				},
 				text : 'Price : '+projectitems[i].price
 			});	
-
 			$.jobitem_row.add(itembodylabel);
 			$.jobitem_row.add(itemqtylabel);
 			$.jobitem_row.add(itempricelabel);
@@ -711,8 +762,12 @@ if (projectitemsarray.length>0) {
 			$.jobitem_row.iteminfo=[projectitems[i].lineitem,projectitems[i].qty,projectitems[i].price];
 			var info={"names":projectnamesarray[x].trim(),"descr":projectitems[0].descr,"lineitem":projectitems[i].lineitem,"qty":projectitems[i].qty,"price":projectitems[i].price};
 			projectinfoarray.push(info);
-			unchecked.titleid=projectinfoarray;
-			checked.titleid=projectinfoarray;
+			//add total price	
+			console.log("enterinvoice.js::itempricelabel:itempricelabel:existing project: isNaN("+projectitems[i].price+")?total = "+total+":total = "+total+" + "+parseFloat(projectitems[i].price)+";");
+			isNaN(projectitems[i].price)?total = total:total = total + parseFloat(projectitems[i].price);
+			console.log("enterinvoice.js::itempricelabel::(projectitems["+i+"].price)?total : "+projectitems[i].price+" : total: "+total);		
+			//unchecked.titleid=projectinfoarray;
+			//checked.titleid=projectinfoarray;
 			if(maxdebug==1){console.log("enterinvoice.js::topvalue at Sub END : "+topvalue);};
 		}
 		topvalue=topvalue+20;
@@ -741,4 +796,5 @@ function genInvoice(e){
 	console.log("enterinvoice.js::genInvoice: JSON.stringify(e): "+JSON.stringify(e));
 }
 
- 
+
+

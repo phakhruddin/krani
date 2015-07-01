@@ -6,7 +6,7 @@ exports.openMainWindow = function(_tab) {
 };
 
 //extract information received from invoicedetails. START
-var data = args.title.title.split(':');
+var data = args.title.title.split(':'); 
 var invoicenumber = data[0]; 
 var firstname = data[1]; 
 var lastname = data[2]; 
@@ -76,8 +76,9 @@ function setDate(e){
 	console.log("enterpayment.js::JSON stringify content: "+JSON.stringify(e));
 	var date = e.value;
     var datesplit = date.toDateString().split(' ');
-	$.dateLabel.text = datesplit[1]+" "+datesplit[2]+" "+datesplit[3];
-	$.notes_textarea.datepaid = date;
+    var datepaid = datesplit[1]+" "+datesplit[2]+" "+datesplit[3];
+	$.dateLabel.text = datepaid;
+	$.notes_textarea.datepaid = datepaid;
 }
 //Date Picker
 
@@ -400,6 +401,7 @@ function enterNotes(e,imgurl) {
         var paidamount = paidamount + parseFloat(notesbody);
         console.log("enterpayment.js::enterNotes: paidamount , parseFloat(notesbody) : "+paidamount+" + "+parseFloat(notesbody));
         $.paymentsection.headerTitle = firstname+" "+lastname+"    PAID: "+paidamount;
+        updateInvoice(paidamount,datepaid);
         
 };
 
@@ -727,14 +729,39 @@ flexSpace = Titanium.UI.createButton({
 
 $.notes_textarea.KeyboardToolbar = [flexSpace,$.donebutton];
 
-/*
-$.jobdetailtf.addEventListener("focus", function(e){
-                console.log("enterpayment.js::JSON.stringify(e)  :" +JSON.stringify(e));
-                
-    });*/
-/*
-function largeTF(e){
-        console.log("enterpayment.js::JSON.stringify(e) largeTF  :" +JSON.stringify(e));
-        //$.itemjobdetail.add(textfield);
+// update existing invoice spreadsheeet on balance.
+
+//function updateInvoice(edithref,selfhref,idtag,invoicenumber,clientfirstname,clientlastname,total,bal,paid,lastpaiddate,followupdate,clientphone,clientemail,duedate,currency,status){
+function updateInvoice(paidamount,datepaid){ 
+		var paid = paidamount;    
+		var lastpaiddate = datepaid;
+		var xmldatastring = '<entry xmlns=\'http://www.w3.org/2005/Atom\' xmlns:gsx=\'http://schemas.google.com/spreadsheets/2006/extended\'>'
+						+'<id>'+idtag+'</id>'
+						+'<updated>2015-05-16T08:01:19.680Z</updated>'
+						+'<category scheme=\'http://schemas.google.com/spreadsheets/2006\' term=\'http://schemas.google.com/spreadsheets/2006#list\'/>'
+						+'<gsx:col1>'+invoicenumber+'</gsx:col1><gsx:col2>'+firstname+'</gsx:col2><gsx:col3>'
+						+lastname+'</gsx:col3><gsx:col4>'+total+'</gsx:col4><gsx:col5>'
+						+balance+'</gsx:col5><gsx:col6>'+paid+'</gsx:col6><gsx:col7>'+lastpaiddate+'</gsx:col7><gsx:col8>'+followupdate
+						+'</gsx:col8><gsx:col9>'+phone+'</gsx:col9><gsx:col10>'+email+'</gsx:col10><gsx:col11>'+duedate
+						+'</gsx:col11><gsx:col12>'+currency+'</gsx:col12><gsx:col13>'+status
+						+'</gsx:col13><gsx:col14>NA</gsx:col14><gsx:col15>NA</gsx:col15><gsx:col16>NA</gsx:col16></entry>';
+ 		console.log("projectdetail.js::xmldatastring: "+xmldatastring);
+       var xhr =  Titanium.Network.createHTTPClient({
+   	   onload: function() {
+        try {
+                Ti.API.info(this.responseText); 
+        } catch(e){
+                Ti.API.info("cathing e: "+JSON.stringify(e));
+        }     
+    },
+    onerror: function(e) {
+        Ti.API.info("error e: "+JSON.stringify(e));
+        alert("Unable to communicate to the cloud. Please try again"); 
+    }
+});
+        xhr.open("PUT", ''+edithref+'');
+        xhr.setRequestHeader("Content-type", "application/atom+xml");
+        xhr.setRequestHeader("Authorization", 'Bearer '+ googleAuthSheet.getAccessToken());
+        xhr.send(xmldatastring);
+        Ti.API.info('done POSTed');
 }
-*/

@@ -30,6 +30,7 @@ console.log("stringify dummy :"+JSON.stringify(someDummy));
 someDummy.set('id', '1234');
 someDummy.fetch();
 
+console.log("invoicedetail.js::checking JSON.stringify(args) prior to eval : " +JSON.stringify(args));
 var data = args.title.split(':');
 var invoicenumber = data[0]; $.totalbalance_row.invoicenumber = invoicenumber;
 var firstname = data[1]; $.totalbalance_row.firstname = firstname;

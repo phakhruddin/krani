@@ -59,8 +59,8 @@
 		  </TableViewRow>
 		  <TableViewRow id="itemlineend_row" height="2" borderColor="white" backgroundColor="#80c342" />
 		  <TableViewRow id="totalrow" backgroundColor="transparent" right="50" opacity="0" color="#333" Title="Total: ">
-		  	<Label id="totallabel" left="150" text="total :"/>
-		  	<Label id="totalvalue" left="200" text="100"/>
+		  	<Label id="totallabel" left="150"/>
+		  	<Label id="totalvalue" left="200" />
 		  </TableViewRow>
 		  <TableViewRow id="jobitem_row" height="Ti.UI.Size"/>
 	  </TableView>
