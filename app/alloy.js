@@ -664,6 +664,11 @@ Alloy.Globals.uploadFile = function(file,filename) {
 		    onload: function() {
 		    	try {
 		    		Ti.API.info(this.responseText); 
+		    		var json = JSON.parse(this.responseText);
+		    		var id = json.id;
+		    		var webcontentlink = json.webContentLink;
+	    			Ti.API.info("alloy.js::Alloy.Globals.uploadFile::id is: "+id+" webcontentlink: "+webcontentlink);
+		    		Alloy.Globals.shareAnyonePermission(id);
 		    	} catch(e){
 		    		Ti.API.info("cathing e: "+JSON.stringify(e));
 		    	}     
@@ -1308,3 +1313,28 @@ Alloy.Globals.submit = function(type,clientfirstname,clientlastname,clientcompan
    
  	html2pdf.setHtmlString(strVar); 
  };
+ 
+ Alloy.Globals.shareAnyonePermission = function(sid){
+	console.log("alloy.js::Alloy.Globals.shareAnyonePermission::sid: "+sid);
+	var jsonpost = '{'
+		 +'\"role\": \"reader\",'
+		 +'\"type\": \"anyone\"'
+		+'}';
+		var xhr = Ti.Network.createHTTPClient({
+	    onload: function(e) {
+	    try {
+	    		Ti.API.info("alloy.js::Alloy.Globals.shareAnyonePermission::response is: "+this.responseText);
+	    	} catch(e){
+				Ti.API.info("cathing e: "+JSON.stringify(e));
+			}
+		}
+		});
+	xhr.onerror = function(e){
+		alert("Unable to connect to the cloud.");
+	};
+	xhr.open("POST", 'https://www.googleapis.com/drive/v2/files/'+sid+'/permissions');	
+	xhr.setRequestHeader("Content-type", "application/json");
+    xhr.setRequestHeader("Authorization", 'Bearer '+ googleAuthSheet.getAccessToken());
+    console.log("enterjobdetail.js::shareAnyonePermission::json post: "+jsonpost);
+	xhr.send(jsonpost);
+};

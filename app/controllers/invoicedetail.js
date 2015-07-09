@@ -364,7 +364,11 @@ function emailpdf(firstname,lastname,address,city,state,phone,email,invoicenumbe
 	     console.log("opening viewpdf(url) on "+file);
      	 viewpdf(file);
      	 Alloy.Globals.checkGoogleisAuthorized();
-     	 Alloy.Globals.uploadFile(file,"invdeen1.pdf") ;
+     	 //Set filename for uploaded file
+     	 var date = new Date();
+     	 var dateinsert = date.getFullYear()+""+(date.getMonth()+1)+""+date.getDate()+""+date.getHours();
+     	 var pdffilename = invoicenumber+"_"+firstname+"_"+lastname+"_"+dateinsert;
+     	 Alloy.Globals.uploadFile(file,pdffilename) ;
  	});  
  	
  	//var html = '<html><body><p>dBayCo Inc. limited </p></body></html>'; 
