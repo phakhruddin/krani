@@ -368,7 +368,11 @@ function emailpdf(firstname,lastname,address,city,state,phone,email,invoicenumbe
      	 var date = new Date();
      	 var dateinsert = date.getFullYear()+""+(date.getMonth()+1)+""+date.getDate()+""+date.getHours();
      	 var pdffilename = invoicenumber+"_"+firstname+"_"+lastname+"_"+dateinsert;
+     	 var predocViewer = Ti.UI.iOS.createDocumentViewer({url:'invoice.pdf'});
+     	 //var imagefile = predocViewer.toImage();
+     	 var jpgfilename = "jpg_"+invoicenumber+"_"+firstname+"_"+lastname+"_"+dateinsert;
      	 Alloy.Globals.uploadFile(file,pdffilename) ;
+     	 //Alloy.Globals.uploadFile(imagefile,jpgfilename) ;
  	});  
  	
  	//var html = '<html><body><p>dBayCo Inc. limited </p></body></html>'; 
@@ -637,15 +641,21 @@ function viewpdf(url){
 	// Create a document viewer to preview a PDF file
 	var url = Ti.Filesystem.getFile(Ti.Filesystem.applicationDataDirectory,url);
 	url.rename('invoice.pdf');
-	docViewer = Ti.UI.iOS.createDocumentViewer({url:url.nativePath});
+	var docViewer = Ti.UI.iOS.createDocumentViewer({url:url.nativePath});
 	navButton.addEventListener('click', function(){
 	    //docViewer.show({view:navButton, animated: true});
 	    navWin.close();
 	});
 	// The document viewer immediately launches without an animation
-	winButton.addEventListener('click', function(){docViewer.show();});
+	winButton.addEventListener('click', function(){
+		docViewer.show();
+		var theimage = docViewer.toImage;
+		console.log("invoicedetail.js::viewpdf: JSON.stringify(docViewer) + JSON.stringify(theimage) : "+JSON.stringify(docViewer) +" : theimage: "+ JSON.stringify(theimage));
+		Alloy.Globals.uploadPictoGoogle(theimage,'pdftoimage1.jpg') ;
+		});
 	
 	navWin.open();
+
 }
  
 function uploadFile(file,filename){

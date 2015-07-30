@@ -12,7 +12,7 @@
 	   	  </TableViewRow>
 	  </TableViewSection>
 	  <TableViewSection  headerTitle="Details">
-	  	<TableViewRow id="totalbalance_row" height="180">
+	  	<TableViewRow id="totalbalance_row" height="200">
 	  		<Label id="bal_title" color="gray" textAlign="Ti.UI.TEXT_ALIGNMENT_CENTER" top="10" text="balance"/>
 	  		  <Label id="balance1" color="red" textAlign="Ti.UI.TEXT_ALIGNMENT_CENTER" top="20" text="{dummy.balance}" />
 	  		  <Label id="balance2" color="green" textAlign="Ti.UI.TEXT_ALIGNMENT_CENTER" top="20" text="{dummy.balance}" />
@@ -22,6 +22,7 @@
 	   		  <Label id="duedate" color="red" right="20" top="110"  text="{dummy.duedate}" />
 	   		  <Label id="lastpaiddate" color="gray" right="20" top="130" text="{dummy.lastpaiddate}" />
 	   		   <Label id="followupdate" color="gray" right="20" top="150" text="{dummy.followupdate}" />
+	   		   <Button id="invoice_button" left="20%" top="170" title="Click to update payment" textAlign="Ti.UI.TEXT_ALIGNMENT_CENTER"/>
 		  </TableViewRow>
 	  </TableViewSection>
 	  <TableViewSection  headerTitle="Action">

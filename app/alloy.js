@@ -1338,3 +1338,56 @@ Alloy.Globals.submit = function(type,clientfirstname,clientlastname,clientcompan
     console.log("enterjobdetail.js::shareAnyonePermission::json post: "+jsonpost);
 	xhr.send(jsonpost);
 };
+
+
+ Alloy.Globals.uploadPictoGoogle = function(image,filename){
+	console.log("enterjobdetail.js::uploadPictoGoogle::create ss with filename: "+filename);
+	//var base64Data = Ti.Utils.base64encode(image);
+	var base64Data = image;
+	 		var parts = [];
+	 		var bound = 287032396531387;
+	 		var meta = '\{'
+	 		+	'\"title\": \"'+filename+'\"'	 		
+			+	'\}';
+			var parts = [];
+	        parts.push('--' + bound);
+	        parts.push('Content-Type: application/json');
+	        parts.push('');
+	        parts.push(meta);
+	        parts.push('--' + bound);
+			parts.push('Content-Type: image/jpeg');
+	        parts.push('Content-Transfer-Encoding: base64');
+	        parts.push('');
+	        parts.push(base64Data);
+	        parts.push('--' + bound + '--');
+	 		var url = "https://www.googleapis.com/upload/drive/v2/files?uploadType=multipart";
+	 		var xhr =  Titanium.Network.createHTTPClient({
+			    onload: function() {
+			    	try {
+			    		var json = JSON.parse(this.responseText);
+	    				Ti.API.info("enterjobdetail.js::uploadPictoGoogle::response is: "+JSON.stringify(json));
+	    				var id = json.id;
+	    				var webcontentlink = json.webContentLink;
+	    				Ti.API.info("enterjobdetail.js::uploadPictoGoogle::id is: "+id+" webcontentlink: "+webcontentlink);
+	    				shareAnyonePermission(id);
+	    				var e = {"value":"none","source":{"_hintText":id}};
+	    				console.log("enterjobdetail.js::uploadPictoGoogle::entering urlimage with info below e: "+JSON.stringify(e));
+	    				enterNotes(e,webcontentlink);
+			    	} catch(e){
+			    		Ti.API.info("enterjobdetail.js::uploadPictoGoogle::cathing e: "+JSON.stringify(e));
+			    	} 
+			    	return id;    
+			    },
+			    onerror: function(e) {
+			    	Ti.API.info("enterjobdetail.js::uploadPictoGoogle::error e: "+JSON.stringify(e));
+			        alert("unable to talk to the cloud, will try later"); 
+			    }
+			});
+			xhr.open("POST", url);
+			xhr.setRequestHeader("Content-type", "multipart/mixed; boundary=" + bound);
+			xhr.setRequestHeader("Authorization", 'Bearer '+googleAuthSheet.getAccessToken());
+			//xhr.setRequestHeader("Content-Length", "2000000");
+			xhr.send(parts.join("\r\n"));
+			Ti.API.info('done POSTed');
+			//Ti.API.info("enterjobdetail.js::uploadPictoGoogle::sid outside is: "+id);
+};
