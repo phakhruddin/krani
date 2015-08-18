@@ -76,14 +76,16 @@ function setDate(e){
 	console.log("enterpayment.js::JSON stringify content: "+JSON.stringify(e));
 	var date = e.value;
     var datesplit = date.toDateString().split(' ');
-    var datepaid = datesplit[1]+" "+datesplit[2]+" "+datesplit[3];
+    //var datepaid = datesplit[1]+" "+datesplit[2]+" "+datesplit[3];
+    var datepaid = (date.getMonth()+1)+"/"+date.getDate()+"/"+date.getFullYear();
+    console.log("enterpayment.js::setDate: date: "+date+" datesplit: "+datesplit+" datepaid: "+datepaid);
 	$.dateLabel.text = datepaid;
 	$.notes_textarea.datepaid = datepaid;
 }
 //Date Picker
 
-function jobDetailAddRow (date,notesbody,imageurl,jobcommentdata,employee) {
-	
+function jobDetailAddRow (date,notesbody,imageurl,dateadded,employee) {
+		console.log("enterpayment.js::jobDetailAddRow: date: "+date+"  dateadded: "+dateadded+" new Date(+dateadded): "+new Date(+dateadded));
 	    var jobrow = Ti.UI.createTableViewRow ({
                 backgroundColor: "white",
                 opacity:"0",
@@ -100,7 +102,7 @@ function jobDetailAddRow (date,notesbody,imageurl,jobcommentdata,employee) {
                 left  : "20",
                 textAlign : "Ti.UI.TEXT_ALIGNMENT_LEFT",
                 top : "10",
-                text : date.toLocaleString()
+                text : new Date(+dateadded).toLocaleString()
         });
         var datepaid = Ti.UI.createLabel ({
                 color : "#333",
@@ -110,7 +112,8 @@ function jobDetailAddRow (date,notesbody,imageurl,jobcommentdata,employee) {
                 left  : "20",
                 textAlign : "Ti.UI.TEXT_ALIGNMENT_LEFT",
                 top : "50",
-                text : date.toString().split(' ')[1]+" "+date.toString().split(' ')[2]+" "+date.toString().split(' ')[3]
+                text : date.toLocaleString()
+                //text : date.toString().split(' ')[1]+" "+date.toString().split(' ')[2]+" "+date.toString().split(' ')[3]
         });
         var employeelabel = Ti.UI.createLabel ({
                 color : "orange",
@@ -187,7 +190,7 @@ function jobDetailAddRow (date,notesbody,imageurl,jobcommentdata,employee) {
         jobrow.add(datelabel);
         jobrow.add(employeelabel);
         jobrow.add(blueline);
-        jobrow.metadata = jobcommentdata; // add metadata info
+        jobrow.metadata = dateadded; // add metadata info
         
         var jobtable = Ti.UI.createTableView({
                 backgroundColor: "white",
@@ -208,9 +211,9 @@ for (i=0;i<content.length;i++){
 		var notesbody = content[i].col2;
         var imageurl = content[i].col4;
         var date = content[i].col1;
-        var jobcommentdata = content[i].col14+":"+content[i].col16;
+        var dateadded = content[i].col16;
         var employee = content[i].col5;
-        jobDetailAddRow (date,notesbody,imageurl,jobcommentdata,employee);  
+        jobDetailAddRow (date,notesbody,imageurl,dateadded,employee);  
         // calculate total
         var paidamount = parseFloat(notesbody) + paidamount   ;
         }
@@ -369,7 +372,8 @@ function enterNotes(e,imgurl) {
         //$.enterpayment_window.show($.notes_textarea);
         //$.enterpayment_window.add(textfield);
         var date = new Date();
-        var now = Date.now();var jobitemid = now;
+        var now = Date.now();
+        var jobitemid = now;
         var employee = Titanium.App.Properties.getString('employee');
         var payment = parseFloat(e.value);
         var notesbody = payment.toFixed(2);
@@ -378,7 +382,7 @@ function enterNotes(e,imgurl) {
         var paidamount = e.source.paidamount;
         var imageurl = imgurl?imgurl:"none";
         var dataModel = Alloy.createModel("payment",{
-                                        col1 :  date || "none",
+                                        col1 : datepaid || "none",
                                         col2 : notesbody || "none",
                                         col3 : imageurl,        
                                         col4 : "none", 
@@ -396,7 +400,8 @@ function enterNotes(e,imgurl) {
         console.log("enterpayment.js::JSON stringify payment after write: "+JSON.stringify(content));
         var thedate = date.toString().replace(".","").split(' ',4).toString().replace(/,/g,' ')+' '+Alloy.Globals.formatAMPM(date);
         //console.log("enterpayment.js::thedate is: " +thedate);
-        jobDetailAddRow (datepaid,notesbody,imageurl,"none",employee); //add to the local db
+        var dateadded = jobitemid;
+        jobDetailAddRow (datepaid,notesbody,imageurl,dateadded,employee); //add to the local db
         submit(datepaid,notesbody,imageurl,jobitemid,payment,employee); //submit to the cloud
         var paidamount = paidamount + parseFloat(notesbody);
         console.log("enterpayment.js::enterNotes: paidamount , parseFloat(notesbody) : "+paidamount+" + "+parseFloat(notesbody));

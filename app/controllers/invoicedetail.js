@@ -257,6 +257,8 @@ if (projectitemsarray.length>0) {
 				},
 				text : 'Price : '+projectitems[i].price
 			});	
+			var balance = projectitems[i].price;
+			someDummy.set('balance', balance);
 
 			$.jobitem_row.add(itembodylabel);
 			$.jobitem_row.add(itemqtylabel);
@@ -928,8 +930,12 @@ function createSpreadsheet(filename,parentid) {
 					}
 					getSSCell(sid,2,1,"Date");
 					getSSCell(sid,2,2,"Notes");
-					var date = new Date();				
-					getSSCell(sid,3,1,date);
+					//Initial spreadsheet data.
+					var date = new Date();	
+					var month = date.getMonth()+1;
+					var day = date.getDate();
+					var year = date.getFullYear();			
+					getSSCell(sid,3,1,month+"/"+day+"/"+year);
 					getSSCell(sid,3,2,"0.00");
 					getSSCell(sid,3,16,Date.now()); //jobitemid							
 	    		console.log("invoicedetail.js::sid : "+sid);
