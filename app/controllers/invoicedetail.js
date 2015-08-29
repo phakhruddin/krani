@@ -145,6 +145,7 @@ for (i=0;i<projectitemsarray.length;i++) {
 /// processing array in notes
 if (projectitemsarray.length>0) {
 	var topvalue = 10;
+	var prevbal = 0;
 	for (x=0;x<projectitemsarray.length;x++) {
 		var projectitems = JSON.parse(projectitemsarray[x].replace(/cOlOn/g,":").toString());   // replacing all cOlOn to ':'
 		var projectname = projectnamesarray[x];
@@ -257,8 +258,14 @@ if (projectitemsarray.length>0) {
 				},
 				text : 'Price : '+projectitems[i].price
 			});	
-			var balance = projectitems[i].price;
-			someDummy.set('balance', balance);
+			console.log("invoicedetail.js:: b4 balance: "+balance+" prevbal: "+prevbal+" projectitems[i].price: "+projectitems[i].price);
+			//var balance = (projectitems[i].price = "none")?0:(projectitems[i].price+prevbal);
+			if (projectitems[i].price=="none"){ balance=0; } else {
+				var balance=parseFloat(parseFloat(projectitems[i].price).toFixed(2)+parseFloat(prevbal)).toFixed(2);
+			}
+			var prevbal = parseFloat(balance)+parseFloat(prevbal);
+			someDummy.set('balance', prevbal);
+			console.log("invoicedetail.js:: after balance: "+balance+" prevbal: "+prevbal+" projectitems[i].price: "+projectitems[i].price);
 
 			$.jobitem_row.add(itembodylabel);
 			$.jobitem_row.add(itemqtylabel);
