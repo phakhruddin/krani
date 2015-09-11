@@ -1,8 +1,8 @@
 var args = arguments[0] || {};
 exports.openMainWindow = function(_tab) {
   _tab.open($.invoicedetail_window);
-  Ti.API.info("This is child widow checking _tab on : " +JSON.stringify(_tab));
-  Ti.API.info(" input details : "+JSON.stringify(args));
+  Ti.API.info("invoicedetail.js::This is child widow checking _tab on : " +JSON.stringify(_tab));
+  Ti.API.info("invoicedetail.js:: input details : "+JSON.stringify(args));
   prefetchPayment(); //prefetch payment to get existing sid or to create new
   $.totalbalance_row.addEventListener("click", function(e){
   	    var firstname = e.row.firstname;
