@@ -247,9 +247,9 @@ function takePic(e){
                         }
                         
                 }, error:function(e){
-                        alert("unable to load the camera");
+                        alert("enterjobdetail::takePic::error:unable to load the camera");
                 }, cancel:function(e){
-                        alert("unable to load the camera");
+                        alert("enterjobdetail::takePic::cancel:unable to load the camera");
                 },
                 allowEditing:true,
                 saveToPhotoGallery:true,
@@ -381,7 +381,7 @@ function enterNotes(e,imgurl) {
     },
     onerror: function(e) {
         Ti.API.info("enterjobdetail.js::submit::error e: "+JSON.stringify(e));
-        alert("Unable to communicate to the cloud. Please try again"); 
+        alert("enterjobdetail::submit::Unable to communicate to the cloud. Please try again"); 
     }
 });
         //var sid = Titanium.App.Properties.getString('joblog'); 
@@ -429,7 +429,7 @@ function getParentFolder(args) {
 		}
 		});
 	xhr.onerror = function(e){
-		alert("Unable to connect to the cloud.");
+		alert("enterjobdetail::getParentFolder::Unable to connect to the cloud.");
 	};
 	xhr.open("GET", 'https://www.googleapis.com/drive/v2/files/'+sid+'/parents');
 	xhr.setRequestHeader("Content-type", "application/json");
@@ -464,7 +464,7 @@ function createSpreadsheet(filename,parentid) {
 		}
 		});
 	xhr.onerror = function(e){
-		alert("Unable to connect to the cloud.");
+		alert("enterjobdetail::createSpreadsheet::Unable to connect to the cloud.");
 	};
 	xhr.open("POST", 'https://www.googleapis.com/drive/v2/files');	
 	xhr.setRequestHeader("Content-type", "application/json");
@@ -500,7 +500,7 @@ function fileExist(){
 		}
 		});
 	xhr.onerror = function(e){
-		alert("Unable to connect to the cloud.");
+		alert("enterjobdetail::fileExist::Unable to connect to the cloud.");
 	};
 	//xhr.open("GET", 'https://www.googleapis.com/drive/v2/files');
 	var rawquerystring = '?q=title+%3D+\''+filename+'\'+and+mimeType+%3D+\'application%2Fvnd.google-apps.spreadsheet\'+and+trashed+%3D+false&fields=items(id%2CmimeType%2Clabels%2Ctitle)';
@@ -583,7 +583,7 @@ function uploadPictoGoogle(image,filename){
 			    },
 			    onerror: function(e) {
 			    	Ti.API.info("enterjobdetail.js::uploadPictoGoogle::error e: "+JSON.stringify(e));
-			        alert("unable to talk to the cloud, will try later"); 
+			        alert("enterjobdetail::uploadPictoGoogle::unable to talk to the cloud, will try later"); 
 			    }
 			});
 			xhr.open("POST", url);
@@ -611,7 +611,7 @@ function shareAnyonePermission(sid){
 		}
 		});
 	xhr.onerror = function(e){
-		alert("Unable to connect to the cloud.");
+		alert("enterjobdetail::shareAnyonePermission::Unable to connect to the cloud.");
 	};
 	xhr.open("POST", 'https://www.googleapis.com/drive/v2/files/'+sid+'/permissions');	
 	xhr.setRequestHeader("Content-type", "application/json");

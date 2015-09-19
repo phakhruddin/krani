@@ -699,7 +699,7 @@ function uploadFile(file,filename){
 			    },
 			    onerror: function(e) {
 			    	Ti.API.info("error e: "+JSON.stringify(e));
-			        alert("unable to talk to the cloud, will try later"); 
+			        alert("invoicedetail::uploadFile::unable to talk to the cloud, will try later"); 
 			    }
 			});
 			xhr.open("POST", url);
@@ -791,7 +791,7 @@ function getParentFolder(args) {
 		}
 		});
 	xhr.onerror = function(e){
-		alert("Unable to connect to the cloud.");
+		alert("invoicedetail::getParentFolder::Unable to connect to the cloud.");
 	};
 	xhr.open("GET", 'https://www.googleapis.com/drive/v2/files/'+sid+'/parents');
 	xhr.setRequestHeader("Content-type", "application/json");
@@ -903,7 +903,7 @@ function getSSCell(sid,rowno,colno,value) {
 		}
 		});
 	xhr.onerror = function(e){
-		alert("Unable to connect to the cloud. "+e);
+		alert("invoicedetail::getSSCell::Unable to connect to the cloud. "+e);
 	};
 	xhr.open("GET", 'https://spreadsheets.google.com/feeds/cells/'+sid+'/od6/private/full/'+pos);
 	xhr.setRequestHeader("Content-type", "application/atom+xml");
@@ -952,7 +952,7 @@ function createSpreadsheet(filename,parentid) {
 		}
 		});
 	xhr.onerror = function(e){
-		alert("Unable to connect to the cloud.");
+		alert("invoicedetail::createSpreadsheet::Unable to connect to the cloud.");
 	};
 	xhr.open("POST", 'https://www.googleapis.com/drive/v2/files');	
 	xhr.setRequestHeader("Content-type", "application/json");
@@ -981,7 +981,7 @@ function populateSpreadsheetHeader(sid,rowno,colno,edithref,selfhref,value){
     },
     onerror: function(e) {
         Ti.API.info("error e: "+JSON.stringify(e));
-        alert("Unable to communicate to the cloud. Please try again"); 
+        alert("invoicedetail::populateSpreadsheetHeader::Unable to communicate to the cloud. Please try again"); 
     }
 });
         xhr.open("PUT", ''+edithref+'');

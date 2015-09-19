@@ -627,7 +627,7 @@ Alloy.Globals.postCreateEvent = function(startdateTime,enddateTime,location,summ
     },
     onerror: function(e) {
     	Ti.API.info("error e: "+JSON.stringify(e));
-        alert("Unable to communicate to the cloud. Please try again"); 
+        alert("alloy.js::postCreateEvent: Unable to communicate to the cloud. Please try again"); 
     }
 });
 	xhr.open("POST", url);
@@ -675,7 +675,7 @@ Alloy.Globals.uploadFile = function(file,filename) {
 		    },
 		    onerror: function(e) {
 		    	Ti.API.info("error e: "+JSON.stringify(e));
-		        alert("unable to talk to the cloud, will try later"); 
+		        alert("alloy.js::uploadFile:: unable to talk to the cloud, will try later"); 
 		    }
 		});
 		xhr.open("POST", url);
@@ -722,7 +722,7 @@ Alloy.Globals.checkFileExistThenCreateSS = function(filename){
 		}
 		});
 	xhr.onerror = function(e){
-		alert("Unable to connect to the cloud.");
+		alert("alloy.js::checkFileExistThenCreateSS:: Unable to connect to the cloud.");
 	};
 	var rawquerystring = '?q=title+%3D+\''+filename+'\'+and+mimeType+%3D+\'application%2Fvnd.google-apps.spreadsheet\'+and+trashed+%3D+false&fields=items(id%2CmimeType%2Clabels%2Ctitle)';
 	xhr.open("GET", 'https://www.googleapis.com/drive/v2/files'+rawquerystring);
@@ -761,7 +761,7 @@ Alloy.Globals.checkFileExistThenUpdateSID = function(filename){
 		}
 		});
 	xhr.onerror = function(e){
-		alert("Unable to connect to the cloud.");
+		alert("alloy.js::checkFileExistThenUpdateSID:Unable to connect to the cloud.");
 		Alloy.Globals.Status ={ "success" : "failed"};
 		Titanium.App.Properties.setString("status","failed");	
 	};
@@ -804,7 +804,7 @@ Alloy.Globals.createSpreadsheet = function(filename) {
 		}
 		});
 	xhr.onerror = function(e){
-		alert("Unable to connect to the cloud.");
+		alert("alloy.js::createSpreadsheet::Unable to connect to the cloud.");
 	};
 	xhr.open("POST", 'https://www.googleapis.com/drive/v2/files');	
 	xhr.setRequestHeader("Content-type", "application/json");
@@ -839,7 +839,7 @@ Alloy.Globals.editTheCell = function(sid,rowno,colno,value) {
 		}
 		});
 	xhr.onerror = function(e){
-		alert("Unable to connect to the cloud. "+e);
+		alert("alloy.js::editTheCell:: Unable to connect to the cloud. "+e);
 	};
 	xhr.open("GET", 'https://spreadsheets.google.com/feeds/cells/'+sid+'/od6/private/full/'+pos);
 	xhr.setRequestHeader("Content-type", "application/atom+xml");
@@ -867,7 +867,7 @@ Alloy.Globals.editCell = function(sid,rowno,colno,edithref,selfhref,value){
     },
     onerror: function(e) {
         Ti.API.info("error e: "+JSON.stringify(e));
-        alert("Unable to communicate to the cloud. Please try again"); 
+        alert("alloy.js::editCell::Unable to communicate to the cloud. Please try again"); 
     }
 });
         xhr.open("PUT", ''+edithref+'');
@@ -894,7 +894,7 @@ Alloy.Globals.updateSpreadsheet = function(sid,col1,col2,col3,col4,col5,col6,col
     },
     onerror: function(e) {
     	Ti.API.info("error e: "+JSON.stringify(e));
-        alert("Unable to communicate to the cloud. Please try again"); 
+        alert("alloy.js::updateSpreadsheet::Unable to communicate to the cloud. Please try again"); 
     }
 });
 	xhr.open("POST", 'https://spreadsheets.google.com/feeds/list/'+sid+'/od6/private/full');
@@ -973,7 +973,7 @@ Alloy.Globals.submit = function(type,clientfirstname,clientlastname,clientcompan
 	    },
 	    onerror: function(e) {
 	    	Ti.API.info("error e: "+JSON.stringify(e));
-	        alert("Unable to communicate to the cloud. Please try again."); 
+	        alert("alloy.js::submit::Unable to communicate to the cloud. Please try again."); 
 	    }
 	});
 	eval("var "+type+" = Alloy.Collections.instance('"+type+"')");
@@ -1330,7 +1330,7 @@ Alloy.Globals.submit = function(type,clientfirstname,clientlastname,clientcompan
 		}
 		});
 	xhr.onerror = function(e){
-		alert("Unable to connect to the cloud.");
+		alert("alloy.js::shareAnyonePermission::Unable to connect to the cloud.");
 	};
 	xhr.open("POST", 'https://www.googleapis.com/drive/v2/files/'+sid+'/permissions');	
 	xhr.setRequestHeader("Content-type", "application/json");
@@ -1380,7 +1380,7 @@ Alloy.Globals.submit = function(type,clientfirstname,clientlastname,clientcompan
 			    },
 			    onerror: function(e) {
 			    	Ti.API.info("enterjobdetail.js::uploadPictoGoogle::error e: "+JSON.stringify(e));
-			        alert("unable to talk to the cloud, will try later"); 
+			        alert("alloy.js::uploadPictoGoogle::unable to talk to the cloud, will try later"); 
 			    }
 			});
 			xhr.open("POST", url);

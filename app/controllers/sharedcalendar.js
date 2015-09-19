@@ -84,7 +84,7 @@ var getSharedCalendarData = function(url) {
 		});
 		xhr.onerror = function(e){
 			//alert(e);
-			alert("Unable to connect to the network. The info displayed here is NOT the latest.");
+			alert("sharedcalendar::getSharedCalendarData::Unable to connect to the network. The info displayed here is NOT the latest.");
 			console.log("response txt after failure is: "+this.responseText);
 		};
 		xhr.open("GET", url);
@@ -175,7 +175,7 @@ function postCreateEvent(startdateTime,enddateTime,location,summary,description,
     },
     onerror: function(e) {
     	Ti.API.info("error e: "+JSON.stringify(e));
-        alert("Unable to communicate to the cloud. Please try again"); 
+        alert("sharedcalendar::postCreateEvent::Unable to communicate to the cloud. Please try again"); 
     }
 });
 	xhr.open("POST", url);

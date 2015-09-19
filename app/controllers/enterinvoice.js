@@ -350,7 +350,7 @@ $.itemlist_tf.addEventListener('blur', function(_e) {
     },
     onerror: function(e) {
     	Ti.API.info("error e: "+JSON.stringify(e));
-        alert("Unable to communicate to the cloud. Please try again."); 
+        alert("enterinvoice::submit::Unable to communicate to the cloud. Please try again."); 
     }
 });
     //var spreadsheet_id = '1-Wz7Apn4AvVpfqcNyMgfqyKA8OAoLNy5Bl0d_jQ9IZk';
@@ -397,7 +397,7 @@ $.itemlist_tf.addEventListener('blur', function(_e) {
     },
     onerror: function(e) {
     	Ti.API.info("error e: "+JSON.stringify(e));
-        alert("Unable to communicate to the cloud. Please try again."); 
+        alert("enterinvoice::submitproject::Unable to communicate to the cloud. Please try again."); 
     }
 });
 
