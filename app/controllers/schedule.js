@@ -606,7 +606,9 @@ $.ptr.refresh();
 		}, function() {
 				console.log('Schedule submit: Authorized first, see next window: ');
 		});
-		postCreateEvent(startdateTime,enddateTime,"",summary,description,organizerdisplayName);
+		//var calid="idevice.net@gmail.com";
+		var calid="2elugripfnsd2hblojnu4t72u0@group.calendar.google.com";
+		postCreateEvent(calid,startdateTime,enddateTime,"",summary,description,organizerdisplayName);
 		
 	});
 
@@ -804,8 +806,9 @@ function buttonAction(e){
 }
 
 function refreshCalendar() {
-	var account = 'idevice.net@gmail.com';
-	var url = 'https://www.googleapis.com/calendar/v3/calendars/'+account+'/events'+"?access_token="+googleAuthCalendar.getAccessToken();;
+	//var calid = 'idevice.net@gmail.com';
+	var calid = '2elugripfnsd2hblojnu4t72u0@group.calendar.google.com';
+	var url = 'https://www.googleapis.com/calendar/v3/calendars/'+calid+'/events'+"?access_token="+googleAuthCalendar.getAccessToken();;
 	getSharedCalendarData(url);
 }
 
@@ -895,7 +898,7 @@ function myRefresher(e) {
     });
 }
 
-function postCreateEvent(startdateTime,enddateTime,location,summary,description,organizerdisplayName,organizeremail,colorid,attendeeslist) {
+function postCreateEvent(calid,startdateTime,enddateTime,location,summary,description,organizerdisplayName,organizeremail,colorid,attendeeslist) {
 	var startdateTime = startdateTime || "2015-03-05T15:30:00-06:00";
 	var enddateTime = enddateTime || "2015-03-05T15:40:00-06:00";
 	var location = location || "2258 S Sanctuary Dr., New Berlin, WI 53151";
@@ -906,7 +909,8 @@ function postCreateEvent(startdateTime,enddateTime,location,summary,description,
 	var colorid = colorid || "3";
 	var organizerself ="true";
 	//var url = 'https://www.googleapis.com/calendar/v3/calendars/idevice.net%40gmail.com/events?access_token='+googleAuthCalendar.getAccessToken();
-	var url = 'https://www.googleapis.com/calendar/v3/calendars/idevice.net@gmail.com/events';
+	///var url = 'https://www.googleapis.com/calendar/v3/calendars/idevice.net@gmail.com/events';
+	var url = 'https://www.googleapis.com/calendar/v3/calendars/'+calid+'/events';
 	var recurrences ="";
 	var attendeesstrbody = [];
 	var attendeesstrstart = '\"attendees\": \[';
