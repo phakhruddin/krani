@@ -190,10 +190,12 @@ $.joblog_button.addEventListener("click", function(e){
 	console.log("projectdetail.js::JSON stringify e on jobLog: "+JSON.stringify(e));
 	console.log("projectdetail.js::JSON stringify e on jobLog args: "+JSON.stringify(args));
 	var sid = matchjoblogsidfromDB(filename);
+	var parentid = Titanium.App.Properties.getString('parentid');
 	console.log("projectdetail.js::matched sid is: "+sid);
 	var tabViewOneController = Alloy.createController("enterjobdetail",{
 			title: args,
-			sid: sid
+			sid: sid,
+			parentid: parentid,
 	});
 	tabViewOneController.openMainWindow($.tab_projectdetail);		
 });
@@ -210,7 +212,7 @@ function addHandler(e,args){
 
 //MAIN if spreadsheet exist ignore, NOT create the spreadsheet
 function fileExist(filename,parentid){
-		console.log("executing fileExist("+filename+","+parentid+") ");
+		console.log("projectdetail.js::executing fileExist("+filename+","+parentid+") ");
 		var jsonlist = " ";
 		var xhr = Ti.Network.createHTTPClient({
 	    onload: function(e) {
@@ -225,6 +227,7 @@ function fileExist(filename,parentid){
 			if (jsonlist.items.length == "0" ){
 				console.log("projectdetail.js::File DOES NOT EXIST");
 				var fileexist = "false";
+				console.log("projectdetail.js::fileExist: createSpreadsheet("+filename+","+parentid+")");
 				createSpreadsheet(filename,parentid);  // create file when does not exists
 				//PopulateHeader
 			} else {
@@ -261,11 +264,14 @@ function getParentFolder(args) {
 				Ti.API.info("cathing e: "+JSON.stringify(e));
 			}
 			return parentid;
+			Titanium.App.Properties.setString('parentid',parentid);
 		}
 		});
 	xhr.onerror = function(e){
-		alert("projectdetail::getParentFolder::Unable to connect to the cloud.");
+		alert("projectdetail::getParentFolder::Unable to get info.");
+		console.log('projectdetail::getParentFolder:: unable to get parents for '+sid);
 	};
+	console.log('projectdetail::getParentFolder:: URL:: https://www.googleapis.com/drive/v2/files/'+sid+'/parents');
 	xhr.open("GET", 'https://www.googleapis.com/drive/v2/files/'+sid+'/parents');
 	xhr.setRequestHeader("Content-type", "application/json");
     xhr.setRequestHeader("Authorization", 'Bearer '+ googleAuthSheet.getAccessToken());
@@ -345,7 +351,7 @@ function getSSCell(sid,rowno,colno,value) {
 	xhr.send();
 };
 
-getParentFolder();
+var parentid=getParentFolder();  //MAY NEED THIS . DISABLE 9/19
 
 function createSpreadsheet(filename,parentid) {
 	console.log("projectdetail.js::create ss with filename: "+filename+" and parentid: "+parentid);
@@ -386,7 +392,8 @@ function createSpreadsheet(filename,parentid) {
 		}
 		});
 	xhr.onerror = function(e){
-		alert("projectdetail::createSpreadsheet::Unable to connect to the cloud.");
+		alert("projectdetail::createSpreadsheet::Unable to create spreadsheet.");
+		console.log("projectdetail::createSpreadsheet::Unable to createSpreadsheet with "+filename+".");
 	};
 	xhr.open("POST", 'https://www.googleapis.com/drive/v2/files');	
 	xhr.setRequestHeader("Content-type", "application/json");

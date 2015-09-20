@@ -5,6 +5,7 @@ exports.openMainWindow = function(_tab) {
   Ti.API.info(" input details after tab enterjobdetail : "+JSON.stringify(args));
 };
 
+var parentid = args.parentid;
 
 var GoogleAuth = require('googleAuth');
 var googleAuthSheet = new GoogleAuth({
@@ -47,6 +48,33 @@ var content = joblog.toJSON();
 console.log("enterjobdetail.js::JSON stringify content: "+JSON.stringify(content));
 
 
+function getParentFolder(args) {
+	var sid = Titanium.App.Properties.getString('joblog');
+	var xhr = Ti.Network.createHTTPClient({
+	    onload: function(e) {
+	    try {
+	    		var json = JSON.parse(this.responseText);
+	    		Ti.API.info("response is: "+JSON.stringify(json));
+	    		var parentid = json.items[0].id;
+	    		Titanium.App.Properties.setString('parentid',parentid);
+	    		console.log("projectdetail.js::args inside getParentFolder: "+JSON.stringify(args));
+	    	} catch(e){
+				Ti.API.info("cathing e: "+JSON.stringify(e));
+			}
+			return parentid;
+			Titanium.App.Properties.setString('parentid',parentid);
+		}
+		});
+	xhr.onerror = function(e){
+		alert("projectdetail::getParentFolder::Unable to get info.");
+		console.log('projectdetail::getParentFolder:: unable to get parents for '+sid);
+	};
+	console.log('projectdetail::getParentFolder:: URL:: https://www.googleapis.com/drive/v2/files/'+sid+'/parents');
+	xhr.open("GET", 'https://www.googleapis.com/drive/v2/files/'+sid+'/parents');
+	xhr.setRequestHeader("Content-type", "application/json");
+    xhr.setRequestHeader("Authorization", 'Bearer '+ googleAuthSheet.getAccessToken());
+	xhr.send();
+};
 
 
 function jobDetailAddRow (date,notesbody,imageurl,jobcommentdata,employee) {
@@ -169,7 +197,8 @@ function closeWin(e) {
         console.log("enterjobdetail.js::e is: "+JSON.stringify(e));
 }
 
-function UploadPhotoToServer(imagemedia){
+
+function UploadPhotoToServer(imagemedia,parentid){
         console.log("enterjobdetail.js::UploadPhotoToServer:: Upload photo to the server.");
         var imageView = Titanium.UI.createImageView({
             image:imagemedia,
@@ -182,19 +211,19 @@ function UploadPhotoToServer(imagemedia){
         var date = new Date();
         var imagefilename = filename+"_"+date.toString().replace(/ /g,'_');;
        // uploadPictoGoogle(image,"uploadphoto3.jpeg");
-        uploadPictoGoogle(image,imagefilename);
+        uploadPictoGoogle(image,imagefilename,parentid);
         //console.log("enterjobdetail.js::UploadPhotoToServer::image sid is : " +imagesid);
 }
 
 function uploadFile(e){
-        console.log("enterjobdetail.js::JSON stringify e uploadFile : " +JSON.stringify(e));
+       console.log("enterjobdetail.js::JSON stringify e uploadFile on parentid "+parentid+" : " +JSON.stringify(e));
        Titanium.Media.openPhotoGallery({
            success:function(event)
            {             
                Ti.API.debug('Our type was: '+event.mediaType);
                if(event.mediaType == Ti.Media.MEDIA_TYPE_PHOTO)
                {
-                   UploadPhotoToServer(event.media);
+                   UploadPhotoToServer(event.media,parentid);
                }
            },
            cancel:function()
@@ -410,33 +439,6 @@ var filename = 'project_'+projectid+'_'+firstname+'_'+lastname;
 Titanium.App.Properties.setString('filename',filename);
 console.log("enterjobdetail.js::value derived from args: projectid: "+projectid+" firstname: "+firstname+" lastname: "+lastname);
 //var filename = "project"+jsonargs.title.split(':')[15];
-function getParentFolder(args) {
-	var sid = Titanium.App.Properties.getString('joblog');
-	var xhr = Ti.Network.createHTTPClient({
-	    onload: function(e) {
-	    try {
-	    		var json = JSON.parse(this.responseText);
-	    		Ti.API.info("response is: "+JSON.stringify(json));
-	    		var parentid = json.items[0].id;
-	    		Titanium.App.Properties.setString('parentid',parentid);
-	    		console.log("enterjobdetail.js::args inside getParentFolder: "+JSON.stringify(args));
-	    		//var filename = 'test03';
-	    		//createSpreadsheet(filename,parentid);    		
-	    	} catch(e){
-				Ti.API.info("cathing e: "+JSON.stringify(e));
-			}
-			return parentid;
-		}
-		});
-	xhr.onerror = function(e){
-		alert("enterjobdetail::getParentFolder::Unable to connect to the cloud.");
-	};
-	xhr.open("GET", 'https://www.googleapis.com/drive/v2/files/'+sid+'/parents');
-	xhr.setRequestHeader("Content-type", "application/json");
-    xhr.setRequestHeader("Authorization", 'Bearer '+ googleAuthSheet.getAccessToken());
-	xhr.send();
-};
-
 
 function createSpreadsheet(filename,parentid) {
 	console.log("enterjobdetail.js::create ss with filename: "+filename+" and parentid: "+parentid);
@@ -544,13 +546,22 @@ var sid = args.sid;
 Ti.API.info("sid for joblog in enterjobdetail.js : "+sid);
 Alloy.Globals.getPrivateData(sid,"joblog");
 
-function uploadPictoGoogle(image,filename){
+function uploadPictoGoogle(image,filename,parentid){
 	console.log("enterjobdetail.js::uploadPictoGoogle::create ss with filename: "+filename);
 	var base64Data = Ti.Utils.base64encode(image);
 	 		var parts = [];
 	 		var bound = 287032396531387;
+	 		/*
 	 		var meta = '\{'
 	 		+	'\"title\": \"'+filename+'\"'	 		
+			+	'\}';*/
+			var meta = '\{'
+	 		+	'\"title\": \"'+filename+'\",'
+	 		+	'\"parents\" : ['
+  			+		'\{'
+   			+ 		'\"id\": \"'+parentid+'\"'
+  			+		'\}'
+ 			+	']'	 		
 			+	'\}';
 			var parts = [];
 	        parts.push('--' + bound);
@@ -564,6 +575,7 @@ function uploadPictoGoogle(image,filename){
 	        parts.push(base64Data);
 	        parts.push('--' + bound + '--');
 	 		var url = "https://www.googleapis.com/upload/drive/v2/files?uploadType=multipart";
+	 		console.log("enterjobdetail.js::uploadPictoGoogle:: URL: "+url+" "+meta);
 	 		var xhr =  Titanium.Network.createHTTPClient({
 			    onload: function() {
 			    	try {

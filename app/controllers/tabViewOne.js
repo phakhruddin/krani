@@ -156,3 +156,118 @@ function initialLoad(){
 }
 
 //initialLoad();
+
+function getParentFolder(args) {
+	var sid = Titanium.App.Properties.getString('joblog');
+	var xhr = Ti.Network.createHTTPClient({
+	    onload: function(e) {
+	    try {
+	    		var json = JSON.parse(this.responseText);
+	    		Ti.API.info("response is: "+JSON.stringify(json));
+	    		var parentid = json.items[0].id;
+	    		Titanium.App.Properties.setString('parentid',parentid);
+	    		console.log("tabViewOne.js::args inside getParentFolder: "+JSON.stringify(args));
+	    	} catch(e){
+				Ti.API.info("cathing e: "+JSON.stringify(e));
+			}
+			return parentid;
+			Titanium.App.Properties.setString('parentid',parentid);
+		}
+		});
+	xhr.onerror = function(e){
+		alert("tabViewOne::getParentFolder::Unable to get info.");
+		console.log('tabViewOne::getParentFolder:: unable to get parents for '+sid);
+	};
+	console.log('tabViewOne::getParentFolder:: URL:: https://www.googleapis.com/drive/v2/files/'+sid+'/parents');
+	xhr.open("GET", 'https://www.googleapis.com/drive/v2/files/'+sid+'/parents');
+	xhr.setRequestHeader("Content-type", "application/json");
+    xhr.setRequestHeader("Authorization", 'Bearer '+ googleAuthSheet.getAccessToken());
+	xhr.send();
+};
+
+getParentFolder();
+
+function login() {
+	
+	var themastersid=[];
+	
+	var GoogleAuth = require('googleAuth');
+	var googleAuthSheet = new GoogleAuth({
+		clientId : +Titanium.App.Properties.getString('authclientid'),
+		clientSecret : +Titanium.App.Properties.getString('authclientsecret'),
+		propertyName : 'googleToken',
+		scope : Alloy.Globals.scope,
+		quiet: false
+	});
+	
+	googleAuth.isAuthorized(function() {
+		Ti.API.info('Access Token: ' + googleAuthSheet.getAccessToken());
+		Titanium.App.Properties.setString('needAuth',"false");
+	}, function() {
+		Ti.API.info('Authorized first, see next window: ');
+		Titanium.App.Properties.setString('needAuth',"true");
+		Alloy.Globals.LaunchWindowGoogleAuth();
+	});
+	
+	function getEmail(e){
+			var xhr = Ti.Network.createHTTPClient({
+		    onload: function(e) {
+		    try {
+		    		var json = JSON.parse(this.responseText);
+		    		Ti.API.info("response is: "+JSON.stringify(json));
+		    		var emailid = json.email;
+		    		Titanium.App.Properties.setString('emailid',emailid);
+		    		console.log("tabViewOne.js::args inside getEmail: emailid "+emailid+" :: "+JSON.stringify(e));
+		    	} catch(e){
+					Ti.API.info("cathing e: "+JSON.stringify(e));
+				}
+				return emailid;
+				Titanium.App.Properties.setString('emailid',emailid);
+			}
+			});
+		xhr.onerror = function(e){
+			alert("tabViewOne::getEmail::Unable to get info.");
+			console.log('tabViewOne::getEmail:: unable to get info for '+e);
+		};
+		console.log('tabViewOne::getEmail:: URL:: https://www.googleapis.com/oauth2/v1/userinfo?alt=json');
+		xhr.open("GET", 'https://www.googleapis.com/oauth2/v1/userinfo?alt=json');
+		xhr.setRequestHeader("Content-type", "application/json");
+	    xhr.setRequestHeader("Authorization", 'Bearer '+ googleAuthSheet.getAccessToken());
+		xhr.send();
+	}
+	
+	function getParentID(email){
+		console.log("tabViewOne.js::getParentID: with email: " +email);
+		var themastersid = Alloy.Collections.instance('master');
+		themastersid.fetch();
+		Ti.API.info(" themastersid : "+JSON.stringify(themastersid));
+		if (themastersid.length > 0) {
+			var mastersidjson = themastersid.toJSON();
+			console.log("tabViewOne.js::JSON.stringify(mastersidjson): " +JSON.stringify(mastersidjson));
+			for( var i=0; i < mastersidjson.length; i++){
+				var mastercol1 = mastersidjson[i].col1.trim();
+				if ( mastercol1 == email.trim()) { 
+					Ti.API.info(" tabViewOne::getParentID: found mastercol1: "+mastercol1+" vs. "+email.trim());
+					var parentid = mastersidjson[i].col2.trim(); 
+					Titanium.App.Properties.setString('parentid',parentid);
+				};
+			}	
+			if (parentid) {
+				console.log("tabViewOne.js::getParentID: parentid is: "+parentid);
+				alert(email+" is registered user. Please proceed. Thanks");
+			} else {
+				alert(email+" is NOT registered user. Using demo account. Please proceed. Thanks");
+			}	
+		} 
+	}
+	
+	getEmail();
+	var email= Titanium.App.Properties.getString('emailid');
+	if (email) {
+		var mastersid = Titanium.App.Properties.getString('master');
+		Alloy.Globals.getPrivateData(mastersid,"master");
+		getParentID(email);
+	} else getEmail();
+
+	
+}
