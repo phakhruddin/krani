@@ -256,7 +256,7 @@ function login() {
 				console.log("tabViewOne.js::getParentID: parentid is: "+parentid);
 				alert(email+" is registered user. Please proceed. Thanks");
 			} else {
-				alert(email+" is NOT registered user. Using demo account. Please proceed. Thanks");
+				alert(email+" is NOT registered user. Using demo access. Please proceed. Thanks");
 			}	
 		} 
 	}
