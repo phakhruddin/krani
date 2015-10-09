@@ -175,7 +175,7 @@ function getParentFolder(args) {
 		}
 		});
 	xhr.onerror = function(e){
-		alert("tabViewOne::getParentFolder::Unable to get info.");
+		//alert("tabViewOne::getParentFolder::Unable to get info.");
 		console.log('tabViewOne::getParentFolder:: unable to get parents for '+sid);
 	};
 	console.log('tabViewOne::getParentFolder:: URL:: https://www.googleapis.com/drive/v2/files/'+sid+'/parents');
@@ -187,8 +187,8 @@ function getParentFolder(args) {
 
 getParentFolder();
 
-function login() {
-	
+function login(e) {
+	console.log("tabViewOne.js::login(e): " +JSON.stringify(e));
 	var themastersid=[];
 	
 	var GoogleAuth = require('googleAuth');
@@ -226,7 +226,7 @@ function login() {
 			}
 			});
 		xhr.onerror = function(e){
-			alert("tabViewOne::getEmail::Unable to get info.");
+			//alert("tabViewOne::getEmail::Unable to get info.");
 			console.log('tabViewOne::getEmail:: unable to get info for '+e);
 		};
 		console.log('tabViewOne::getEmail:: URL:: https://www.googleapis.com/oauth2/v1/userinfo?alt=json');
@@ -254,7 +254,13 @@ function login() {
 			}	
 			if (parentid) {
 				console.log("tabViewOne.js::getParentID: parentid is: "+parentid);
-				alert(email+" is registered user. Please proceed. Thanks");
+				//$.email_label.text=email;
+				//$.email_label.font={fontSize:"5dp"};
+				$.status_view.backgroundColor="green";
+				$.status_view.height="1%";
+				$.status_label.text="";
+				$.login_button.title="REFRESH";
+				//alert(email+" is registered user. Please proceed. Thanks");
 			} else {
 				alert(email+" is NOT registered user. Using demo access. Please proceed. Thanks");
 			}	

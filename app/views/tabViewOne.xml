@@ -10,9 +10,17 @@
     <Window title="Krani" class='container'>
     <ActivityIndicator id="activityIndicator" style="Ti.UI.iPhone.ActivityIndicatorStyle.PLAIN"/>
     <RightNavButton platform="ios">
-	   <Button systemButton="Ti.UI.iPhone.SystemButton.REFRESH" onClick="login" /> 
+	   <Button id="login_button" systemButton="Ti.UI.iPhone.SystemButton.PLAIN" title="LOGIN" onClick="login" /> 
 	</RightNavButton>
+	<LeftNavButton platform="ios">
+	   <Button systemButton="Ti.UI.iPhone.SystemButton.PLAIN" title="Logout" onClick="login" /> 
+	</LeftNavButton>
       <TableView id="table" backgroundColor="white" >
+      		<HeaderView id="tabviewone_headerview">
+				<View height="5%" id="status_view" backgroundColor="red">
+					<Label id="status_label" color="white" text="Please click login above" textAlign="right"/>				
+				</View>
+			</HeaderView>
  	      <TableViewRow id="schedule" opacity="1.0" Title="location">
  	      	<Label id="label_schedule"/>
 		   		  <Label id="label_schedule" color="orange"  left="80" text="Schedule"/>

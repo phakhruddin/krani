@@ -21,4 +21,9 @@
 	},
 	width: Ti.UI.SIZE,
 	height: Ti.UI.SIZE,
+},
+"#status_label": {
+	font: {
+		fontSize: '18dp'
+	},
 }
