@@ -206,7 +206,8 @@ function login(e) {
 	}, function() {
 		Ti.API.info('Authorized first, see next window: ');
 		Titanium.App.Properties.setString('needAuth',"true");
-		Alloy.Globals.LaunchWindowGoogleAuth();
+		googleAuthSheet.authorize();
+		//Alloy.Globals.LaunchWindowGoogleAuth();
 	});
 	
 	function getEmail(e){
