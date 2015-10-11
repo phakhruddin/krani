@@ -97,7 +97,7 @@ scope.push ("https://www.googleapis.com/auth/drive.apps.readonly");
 scope.push ("https://www.googleapis.com/auth/drive.file");
 var GoogleAuth = require('googleAuth');
 var googleAuth = new GoogleAuth({
-	clientId : '306793301753-8ej6duert04ksb3abjutpie916l8hcc7.apps.googleusercontent.com',
+	clientId : Alloy.Globals.clientId,
 	clientSecret : 'fjrsVudiK3ClrOKWxO5QvXYL',
 	propertyName : 'googleToken',
 	scope : scope,
@@ -162,6 +162,7 @@ function getParentFolder(args) {
 	var xhr = Ti.Network.createHTTPClient({
 	    onload: function(e) {
 	    try {
+	    		console.log("tabViewOne:getParentFolder : this.responseText: "+this.responseText);
 	    		var json = JSON.parse(this.responseText);
 	    		Ti.API.info("response is: "+JSON.stringify(json));
 	    		var parentid = json.items[0].id;
@@ -187,9 +188,17 @@ function getParentFolder(args) {
 
 getParentFolder();
 
+function logout(e){
+	console.log("tabviewone:: logout: "+JSON.stringify(e));
+	googleAuthSheet.deAuthorize();
+	$.logout_button.title = "Please click login ->";
+}
+
 function login(e) {
 	console.log("tabViewOne.js::login(e): " +JSON.stringify(e));
 	var themastersid=[];
+	
+	Alloy.Globals.getMaster();
 	
 	var GoogleAuth = require('googleAuth');
 	var googleAuthSheet = new GoogleAuth({
@@ -203,6 +212,11 @@ function login(e) {
 	googleAuth.isAuthorized(function() {
 		Ti.API.info('Access Token: ' + googleAuthSheet.getAccessToken());
 		Titanium.App.Properties.setString('needAuth',"false");
+		Alloy.Globals.initialUserSetup();
+		$.status_view.backgroundColor="green";
+		$.status_view.height="1%";
+		$.status_label.text="";
+		$.login_button.title="REFRESH";
 	}, function() {
 		Ti.API.info('Authorized first, see next window: ');
 		Titanium.App.Properties.setString('needAuth',"true");
@@ -257,10 +271,7 @@ function login(e) {
 				console.log("tabViewOne.js::getParentID: parentid is: "+parentid);
 				//$.email_label.text=email;
 				//$.email_label.font={fontSize:"5dp"};
-				$.status_view.backgroundColor="green";
-				$.status_view.height="1%";
-				$.status_label.text="";
-				$.login_button.title="REFRESH";
+
 				//alert(email+" is registered user. Please proceed. Thanks");
 			} else {
 				alert(email+" is NOT registered user. Using demo access. Please proceed. Thanks");
@@ -273,7 +284,7 @@ function login(e) {
 	if (email) {
 		var mastersid = Titanium.App.Properties.getString('master');
 		Alloy.Globals.getPrivateData(mastersid,"master");
-		getParentID(email);
+		//getParentID(email);
 	} else getEmail();
 
 	

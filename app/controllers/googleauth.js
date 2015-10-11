@@ -8,7 +8,7 @@ exports.openMainWindow = function(_tab) {
 
 var GoogleAuth = require('googleAuth');
 var googleAuthSheet = new GoogleAuth({
-	clientId : '306793301753-8ej6duert04ksb3abjutpie916l8hcc7.apps.googleusercontent.com',
+	clientId : Alloy.Globals.clientId,
 	clientSecret : 'fjrsVudiK3ClrOKWxO5QvXYL',
 	propertyName : 'googleToken',
 	scope : ['https://spreadsheets.google.com/feeds', 'https://docs.google.com/feeds','https://www.googleapis.com/auth/calendar','https://www.googleapis.com/auth/calendar.readonly'],

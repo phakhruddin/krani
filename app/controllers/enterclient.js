@@ -227,7 +227,7 @@ scope.push ("https://www.googleapis.com/auth/drive.apps.readonly");
 scope.push ("https://www.googleapis.com/auth/drive.file");
 var GoogleAuth = require('googleAuth');
 var googleAuth = new GoogleAuth({
-	clientId : '306793301753-8ej6duert04ksb3abjutpie916l8hcc7.apps.googleusercontent.com',
+	clientId : Alloy.Globals.clientId,
 	clientSecret : 'fjrsVudiK3ClrOKWxO5QvXYL',
 	propertyName : 'googleToken',
 	scope : scope,

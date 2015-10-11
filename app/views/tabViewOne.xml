@@ -6,6 +6,8 @@
   <Collection src="labor"/>
   <Collection src="schedule"/>
   <Collection src="proposal"/>
+  <Collection src="master"/>
+  <Collection src="joblogsid"/>
   <Tab id="tab_one" title="MAIN" icon="home45.png">
     <Window title="Krani" class='container'>
     <ActivityIndicator id="activityIndicator" style="Ti.UI.iPhone.ActivityIndicatorStyle.PLAIN"/>
@@ -13,7 +15,7 @@
 	   <Button id="login_button" systemButton="Ti.UI.iPhone.SystemButton.PLAIN" title="LOGIN" onClick="login" /> 
 	</RightNavButton>
 	<LeftNavButton platform="ios">
-	   <Button systemButton="Ti.UI.iPhone.SystemButton.PLAIN" title="Logout" onClick="login" /> 
+	   <Button id="logout_button" systemButton="Ti.UI.iPhone.SystemButton.PLAIN" title="Logout" onClick="logout" /> 
 	</LeftNavButton>
       <TableView id="table" backgroundColor="white" >
       		<HeaderView id="tabviewone_headerview">
