@@ -127,6 +127,7 @@ checkNetworkAndGoogleAuthorized = function(sid){
 	});
 	xhr.onerror = function(e){
 		alert("No network connection. Information update will NOT be immediately synchronized to central location. Please take note.");
+		console.log("tabViewOne::checkNetworkAndGoogleAuthorized:failed to get to: "+url);
 	};
 	xhr.open("GET", url);
 	xhr.send();
@@ -167,7 +168,7 @@ function getParentFolder(args) {
 	    		Ti.API.info("response is: "+JSON.stringify(json));
 	    		var parentid = json.items[0].id;
 	    		Titanium.App.Properties.setString('parentid',parentid);
-	    		console.log("tabViewOne.js::args inside getParentFolder: "+JSON.stringify(args));
+	    		//console.log("tabViewOne.js::args inside getParentFolder: "+JSON.stringify(args));
 	    	} catch(e){
 				Ti.API.info("cathing e: "+JSON.stringify(e));
 			}
@@ -182,7 +183,7 @@ function getParentFolder(args) {
 	console.log('tabViewOne::getParentFolder:: URL:: https://www.googleapis.com/drive/v2/files/'+sid+'/parents');
 	xhr.open("GET", 'https://www.googleapis.com/drive/v2/files/'+sid+'/parents');
 	xhr.setRequestHeader("Content-type", "application/json");
-    xhr.setRequestHeader("Authorization", 'Bearer '+ googleAuthSheet.getAccessToken());
+    xhr.setRequestHeader("Authorization", 'Bearer '+ Alloy.Globals.googleAuthSheet.getAccessToken());
 	xhr.send();
 };
 
@@ -190,16 +191,15 @@ getParentFolder();
 
 function logout(e){
 	console.log("tabviewone:: logout: "+JSON.stringify(e));
-	googleAuthSheet.deAuthorize();
+	Alloy.Globals.googleAuthSheet.deAuthorize();
 	$.logout_button.title = "Please click login ->";
 }
 
 function login(e) {
 	console.log("tabViewOne.js::login(e): " +JSON.stringify(e));
-	var themastersid=[];
+	var buttonstate = e.source.title;
 	
-	Alloy.Globals.getMaster();
-	
+	/*
 	var GoogleAuth = require('googleAuth');
 	var googleAuthSheet = new GoogleAuth({
 		clientId : +Titanium.App.Properties.getString('authclientid'),
@@ -207,85 +207,96 @@ function login(e) {
 		propertyName : 'googleToken',
 		scope : Alloy.Globals.scope,
 		quiet: false
-	});
-	
-	googleAuth.isAuthorized(function() {
-		Ti.API.info('Access Token: ' + googleAuthSheet.getAccessToken());
-		Titanium.App.Properties.setString('needAuth',"false");
+	});*/
+		
+	if (buttonstate = "LOGIN"){
+			Alloy.Globals.googleAuthSheet.isAuthorized(function() {
+				Ti.API.info('Access Token: ' + Alloy.Globals.googleAuthSheet.getAccessToken());
+				Titanium.App.Properties.setString('needAuth',"false");
+				$.status_view.backgroundColor="green";
+				$.status_view.height="1%";
+				$.status_label.text="";
+				$.login_button.title="Logout";				
+		}, function() {
+			Ti.API.info('Authorized first, see next window: ');
+			Titanium.App.Properties.setString('needAuth',"true");
+			Alloy.Globals.googleAuthSheet.authorize();
+			Ti.API.info('Access Token: ' + Alloy.Globals.googleAuthSheet.getAccessToken());
+			$.login_button.title="REFRESH";	
+		});
+	} else if (buttonstate = "Logout") {
+		logout();
+	} else {
+		var themastersid=[];
+		Alloy.Globals.getPrivateMaster();
 		Alloy.Globals.initialUserSetup();
-		$.status_view.backgroundColor="green";
-		$.status_view.height="1%";
-		$.status_label.text="";
-		$.login_button.title="REFRESH";
-	}, function() {
-		Ti.API.info('Authorized first, see next window: ');
-		Titanium.App.Properties.setString('needAuth',"true");
-		googleAuthSheet.authorize();
-		//Alloy.Globals.LaunchWindowGoogleAuth();
-	});
-	
-	function getEmail(e){
-			var xhr = Ti.Network.createHTTPClient({
-		    onload: function(e) {
-		    try {
-		    		var json = JSON.parse(this.responseText);
-		    		Ti.API.info("response is: "+JSON.stringify(json));
-		    		var emailid = json.email;
-		    		Titanium.App.Properties.setString('emailid',emailid);
-		    		console.log("tabViewOne.js::args inside getEmail: emailid "+emailid+" :: "+JSON.stringify(e));
-		    	} catch(e){
-					Ti.API.info("cathing e: "+JSON.stringify(e));
+		//Alloy.Globals.getMaster();	
+
+		function getEmail(e){
+				var xhr = Ti.Network.createHTTPClient({
+			    onload: function(e) {
+			    try {
+			    		var json = JSON.parse(this.responseText);
+			    		Ti.API.info("response is: "+JSON.stringify(json));
+			    		var emailid = json.email;
+			    		Titanium.App.Properties.setString('emailid',emailid);
+			    		console.log("tabViewOne.js::args inside getEmail: emailid "+emailid+" :: "+JSON.stringify(e));
+			    	} catch(e){
+						Ti.API.info("cathing e: "+JSON.stringify(e));
+					}
+					return emailid;
+					Titanium.App.Properties.setString('emailid',emailid);
 				}
-				return emailid;
-				Titanium.App.Properties.setString('emailid',emailid);
-			}
-			});
-		xhr.onerror = function(e){
-			//alert("tabViewOne::getEmail::Unable to get info.");
-			console.log('tabViewOne::getEmail:: unable to get info for '+e);
-		};
-		console.log('tabViewOne::getEmail:: URL:: https://www.googleapis.com/oauth2/v1/userinfo?alt=json');
-		xhr.open("GET", 'https://www.googleapis.com/oauth2/v1/userinfo?alt=json');
-		xhr.setRequestHeader("Content-type", "application/json");
-	    xhr.setRequestHeader("Authorization", 'Bearer '+ googleAuthSheet.getAccessToken());
-		xhr.send();
+				});
+			xhr.onerror = function(e){
+				//alert("tabViewOne::getEmail::Unable to get info.");
+				console.log('tabViewOne::getEmail:: unable to get info for '+e);
+			};
+			console.log('tabViewOne::getEmail:: URL:: https://www.googleapis.com/oauth2/v1/userinfo?alt=json');
+			xhr.open("GET", 'https://www.googleapis.com/oauth2/v1/userinfo?alt=json');
+			xhr.setRequestHeader("Content-type", "application/json");
+		    xhr.setRequestHeader("Authorization", 'Bearer '+ Alloy.Globals.googleAuthSheet.getAccessToken());
+			xhr.send();
+		}
+		
+		function getParentID(email){
+			console.log("tabViewOne.js::getParentID: with email: " +email);
+			var themastersid = Alloy.Collections.instance('master');
+			themastersid.fetch();
+			Ti.API.info(" themastersid : "+JSON.stringify(themastersid));
+			if (themastersid.length > 0) {
+				var mastersidjson = themastersid.toJSON();
+				console.log("tabViewOne.js::JSON.stringify(mastersidjson): " +JSON.stringify(mastersidjson));
+				for( var i=0; i < mastersidjson.length; i++){
+					var mastercol1 = mastersidjson[i].col1.trim();
+					if ( mastercol1 == email.trim()) { 
+						Ti.API.info(" tabViewOne::getParentID: found mastercol1: "+mastercol1+" vs. "+email.trim());
+						var parentid = mastersidjson[i].col2.trim(); 
+						Titanium.App.Properties.setString('parentid',parentid);
+					};
+				}	
+				if (parentid) {
+					console.log("tabViewOne.js::getParentID: parentid is: "+parentid);
+					//$.email_label.text=email;
+					//$.email_label.font={fontSize:"5dp"};
+	
+					//alert(email+" is registered user. Please proceed. Thanks");
+				} else {
+					alert(email+" is NOT registered user. Using demo access. Please proceed. Thanks");
+				}	
+			} 
+		}
+		
+		getEmail();
+		var email= Titanium.App.Properties.getString('emailid');
+		if (email) {
+			var mastersid = Titanium.App.Properties.getString('master');
+			Alloy.Globals.getPrivateData(mastersid,"master");
+			//getParentID(email);
+		} else getEmail();
+	
+		
 	}
-	
-	function getParentID(email){
-		console.log("tabViewOne.js::getParentID: with email: " +email);
-		var themastersid = Alloy.Collections.instance('master');
-		themastersid.fetch();
-		Ti.API.info(" themastersid : "+JSON.stringify(themastersid));
-		if (themastersid.length > 0) {
-			var mastersidjson = themastersid.toJSON();
-			console.log("tabViewOne.js::JSON.stringify(mastersidjson): " +JSON.stringify(mastersidjson));
-			for( var i=0; i < mastersidjson.length; i++){
-				var mastercol1 = mastersidjson[i].col1.trim();
-				if ( mastercol1 == email.trim()) { 
-					Ti.API.info(" tabViewOne::getParentID: found mastercol1: "+mastercol1+" vs. "+email.trim());
-					var parentid = mastersidjson[i].col2.trim(); 
-					Titanium.App.Properties.setString('parentid',parentid);
-				};
-			}	
-			if (parentid) {
-				console.log("tabViewOne.js::getParentID: parentid is: "+parentid);
-				//$.email_label.text=email;
-				//$.email_label.font={fontSize:"5dp"};
+		
 
-				//alert(email+" is registered user. Please proceed. Thanks");
-			} else {
-				alert(email+" is NOT registered user. Using demo access. Please proceed. Thanks");
-			}	
-		} 
-	}
-	
-	getEmail();
-	var email= Titanium.App.Properties.getString('emailid');
-	if (email) {
-		var mastersid = Titanium.App.Properties.getString('master');
-		Alloy.Globals.getPrivateData(mastersid,"master");
-		//getParentID(email);
-	} else getEmail();
-
-	
 }

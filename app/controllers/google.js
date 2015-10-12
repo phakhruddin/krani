@@ -12,7 +12,8 @@ exports.openMainWindow = function(_tab) {
 		}, function() {
 			//authorize first
 			Ti.API.info('Authorized first, see next window: ');
-			Alloy.Globals.LaunchWindowGoogleAuth();
+			Alloy.Globals.googleAuthSheet.authorize();
+			///Alloy.Globals.LaunchWindowGoogleAuth();
 		});
 	});
 	
@@ -22,13 +23,13 @@ exports.openMainWindow = function(_tab) {
 		});
 	
 	$.sheet.addEventListener('click', function() {
-		googleAuthSheet.isAuthorized(function() {
-			Ti.API.info('Access Token for SSheet: ' + googleAuthSheet.getAccessToken());
+		Alloy.Globals.googleAuthSheet.isAuthorized(function() {
+			Ti.API.info('Access Token for SSheet: ' +Alloy.Globals.googleAuthSheet.getAccessToken());
 			var url = 'https://spreadsheets.google.com/feeds/list/1ECkNoyzgeSu8WkVs3kBnlY8MjJRIAc787nVs6IJsA9w/od6/private/full';
 			googlegetData(url);		
 		}, function() {
 			//authorize first
-			googleAuthSheet.authorize();
+			Alloy.Globals.googleAuthSheet.authorize();
 			/*
 			var win = Titanium.UI.createWindow({
 				fullscreen: false,
@@ -84,8 +85,8 @@ exports.openMainWindow = function(_tab) {
  });
 
 	$.getdatainput.addEventListener('click', function() {
-		googleAuthSheet.isAuthorized(function() {
-			var token = googleAuthSheet.getAccessToken();
+		Alloy.Globals.googleAuthSheet.isAuthorized(function() {
+			var token =Alloy.Globals.googleAuthSheet.getAccessToken();
 			Ti.API.info('Access Token for SSheet: ' +token );
 			var sid ='1ECkNoyzgeSu8WkVs3kBnlY8MjJRIAc787nVs6IJsA9w';
 	  		var url = Titanium.App.Properties.getString('url');
@@ -94,7 +95,7 @@ exports.openMainWindow = function(_tab) {
 		}, function() {
 			//authorize first
 			Ti.API.info('Authorized first: ');
-			googleAuthSheet.authorize();
+			Alloy.Globals.googleAuthSheet.authorize();
 		});
 		 	});
 		 	
@@ -215,4 +216,15 @@ function AdHocTest(e){
 	joblog.fetch();
 	console.log("google.js::JSON stringify joblog.length: "+joblog.length);
 	console.log("google.js::JSON stringify joblog: "+JSON.stringify(joblog));
+}
+
+function checkSid(e){
+	Alloy.Globals.initialUserSetup();
+}
+
+function getIndex() {
+	var emailid = Titanium.App.Properties.getString('emailid');
+	var name = kraniemailid.split('@')[0].trim();
+	console.log("google.js:: executing Alloy.Globals.getPrivateIndex(name) with: "+name);
+	Alloy.Globals.getPrivateIndex(name);
 }

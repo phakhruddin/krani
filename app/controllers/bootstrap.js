@@ -46,7 +46,7 @@ function editTheCell(sid,rowno,colno,value) {
 	};
 	xhr.open("GET", 'https://spreadsheets.google.com/feeds/cells/'+sid+'/od6/private/full/'+pos);
 	xhr.setRequestHeader("Content-type", "application/atom+xml");
-    xhr.setRequestHeader("Authorization", 'Bearer '+ googleAuthSheet.getAccessToken());
+    xhr.setRequestHeader("Authorization", 'Bearer '+Alloy.Globals.googleAuthSheet.getAccessToken());
 	xhr.send();
 };
 
@@ -120,7 +120,7 @@ function createSpreadsheet(filename) {
 	};
 	xhr.open("POST", 'https://www.googleapis.com/drive/v2/files');	
 	xhr.setRequestHeader("Content-type", "application/json");
-    xhr.setRequestHeader("Authorization", 'Bearer '+ googleAuthSheet.getAccessToken());
+    xhr.setRequestHeader("Authorization", 'Bearer '+Alloy.Globals.googleAuthSheet.getAccessToken());
     console.log("json post: "+jsonpost);
 	xhr.send(jsonpost);
 }
@@ -150,7 +150,7 @@ function editCell(sid,rowno,colno,edithref,selfhref,value){
 });
         xhr.open("PUT", ''+edithref+'');
         xhr.setRequestHeader("Content-type", "application/atom+xml");
-        xhr.setRequestHeader("Authorization", 'Bearer '+ googleAuthSheet.getAccessToken());
+        xhr.setRequestHeader("Authorization", 'Bearer '+Alloy.Globals.googleAuthSheet.getAccessToken());
         xhr.send(xmldatastring);
         Ti.API.info('done POSTed');
 }
@@ -185,7 +185,7 @@ function checkFileExistThenCreateSS(filename){
 	var rawquerystring = '?q=title+%3D+\''+filename+'\'+and+mimeType+%3D+\'application%2Fvnd.google-apps.spreadsheet\'+and+trashed+%3D+false&fields=items(id%2CmimeType%2Clabels%2Ctitle)';
 	xhr.open("GET", 'https://www.googleapis.com/drive/v2/files'+rawquerystring);
 	xhr.setRequestHeader("Content-type", "application/json");
-    xhr.setRequestHeader("Authorization", 'Bearer '+ googleAuthSheet.getAccessToken());
+    xhr.setRequestHeader("Authorization", 'Bearer '+Alloy.Globals.googleAuthSheet.getAccessToken());
 	xhr.send();
 }
 

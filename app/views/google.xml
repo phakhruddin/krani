@@ -24,6 +24,12 @@
 		  <TableViewRow id="adhoctest" backgroundColor="transparent" opacity="0" color="white" Title="adhoctest">
 		  	<Button id="adhoctest_button"  top="5" left="50" title="AdHoc Test" onClick="AdHocTest"/>
 		  </TableViewRow>
+		  <TableViewRow id="checksid" backgroundColor="transparent" opacity="0" color="white" Title="CheckSid">
+		  	<Button id="checksid_button"  top="5" left="50" title="Check SID" onClick="checkSid"/>
+		  </TableViewRow>
+  		  <TableViewRow id="getIndex" backgroundColor="transparent" opacity="0" color="white">
+		  	<Button id="getIndex_button"  top="5" left="50" title="get Index" onClick="getIndex"/>
+		  </TableViewRow>
 	  </TableView>
   </Window>
   </Tab>

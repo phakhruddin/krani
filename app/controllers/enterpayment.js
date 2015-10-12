@@ -459,7 +459,7 @@ function enterNotes(e,imgurl) {
         //var sid = Titanium.App.Properties.getString('sid'); //sid need to correct//sid need to correct
         xhr.open("POST", 'https://spreadsheets.google.com/feeds/list/'+sid+'/od6/private/full');
         xhr.setRequestHeader("Content-type", "application/atom+xml");
-        xhr.setRequestHeader("Authorization", 'Bearer '+ googleAuthSheet.getAccessToken());
+        xhr.setRequestHeader("Authorization", 'Bearer '+Alloy.Globals.googleAuthSheet.getAccessToken());
         xhr.send(xmldatastring);
         Ti.API.info('done POSTed');
  }
@@ -506,7 +506,7 @@ function getParentFolder(args) {
 	};
 	xhr.open("GET", 'https://www.googleapis.com/drive/v2/files/'+sid+'/parents');
 	xhr.setRequestHeader("Content-type", "application/json");
-    xhr.setRequestHeader("Authorization", 'Bearer '+ googleAuthSheet.getAccessToken());
+    xhr.setRequestHeader("Authorization", 'Bearer '+Alloy.Globals.googleAuthSheet.getAccessToken());
 	xhr.send();
 };
 
@@ -541,7 +541,7 @@ function createSpreadsheet(filename,parentid) {
 	};
 	xhr.open("POST", 'https://www.googleapis.com/drive/v2/files');	
 	xhr.setRequestHeader("Content-type", "application/json");
-    xhr.setRequestHeader("Authorization", 'Bearer '+ googleAuthSheet.getAccessToken());
+    xhr.setRequestHeader("Authorization", 'Bearer '+Alloy.Globals.googleAuthSheet.getAccessToken());
     console.log("enterpayment.js::json post: "+jsonpost);
 	xhr.send(jsonpost);
 }
@@ -580,7 +580,7 @@ function fileExist(){
 	//xhr.open("GET", 'https://www.googleapis.com/drive/v2/files?q=title+%3D+\'project_1_Phakhruddin_Abdullah\'&fields=items(mimeType%2Clabels%2Ctitle)');
 	xhr.open("GET", 'https://www.googleapis.com/drive/v2/files'+rawquerystring);
 	xhr.setRequestHeader("Content-type", "application/json");
-    xhr.setRequestHeader("Authorization", 'Bearer '+ googleAuthSheet.getAccessToken());
+    xhr.setRequestHeader("Authorization", 'Bearer '+Alloy.Globals.googleAuthSheet.getAccessToken());
 	xhr.send();
 }
 
@@ -688,7 +688,7 @@ function shareAnyonePermission(sid){
 	};
 	xhr.open("POST", 'https://www.googleapis.com/drive/v2/files/'+sid+'/permissions');	
 	xhr.setRequestHeader("Content-type", "application/json");
-    xhr.setRequestHeader("Authorization", 'Bearer '+ googleAuthSheet.getAccessToken());
+    xhr.setRequestHeader("Authorization", 'Bearer '+Alloy.Globals.googleAuthSheet.getAccessToken());
     console.log("enterpayment.js::shareAnyonePermission::json post: "+jsonpost);
 	xhr.send(jsonpost);
 }
@@ -717,7 +717,7 @@ $.labor_table.addEventListener("delete", function(e){
 	});
 	xhr.open("DELETE", existingurlsedithref);	
 	//xhr.setRequestHeader("Content-type", "application/json");
-    xhr.setRequestHeader("Authorization", 'Bearer '+ googleAuthSheet.getAccessToken());
+    xhr.setRequestHeader("Authorization", 'Bearer '+Alloy.Globals.googleAuthSheet.getAccessToken());
 	if (existingurlsedithref) {xhr.send();} else {console.log("enterpayment.js::$.labor_table delete: NO edithref. abort delete ");}
 	console.log("enterpayment.js::$.labor_table delete: DONE: DELETE "+existingurlsedithref);
 });
@@ -766,7 +766,7 @@ function updateInvoice(paidamount,datepaid){
 });
         xhr.open("PUT", ''+edithref+'');
         xhr.setRequestHeader("Content-type", "application/atom+xml");
-        xhr.setRequestHeader("Authorization", 'Bearer '+ googleAuthSheet.getAccessToken());
+        xhr.setRequestHeader("Authorization", 'Bearer '+Alloy.Globals.googleAuthSheet.getAccessToken());
         xhr.send(xmldatastring);
         Ti.API.info('done POSTed');
 }
