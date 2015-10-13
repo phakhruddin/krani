@@ -228,3 +228,76 @@ function getIndex() {
 	console.log("google.js:: executing Alloy.Globals.getPrivateIndex(name) with: "+name);
 	Alloy.Globals.getPrivateIndex(name);
 }
+
+function thisOne(){
+	console.log("google,js:: callback of googleAuthorize of Alloy.Globals.googleAuthSheet.getAccessToken() is : "+Alloy.Globals.googleAuthSheet.getAccessToken());
+}
+
+function AuthFirstThenExeThisOne(thisOne){
+	Alloy.Globals.googleAuthSheet.isAuthorized(function() {
+		Ti.API.info('Access Token: ' + Alloy.Globals.googleAuthSheet.getAccessToken());
+	}, function() {
+		Ti.API.info('Authorized first, see next window: ');
+		Alloy.Globals.googleAuthSheet.authorize();
+	});
+	thisOne && thisOne();
+}
+
+//function authorizeCallback() {AuthFirstThenExeThisOne(thisOne);};
+
+function theExe() {
+	console.log("google,js:: callback of googleAuthorize of Alloy.Globals.googleAuthSheet.getAccessToken() is : "+Alloy.Globals.googleAuthSheet.getAccessToken());
+}
+
+function reAuthorizeThenExe(theExe){	
+	Ti.API.info('reAuthorizeThenExe:: Authorized first, see next window: ');
+	Alloy.Globals.googleAuthSheet.authorize();
+	theExe && theExe();
+}
+
+function authorizeCallback() {
+	function theExe() {
+		console.log("google,js:: callback of googleAuthorize of Alloy.Globals.googleAuthSheet.getAccessToken() is : "+Alloy.Globals.googleAuthSheet.getAccessToken());
+	}
+	Alloy.Globals.googleAuthSheet.isAuthorized(function() {
+		Ti.API.info('authorizeCallback::Access Token: ' + Alloy.Globals.googleAuthSheet.getAccessToken());
+	}, function() {
+		Ti.API.info('authorizeCallback::Is NOT Authorized:: Access Token: ' + Alloy.Globals.googleAuthSheet.getAccessToken());
+		Alloy.Globals.googleAuthSheet.authorize();
+		setTimeout(function(){theExe();},5000);
+		//reAuthorizeThenExe(function(){theExe();});
+	}); 
+}
+	
+function testLoopAuthorize(){
+	
+	Alloy.Globals.googleAuthSheet.isAuthorized(function() {
+		Ti.API.info((new Date())+'testLoopAuthorize::Access Token: ' + Alloy.Globals.googleAuthSheet.getAccessToken());
+	}, function() {
+		Ti.API.info((new Date())+'testLoopAuthorize::Authorized first, see next window: ');
+		Alloy.Globals.googleAuthSheet.authorize();
+	});
+	
+	var count=7;
+	var timeoutms = 10000; //10secs
+	var i=0;
+	
+	function dosettimeout (i,timeoutms) {
+		setTimeout(function(){
+			console.log((new Date())+"testLoopAuthorize::loop no: "+i+" after "+timeoutms*i+" secs");		
+		},timeoutms*i);
+	}
+
+	
+	for (i=0;i<count;i++){
+		console.log((new Date())+"testLoopAuthorize::i is: "+i);
+		if(Alloy.Globals.googleAuthSheet.getAccessToken()){ 
+			console.log((new Date())+"testLoopAuthorize::break it after "+i+" times w/token: "+ Alloy.Globals.googleAuthSheet.getAccessToken());
+		} else {
+			console.log((new Date())+"testLoopAuthorize::dosettimeout("+i+","+timeoutms+" w/token: "+ Alloy.Globals.googleAuthSheet.getAccessToken());
+			dosettimeout(i,timeoutms);
+		}	
+	}
+	console.log((new Date())+"testLoopAuthorize:: finally! can execute task after "+i+" iterations");
+}
+

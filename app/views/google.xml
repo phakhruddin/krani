@@ -30,6 +30,12 @@
   		  <TableViewRow id="getIndex" backgroundColor="transparent" opacity="0" color="white">
 		  	<Button id="getIndex_button"  top="5" left="50" title="get Index" onClick="getIndex"/>
 		  </TableViewRow>
+		  <TableViewRow id="authorizeCallback" backgroundColor="transparent" opacity="0" color="white">
+		  	<Button id="authorizeCallback_button"  top="5" left="50" title="authorize Callback test" onClick="authorizeCallback"/>
+		  </TableViewRow>
+  		 <TableViewRow id="testLoopAuthorize_row" backgroundColor="transparent" opacity="0" color="white">
+		  	<Button id="testLoopAuthorize_button"  top="5" left="50" title="testLoopAuthorize" onClick="testLoopAuthorize"/>
+		  </TableViewRow>
 	  </TableView>
   </Window>
   </Tab>
