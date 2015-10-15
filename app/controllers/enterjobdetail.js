@@ -514,8 +514,11 @@ function fileExist(){
 }
 
 //fileExist();
-var parentid = Titanium.App.Properties.getString('parentid');
-//console.log("enterjobdetail.js::create spreadsheet with filename: "+filename+" and parentid: "+parentid); 
+///var parentid = Titanium.App.Properties.getString('parentid');
+var kraniemailid = Titanium.App.Properties.getString('kraniemailid');
+var joblogdirname = kraniemailid.split('@')[0].trim();
+var parentid = Titanium.App.Properties.getString(joblogdirname);
+console.log("enterjobdetail.js:: parentid derived from Titanium.App.Properties.getString("+joblogdirname+") is: "+parentid); 
 //createSpreadsheet(filename,parentid); 
 
 

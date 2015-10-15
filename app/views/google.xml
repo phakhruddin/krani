@@ -48,6 +48,12 @@
 		  <TableViewRow id="getMasterNew_row" backgroundColor="transparent" opacity="0" color="white">
 		  	<Button id="getMasterNew_button"  top="5" left="50" title="getMasterNew" onClick="getMasterNew"/>
 		  </TableViewRow>
+		  <TableViewRow id="findSIDFromFilename_row" backgroundColor="transparent" opacity="0" color="white">
+		  	<Button id="findSIDFromFilename_button"  top="5" left="50" title="findSIDFromFilename" onClick="findSIDFromFilename"/>
+		  </TableViewRow>
+		  <TableViewRow id="getJSONOnline_row" backgroundColor="transparent" opacity="0" color="white">
+		  	<Button id="getJSONOnline_button"  top="5" left="50" title="getJSONOnline" onClick="getJSONOnline"/>
+		  </TableViewRow>
 	  </TableView>
   </Window>
   </Tab>

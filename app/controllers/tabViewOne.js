@@ -10,7 +10,7 @@ $.location.addEventListener ("click", function(e){
 
 function openNextTab(item){
 	var sid = Titanium.App.Properties.getString(item,"none");
-	Ti.API.info("sid for "+ item +" : "+sid);
+	Ti.API.info("tabViewOne::openNextTab::sid for "+ item +" : "+sid);
 	Alloy.Globals.getPrivateData(sid,item);
 	var scheduleController = Alloy.createController(item);
 	scheduleController.openMainWindow($.tab_one);	
@@ -169,7 +169,7 @@ function prefetchJoblogSID(){
 	
 }
 
-prefetchJoblogSID();
+//prefetchJoblogSID();
 
 function initialLoad(){
 	checkNetworkAndGoogleAuthorized('1gnkP116nsTVxtrw6d_mXVdOiesQEPH7LVUIyHUfx9EE');
@@ -241,15 +241,25 @@ function login(e) {
         
     	console.log("tabViewOne.js::login(e): buttonstate: execute CASE " +buttonstate);
 		Alloy.Globals.googleAuthSheet.isAuthorized(function() {
+			$.login_button.title="";
+			$.tabviewone_window.add(loadingView);
 			Ti.API.info('Access Token: ' + Alloy.Globals.googleAuthSheet.getAccessToken());
 			Titanium.App.Properties.setString('needAuth',"false");
-			$.status_view.backgroundColor="green";
-			$.status_view.height="1%";
-			$.status_label.text="";
-			$.login_button.title="Logout";
-			$.logout_button.title="";	
+			//login activity
+			setTimeout(function(){
+				console.log(new Date()+"::tabviewone.js::login:before loginActivity()");
+				$.status_view.backgroundColor="green";
+				$.status_view.height="1%";
+				$.status_label.text="";
+				$.login_button.title="Logout";
+				$.logout_button.title="";
+				Alloy.Globals.loginActivity();
+				$.tabviewone_window.remove(loadingView);
+			},2000);
+
 		}, function() {
 			//$.tabviewone_window.hide();
+			$.login_button.title="";	
 			$.tabviewone_window.add(loadingView);
 			Ti.API.info('Authorized first, see next window: ');		
 			Titanium.App.Properties.setString('needAuth',"true");
@@ -296,7 +306,8 @@ function login(e) {
 			console.log("tabViewOne.js::refresh(e): executing  refreshActivity()  ");
 			console.log("tabViewOne.js::refresh(e): before executing  Alloy.Globals.getPrivateMaster()  ");
 				//Alloy.Globals.getPrivateMaster();
-				Alloy.Globals.getMaster();
+				//Alloy.Globals.getMaster();
+				Alloy.Globals.getJSONOnline();
 				console.log("tabViewOne.js::refresh(e): before executing  Alloy.Globals.initialUserSetup()  ");
 				Alloy.Globals.initialUserSetup(); 
 				function getEmail(e){
@@ -359,9 +370,10 @@ function login(e) {
 					(Alloy.Globals.googleAuthSheet.getAccessToken()) && getEmail();
 					var email= Titanium.App.Properties.getString('emailid');
 					if (email) {
-					var mastersid = Titanium.App.Properties.getString('master');
-					Alloy.Globals.getPrivateData(mastersid,"master");
+					//var mastersid = Titanium.App.Properties.getString('master');
+					//Alloy.Globals.getPrivateData(mastersid,"master");
 					//getParentID(email);
+					//TODO:steps to get parentid.
 					
 				} else {(Alloy.Globals.googleAuthSheet.getAccessToken()) && getEmail(); }
 

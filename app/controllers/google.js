@@ -317,3 +317,15 @@ function getMasterAllowanceKrani(){
 function getMasterNew(){
 	Alloy.Globals.getMaster();
 }
+function findSIDFromFilename(){
+	for (i=0;i<Alloy.Globals.corefilenamearray.length;i++){
+		var filename=Alloy.Globals.corefilenamearray[i];
+		console.log("google.js:: Alloy.Globals.checkFileExistThenCreateSS("+filename+"); ");
+		Alloy.Globals.checkFileExistThenCreateSS(filename);
+	}
+	//Alloy.Globals.checkFileExistThenCreateSS("binikucomel_schedulelist");
+}
+
+function getJSONOnline() {
+	Alloy.Globals.getJSONOnline();
+}
