@@ -36,6 +36,18 @@
   		 <TableViewRow id="testLoopAuthorize_row" backgroundColor="transparent" opacity="0" color="white">
 		  	<Button id="testLoopAuthorize_button"  top="5" left="50" title="testLoopAuthorize" onClick="testLoopAuthorize"/>
 		  </TableViewRow>
+		  <TableViewRow id="getMaster_row" backgroundColor="transparent" opacity="0" color="white">
+		  	<Button id="getMaster_button"  top="5" left="50" title="getMaster" onClick="getMaster"/>
+		  </TableViewRow>
+		  <TableViewRow id="getMasterAllowance_row" backgroundColor="transparent" opacity="0" color="white">
+		  	<Button id="getMasterAllowance_button"  top="5" left="50" title="getMasterAllowance" onClick="getMasterAllowance"/>
+		  </TableViewRow>
+		  <TableViewRow id="getMasterAllowanceKrani_row" backgroundColor="transparent" opacity="0" color="white">
+		  	<Button id="getMasterAllowanceKrani_button"  top="5" left="50" title="getMasterAllowanceKrani" onClick="getMasterAllowanceKrani"/>
+		  </TableViewRow>
+		  <TableViewRow id="getMasterNew_row" backgroundColor="transparent" opacity="0" color="white">
+		  	<Button id="getMasterNew_button"  top="5" left="50" title="getMasterNew" onClick="getMasterNew"/>
+		  </TableViewRow>
 	  </TableView>
   </Window>
   </Tab>

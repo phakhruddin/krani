@@ -19,8 +19,8 @@
 //Alloy.Globals.clientId = "101068780411-h8ko2j2s4jb6ikboj6epplbmrfgn3e9k.apps.googleusercontent.com"; // kraniapp@gmail.com
 //Alloy.Globals.clientId = "693726333078-uncq4tte4lo9vfbhl6569d3uduvnn8fd.apps.googleusercontent.com"; //oldkrani1
 Alloy.Globals.clientId = "306793301753-8ej6duert04ksb3abjutpie916l8hcc7.apps.googleusercontent.com";
-var bootstrapid =  "1XajtTX5pdo5yMM_v9cC5-hgHOFlH1n0SN9McS3qElgQ";
-//var bootstrapid =  "1VYoqBhH5b9lVTnpjiXUikFJ51HzNj-6rPGQ_eNIRQ84";
+//var bootstrapid =  "1XajtTX5pdo5yMM_v9cC5-hgHOFlH1n0SN9McS3qElgQ"; //krani1
+var bootstrapid =  "1VYoqBhH5b9lVTnpjiXUikFJ51HzNj-6rPGQ_eNIRQ84"; //krani2
 Alloy.Globals.license = "freeuser";
 var corefilenamearray = ["project","client","invoice","inventory","proposal","master","schedule","labor","joblog"];	
 //
@@ -28,10 +28,10 @@ var corefilenamearray = ["project","client","invoice","inventory","proposal","ma
 Alloy.Globals.getMaster = function() {
 	var url="https://spreadsheets.google.com/feeds/list/"+bootstrapid+"/od6/public/basic?hl=en_US&alt=json";
 	var xhr = Ti.Network.createHTTPClient({
-		    onload: function(ee) {			    	
-			    	console.log("Alloy.Globals.getMaster : this.responseText: "+this.responseText);
-			    	var json = JSON.parse(this.responseText);
-			    	console.log("Alloy.Globals.getMaster : json: "+json);
+		    onload: function(ee) {
+			    	json = JSON.parse(this.responseText);
+			    	console.log("Alloy.Globals.updateType : this.responseText: "+this.responseText);
+			    	console.log("Alloy.Globals.updateType : json: "+json);
 			    	var out = '{ "poi" : ['+"\n";
 			    	for (var i=0; i < json.feed.entry.length; i++) {
 			    		var col1 = json.feed.entry[i].title.$t.trim();
@@ -44,7 +44,7 @@ Alloy.Globals.getMaster = function() {
 							if(col1=="paidpremium"){Titanium.App.Properties.setString("paidpremium",col2);};
 							if(col1=="paidunlimited"){Titanium.App.Properties.setString("paidunlimited",col2);};
 							console.log("alloy::getMaster:: Titanium.App.Properties.getString("+col1+"): "+eval("Titanium.App.Properties.getString(col1)"));
-							//console.log("alloy::getMaster:: Titanium.App.Properties.getString(freeuser): "+Titanium.App.Properties.getString("freeuser"));						
+							//console.log("alloy::getMaster:: Titanium.App.Properties.getString(publicrepo): "+Titanium.App.Properties.getString("publicrepo"));						
 							}						
 						if ( i == (json.feed.entry.length - 1)) {
 							out += '{ "col1" : "'+col1+'" , "col2" : "'+col2+'" }]}'+"\n";
@@ -61,8 +61,12 @@ Alloy.Globals.getMaster = function() {
 		xhr.send();
 };
 
-Alloy.Globals.getPrivateMaster = function() {	
+Alloy.Globals.getPrivateMaster = function() {
+	console.log("alloy.js::executing Alloy.Globals.getPrivateMaster");	
 	var data = [];
+	var maxdebug = Titanium.App.Properties.getInt('maxdebug');
+	var mindebug = Titanium.App.Properties.getInt('mindebug');
+	//var url = "https://spreadsheets.google.com/feeds/list/"+bootstrapid+"/od6/public/full";
 	var url = "https://spreadsheets.google.com/feeds/list/"+bootstrapid+"/od6/private/full";
 	var thefile = "gss"+bootstrapid+".xml";
 	var xhr = Ti.Network.createHTTPClient({
@@ -96,18 +100,19 @@ Alloy.Globals.getPrivateMaster = function() {
 	    			if (listitem.getAttribute("rel") == "self"){ var selfhref = listitem.getAttribute("href").replace(':','yCoLoNy');}
     			}
 			}
+			Ti.API.info(" Alloy.Globals.getPrivateMaster:Data were successfuly downloaded from "+url+". Please proceed.");
 			} catch(e){
-				Ti.API.info("cathing e: "+JSON.stringify(e));
+				Ti.API.info("Alloy.Globals.getPrivateMaster:: cathing e: "+JSON.stringify(e));
 			}
 		}
 	});
 	xhr.onerror = function(e){
 		//alert(e);
-		console.log("alloy.js::Alloy.Globals.getPrivateMaster::Unable to connect to the network.url: "+url);
+		console.log("alloy.js::Alloy.Globals.getPrivateMaster::Unable to connect to the network.url: "+url+" with error: "+JSON.stringify(e));
 	};
 	xhr.open("GET", url);
 	xhr.send();
-	Ti.API.info(" Data were successfuly downloaded from "+url+". Please proceed.");
+	
 };
 
 Alloy.Globals.getPrivateIndex = function(name) {	
@@ -118,8 +123,8 @@ Alloy.Globals.getPrivateIndex = function(name) {
 	    onload: function(e) {
 	    try {
 			var xml = Titanium.XML.parseString(this.responseText);
-			if(maxdebug==1){console.log("alloy.js::getPrivateMaster:: response txt is: "+this.responseText);};
-			if(maxdebug==1){console.log("alloy.js::getPrivateMaster:: this xml is: " +xml);	};   
+			if(maxdebug==1){console.log("alloy.js::Alloy.Globals.getPrivateIndex:: response txt is: "+this.responseText);};
+			if(maxdebug==1){console.log("alloy.js::Alloy.Globals.getPrivateIndex:: this xml is: " +xml);	};   
 			var feed = xml.documentElement.getElementsByTagName("feed");
 			var entry = xml.documentElement.getElementsByTagName("entry"); 
 			(mindebug == 1) && console.log("alloy.js::this entry length is: " +entry.length);
@@ -131,10 +136,11 @@ Alloy.Globals.getPrivateIndex = function(name) {
 				var link = entry.item(i).getElementsByTagName("link");
 				for (i=0;i<corefilenamearray.length;i++){
 					if(col1 && col2){
-						var repo = name+"_"+corefilenamearray[i]+"list";
+						var item = corefilenamearray[i];
+						var repo = name+"_"+item+"list";
 						var reposid = col2;
-						if(col1==repo){Titanium.App.Properties.setString(repo+"_sid",col2); };
-						console.log("Alloy.Globals.getPrivateIndex :: Titanium.App.Properties.getString("+repo+"_sid"+"): "+eval("Titanium.App.Properties.getString("+repo+"_sid"+")"));
+						if(col1==repo){Titanium.App.Properties.setString(item,col2); };
+						console.log("Alloy.Globals.getPrivateIndex :: Titanium.App.Properties.getString("+item+"): "+eval("Titanium.App.Properties.getString("+item+")"));
 						//console.log("alloy::getMaster:: Titanium.App.Properties.getString(freeuser): "+Titanium.App.Properties.getString("freeuser"));						
 					}						
 				}
@@ -152,7 +158,7 @@ Alloy.Globals.getPrivateIndex = function(name) {
 	});
 	xhr.onerror = function(e){
 		//alert(e);
-		console.log("alloy.js::Alloy.Globals.getPrivateMaster::Unable to connect to the network.url: "+url);
+		console.log("alloy.js::Alloy.Globals.getPrivateIndex::Unable to connect to the network.url: "+url);
 	};
 	xhr.open("GET", url);
 	xhr.send();
@@ -178,8 +184,18 @@ var schedulesid = '1z7piKUvCmishTQJok8yreMzZ16hfvbS_r8mfyExt980'; Titanium.App.P
 var laborsid = '1-weM0tLsaf51_bungT67LMpdgbXEJIbX6s_5qvVFOyE'; Titanium.App.Properties.setString('labor',laborsid);
 //var joblogsid = '1SLNRI176qK51rkFWWCQvqToXswdNYlqINsdB2HM0ozk'; Titanium.App.Properties.setString('joblog',joblogsid);
 var joblogsid = '1JX1pq5PNoG0MCyl1V17OAdM3KXSYvTdZACy_QlLA8ds'; Titanium.App.Properties.setString('joblog',joblogsid);
-var authclientid = Alloy.Globals.clientId;Titanium.App.Properties.setString('authclientid',authclientid);
-var authclientsecret = 'fjrsVudiK3ClrOKWxO5QvXYL';Titanium.App.Properties.setString('authclientsecret',authclientsecret);
+
+var projectsid = Titanium.App.Properties.getString('project',projectsid);
+var clientsid = Titanium.App.Properties.getString('client',clientsid);
+var invoicesid = Titanium.App.Properties.getString('invoice',invoicesid);
+var inventorysid = Titanium.App.Properties.getString('inventory',inventorysid);
+var proposalsid = Titanium.App.Properties.getString('proposal',proposalsid);
+var mastersid = Titanium.App.Properties.getString('master',mastersid);
+var schedulesid = Titanium.App.Properties.getString('schedule',schedulesid);
+var laborsid = Titanium.App.Properties.getString('labor',laborsid);
+var joblogsid = Titanium.App.Properties.getString('joblog',joblogsid);
+var authclientid = Titanium.App.Properties.getString('authclientid',authclientid);
+var authclientsecret = Titanium.App.Properties.getString('authclientsecret',authclientsecret);
 
 Titanium.App.Properties.setString('employee',"Joe Fanney");
 
@@ -455,7 +471,7 @@ Alloy.Globals.getPrivateData = function(sid,type) {
 	var data = [];
 	var maxdebug = Titanium.App.Properties.getInt('maxdebug');
 	var mindebug = Titanium.App.Properties.getInt('mindebug');
-	console.log("alloy.js::Alloy.Globals.getPrivateData: type: min max debug: "+type+" :"+mindebug+" : "+maxdebug);
+	console.log("alloy.js::Alloy.Globals.getPrivateData: type: min max debug: "+type+" :"+mindebug+" : "+maxdebug+" sid: "+sid);
 	//Alloy.Globals.checkGoogleisAuthorized();
 	Alloy.Globals.checkNetworkAndGoogleAuthorized('1gnkP116nsTVxtrw6d_mXVdOiesQEPH7LVUIyHUfx9EE');
 	//Google Auth check.
@@ -533,6 +549,7 @@ Alloy.Globals.getPrivateData = function(sid,type) {
 			file.write(this.responseText);
 			console.log("alloy.js::checking data " +JSON.stringify(data));
 			//
+			Ti.API.info(" Alloy.Globals.getPrivateData::Data were successfuly downloaded from "+url+". Please proceed.");
 			} catch(e){
 				Ti.API.info("cathing e: "+JSON.stringify(e));
 			}
@@ -540,12 +557,12 @@ Alloy.Globals.getPrivateData = function(sid,type) {
 	});
 	xhr.onerror = function(e){
 		//alert(e);
-		console.log("alloy.js::Alloy.Globals.getPrivateData::Unable to connect to the network. The "+type+" info displayed here is NOT the latest.");
+		console.log("alloy.js::Alloy.Globals.getPrivateData::Unable to connect to the network. The "+type+" info displayed here is NOT the latest. error is: "+JSON.stringify(e));
 		alert("	. The "+type+" info displayed here is NOT the latest.");
 	};
 	xhr.open("GET", url);
 	xhr.send();
-	Ti.API.info(" Data were successfuly downloaded from "+url+". Please proceed.");
+	
 };
 
 Alloy.Globals.xmlToJson = function(xml) {	
@@ -1686,6 +1703,9 @@ Alloy.Globals.createSpreadsheet2 = function(filename,parentid,isinit){
 					Alloy.Globals.getSSCell(sid,2,2,parentid);
 					Alloy.Globals.getSSCell(sid,3,1,filename);
 					Alloy.Globals.getSSCell(sid,3,2,sid);
+					//TODO: Alloy Globals locate index and create spreadsheet.
+					var name = filename.replace(/_index$/g,"");
+					Alloy.Globals.locateIndexCreateSpreadsheet(name);
 	    		}		
 	    		console.log("alloy.js:Alloy.Globals.createSpreadsheet2:sid : "+sid);
 	    	} catch(e){
@@ -1799,9 +1819,9 @@ Alloy.Globals.createCoreSS = function (filename,parentid,indexsid) {
 		var xhr1 = Ti.Network.createHTTPClient({
 		onload:function(e){
 			var fileexistjsonlist = JSON.parse(this.responseText);
-			Ti.API.info("Alloy.Globals.locateIndexCreateSpreadsheet::response of fileexistjsonlist is: "+JSON.stringify(fileexistjsonlist));
+			Ti.API.info("Alloy.Globals.createCoreSS::response of fileexistjsonlist is: "+JSON.stringify(fileexistjsonlist));
 			if (fileexistjsonlist.items.length == "0" ){
-				console.log("alloy.js::Alloy.Globals.locateIndexCreateSpreadsheet::file "+filename+" does not exist, continue");
+				console.log("alloy.js::Alloy.Globals.createCoreSS::file "+filename+" does not exist, continue");
 				console.log("alloy.js::create ss with filename: "+filename+" and parentid: "+parentid);
 				var jsonpost = '{'
 					 +'\"title\": \"'+filename+'\",'
@@ -1820,8 +1840,8 @@ Alloy.Globals.createCoreSS = function (filename,parentid,indexsid) {
 				    		var sid = json.id;
 				    		var filename = json.title;
 				    		///Alloy.Globals.populatesidtoDB(filename,sid); //populate sid db.
-				    		console.log("alloy.js::Alloy.Globals.locateIndexCreateSpreadsheet::updateSpreadsheet filename: "+filename+" and sid: "+sid);
-				    		Alloy.Globals.updateSpreadsheet2(indexsid,filename,sid,"0","0","0","0","0","0","0","0","0","0","0","0","0"); //update the index ss with sid
+				    		console.log("alloy.js::Alloy.Globals.createCoreSS::updateSpreadsheet filename: "+filename+" and sid: "+sid);
+				    		Alloy.Globals.updateSpreadsheet2(indexsid,filename,sid,"0","0","0","0","0","0","0","0","0","0","0","0","0","0"); //update the index ss with sid
 				    		Titanium.App.Properties.setString('sid',sid); // 1st sid created.
 				    		// Populate Header
 			    			for (i=1;i<16;i++){
@@ -1845,7 +1865,7 @@ Alloy.Globals.createCoreSS = function (filename,parentid,indexsid) {
 			xhr2.send(jsonpost);
 			// Create Credit and Debit END								
 		} else {
-			console.log("alloy.js::Alloy.Globals.locateIndexCreateSpreadsheet::file "+filename+" EXIST !! Abort...");									
+			console.log("alloy.js::Alloy.Globals.createCoreSS::file "+filename+" EXIST !! Abort...");									
 			}
 		}							
 	});	
@@ -1863,7 +1883,7 @@ Alloy.Globals.createCoreInitialCoreFolderandSS = function(name,foldername,parent
 	var xhr1 = Ti.Network.createHTTPClient({
     onload: function(e) {
 		var fileexistjsonlist = JSON.parse(this.responseText);
-		Ti.API.info("Alloy.Globals.locateIndexCreateSpreadsheet::response of fileexistjsonlist is: "+JSON.stringify(fileexistjsonlist));
+		Ti.API.info("Alloy.Globals.createCoreInitialCoreFolderandSS::response of fileexistjsonlist is: "+JSON.stringify(fileexistjsonlist));
 		if (fileexistjsonlist.items.length == "0" ){
 				console.log("alloy.js::Alloy.Globals.createCoreInitialCoreFolderandSS::file "+foldername+" does not exist, continue");
 				console.log("alloy.js::create createCoreInitialCoreFolderandSS with foldername: "+foldername+" and parentid: "+parentid);
@@ -1886,7 +1906,7 @@ Alloy.Globals.createCoreInitialCoreFolderandSS = function(name,foldername,parent
 			    		Titanium.App.Properties.setString('sid',sid);
 			    		console.log("alloy.js::sid : "+sid);
 			    		console.log("Alloy.Globals.createCoreInitialCoreFolderandSS::Alloy.Globals.updateSpreadsheet2("+indexsid+","+foldername+","+sid+")");
-			    		Alloy.Globals.updateSpreadsheet2(indexsid,foldername,sid,"0","0","0","0","0","0","0","0","0","0","0","0","0"); //update the index ss with sid
+			    		Alloy.Globals.updateSpreadsheet2(indexsid,foldername,sid,"0","0","0","0","0","0","0","0","0","0","0","0","0","0"); //update the index ss with sid
 						//Create Core Spreadsheet
 						var parentid = sid;
 						var filename = foldername+"list";
@@ -2031,9 +2051,10 @@ Alloy.Globals.checkInitialFolderExistAfterLogin = function(name,parentid){
 };
 
 
-//Create Initial older and index file
+//Create Initial folder and index file if it does not yet exist. If Exist, create other files.
 Alloy.Globals.createInitialFolder = function(name,parentid){
 	var foldername = name+"_dir";
+	console.log("Alloy.Globals.createInitialFolder("+name+","+parentid+") with foldername: "+foldername);
 		var xhr0 = Ti.Network.createHTTPClient({
 			onload: function(e) {
 			    try {
@@ -2115,8 +2136,11 @@ Alloy.Globals.initialUserSetup = function(e){
 					if(Alloy.Globals.license == "freeuser"){
 						var kraniparentid=Titanium.App.Properties.getString("freeuser");
 						} else var kraniparentid=Titanium.App.Properties.getString("paidbasic") ;
-					console.log("alloyuser:createDir::  createInitialFolder("+name+","+kraniparentid+"): ");
-					Alloy.Globals.createInitialFolder(name,kraniparentid); 
+					//console.log("alloy.js:createDir::  createInitialFolder("+name+","+kraniparentid+"): ");
+					//Alloy.Globals.createInitialFolder(name,kraniparentid); 
+					console.log("alloy.js:createDir::  Alloy.Globals.getPrivateMasterCreateInitialFolder("+name+",yes): ");
+					///Alloy.Globals.getPrivateMasterCreateInitialFolder(name,"yes"); //get parent folder then create initial folder.
+					Alloy.Globals.getMasterCreateInitialFolder(name,"yes");
 					///Alloy.Globals.locateIndexCreateSpreadsheet(name); 
 					//create datastore END		    		
 		    		Titanium.App.Properties.setString('kraniemailid',kraniemailid);
@@ -2138,3 +2162,173 @@ Alloy.Globals.initialUserSetup = function(e){
 		xhr.send();
 };
 
+Alloy.Globals.getPrivateMasterCreateInitialFolder = function(name,needcreateinitialfolder) {
+	console.log("alloy.js::executing Alloy.Globals.getPrivateMasterCreateInitialFolder");	
+	var data = [];
+	var maxdebug = Titanium.App.Properties.getInt('maxdebug');
+	var mindebug = Titanium.App.Properties.getInt('mindebug');
+	var url = "https://spreadsheets.google.com/feeds/list/"+bootstrapid+"/od6/private/full";
+	var thefile = "gss"+bootstrapid+".xml";
+	var xhr = Ti.Network.createHTTPClient({
+	    onload: function(e) {
+	    try {
+			var xml = Titanium.XML.parseString(this.responseText);
+			if(maxdebug==1){console.log("alloy.js::getPrivateMasterCreateInitialFolder:: response txt is: "+this.responseText);};
+			if(maxdebug==1){console.log("alloy.js::getPrivateMasterCreateInitialFolder:: this xml is: " +xml);	};   
+			var feed = xml.documentElement.getElementsByTagName("feed");
+			var entry = xml.documentElement.getElementsByTagName("entry"); 
+			(mindebug == 1) && console.log("alloy.js::this entry length is: " +entry.length);
+			for (i=0;i<entry.length;i++){
+				var col1 = entry.item(i).getElementsByTagName("gsx:col1").item(0).text;
+				var col2 = entry.item(i).getElementsByTagName("gsx:col2").item(0).text;
+				var col3 = entry.item(i).getElementsByTagName("gsx:col3").item(0).text;
+				var idtag = entry.item(i).getElementsByTagName("id").item(0).text.replace(':','yCoLoNy');
+				var link = entry.item(i).getElementsByTagName("link");
+				if(col1 && col2){
+					eval("Titanium.App.Properties.setString(\""+col1+"\",col2)");
+					if(col1=="freeuser"){var freeusersid=col2;Titanium.App.Properties.setString("freeuser",freeusersid); };
+					if(col1=="paiduser"){var paidusersid=col2; Titanium.App.Properties.setString("paiduser",paidusersid);};
+					if(col1=="paidbasic"){var paidbasicsid=col2; Titanium.App.Properties.setString("paidbasic",paidbasicsid);};
+					if(col1=="paidpremium"){var paidpremiumsid=col2;Titanium.App.Properties.setString("paidpremium",paidpremiumsid);};
+					if(col1=="paidunlimited"){var paidunlimited=col2;Titanium.App.Properties.setString("paidunlimited",paidunlimited);};
+					console.log("alloy::getMaster:: Titanium.App.Properties.getString("+col1+"): "+eval("Titanium.App.Properties.getString(col1)"));
+					//console.log("alloy::getMaster:: Titanium.App.Properties.getString(freeuser): "+Titanium.App.Properties.getString("freeuser"));						
+				}	
+				for (y=0;y<link.length;y++){			
+	    			var listitem = link.item(y);
+	    			if (listitem.getAttribute("rel") == "edit"){ var edithref = listitem.getAttribute("href").replace(':','yCoLoNy');}
+	    			if (listitem.getAttribute("rel") == "self"){ var selfhref = listitem.getAttribute("href").replace(':','yCoLoNy');}
+    			}
+			}
+			if(needcreateinitialfolder="yes"){
+				var parentid = eval("Titanium.App.Properties.getString(Alloy.Globals.license)"); //create initial folder based on license.
+				console.log("Alloy.Globals.getPrivateMasterCreateInitialFolder:: create InitialFolder based on license: "+Alloy.Globals.license+" Titanium.App.Properties.getString("+Alloy.Globals.license+"): "+parentid);
+				Alloy.Globals.createInitialFolder(name,parentid);
+			}
+			Ti.API.info(" Alloy.Globals.getPrivateMasterCreateInitialFolder:Data were successfuly downloaded from "+url+". Please proceed.");
+			} catch(e){
+				Ti.API.info("Alloy.Globals.getPrivateMasterCreateInitialFolder:: cathing e: "+JSON.stringify(e));
+			}
+		}
+	});
+	xhr.onerror = function(e){
+		//alert(e);
+		console.log("alloy.js::Alloy.Globals.getPrivateMasterCreateInitialFolder::Unable to connect to the network.url: "+url+" with error: "+JSON.stringify(e));
+	};
+	xhr.open("GET", url);
+	xhr.send();
+};
+
+
+
+
+Alloy.Globals.getMasterAllowance = function() {
+	var bootstrapid =  "1mcGGarLWUy83OXdexMili5ghQ-sGBkJFSMZysU8vF-k";
+	var url="https://spreadsheets.google.com/feeds/list/"+bootstrapid+"/od6/public/basic?hl=en_US&alt=json";
+	var xhr = Ti.Network.createHTTPClient({
+		    onload: function(ee) {
+			    	json = JSON.parse(this.responseText);
+			    	console.log("Alloy.Globals.updateType : this.responseText: "+this.responseText);
+			    	console.log("Alloy.Globals.updateType : json: "+json);
+			    	var out = '{ "poi" : ['+"\n";
+			    	for (var i=0; i < json.feed.entry.length; i++) {
+			    		var col1 = json.feed.entry[i].title.$t.trim();
+						var col2= json.feed.entry[i].content.$t.split(',')[0].split(':')[1].trim() || "none";
+						if(col1 && col2){
+							eval("Titanium.App.Properties.setString(\""+col1+"\",col2)");
+							if(col1=="publicrepo"){Titanium.App.Properties.setString("publicrepo",col2); };
+							if(col1=="privaterepo"){Titanium.App.Properties.setString("privaterepo",col2);};
+							if(col1=="userindex1"){Titanium.App.Properties.setString("userindex1",col2);};
+							console.log("alloy::getMaster:: Titanium.App.Properties.getString("+col1+"): "+eval("Titanium.App.Properties.getString(col1)"));
+							console.log("alloy::getMaster:: Titanium.App.Properties.getString(publicrepo): "+Titanium.App.Properties.getString("publicrepo"));						}						
+						if ( i == (json.feed.entry.length - 1)) {
+							out += '{ "col1" : "'+col1+'" , "col2" : "'+col2+'" }]}'+"\n";
+						} else {
+							out += '{ "col1" : "'+col1+'" , "col2" : "'+col2+'" },'+"\n";
+						}
+			    	}
+					Alloy.Globals.writeFile(out,"master.json");
+					var json = out;		    
+			}	
+		});	
+		console.log("alloy::getMaster:url :"+url);		
+		xhr.open("GET", url);
+		xhr.send();
+};
+
+Alloy.Globals.getMasterAllowanceKrani = function() {
+	//var bootstrapid =  "1mcGGarLWUy83OXdexMili5ghQ-sGBkJFSMZysU8vF-k"; //allowance
+	//var bootstrapid =  "1XajtTX5pdo5yMM_v9cC5-hgHOFlH1n0SN9McS3qElgQ";// krani1
+	var bootstrapid =  "1VYoqBhH5b9lVTnpjiXUikFJ51HzNj-6rPGQ_eNIRQ84"; //krani2
+	var url="https://spreadsheets.google.com/feeds/list/"+bootstrapid+"/od6/public/basic?hl=en_US&alt=json";
+	var xhr = Ti.Network.createHTTPClient({
+		    onload: function(ee) {
+			    	json = JSON.parse(this.responseText);
+			    	console.log("Alloy.Globals.updateType : this.responseText: "+this.responseText);
+			    	console.log("Alloy.Globals.updateType : json: "+json);
+			    	var out = '{ "poi" : ['+"\n";
+			    	for (var i=0; i < json.feed.entry.length; i++) {
+			    		var col1 = json.feed.entry[i].title.$t.trim();
+						var col2= json.feed.entry[i].content.$t.split(',')[0].split(':')[1].trim() || "none";
+						if(col1 && col2){
+							eval("Titanium.App.Properties.setString(\""+col1+"\",col2)");
+							if(col1=="publicrepo"){Titanium.App.Properties.setString("publicrepo",col2); };
+							if(col1=="privaterepo"){Titanium.App.Properties.setString("privaterepo",col2);};
+							if(col1=="userindex1"){Titanium.App.Properties.setString("userindex1",col2);};
+							console.log("alloy::getMaster:: Titanium.App.Properties.getString("+col1+"): "+eval("Titanium.App.Properties.getString(col1)"));
+							//console.log("alloy::getMaster:: Titanium.App.Properties.getString(publicrepo): "+Titanium.App.Properties.getString("publicrepo"));						
+							}						
+						if ( i == (json.feed.entry.length - 1)) {
+							out += '{ "col1" : "'+col1+'" , "col2" : "'+col2+'" }]}'+"\n";
+						} else {
+							out += '{ "col1" : "'+col1+'" , "col2" : "'+col2+'" },'+"\n";
+						}
+			    	}
+					Alloy.Globals.writeFile(out,"master.json");
+					var json = out;		    
+			}	
+		});	
+		console.log("alloy::getMaster:url :"+url);		
+		xhr.open("GET", url);
+		xhr.send();
+};
+
+
+Alloy.Globals.getMasterCreateInitialFolder = function(name,needcreateinitialfolder) {
+	var url="https://spreadsheets.google.com/feeds/list/"+bootstrapid+"/od6/public/basic?hl=en_US&alt=json";
+	var xhr = Ti.Network.createHTTPClient({
+		    onload: function(ee) {
+			    	json = JSON.parse(this.responseText);
+			    	console.log("Alloy.Globals.updateType : this.responseText: "+this.responseText);
+			    	console.log("Alloy.Globals.updateType : json: "+json);
+			    	var out = '{ "poi" : ['+"\n";
+			    	for (var i=0; i < json.feed.entry.length; i++) {
+			    		var col1 = json.feed.entry[i].title.$t.trim();
+						var col2= json.feed.entry[i].content.$t.split(',')[0].split(':')[1].trim() || "none";
+						if(col1 && col2){
+							eval("Titanium.App.Properties.setString(\""+col1+"\",col2)");
+							if(col1=="publicrepo"){Titanium.App.Properties.setString("publicrepo",col2); };
+							if(col1=="privaterepo"){Titanium.App.Properties.setString("privaterepo",col2);};
+							if(col1=="userindex1"){Titanium.App.Properties.setString("userindex1",col2);};
+							console.log("alloy::getMaster:: Titanium.App.Properties.getString("+col1+"): "+eval("Titanium.App.Properties.getString(col1)"));
+							//console.log("alloy::getMaster:: Titanium.App.Properties.getString(publicrepo): "+Titanium.App.Properties.getString("publicrepo"));						
+							}						
+						if ( i == (json.feed.entry.length - 1)) {
+							out += '{ "col1" : "'+col1+'" , "col2" : "'+col2+'" }]}'+"\n";
+						} else {
+							out += '{ "col1" : "'+col1+'" , "col2" : "'+col2+'" },'+"\n";
+						}
+			    	}
+					Alloy.Globals.writeFile(out,"master.json");
+					var json = out;		
+					if(needcreateinitialfolder="yes"){
+						var parentid = eval("Titanium.App.Properties.getString(Alloy.Globals.license)"); //create initial folder based on license.
+						console.log("Alloy.Globals.getPrivateMasterCreateInitialFolder:: create InitialFolder based on license: "+Alloy.Globals.license+" Titanium.App.Properties.getString("+Alloy.Globals.license+"): "+parentid);
+						Alloy.Globals.createInitialFolder(name,parentid);
+					}	    
+			}	
+		});	
+		console.log("alloy::getMasterCreateInitialFolder:url :"+url);		
+		xhr.open("GET", url);
+		xhr.send();
+};

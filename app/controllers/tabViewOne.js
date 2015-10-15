@@ -120,7 +120,13 @@ var loadingView = Titanium.UI.createView({
 });
 loadingView.add(loadingLabel);
 
-
+var refreshView = Titanium.UI.createView({
+   borderRadius:10,
+   opacity:"0.5",
+   backgroundColor:'#514F4F',
+   width:Ti.UI.FILL,
+   height:Ti.UI.FILL
+});
 
 checkNetworkAndGoogleAuthorized = function(sid){
 	var url = "https://spreadsheets.google.com/feeds/list/"+sid+"/od6/public/basic?hl=en_US&alt=json";
@@ -210,7 +216,9 @@ function getParentFolder(args) {
 	xhr.send();
 };
 
-getParentFolder();
+//getParentFolder();
+//Initial user create under freeuser
+var parentid = Titanium.App.Properties.getString("freeuser");
 
 function logout(e){
 	console.log("tabviewone:: logout: "+JSON.stringify(e));
@@ -222,7 +230,12 @@ function login(e) {
 	console.log("tabViewOne.js::login(e): " +JSON.stringify(e));
 	var buttonstate = e.source.title;
 	console.log("tabViewOne.js::login(e): buttonstate: " +buttonstate);
-	
+	function logout(e){
+		console.log("tabviewone:: logout: "+JSON.stringify(e));
+		Alloy.Globals.googleAuthSheet.deAuthorize();
+		$.logout_button.title = "Please click login ->";
+		$.login_button.title="LOGIN";
+	}
 	switch(buttonstate) {
     case "LOGIN":
         
@@ -233,7 +246,8 @@ function login(e) {
 			$.status_view.backgroundColor="green";
 			$.status_view.height="1%";
 			$.status_label.text="";
-			$.login_button.title="Logout";	
+			$.login_button.title="Logout";
+			$.logout_button.title="";	
 		}, function() {
 			//$.tabviewone_window.hide();
 			$.tabviewone_window.add(loadingView);
@@ -267,8 +281,11 @@ function login(e) {
 					dosettimeout(i,timeoutms);
 				}	
 			}
-			
 			$.login_button.title="REFRESH";	
+			$.status_view.backgroundColor="orange";
+			$.status_view.height="5%";
+			$.status_label.text="Please click REFRESH above.";
+			$.tabviewone_window.add(refreshView);
 		});
         break;
     case "REFRESH":
@@ -277,7 +294,10 @@ function login(e) {
 		//wait for 30secs upon OAUTH2 screen
 		function refreshActivity() {
 			console.log("tabViewOne.js::refresh(e): executing  refreshActivity()  ");
-				Alloy.Globals.getPrivateMaster();
+			console.log("tabViewOne.js::refresh(e): before executing  Alloy.Globals.getPrivateMaster()  ");
+				//Alloy.Globals.getPrivateMaster();
+				Alloy.Globals.getMaster();
+				console.log("tabViewOne.js::refresh(e): before executing  Alloy.Globals.initialUserSetup()  ");
 				Alloy.Globals.initialUserSetup(); 
 				function getEmail(e){
 							var xhr = Ti.Network.createHTTPClient({
@@ -342,24 +362,30 @@ function login(e) {
 					var mastersid = Titanium.App.Properties.getString('master');
 					Alloy.Globals.getPrivateData(mastersid,"master");
 					//getParentID(email);
+					
 				} else {(Alloy.Globals.googleAuthSheet.getAccessToken()) && getEmail(); }
-				$.status_view.backgroundColor="green";
-				$.status_view.height="1%";
-				$.status_label.text="";
-				$.login_button.title="Logout";
+
+
 	
 			}
 		console.log("check Alloy.Globals.googleAuthSheet.getAccessToken() "+Alloy.Globals.googleAuthSheet.getAccessToken()+" before execute refreshActivity() ");
-		//refreshActivity();
 		if(Alloy.Globals.googleAuthSheet.getAccessToken()){
 			console.log("tabViewOne.js::refresh(e): executing refreshActivity ");
 			refreshActivity();
 		} else {
 			console.log("tabViewOne.js::refresh(e): 30 secs timeout before executing refreshActivity ");
 			setTimeout(function(){ 
-			refreshActivity();
+				refreshActivity();
 			}, 30000);
 		}
+		setTimeout(function(){
+			$.status_view.backgroundColor="green";
+			$.status_view.height="1%";
+			$.status_label.text="";
+			$.login_button.title="Logout";
+			$.tabviewone_window.remove(refreshView);
+			$.logout_button.title="";
+		},2000);
         break;
     case "RefreshAgain":
     	console.log("tabViewOne.js::login(e): buttonstate: execute CASE " +buttonstate);

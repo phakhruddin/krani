@@ -301,3 +301,19 @@ function testLoopAuthorize(){
 	console.log((new Date())+"testLoopAuthorize:: finally! can execute task after "+i+" iterations");
 }
 
+function getMaster(){
+		console.log("google.js::refresh(e): before executing  Alloy.Globals.getPrivateMaster()  ");
+		Alloy.Globals.getPrivateMaster();
+		//Alloy.Globals.getMaster();
+}
+
+function getMasterAllowance(){
+	Alloy.Globals.getMasterAllowance();
+}
+
+function getMasterAllowanceKrani(){
+	Alloy.Globals.getMasterAllowanceKrani();
+}
+function getMasterNew(){
+	Alloy.Globals.getMaster();
+}
