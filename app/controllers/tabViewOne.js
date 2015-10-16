@@ -17,7 +17,7 @@ function openNextTab(item){
 }
 
 $.project.addEventListener ("click", function(e){
-	Alloy.Globals.checkFileExistThenCreateSS("joblogssid");
+	///Alloy.Globals.checkFileExistThenCreateSS("joblogssid");
 	Alloy.Globals.openDetail(e);
 	var item = e.row.id;
 	openNextTab(item);
@@ -267,6 +267,11 @@ function login(e) {
 			setTimeout(function(){
 				console.log((new Date())+"tabViewOne::show back window");
 				//$.tabviewone_window.show();
+				$.login_button.title="REFRESH";	
+				$.status_view.backgroundColor="orange";
+				$.status_view.height="5%";
+				$.status_label.text="Please click REFRESH above.";
+				$.tabviewone_window.add(refreshView);
 				$.tabviewone_window.remove(loadingView);
 			},10000);
 			Ti.API.info('Access Token: ' + Alloy.Globals.googleAuthSheet.getAccessToken());
@@ -291,11 +296,7 @@ function login(e) {
 					dosettimeout(i,timeoutms);
 				}	
 			}
-			$.login_button.title="REFRESH";	
-			$.status_view.backgroundColor="orange";
-			$.status_view.height="5%";
-			$.status_label.text="Please click REFRESH above.";
-			$.tabviewone_window.add(refreshView);
+
 		});
         break;
     case "REFRESH":

@@ -3,7 +3,7 @@ Titanium.App.Properties.setString('selectclient',"false");
 exports.openMainWindow = function(_tab) {
   _tab.open($.enterproject_window);
   Ti.API.info("enterproject.js::openMainWindow::this is child widow " +JSON.stringify(_tab));
-  googleAuth.authorize();
+ (Alloy.Globals.googleAuthSheet.getAccessToken()) || Alloy.Globals.googleAuthSheet.authorize();
   //var backButtonTitle = _tab.window.title; 
  // console.log("enterproject.js::openMainWindow:: set back_button title to: "+backButtonTitle);
   //$.back_button.title = "< "+backButtonTitle;	

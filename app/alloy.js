@@ -507,9 +507,7 @@ Alloy.Globals.getPrivateData = function(sid,type) {
 	//Alloy.Globals.checkGoogleisAuthorized();
 	//Alloy.Globals.checkNetworkAndGoogleAuthorized('1gnkP116nsTVxtrw6d_mXVdOiesQEPH7LVUIyHUfx9EE');
 	//Google Auth check.
-	var needAuth = Titanium.App.Properties.getString('needAuth');
-	if(mindebug==1){console.log("alloy.js::needAuth is :  " +needAuth);};
-	if (needAuth == "true") {googleAuthSheet.authorize();};
+	(Alloy.Globals.googleAuthSheet.getAccessToken()) || Alloy.Globals.googleAuthSheet.authorize();
 	var url = "https://spreadsheets.google.com/feeds/list/"+sid+"/od6/private/full";
 	var thefile = "gss"+sid+".xml";
 	var xhr = Ti.Network.createHTTPClient({
