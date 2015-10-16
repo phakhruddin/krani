@@ -748,11 +748,11 @@ Alloy.Globals.updateSpreadsheet = function (sid){
     	try {
     		Ti.API.info(this.responseText); 
     	} catch(e){
-    		Ti.API.info("cathing e: "+JSON.stringify(e));
+    		Ti.API.info("Alloy.Globals.updateSpreadsheet::cathing e: "+JSON.stringify(e));
     	}     
     },
     onerror: function(e) {
-    	Ti.API.info("error e: "+JSON.stringify(e));
+    	Ti.API.info("Alloy.Globals.updateSpreadsheet::error e: "+JSON.stringify(e));
     }
 });
 	xhr.open("POST", 'https://spreadsheets.google.com/feeds/list/'+sid+'/od6/private/full');
@@ -837,7 +837,7 @@ Alloy.Globals.postCreateEvent = function(startdateTime,enddateTime,location,summ
     	}     
     },
     onerror: function(e) {
-    	Ti.API.info("error e: "+JSON.stringify(e));
+    	Ti.API.info("Alloy.Globals.postCreateEvent::error e: "+JSON.stringify(e));
         alert("alloy.js::postCreateEvent: Unable to communicate to the cloud. Please try again"); 
     }
 });
@@ -881,12 +881,12 @@ Alloy.Globals.uploadFile = function(file,filename) {
 	    			Ti.API.info("alloy.js::Alloy.Globals.uploadFile::id is: "+id+" webcontentlink: "+webcontentlink);
 		    		Alloy.Globals.shareAnyonePermission(id);
 		    	} catch(e){
-		    		Ti.API.info("cathing e: "+JSON.stringify(e));
+		    		Ti.API.info("Alloy.Globals.uploadFile::cathing e: "+JSON.stringify(e));
 		    	}     
 		    },
 		    onerror: function(e) {
-		    	Ti.API.info("error e: "+JSON.stringify(e));
-		        alert("alloy.js::uploadFile:: unable to talk to the cloud, will try later"); 
+		    	Ti.API.info("Alloy.Globals.uploadFile::error e: "+JSON.stringify(e));
+		        alert("alloy.js::Alloy.Globals.uploadFile:: unable to talk to the cloud, will try later"); 
 		    }
 		});
 		xhr.open("POST", url);
@@ -1082,7 +1082,7 @@ Alloy.Globals.editCell = function(sid,rowno,colno,edithref,selfhref,value){
         }     
     },
     onerror: function(e) {
-        Ti.API.info("error e: "+JSON.stringify(e));
+        Ti.API.info("Alloy.Globals.editCell::error e: "+JSON.stringify(e));
         alert("alloy.js::editCell::Unable to communicate to the cloud. Please try again"); 
     }
 });
@@ -1090,7 +1090,7 @@ Alloy.Globals.editCell = function(sid,rowno,colno,edithref,selfhref,value){
         xhr.setRequestHeader("Content-type", "application/atom+xml");
         xhr.setRequestHeader("Authorization", 'Bearer '+Alloy.Globals.googleAuthSheet.getAccessToken());
         xhr.send(xmldatastring);
-        Ti.API.info('done POSTed');
+        Ti.API.info('Alloy.Globals.editCell::done POSTed');
 };
 
 Alloy.Globals.updateSpreadsheet = function(sid,col1,col2,col3,col4,col5,col6,col7,col8,col9,col10,col11,col12,col13,col14,col15,col16){
@@ -1109,7 +1109,7 @@ Alloy.Globals.updateSpreadsheet = function(sid,col1,col2,col3,col4,col5,col6,col
     	}     
     },
     onerror: function(e) {
-    	Ti.API.info("error e: "+JSON.stringify(e));
+    	Ti.API.info("Alloy.Globals.updateSpreadsheet::error e: "+JSON.stringify(e));
         alert("alloy.js::updateSpreadsheet::Unable to communicate to the cloud. Please try again, sid: "+sid); 
         console.log("alloy.js::updateSpreadsheet::Unable to communicate to the cloud. Please try again, sid: "+sid); 
     }
@@ -1137,7 +1137,7 @@ Alloy.Globals.updateSpreadsheet2 = function(sid,col1,col2,col3,col4,col5,col6,co
     	}     
     },
     onerror: function(e) {
-    	Ti.API.info("error e: "+JSON.stringify(e));
+    	Ti.API.info("Alloy.Globals.updateSpreadsheet2::error e: "+JSON.stringify(e));
         alert("alloy.js::updateSpreadsheet::Unable to communicate to the cloud. Please try again, sid: "+sid); 
         console.log("alloy.js::updateSpreadsheet::Unable to communicate to the cloud. Please try again, sid: "+sid); 
     }
@@ -1210,14 +1210,14 @@ Alloy.Globals.submit = function(type,clientfirstname,clientlastname,clientcompan
 	    		Titanium.App.Properties.setString('edithref',edithref);
 	    		Titanium.App.Properties.setString('idtag',idtag);
 	    		Titanium.App.Properties.setString('selfhref',selfhref);
-	    		Ti.API.info("alloy.js::submit: self href is : "+selfhref+" edit href is: "+edithref);
-	    		Ti.API.info("alloy.js::submit: idtag is : "+idtag);
+	    		Ti.API.info("alloy.js::Alloy.Globals.submit : self href is : "+selfhref+" edit href is: "+edithref);
+	    		Ti.API.info("alloy.js::Alloy.Globals.submit : idtag is : "+idtag);
 	    	} catch(e){
-	    		Ti.API.info("cathing e: "+JSON.stringify(e));
+	    		Ti.API.info("Alloy.Globals.submit ::cathing e: "+JSON.stringify(e));
 	    	}     
 	    },
 	    onerror: function(e) {
-	    	Ti.API.info("error e: "+JSON.stringify(e));
+	    	Ti.API.info("Alloy.Globals.submit ::error e: "+JSON.stringify(e));
 	        alert("alloy.js::submit::Unable to communicate to the cloud. Please try again."); 
 	    }
 	});
@@ -1658,8 +1658,8 @@ Alloy.Globals.populateSpreadsheetHeader = function(sid,rowno,colno,edithref,self
         }     
     },
     onerror: function(e) {
-        Ti.API.info("error e: "+JSON.stringify(e));
-        alert("alloy::Alloy.Globals.populateSpreadsheetHeader::Unable to communicate to the cloud. Please try again"); 
+        Ti.API.info("Alloy.Globals.populateSpreadsheetHeader::error e: "+JSON.stringify(e));
+        alert("alloy::Alloy.Globals.populateSpreadsheetHeader::"+edithref+"  :Unable to communicate to the cloud. Please try again: "+JSON.stringify(e)); 
     }
 });
         xhr.open("PUT", ''+edithref+'');
@@ -1681,22 +1681,23 @@ Alloy.Globals.getSSCell = function(sid,rowno,colno,value) {
 	    		Ti.API.info("Alloy.Globals.getSSCell:: xml response is: "+xml);
 	    		var entry = xml.documentElement.getElementsByTagName("entry");
 	    		var link = xml.documentElement.getElementsByTagName("link");
-	    		console.log("alloy.js:: number of link found: " +link+ " length: "+link.length);
+	    		console.log("alloy.js:: Alloy.Globals.getSSCell::number of link found: " +link+ " length: "+link.length);
 	    		for (i=0;i<link.length;i++){			
 	    			var listitem = link.item(i);
 	    			if (listitem.getAttribute("rel") == "edit"){ var edithref = listitem.getAttribute("href");}
 	    			if (listitem.getAttribute("rel") == "self"){ var selfhref = listitem.getAttribute("href");}
 	    		}
-	    		Ti.API.info("self href is : "+selfhref);
-				Ti.API.info("edit href is : "+edithref);
+	    		Ti.API.info("Alloy.Globals.getSSCell:self href is : "+selfhref);
+				Ti.API.info("Alloy.Globals.getSSCell:edit href is : "+edithref);
 	    		Alloy.Globals.populateSpreadsheetHeader(sid,rowno,colno,edithref,selfhref,value);	    				    			
 	    	} catch(e){
-				Ti.API.info("cathing e: "+JSON.stringify(e));
+				Ti.API.info("Alloy.Globals.getSSCell::cathing e: "+JSON.stringify(e));
 			}
 		}
 		});
 	xhr.onerror = function(e){
-		alert("projectdetail::Alloy.Globals.getSSCell::Unable to connect to the cloud. "+e);
+		alert("projectdetail::Alloy.Globals.getSSCell::Unable to connect to the cloud. "+JSON.stringify(e));
+		console.log("projectdetail::Alloy.Globals.getSSCell::Unable to connect to the cloud. "+JSON.stringify(e));
 	};
 	xhr.open("GET", 'https://spreadsheets.google.com/feeds/cells/'+sid+'/od6/private/full/'+pos);
 	xhr.setRequestHeader("Content-type", "application/atom+xml");
@@ -1884,7 +1885,7 @@ Alloy.Globals.createCoreSS = function (filename,parentid,indexsid) {
 								var value = "col"+i;
 								Alloy.Globals.getSSCell(sid,1,i,value);
 							}
-							Alloy.Globals.getSSCell(sid,2,1,"PLEASE DO NOT EDIT THIS FILE. THE APP WILL BREAK. PLS CONTACT support@thekrani.com TO FIX");		
+							filename.match(/_index$/) || Alloy.Globals.getSSCell(sid,2,1,"PLEASE DO NOT EDIT THIS FILE. THE APP WILL BREAK. PLS CONTACT support@thekrani.com TO FIX");		
 				    		console.log("alloy.js::sid : "+sid);
 				    	} catch(e){
 							Ti.API.info("cathing e: "+JSON.stringify(e));
