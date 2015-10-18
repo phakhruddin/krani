@@ -156,9 +156,13 @@ function prefetchJoblog(){
 	var firstname = args.title.split(':')[1];
 	var lastname = args.title.split(':')[2];
 	var filename = 'project_'+projectid+'_'+firstname+'_'+lastname;
-	var parentid = Titanium.App.Properties.getString('parentid');
-	console.log("projectdetail.js::prefetchJoblog::need to check if parent/filename exist: "+parentid+'/'+filename);
-	fileExist(filename,parentid);
+	//var parentid = Titanium.App.Properties.getString('parentid');
+	var kraniemailid=Titanium.App.Properties.getString('kraniemailid');
+	var name = kraniemailid.split('@')[0].trim();
+	var projectparentid = Titanium.App.Properties.getString(name+"_project");
+	console.log("projectdetail.js::prefetchJoblog:: Titanium.App.Properties.getString("+name+"_project); " +projectparentid);
+	console.log("projectdetail.js::prefetchJoblog::need to check if parent/filename exist: "+projectparentid+'/'+filename);
+	fileExist(filename,projectparentid);
 	var item = "joblog";
 	var sidmatch = matchjoblogsidfromDB(filename);
 	var sid = sidmatch;
@@ -351,7 +355,10 @@ function getSSCell(sid,rowno,colno,value) {
 	xhr.send();
 };
 
-var parentid=getParentFolder();  //MAY NEED THIS . DISABLE 9/19
+(Alloy.Globals.googleAuthSheet.getAccessToken()) && function() {var parentid=getParentFolder();} || function(){
+	console.log(new Date()+"::projectdetail.js:: token expired: reAuthorize");
+	Alloy.Globals.googleAuthSheet.authorize();
+};
 
 function createSpreadsheet(filename,parentid) {
 	console.log("projectdetail.js::create ss with filename: "+filename+" and parentid: "+parentid);

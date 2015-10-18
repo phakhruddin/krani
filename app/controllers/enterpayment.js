@@ -5,6 +5,7 @@ exports.openMainWindow = function(_tab) {
   Ti.API.info(" input details after tab enterpayment : "+JSON.stringify(args));
 };
 
+
 //extract information received from invoicedetails. START
 var data = args.title.title.split(':'); 
 var invoicenumber = data[0]; 
@@ -26,6 +27,9 @@ var idtag = data[13].replace(/xCoLoNx/g,',').split(',')[0].replace('yCoLoNy',':'
 var selfhref = data[13].replace(/xCoLoNx/g,',').split(',')[1].replace('yCoLoNy',':');
 var edithref = data[13].replace(/xCoLoNx/g,',').split(',')[2].replace('yCoLoNy',':');
 // Extraction END
+
+callbackFunction = args.callbackFunction;
+	
 
 function checkClick(e){
 	console.log("enterpayment.js::transform is JSON.stringify(e) ::" +JSON.stringify(e));
@@ -68,7 +72,6 @@ function transformFunction(model) {
 }
 
 var payment = Alloy.Collections.instance('payment');
-payment.fetch();
 var content = payment.toJSON();
 console.log("enterpayment.js::JSON stringify content: "+JSON.stringify(content));
 
@@ -199,7 +202,11 @@ function jobDetailAddRow (date,notesbody,imageurl,dateadded,employee) {
         jobtable.add(jobrow);
         
         $.labor_table.appendRow(jobrow);
-
+        
+        //calculate total pay
+        if (notesbody && notesbody != "none") {
+        	var paid = parseFloat(paid)+parseFloat(notesbody);
+        }     
 };
 
 //Add row here.
@@ -372,8 +379,9 @@ function enterNotes(e,imgurl) {
         //$.enterpayment_window.show($.notes_textarea);
         //$.enterpayment_window.add(textfield);
         var date = new Date();
-        var now = Date.now();
+        var now = Date.now().toString();
         var jobitemid = now;
+        console.log("enterpayment.js:: jobitemid is:"+jobitemid);
         var employee = Titanium.App.Properties.getString('employee');
         var payment = parseFloat(e.value);
         var notesbody = payment.toFixed(2);
@@ -390,7 +398,7 @@ function enterNotes(e,imgurl) {
                                         col6:"none", col7:"none", col8:"none", col9:"none", 
                                         col10: sourcesid, 
                                         col11:"none",	col12:"none", col13:"none",	col14:"none", col15:"none",	
-                                        col16: jobitemid 
+                                        col16: jobitemid
  
                                 });     
         dataModel.save();
@@ -407,6 +415,7 @@ function enterNotes(e,imgurl) {
         console.log("enterpayment.js::enterNotes: paidamount , parseFloat(notesbody) : "+paidamount+" + "+parseFloat(notesbody));
         $.paymentsection.headerTitle = firstname+" "+lastname+"    PAID: "+paidamount;
         updateInvoice(paidamount,datepaid);
+        callbackFunction(paidamount);
         
 };
 
@@ -770,3 +779,8 @@ function updateInvoice(paidamount,datepaid){
         xhr.send(xmldatastring);
         Ti.API.info('done POSTed');
 }
+
+$.enterpayment_window.addEventListener("close",function() {
+	callbackFunction(paidamount);
+	console.log("enterpayment.js ::callbackFunction::"+paidamount);
+});

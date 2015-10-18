@@ -16,9 +16,9 @@
 //KRANI MASTER RECORD
 //MasterRecord
 
-//Alloy.Globals.clientId = "101068780411-h8ko2j2s4jb6ikboj6epplbmrfgn3e9k.apps.googleusercontent.com"; // kraniapp@gmail.com
+Alloy.Globals.clientId = "101068780411-h8ko2j2s4jb6ikboj6epplbmrfgn3e9k.apps.googleusercontent.com"; // kraniapp@gmail.com
 //Alloy.Globals.clientId = "693726333078-uncq4tte4lo9vfbhl6569d3uduvnn8fd.apps.googleusercontent.com"; //oldkrani1
-Alloy.Globals.clientId = "306793301753-8ej6duert04ksb3abjutpie916l8hcc7.apps.googleusercontent.com";
+//Alloy.Globals.clientId = "306793301753-8ej6duert04ksb3abjutpie916l8hcc7.apps.googleusercontent.com";
 //var bootstrapid =  "1XajtTX5pdo5yMM_v9cC5-hgHOFlH1n0SN9McS3qElgQ"; //krani1
 var bootstrapid =  "1VYoqBhH5b9lVTnpjiXUikFJ51HzNj-6rPGQ_eNIRQ84"; //krani2
 Alloy.Globals.license = "freeuser";
@@ -272,7 +272,7 @@ Alloy.Globals.GoogleAuth_module = require('googleAuth');
 Alloy.Globals.googleAuth = new Alloy.Globals.GoogleAuth_module({
 	//clientId : '219575370718-u3vb42f04899h02es4mj4uh34otgr5pe.apps.googleusercontent.com',
 	clientId : Alloy.Globals.clientId,
-	clientSecret : 'CrWBzHVXAWykCWJwDT1EY-1I',
+	//clientSecret : 'CrWBzHVXAWykCWJwDT1EY-1I',
 	propertyName : 'googleToken',
 	quiet: false,
 	scope : [ 'https://www.googleapis.com/auth/tasks', 'https://www.googleapis.com/auth/tasks.readonly' ]
@@ -429,9 +429,9 @@ Alloy.Globals.CheckLoc = function(){
 };
 
 Alloy.Globals.openDetail = function(e){
-	Ti.API.info('all info = ' + JSON.stringify(e));
-	Ti.API.info('index = ' + JSON.stringify(e.index));
-	Ti.API.info("in open_button click event title :"+e.row.title);
+	Ti.API.info('Alloy.Globals.openDetail::all info = ' + JSON.stringify(e));
+	Ti.API.info('Alloy.Globals.openDetail::index = ' + JSON.stringify(e.index));
+	Ti.API.info("Alloy.Globals.openDetail::in open_button click event title :"+e.row.title);
 };
 
 Alloy.Globals.getData = function(sid,type) {	
@@ -461,22 +461,22 @@ Alloy.Globals.getData = function(sid,type) {
 			(type == 'joblog') && Alloy.Collections.joblog.deleteAll();
 			for (var i=1; i < +json.feed.entry.length; i++) {
 				var dataModel = Alloy.createModel(type,{
-					col1 :  json.feed.entry[i].title.$t || "none",
-					col2 : json.feed.entry[i].content.$t.split(',')[0] && json.feed.entry[i].content.$t.split(',')[0].split(':')[1] || "none",
-					col3 : json.feed.entry[i].content.$t.split(',')[1] && json.feed.entry[i].content.$t.split(',')[1].split(':')[1] || "none",
-					col4 : json.feed.entry[i].content.$t.split(',')[2] && json.feed.entry[i].content.$t.split(',')[2].split(':')[1] || "none",
-					col5 : json.feed.entry[i].content.$t.split(',')[3] && json.feed.entry[i].content.$t.split(',')[3].split(':')[1] || "none",
-					col6 : json.feed.entry[i].content.$t.split(',')[4] && json.feed.entry[i].content.$t.split(',')[4].split(':')[1] || "none",
-					col7 : json.feed.entry[i].content.$t.split(',')[5] && json.feed.entry[i].content.$t.split(',')[5].split(':')[1] || "none",
-					col8 : json.feed.entry[i].content.$t.split(',')[6] && json.feed.entry[i].content.$t.split(',')[6].split(':')[1] || "none",
-					col9 : json.feed.entry[i].content.$t.split(',')[7] && json.feed.entry[i].content.$t.split(',')[7].split(':')[1] || "none",
-					col10 :  json.feed.entry[i].content.$t.split(',')[8] && json.feed.entry[i].content.$t.split(',')[8].split(':')[1] || "none",
-					col11 : json.feed.entry[i].content.$t.split(',')[9] && json.feed.entry[i].content.$t.split(',')[9].split(':')[1] || "none",
-					col12 :  json.feed.entry[i].content.$t.split(',')[10] && json.feed.entry[i].content.$t.split(',')[10].split(':')[1] || "none",
-					col13 :  json.feed.entry[i].content.$t.split(',')[11] && json.feed.entry[i].content.$t.split(',')[11].split(':')[1] || "none",
-					col14 :  json.feed.entry[i].content.$t.split(',')[12] && json.feed.entry[i].content.$t.split(',')[12].split(':')[1] || "none",
-					col15 :  json.feed.entry[i].content.$t.split(',')[13] && json.feed.entry[i].content.$t.split(',')[13].split(':')[1] || "none",
-					col16 :  json.feed.entry[i].content.$t.split(',')[13] && json.feed.entry[i].content.$t.split(',')[13].split(':')[1] || "none",		
+					col1 :  json.feed.entry[i].title.$t.trim() || "none",
+					col2 : json.feed.entry[i].content.$t.split(',')[0] && json.feed.entry[i].content.$t.split(',')[0].split(':')[1].trim() || "none",
+					col3 : json.feed.entry[i].content.$t.split(',')[1] && json.feed.entry[i].content.$t.split(',')[1].split(':')[1].trim() || "none",
+					col4 : json.feed.entry[i].content.$t.split(',')[2] && json.feed.entry[i].content.$t.split(',')[2].split(':')[1].trim() || "none",
+					col5 : json.feed.entry[i].content.$t.split(',')[3] && json.feed.entry[i].content.$t.split(',')[3].split(':')[1].trim() || "none",
+					col6 : json.feed.entry[i].content.$t.split(',')[4] && json.feed.entry[i].content.$t.split(',')[4].split(':')[1].trim() || "none",
+					col7 : json.feed.entry[i].content.$t.split(',')[5] && json.feed.entry[i].content.$t.split(',')[5].split(':')[1].trim() || "none",
+					col8 : json.feed.entry[i].content.$t.split(',')[6] && json.feed.entry[i].content.$t.split(',')[6].split(':')[1].trim() || "none",
+					col9 : json.feed.entry[i].content.$t.split(',')[7] && json.feed.entry[i].content.$t.split(',')[7].split(':')[1].trim() || "none",
+					col10 :  json.feed.entry[i].content.$t.split(',')[8] && json.feed.entry[i].content.$t.split(',')[8].split(':')[1].trim() || "none",
+					col11 : json.feed.entry[i].content.$t.split(',')[9] && json.feed.entry[i].content.$t.split(',')[9].split(':')[1].trim() || "none",
+					col12 :  json.feed.entry[i].content.$t.split(',')[10] && json.feed.entry[i].content.$t.split(',')[10].split(':')[1].trim() || "none",
+					col13 :  json.feed.entry[i].content.$t.split(',')[11] && json.feed.entry[i].content.$t.split(',')[11].split(':')[1].trim() || "none",
+					col14 :  json.feed.entry[i].content.$t.split(',')[12] && json.feed.entry[i].content.$t.split(',')[12].split(':')[1].trim() || "none",
+					col15 :  json.feed.entry[i].content.$t.split(',')[13] && json.feed.entry[i].content.$t.split(',')[13].split(':')[1].trim() || "none",
+					col16 :  json.feed.entry[i].content.$t.split(',')[13] && json.feed.entry[i].content.$t.split(',')[13].split(':')[1].trim() || "none",		
 				});			
 				dataModel.save();
 			}
@@ -501,8 +501,7 @@ Alloy.Globals.createController = function(controller,sourcetab){
 
 Alloy.Globals.getPrivateData = function(sid,type) {	
 	var data = [];
-	var maxdebug = Titanium.App.Properties.getInt('maxdebug');
-	var mindebug = Titanium.App.Properties.getInt('mindebug');
+	var maxdebug = mindebug = 1;
 	console.log("alloy.js::Alloy.Globals.getPrivateData: type: min max debug: "+type+" :"+mindebug+" : "+maxdebug+" sid: "+sid);
 	//Alloy.Globals.checkGoogleisAuthorized();
 	//Alloy.Globals.checkNetworkAndGoogleAuthorized('1gnkP116nsTVxtrw6d_mXVdOiesQEPH7LVUIyHUfx9EE');
@@ -514,11 +513,11 @@ Alloy.Globals.getPrivateData = function(sid,type) {
 	    onload: function(e) {
 	    try {
 			var xml = Titanium.XML.parseString(this.responseText);
-			if(maxdebug==1){console.log("alloy.js::pop db:: response txt is: "+this.responseText);};
-			if(maxdebug==1){console.log("alloy.js::pop db:: this xml is: " +xml);	};   
+			console.log("alloy.js::Alloy.Globals.getPrivateData:: response txt is: "+this.responseText);
+			console.log("alloy.js::Alloy.Globals.getPrivateData:: this xml is: " +xml);
 			var feed = xml.documentElement.getElementsByTagName("feed");
 			var entry = xml.documentElement.getElementsByTagName("entry"); 
-			(mindebug == 1) && console.log("alloy.js::this entry length is: " +entry.length);
+			console.log("alloy.js::this entry length is: " +entry.length);
 			// deleting existing entry in database start
 			(type == 'client') && Alloy.Collections.client.deleteAll();
 			(type == 'project') && Alloy.Collections.project.deleteAll();
@@ -549,23 +548,23 @@ Alloy.Globals.getPrivateData = function(sid,type) {
 				(maxdebug==1) && console.log("alloy.js::updating database with data :"+JSON.stringify(data));
 				(maxdebug==1) && console.log("alloy.js::updating database with data :"+col1+" url:"+idtag+" "+edithref);
 				var dataModel = Alloy.createModel(type,{
-					col1 :  entry.item(i).getElementsByTagName("gsx:col1").item(0).text || "none",
-					col2 : entry.item(i).getElementsByTagName("gsx:col2").item(0).text || "none",
-					col3 :  entry.item(i).getElementsByTagName("gsx:col3").item(0).text || "none",
-					col4 :  entry.item(i).getElementsByTagName("gsx:col4").item(0).text || "none",
-					col5 :  entry.item(i).getElementsByTagName("gsx:col5").item(0).text || "none",
-					col6 :  entry.item(i).getElementsByTagName("gsx:col6").item(0).text || "none",
-					col7 :  entry.item(i).getElementsByTagName("gsx:col7").item(0).text || "none",
-					col8 :  entry.item(i).getElementsByTagName("gsx:col8").item(0).text || "none",
-					col9 :  entry.item(i).getElementsByTagName("gsx:col9").item(0).text || "none",
-					col10 :  entry.item(i).getElementsByTagName("gsx:col10").item(0).text || "none",
-					col11 :  entry.item(i).getElementsByTagName("gsx:col11").item(0).text || "none",
-					col12 :  entry.item(i).getElementsByTagName("gsx:col12").item(0).text || "none",
-					col13 :  entry.item(i).getElementsByTagName("gsx:col13").item(0).text || "none",
+					col1 :  entry.item(i).getElementsByTagName("gsx:col1").item(0).text.trim() || "none",
+					col2 : entry.item(i).getElementsByTagName("gsx:col2").item(0).text.trim() || "none",
+					col3 :  entry.item(i).getElementsByTagName("gsx:col3").item(0).text.trim() || "none",
+					col4 :  entry.item(i).getElementsByTagName("gsx:col4").item(0).text.trim() || "none",
+					col5 :  entry.item(i).getElementsByTagName("gsx:col5").item(0).text.trim() || "none",
+					col6 :  entry.item(i).getElementsByTagName("gsx:col6").item(0).text.trim() || "none",
+					col7 :  entry.item(i).getElementsByTagName("gsx:col7").item(0).text.trim() || "none",
+					col8 :  entry.item(i).getElementsByTagName("gsx:col8").item(0).text.trim() || "none",
+					col9 :  entry.item(i).getElementsByTagName("gsx:col9").item(0).text.trim() || "none",
+					col10 :  entry.item(i).getElementsByTagName("gsx:col10").item(0).text.trim() || "none",
+					col11 :  entry.item(i).getElementsByTagName("gsx:col11").item(0).text.trim() || "none",
+					col12 :  entry.item(i).getElementsByTagName("gsx:col12").item(0).text.trim() || "none",
+					col13 :  entry.item(i).getElementsByTagName("gsx:col13").item(0).text.trim() || "none",
 					//col14 :  entry.item(i).getElementsByTagName("gsx:col14").item(0).text || "none",
-					col14 :  idtag+"xCoLoNx"+selfhref+"xCoLoNx"+edithref+"xCoLoNx"+selfhref || "none",
-					col15 :  entry.item(i).getElementsByTagName("gsx:col15").item(0).text || "none",
-					col16 :  entry.item(i).getElementsByTagName("gsx:col16").item(0).text || "none",		
+					col14 :  idtag+"xCoLoNx"+selfhref+"xCoLoNx"+edithref+"xCoLoNx"+selfhref.trim() || "none",
+					col15 :  entry.item(i).getElementsByTagName("gsx:col15").item(0).text.trim() || "none",
+					col16 :  entry.item(i).getElementsByTagName("gsx:col16").item(0).text.trim() || "none",		
 				});	
 				dataModel.save();
 			}
@@ -645,7 +644,7 @@ Alloy.Globals.scope = scope;
 var GoogleAuth = require('googleAuth');
 var googleAuthSheet = new GoogleAuth({
 	clientId : Alloy.Globals.clientId,
-	clientSecret : 'fjrsVudiK3ClrOKWxO5QvXYL',
+	///clientSecret : 'fjrsVudiK3ClrOKWxO5QvXYL',
 	propertyName : 'googleToken',
 	//scope : ['https://spreadsheets.google.com/feeds', 'https://docs.google.com/feeds','https://www.googleapis.com/auth/calendar','https://www.googleapis.com/auth/calendar.readonly','https://www.googleapis.com/auth/drive'],
 	scope : scope,
@@ -654,7 +653,7 @@ var googleAuthSheet = new GoogleAuth({
 
 Alloy.Globals.googleAuthSheet = new GoogleAuth({
 	clientId : Alloy.Globals.clientId,
-	clientSecret : 'fjrsVudiK3ClrOKWxO5QvXYL',
+	///clientSecret : 'fjrsVudiK3ClrOKWxO5QvXYL',
 	propertyName : 'googleToken',
 	//scope : ['https://spreadsheets.google.com/feeds', 'https://docs.google.com/feeds','https://www.googleapis.com/auth/calendar','https://www.googleapis.com/auth/calendar.readonly'],
 	scope : scope,
@@ -663,7 +662,7 @@ Alloy.Globals.googleAuthSheet = new GoogleAuth({
 
 Alloy.Globals.googleAuthCalendar = new GoogleAuth({
 	clientId : Alloy.Globals.clientId,
-	clientSecret : 'fjrsVudiK3ClrOKWxO5QvXYL',
+	///clientSecret : 'fjrsVudiK3ClrOKWxO5QvXYL',
 	propertyName : 'googleToken',
 	//scope : ['https://spreadsheets.google.com/feeds', 'https://docs.google.com/feeds','https://www.googleapis.com/auth/calendar','https://www.googleapis.com/auth/calendar.readonly'],
 	scope : scope,
@@ -1245,16 +1244,16 @@ Alloy.Globals.submit = function(type,clientfirstname,clientlastname,clientcompan
 			//clients.fetch();
 			console.log("alloy.js::Alloy.Globals.submit:: update DB with customerid :" +customerid);
 				clients.get(customerid).set({
-					col1: 	customerid.toString(),
-					col2:	clientfirstname,
-					col3:	clientlastname,
-					col4:	clientcompany,
-					col5:	clientphone,
-					col6:	clientemail,
-					col7:	clientstreetaddress,
-					col8:	clientcity,
-					col9:	clientstate,
-					col10:	country
+					col1: 	customerid.toString().trim(),
+					col2:	clientfirstname.trim(),
+					col3:	clientlastname.trim(),
+					col4:	clientcompany.trim(),
+					col5:	clientphone.trim(),
+					col6:	clientemail.trim(),
+					col7:	clientstreetaddress.trim(),
+					col8:	clientcity.trim(),
+					col9:	clientstate.trim(),
+					col10:	country.trim()
 				}).save();
 			alert('Modified & Saved Successfully!');
 		} else {
@@ -1270,16 +1269,16 @@ Alloy.Globals.submit = function(type,clientfirstname,clientlastname,clientcompan
 			xhr.open("POST", 'https://spreadsheets.google.com/feeds/list/'+spreadsheet_id+'/od6/private/full');
 			console.log("alloy.js::Alloy.Globals.submit:: add DB with customerid :" +customerid);
 			var dataModel = Alloy.createModel('client',{
-					col1: 	customerid.toString(),
-					col2:	(clientfirstname == " ")?'none':clientfirstname,
-					col3:	(clientlastname == " ")?'none':clientlastname,
-					col4:	(clientcompany == " ")?'none':clientcompany,
-					col5:	(clientphone == " ")?'none':clientphone,
-					col6:	(clientemail == " ")?'none':clientemail,
-					col7:	(clientstreetaddress == " ")?'none':clientstreetaddress,
-					col8:	(clientcity == " ")?'none':clientcity,
-					col9:	(clientstate == " ")?'none':clientstate,
-					col10:	(country == " ")?'none':country,
+					col1: 	customerid.toString().trim(),
+					col2:	(clientfirstname == " ")?'none':clientfirstname.trim(),
+					col3:	(clientlastname == " ")?'none':clientlastname.trim(),
+					col4:	(clientcompany == " ")?'none':clientcompany.trim(),
+					col5:	(clientphone == " ")?'none':clientphone.trim(),
+					col6:	(clientemail == " ")?'none':clientemail.trim(),
+					col7:	(clientstreetaddress == " ")?'none':clientstreetaddress.trim(),
+					col8:	(clientcity == " ")?'none':clientcity.trim(),
+					col9:	(clientstate == " ")?'none':clientstate.trim(),
+					col10:	(country == " ")?'none':country.trim(),
 					col11: "none",
 					col12: "none",
 					col13: "none",
@@ -2153,7 +2152,7 @@ Alloy.Globals.createInitialFolder = function(name,parentid){
 				xhr.send(jsonpost);				
 			} else {
 				console.log("alloy.js::Alloy.Globals.createInitialFolder:: Folder "+foldername+" ALREADY EXIST, SKIPPED.");
-				Alloy.Globals.locateIndexCreateSpreadsheet(name);
+				Alloy.Globals.locateIndexCreateSpreadsheet(name); //index found, create folder and spreadsheet
 				
 				}			
 			}
@@ -2492,6 +2491,41 @@ Alloy.Globals.stampSIDFromCoreFilename = function(filename){
 	xhr.send();
 };
 
+Alloy.Globals.stampSIDFromCoreDirname = function(dirname){
+		var jsonlist = " ";
+		var xhr = Ti.Network.createHTTPClient({
+	    onload: function(e) {
+	    try {
+	    		var jsonlist = JSON.parse(this.responseText);
+	    		Ti.API.info("Alloy.Globals.stampSIDFromCoreDirname::response of jsonlist is: "+JSON.stringify(jsonlist));
+	    	} catch(e){
+				Ti.API.info("stampSIDFromCoreDirname::cathing e: "+JSON.stringify(e));
+			}
+			console.log("alloy.js::Alloy.Globals.stampSIDFromCoreDirname::jsonlist.items.length: "+jsonlist.items.length);
+			if (jsonlist.items.length == "0" ){
+				console.log("alloy.js::stampSIDFromCoreDirname::File DOES NOT EXIST");
+				var fileexist = "false";
+				//Alloy.Globals.createSpreadsheet(dirname);  // create file when does not exists
+				//Titanium.App.Properties.setString(dirname,sid); // stamp the ssid.
+			} else {
+				var fileexist = "true";
+				var sid = jsonlist.items[0].id;
+				console.log("alloy.js::Alloy.Globals.stampSIDFromCoreDirname::File exist. sid is: "+jsonlist.items[0].id+" Skipped.");
+				Titanium.App.Properties.setString(dirname,sid);
+				console.log("alloy.js::Alloy.Globals.stampSIDFromCoreDirname::File exist: sid from Titanium.App.Properties.getString("+dirname+"); "+eval("Titanium.App.Properties.getString(dirname)"));
+			};
+		}
+		});
+	xhr.onerror = function(e){
+		alert("alloy.js::checkFileExistThenCreateSS:: Unable to connect to the cloud.");
+	};
+	var rawquerystring = '?q=title+%3D+\''+dirname+'\'+and+mimeType+%3D+\'application%2Fvnd.google-apps.folder\'+and+trashed+%3D+false&fields=items(id%2CmimeType%2Clabels%2Ctitle)';
+	console.log("alloy.js::Alloy.Globals.stampSIDFromCoreDirname:: URL:: https://www.googleapis.com/drive/v2/files"+rawquerystring);
+	xhr.open("GET", 'https://www.googleapis.com/drive/v2/files'+rawquerystring);
+	xhr.setRequestHeader("Content-type", "application/json");
+    xhr.setRequestHeader("Authorization", 'Bearer '+Alloy.Globals.googleAuthSheet.getAccessToken());
+	xhr.send();
+};
 
 Alloy.Globals.stampSIDFromCoreFilenameGroup = function(emailid){
 	for (i=0;i<Alloy.Globals.corefilenamearray.length;i++){
@@ -2508,7 +2542,6 @@ Alloy.Globals.stampSIDFromCoreFilenameGroupOnInitialLogin = function(dirname){
 		Alloy.Globals.stampSIDFromCoreFilename(newfilename);
 };
 
-
 Alloy.Globals.loginActivity = function(e){
 		var xhr = Ti.Network.createHTTPClient({
 	    onload: function(e) {
@@ -2523,8 +2556,10 @@ Alloy.Globals.loginActivity = function(e){
 				for (i=0;i<Alloy.Globals.corefilenamearray.length;i++){
 					var name = emailid.split('@')[0].trim();
 					var newfilename = name+"_"+Alloy.Globals.corefilenamearray[i]+"list";
-					console.log("alloy.js::Alloy.Globals.stampSIDFromCoreFilenameGroup:: Alloy.Globals.checkFileExistThenCreateSS("+newfilename+"); ");
+					var newdirname = name+"_"+Alloy.Globals.corefilenamearray[i];
+					console.log("alloy.js::Alloy.Globals.loginActivity:Alloy.Globals.stampSIDFromCoreFilename("+newfilename+"); Alloy.Globals.stampSIDFromCoreDirname("+newdirname+"); ");
 					Alloy.Globals.stampSIDFromCoreFilename(newfilename);
+					Alloy.Globals.stampSIDFromCoreDirname(newdirname);
 				}
 	    		
 	    	} catch(e){
@@ -2543,4 +2578,82 @@ Alloy.Globals.loginActivity = function(e){
 	xhr.setRequestHeader("Content-type", "application/json");
     xhr.setRequestHeader("Authorization", 'Bearer '+ Alloy.Globals.googleAuthSheet.getAccessToken());
 	xhr.send();
+};
+
+
+Alloy.Globals.updateExistingSpreadsheetAndDB = function(type,col1,col2,col3,col4,col5,col6,col7,col8,col9,col10,col11,col12,col13,col14,col15,col16,existingedithref,existingselfhref,idtag) 
+{
+	console.log("alloy.js::Alloy.Globals.updateExistingSpreadsheetAndDB::PUT on existing edit href is: "+existingedithref+' idtag :'+idtag);
+	console.log("Alloy.Globals.updateExistingSpreadsheetAndDB:: "+type+" , "+col1+" , "+col2+" , "+col3+" , "+col4+" , "+col5+" , "+col6+" , "+col7+" , "+col8+" , "+col9+" , "+col10+" , "+col11+" , "
+	+col12+" , "+col13+" , "+col14+" , "+col15+" , "+col16+" , "+existingedithref+" , "+existingselfhref+" ) ");
+	var xhr =  Titanium.Network.createHTTPClient({
+	    onload: function() {
+	    	try {
+	    		Ti.API.info("alloy.js::Alloy.Globals.updateExistingSpreadsheetAndDB: "+this.responseText);
+	    		var xml = Titanium.XML.parseString(this.responseText);
+	    		var entry = xml.documentElement.getElementsByTagName("entry");
+	    		var link = xml.documentElement.getElementsByTagName("link");
+	    		var idtag = xml.documentElement.getElementsByTagName("id").item(0).text;
+	    		console.log("alloy.js::Alloy.Globals.updateExistingSpreadsheetAndDB:: number of link found: " +link+ " length: "+link.length);
+	    		for (i=0;i<link.length;i++){			
+	    			var listitem = link.item(i);
+	    			if (listitem.getAttribute("rel") == "edit"){ var edithref = listitem.getAttribute("href");}
+	    			if (listitem.getAttribute("rel") == "self"){ var selfhref = listitem.getAttribute("href");}
+	    		}
+	    		Titanium.App.Properties.setString('edithref',edithref);
+	    		Titanium.App.Properties.setString('idtag',idtag);
+	    		Titanium.App.Properties.setString('selfhref',selfhref);
+	    		Ti.API.info("enterclient.js::submit: self href is : "+selfhref+" edit href is: "+edithref);
+	    		Ti.API.info("enterclient.js::submit: idtag is : "+idtag);
+	    		console.log(new Date()+'Alloy.Globals.updateExistingSpreadsheetAndDB::Modified & Saved Successfully!');	
+	    	} catch(e){
+	    		Ti.API.info("cathing e: "+JSON.stringify(e));
+	    	}     
+	    },
+	    onerror: function(e) {
+	    	console.log("alloy.js::Alloy.Globals.updateExistingSpreadsheetAndDB:error e: "+JSON.stringify(e));
+	         alert("alloy.js::Alloy.Globals.updateExistingSpreadsheetAndDB:update error. Please try again. "+JSON.stringify(e)); 
+	    }
+	});				
+	xhr.open("PUT", existingedithref);
+	var xmldatastring = '<entry xmlns=\'http://www.w3.org/2005/Atom\' xmlns:gsx=\'http://schemas.google.com/spreadsheets/2006/extended\'>'
+		+'<id>'+idtag+'</id>'
+		+'<updated>2015-05-16T08:01:19.680Z</updated>'
+		+'<category scheme=\'http://schemas.google.com/spreadsheets/2006\' term=\'http://schemas.google.com/spreadsheets/2006#list\'/>'
+		+'<title type=\'text\'>'+col1+'</title>'
+		+'<content type=\'text\'>col2: '+col2+', col3: '+col3+', col4: '+col4+', col5: '+col5+', col6: '+col6+', col7: '+col7
+		+', col8: '+col8+', col9: '+col9+', col10: '+col10+', col11: '+col11+', col12: '+col12+', col13: '+col13+', col14: '+col14+', col15: '+col15+', col16: '+col16+'</content>'
+		+'<link rel=\'self\' type=\'application/atom+xml\' href=\''+existingselfhref+'\'/>'
+		+'<link rel=\'edit\' type=\'application/atom+xml\' href=\''+existingedithref+'\'/>'
+		+'<gsx:col1>'+col1+'</gsx:col1><gsx:col2>'+col2+'</gsx:col2><gsx:col3>'
+		+col3+'</gsx:col3><gsx:col4>'+col4+'</gsx:col4><gsx:col5>'
+		+col5+'</gsx:col5><gsx:col6>'+col6+'</gsx:col6><gsx:col7>'+col7+'</gsx:col7><gsx:col8>'+col8+'</gsx:col8>'
+		+'<gsx:col9>'+col9+'</gsx:col9><gsx:col10>'+col10+'</gsx:col10><gsx:col11>'+col11+'</gsx:col11><gsx:col12>'+col12+'</gsx:col12><gsx:col13>'+col13+'</gsx:col13><gsx:col14>'+col14+'</gsx:col14>'
+		+'<gsx:col15>'+col15+'</gsx:col15><gsx:col16>'+col16+'</gsx:col16></entry>';
+	Ti.API.info('Alloy.Globals.updateExistingSpreadsheetAndDB::xmldatastring existing to PUT: '+xmldatastring);
+	/*
+	type.fetch();
+	console.log("alloy.js::Alloy.Globals.updateExistingSpreadsheetAndDB:: update DB with col1 :" +col1);
+		type.get(col1).set({
+			col1: 	col1.toString().trim(),
+			col2:	col2.trim(),
+			col3:	col3,
+			col4:	col4,
+			col5:	col5,
+			col6:	col6,
+			col7:	col7,
+			col8:	col8,
+			col9:	col9,
+			col10:	col10,
+			col11:	col11,
+			col12:	col12,
+			col13:	col13,
+			col14:  col14,
+			col15:	col15,
+			col16:	col16
+		}).save();*/
+	
+	xhr.setRequestHeader("Content-type", "application/atom+xml");
+	xhr.setRequestHeader("Authorization", 'Bearer '+ Alloy.Globals.googleAuthSheet.getAccessToken());
+	xhr.send(xmldatastring);	
 };

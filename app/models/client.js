@@ -1,7 +1,7 @@
 exports.definition = {
 	config: {
 		columns: {
-		    "col1": "TEXT",
+		    "col1": "INTEGER PRIMARY KEY",
 		    "col2": "TEXT",
 		    "col3": "TEXT",
 		    "col4": "TEXT",
@@ -52,6 +52,19 @@ exports.definition = {
 				var collection = this;
 				 
 				var sql = "DELETE FROM " + collection.config.adapter.collection_name +" WHERE name=\""+name+"\"";
+				db = Ti.Database.open(collection.config.adapter.db_name);
+				db.execute(sql);
+				db.close();
+				 
+				collection.trigger('sync');
+				 
+				},
+				
+			deleteCol1 : function(col1) {
+ 
+				var collection = this;
+				 
+				var sql = "DELETE FROM " + collection.config.adapter.collection_name +" WHERE col1=\""+col1+"\"";
 				db = Ti.Database.open(collection.config.adapter.db_name);
 				db.execute(sql);
 				db.close();

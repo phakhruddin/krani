@@ -46,7 +46,6 @@
             <Items >
             	<FlexSpace/>
             	<Button systemButton="COMPOSE" onClick="mailAction"/>
-            	<Button systemButton="BOOKMARKS" onClick="uploadFile"/>
             	<FlexSpace/>
             	<Button id="All" title="All" style="Ti.UI.iPhone.SystemButtonStyle.PLAIN" onClick="buttonAction" />
             	<Button id="Paid"  title="Paid" style="Ti.UI.iPhone.SystemButtonStyle.PLAIN" onClick="buttonAction"  />            	

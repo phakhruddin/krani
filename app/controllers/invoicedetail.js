@@ -16,7 +16,8 @@ exports.openMainWindow = function(_tab) {
 				firstname : firstname,
 				lastname : lastname,
 				invoicenumber : invoicenumber,
-				sid : sid
+				sid : sid,
+				callbackFunction : dummyRefresh
 			});
 			tabViewOneController.openMainWindow($.tab_invoicedetail);
 		} else {
@@ -27,25 +28,27 @@ exports.openMainWindow = function(_tab) {
 Alloy.Collections.adhoc.deleteAll(); //reset adhoc tables.
 var someDummy = Alloy.Models.dummy;
 console.log("stringify dummy :"+JSON.stringify(someDummy));
-someDummy.set('id', '1234');
+someDummy.set({'id': '1234'});
 someDummy.fetch();
+var prevbal = newtotal = 0;
 
 console.log("invoicedetail.js::checking JSON.stringify(args) prior to eval : " +JSON.stringify(args));
 var data = args.title.split(':');
-var invoicenumber = data[0]; $.totalbalance_row.invoicenumber = invoicenumber;
-var firstname = data[1]; $.totalbalance_row.firstname = firstname;
-var lastname = data[2]; $.totalbalance_row.lastname = lastname;
-var total = data[3];
-var balance = data[4];
-var paid = data[5];
-var lastpaiddate = data[6];
-var followupdate = data[7];
-var phone = data[8];
-var email = data[9];
-var duedate = data[10];
-var notes = data[11];
-var status = data[12];
-var currency = data[14];
+var invoicenumber = col1 = data[0]; $.totalbalance_row.invoicenumber = invoicenumber;
+var firstname = col2 = data[1]; $.totalbalance_row.firstname = firstname;
+var lastname = col3 = data[2]; $.totalbalance_row.lastname = lastname;
+var total = col4 = data[3];
+var balance = col5 = data[4];
+var paid = col6 = data[5];
+var lastpaiddate = col7 = data[6];
+var followupdate = col8 = data[7];
+var phone = col3 = col9 = data[8];
+var email = col10 = data[9];
+var duedate = col11 = data[10];
+var notes = col12 = data[11];
+var status = col13 = data[12];
+var currency = col15 = data[14];
+var col14 = col16 = data[15];
 var filename = 'payment_'+invoicenumber+'_'+firstname+'_'+lastname; $.totalbalance_row.filename = filename;
 var idtag = data[13].replace(/xCoLoNx/g,',').split(',')[0].replace('yCoLoNy',':');
 var selfhref = data[13].replace(/xCoLoNx/g,',').split(',')[1].replace('yCoLoNy',':');
@@ -69,22 +72,23 @@ if (balance == 0){
 	$.balance2.hide();
 }
 
-someDummy.set('invoicenumber', 'Invoice#: '+invoicenumber);
-someDummy.set('firstname', firstname);
-someDummy.set('lastname', lastname);
-someDummy.set('phone', '    phone: '+phone);
-someDummy.set('email', '    email: '+email);
-someDummy.set('total', 'Total: '+total);
-someDummy.set('balance', balance);
-someDummy.set('paid', 'Paid: '+paid);
-someDummy.set('lastpaiddate', 'Last paid date: ' +lastpaiddate);
-someDummy.set('followupdate', 'Follow-up date: '+followupdate);
-someDummy.set('duedate','Due date: ' +duedate);
-someDummy.set('notes', 'Notes: '+notes);
-someDummy.set('status', 'Status: '+status);
-someDummy.set('currency', currency);
+someDummy.set({'invoicenumber': 'Invoice#: '+invoicenumber,
+	'firstname': firstname,
+	'lastname': lastname,
+	'phone': '    phone: '+phone,
+	'email': '    email: '+email,
+	'total': 'Total: '+total,
+	'balance': balance,
+	'paid': 'Paid: '+paid,
+	'lastpaiddate': 'Last paid date: ' +lastpaiddate,
+	'followupdate': 'Follow-up date: '+followupdate,
+	'duedate':'Due date: ' +duedate,
+	'notes': 'Notes: '+notes,
+	'status': 'Status: '+status,
+	'currency': currency
+});
 
-console.log("invocedetail.js:: firstname and lastname is: "+firstname+" "+lastname);
+console.log("invoicedetail.js:: firstname and lastname is: "+firstname+" "+lastname);
 
 //Locate customer id.
 	var clients = Alloy.Collections.instance('client');
@@ -93,6 +97,8 @@ console.log("invocedetail.js:: firstname and lastname is: "+firstname+" "+lastna
 		col2:firstname,
 		col3:lastname
 		}); //FILTER
+	console.log("invoicedetail.js:: number of clients are: "+clients.length);
+	console.log("invoicedetail.js:: theclient is: "+JSON.stringify(theclient));
 	if(theclient.length > 0){
 		console.log("invocedetail.js:: JSON.stringify(theclient): "+JSON.stringify(theclient));
 		var uniqueid = theclient[0].toJSON().col1;
@@ -145,7 +151,6 @@ for (i=0;i<projectitemsarray.length;i++) {
 /// processing array in notes
 if (projectitemsarray.length>0) {
 	var topvalue = 10;
-	var prevbal = 0;
 	for (x=0;x<projectitemsarray.length;x++) {
 		var projectitems = JSON.parse(projectitemsarray[x].replace(/cOlOn/g,":").toString());   // replacing all cOlOn to ':'
 		var projectname = projectnamesarray[x];
@@ -260,13 +265,12 @@ if (projectitemsarray.length>0) {
 			});	
 			console.log("invoicedetail.js:: b4 balance: "+balance+" prevbal: "+prevbal+" projectitems[i].price: "+projectitems[i].price);
 			//var balance = (projectitems[i].price = "none")?0:(projectitems[i].price+prevbal);
-			if (projectitems[i].price=="none"){ balance=0; } else {
-				var balance=parseFloat(parseFloat(projectitems[i].price).toFixed(2)+parseFloat(prevbal)).toFixed(2);
+			if (projectitems[i].price !="none") {
+				console.log("invoicedetail.js:: B4 total is : "+newtotal);
+				var newtotal=parseFloat(newtotal)+parseFloat(projectitems[i].price);
+				console.log("invoicedetail.js:: AFTER total is : "+newtotal);
 			}
-			var prevbal = parseFloat(balance)+parseFloat(prevbal);
-			someDummy.set('balance', prevbal);
-			console.log("invoicedetail.js:: after balance: "+balance+" prevbal: "+prevbal+" projectitems[i].price: "+projectitems[i].price);
-
+			console.log("invoicedetail.js:: total is : "+newtotal+" after balance: "+balance+" prevbal: "+prevbal+" projectitems[i].price: "+projectitems[i].price+" invoice no: "+invoicenumber);
 			$.jobitem_row.add(itembodylabel);
 			$.jobitem_row.add(itemqtylabel);
 			$.jobitem_row.add(itempricelabel);
@@ -290,6 +294,14 @@ if (projectitemsarray.length>0) {
 		topvalue = topvalue + 4;
 		console.log("invoicedetail.js::topvalue at END : "+topvalue);	
 	}
+	var newbal = parseFloat(newtotal)-parseFloat(paid);	
+	Titanium.App.Properties.setString(invoicenumber+'_balance',prevbal);
+	//Delay 1 secs. Too much conflict for concurrent edit. error code 409
+	if (edithref) {		
+		console.log("invoicedetail.js: update spreadsheet and database with new balance: "+prevbal);
+		Alloy.Globals.updateExistingSpreadsheetAndDB("invoice",col1,col2,lastname,newtotal,newbal,paid,col7,col8,col9,col10,col11,col12,col13,col14,col15,col16,edithref,selfhref);
+	}		
+	
 };
 
 //prep adhoc tables.
@@ -1032,4 +1044,15 @@ function prefetchPayment(e){
 	var payment  = Alloy.Collections.instance('payment');
         payment.fetch();
         console.log("invoicedetail.js::JSON stringify payment data on prefetch: "+JSON.stringify(payment));
+}
+
+function dummyRefresh(paid){
+	console.log("invoicedetail.js::dummyRefresh:: balance: "+paid);
+	someDummy.set({'id': '1234',
+		'paid': 'Paid: '+paid
+		});
+	someDummy.fetch();
+	console.log("invoicedetail.js:dummyRefresh: JSON.stringify(someDummy):: "+JSON.stringify(someDummy));
+	Alloy.Globals.updateExistingSpreadsheetAndDB("invoice",col1,col2,lastname,newtotal,newbal,paid,col7,col8,col9,col10,col11,col12,col13,col14,col15,col16,edithref,selfhref);
+
 }	

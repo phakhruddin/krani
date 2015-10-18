@@ -83,54 +83,6 @@ function selectItem(e) {
 	console.log("invoicelistlist.js::info after select item : "+JSON.stringify(e));
 }
 
-function uploadFile(){
- 		var inputfile = '../Documents/Expose.pdf';
- 		var file = Ti.Filesystem.getFile(inputfile);
- 		console.log("filename: "+file.getName.toString() +" , "+file.getParent+" , "+file.getNativePath);
- 		console.log("file size is "+JSON.stringify(file.getSize));
- 		var fileread = file.read();
- 		var base64Data = Ti.Utils.base64encode(fileread);
-	 		var filename = "invoicelist12345.pdf";
-	 		console.log('Access Token for File upload is: ' + Alloy.Globals.googleAuthSheet.getAccessToken());
-	 		var parts = [];
-	 		var bound = 287032396531387;
-	 		var meta = '\{'
-	 		+	'\"title\": \"'+filename+'\"'
-			+	'\}';
-			var parts = [];
-	        parts.push('--' + bound);
-	        parts.push('Content-Type: application/json');
-	        parts.push('');
-	        parts.push(meta);
-	        parts.push('--' + bound);
-			parts.push('Content-Type: application/pdf');
-	        parts.push('Content-Transfer-Encoding: base64');
-	        parts.push('');
-	        parts.push(base64Data);
-	        parts.push('--' + bound + '--');
-	 		var url = "https://www.googleapis.com/upload/drive/v2/files?uploadType=multipart";
-	 		var xhr =  Titanium.Network.createHTTPClient({
-			    onload: function() {
-			    	try {
-			    		Ti.API.info(this.responseText); 
-			    	} catch(e){
-			    		Ti.API.info("cathing e: "+JSON.stringify(e));
-			    	}     
-			    },
-			    onerror: function(e) {
-			    	Ti.API.info("error e: "+JSON.stringify(e));
-			        alert("unable to talk to the cloud, will try later"); 
-			    }
-			});
-			xhr.open("POST", url);
-			xhr.setRequestHeader("Content-type", "multipart/mixed; boundary=" + bound);
-			xhr.setRequestHeader("Authorization", 'Bearer '+Alloy.Globals.googleAuthSheet.getAccessToken());
-			xhr.setRequestHeader("Content-Length", "2000000");
-			xhr.send(parts.join("\r\n"));
-			Ti.API.info('done POSTed');
- 		
- 	}
- 	
 function myRefresher(e) {
 	console.log("refreshing after pull : " +JSON.stringify(e));
     Alloy.Collections.invoice.fetch({

@@ -157,6 +157,7 @@ Titanium.App.Properties.setInt('count',count);
 			Ti.API.info('xmldatastring existing to PUT: '+xmldatastring);
 			clients.fetch();
 			console.log("enterclient.js::submit:: update DB with customerid :" +customerid);
+			Alloy.Collections.client.deleteCol1(customerid);
 				clients.get(customerid).set({
 					col1: 	customerid.toString(),
 					col2:	clientfirstname,

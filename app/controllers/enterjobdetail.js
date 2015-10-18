@@ -400,7 +400,7 @@ function enterNotes(e,imgurl) {
 	    		Ti.API.info("enterjobdetail.js::submit: self href is : "+selfhref+" edit href is: "+edithref);
 	    		Ti.API.info("enterjobdetail.js::submit: idtag is : "+idtag);
 	    		console.log("enterjobdetail.js::submit:: update DB with jobitemid :" +jobitemid);
-				joblog.get(jobitemid).set({
+				(joblog.get(jobitemid)) && joblog.get(jobitemid).set({
 					col16:	idtag+"xCoLoNx"+selfhref+"xCoLoNx"+edithref+"xCoLoNx"+selfhref || "none",
 				}).save();
 			alert('Modified & Saved Successfully!');
@@ -516,9 +516,9 @@ function fileExist(){
 //fileExist();
 ///var parentid = Titanium.App.Properties.getString('parentid');
 var kraniemailid = Titanium.App.Properties.getString('kraniemailid');
-var joblogdirname = kraniemailid.split('@')[0].trim();
-var parentid = Titanium.App.Properties.getString(joblogdirname);
-console.log("enterjobdetail.js:: parentid derived from Titanium.App.Properties.getString("+joblogdirname+") is: "+parentid); 
+var name = kraniemailid.split('@')[0].trim();
+var parentid = Titanium.App.Properties.getString(name+"_project");
+console.log("enterjobdetail.js:: parentid derived from Titanium.App.Properties.getString("+name+"_project) is: "+parentid); 
 //createSpreadsheet(filename,parentid); 
 
 
