@@ -847,7 +847,7 @@ Alloy.Globals.postCreateEvent = function(startdateTime,enddateTime,location,summ
 	Ti.API.info('done POSTed');
 };
 
-Alloy.Globals.uploadFile = function(file,filename) {
+Alloy.Globals.uploadFile = function(file,filename,parentid) {
 		var fileget = Ti.Filesystem.getFile(Ti.Filesystem.applicationDataDirectory,file);
     	//var fileget = Ti.Filesystem.getFile(file);
 		var fileread = fileget.read();
@@ -855,9 +855,14 @@ Alloy.Globals.uploadFile = function(file,filename) {
  		console.log('Access Token for File upload is: ' +Alloy.Globals.googleAuthSheet.getAccessToken());
  		var parts = [];
  		var bound = 287032396531387;
- 		var meta = '\{'
- 		+	'\"title\": \"'+filename+'\"'
-		+	'\}';
+	 		var meta = '\{'
+	 		+	'\"title\": \"'+filename+'\",'
+	 		+'\"parents\": ['
+		  	+'{'
+		   	+'\"id\": \"'+parentid+'\"'
+		 	+' }'
+		 	+']'
+			+	'\}';
 		var parts = [];
         parts.push('--' + bound);
         parts.push('Content-Type: application/json');

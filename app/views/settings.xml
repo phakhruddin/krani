@@ -1,7 +1,7 @@
 <Alloy>
 	<Tab id="tab_settings">
   <Window id="settings_window" backgroundColor="white" title="Settings">
- 	  <TableView id="settings_table" backgroundColor="transparent">
+ 	  <TableView id="settings_table" backgroundColor="transparent" separatorStyle="Ti.UI.iPhone.TableViewSeparatorStyle.NONE">
  	  	<TableViewSection headerTitle="Debug">
 		 <TableViewRow id="row_mindebug" Title="Min Debug">
 			 <Label id="label_mindebug" color="#333" top="5" left="20" text="Minimum Debug">Turn ON Minimum Debug</Label>
@@ -17,6 +17,38 @@
 			 <Button id="button_empselect" systemButton="Ti.UI.iPhone.SystemButton.PLAIN" left="20" title="Select Employee >"/>
 		 </TableViewRow>
 		 </TableViewSection>
+		 	  	<TableViewSection headerTitle="Company Profile"/>
+ 	  	<TableViewSection headerTitle="Name">
+ 	  		<TableViewRow height="40">
+ 	  			<TextField id="companyname_tf" width="Ti.UI.Fill" left="20" hintText="Name: Zefi Landscape LLC" onBlur="coName" />
+ 	  		</TableViewRow>
+ 	  	</TableViewSection>
+ 	  	<TableViewSection headerTitle="Address">
+ 	  		<TableViewRow height="30">
+ 	  			<TextField id="streetaddress_tf" width="Ti.UI.Fill" left="20" hintText="Address: 2855 W Bluemound Dr" value="" onBlur="coStreetAddress"/>
+ 	  		</TableViewRow>
+ 	  		<TableViewRow height="30">
+ 	  			<TextField id="city_tf" left="20" width="150" hintText="City: New Berlin" value="" onBlur="coCity" />
+ 	  			<TextField id="state_tf" left="200"  width="70" hintText="State: WI" value="" onBlur="coState" />
+ 	  			<TextField id="zipcode_tf" left="280"  width="90" hintText="Zip:53151" value="" onBlur="coZip" keyboardType="Ti.UI.KEYBOARD_DECIMAL_PAD" >
+        		<KeyboardToolbar id="ktb_textarea">
+	    			<Toolbar>
+	    				<Items>
+	    					<Button id="donebutton" title="DONE"/>
+	    				</Items>
+	    			</Toolbar>
+        		</KeyboardToolbar>	
+ 	  		</TextField>
+ 	  		</TableViewRow>
+  		</TableViewSection>
+  		<TableViewSection headerTitle="Contact">
+	  		<TableViewRow height="40">
+ 	  			<TextField id="companyphone_tf" width="Ti.UI.Fill" left="20" hintText="Phone: 262-544-3131" value="" keyboardType="Ti.UI.KEYBOARD_DECIMAL_PAD" onBlur="coPhone" />
+ 	  		</TableViewRow>
+	  		<TableViewRow height="40">
+ 	  			<TextField id="companyemail_tf" width="Ti.UI.Fill" left="20" hintText="Email: support@zefiland.com" value="" onBlur="coEmail"/>
+ 	  		</TableViewRow>
+ 	  	</TableViewSection>
 	  </TableView>
   </Window>
   </Tab>

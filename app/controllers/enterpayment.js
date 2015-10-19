@@ -11,7 +11,7 @@ var data = args.title.title.split(':');
 var invoicenumber = data[0]; 
 var firstname = data[1]; 
 var lastname = data[2]; 
-var total = data[3];
+var total = data[3]; $.notes_textarea.total = total;
 var balance = data[4];
 var paid = data[5];
 var lastpaiddate = data[6];
@@ -412,10 +412,12 @@ function enterNotes(e,imgurl) {
         jobDetailAddRow (datepaid,notesbody,imageurl,dateadded,employee); //add to the local db
         submit(datepaid,notesbody,imageurl,jobitemid,payment,employee); //submit to the cloud
         var paidamount = paidamount + parseFloat(notesbody);
+        var total = e.source.total;
+        var balance = parseFloat(total)-parseFloat(paidamount);
         console.log("enterpayment.js::enterNotes: paidamount , parseFloat(notesbody) : "+paidamount+" + "+parseFloat(notesbody));
         $.paymentsection.headerTitle = firstname+" "+lastname+"    PAID: "+paidamount;
-        updateInvoice(paidamount,datepaid);
-        callbackFunction(paidamount);
+        updateInvoice(paidamount,datepaid,balance); //update invoice spreadsheet
+        callbackFunction(paidamount,balance,datepaid); //update the dummy
         
 };
 
@@ -746,7 +748,7 @@ $.notes_textarea.KeyboardToolbar = [flexSpace,$.donebutton];
 // update existing invoice spreadsheeet on balance.
 
 //function updateInvoice(edithref,selfhref,idtag,invoicenumber,clientfirstname,clientlastname,total,bal,paid,lastpaiddate,followupdate,clientphone,clientemail,duedate,currency,status){
-function updateInvoice(paidamount,datepaid){ 
+function updateInvoice(paidamount,datepaid,balance){ 
 		var paid = paidamount;    
 		var lastpaiddate = datepaid;
 		var xmldatastring = '<entry xmlns=\'http://www.w3.org/2005/Atom\' xmlns:gsx=\'http://schemas.google.com/spreadsheets/2006/extended\'>'
@@ -763,13 +765,13 @@ function updateInvoice(paidamount,datepaid){
        var xhr =  Titanium.Network.createHTTPClient({
    	   onload: function() {
         try {
-                Ti.API.info(this.responseText); 
+                Ti.API.info("enterpayment.js::updateInvoice"+this.responseText); 
         } catch(e){
-                Ti.API.info("cathing e: "+JSON.stringify(e));
+                Ti.API.info("enterpayment.js::updateInvoice::cathing e: "+JSON.stringify(e));
         }     
     },
     onerror: function(e) {
-        Ti.API.info("error e: "+JSON.stringify(e));
+        Ti.API.info("enterpayment.js::updateInvoice::error e: "+JSON.stringify(e));
         alert("enterpayment::updateInvoice::Unable to communicate to the cloud. Please try again"); 
     }
 });
@@ -779,8 +781,3 @@ function updateInvoice(paidamount,datepaid){
         xhr.send(xmldatastring);
         Ti.API.info('done POSTed');
 }
-
-$.enterpayment_window.addEventListener("close",function() {
-	callbackFunction(paidamount);
-	console.log("enterpayment.js ::callbackFunction::"+paidamount);
-});

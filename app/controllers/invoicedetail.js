@@ -115,14 +115,19 @@ console.log("invoicedetail.js:: firstname and lastname is: "+firstname+" "+lastn
 	someDummy.set('customernumber', 'Customer#: '+(uniqueid)?uniqueid:"0000000000000");
 	
 //Locate jobs.
-if (uniqueid && uniqueid.match(/[0-9]/g)){
+console.log("invocedetail.js:: locate jobs with uniqueid: "+uniqueid);
+if (uniqueid){
+	var uniqueid = uniqueid.toString().trim();
 	projectitemsarray = [];
 	projectnamesarray = [];
 	var projects = Alloy.Collections.instance('project');
 	projects.fetch();
+	console.log("invocedetail.js:: JSON.stringify(projects): "+JSON.stringify(projects));
 	var theproject = projects.where({
 		col13:uniqueid
 		}); //FILTER
+	console.log("invocedetail.js:: locate jobs with uniqueid: "+uniqueid + " theproject.length "+theproject.length);
+	console.log("invocedetail.js:: b4 JSON.stringify(theproject): "+JSON.stringify(theproject));
 	if(theproject.length > 0){
 		console.log("invocedetail.js:: JSON.stringify(theproject): "+JSON.stringify(theproject));
 		for (i=0;i<theproject.length;i++){
@@ -133,7 +138,7 @@ if (uniqueid && uniqueid.match(/[0-9]/g)){
 		}
 		console.log("invocedetail.js:: JSON.stringify(projectitemsarray): "+JSON.stringify(projectitemsarray));
 	}
-}
+} else { console.log("unqueid is not a number: uniqueid: "+uniqueid);};
 
 if(projectitemsarray.length>0){
 	
@@ -384,7 +389,7 @@ function emailpdf(firstname,lastname,address,city,state,phone,email,invoicenumbe
 	     var file = 'invoice.pdf';
 	     console.log("opening viewpdf(url) on "+file);
      	 viewpdf(file);
-     	 Alloy.Globals.checkGoogleisAuthorized();
+     	 (Alloy.Globals.googleAuthSheet.getAccessToken()) || Alloy.Globals.googleAuthSheet.Authorized();
      	 //Set filename for uploaded file
      	 var date = new Date();
      	 var dateinsert = date.getFullYear()+""+(date.getMonth()+1)+""+date.getDate()+""+date.getHours();
@@ -392,7 +397,11 @@ function emailpdf(firstname,lastname,address,city,state,phone,email,invoicenumbe
      	 var predocViewer = Ti.UI.iOS.createDocumentViewer({url:'invoice.pdf'});
      	 //var imagefile = predocViewer.toImage();
      	 var jpgfilename = "jpg_"+invoicenumber+"_"+firstname+"_"+lastname+"_"+dateinsert;
-     	 Alloy.Globals.uploadFile(file,pdffilename) ;
+     	 var kraniemailid = Titanium.App.Properties.getString('kraniemailid');
+		 var name = kraniemailid.split('@')[0].trim();
+     	 var parentid = Titanium.App.Properties.getString(name+"_invoice");
+     	 console.log(new Date()+"::invoicedetail.js::html2pdf::Alloy.Globals.uploadFile("+file+","+pdffilename+","+parentid+")");
+     	 Alloy.Globals.uploadFile(file,pdffilename,parentid) ;
      	 //Alloy.Globals.uploadFile(imagefile,jpgfilename) ;
  	});  
  	
@@ -400,13 +409,22 @@ function emailpdf(firstname,lastname,address,city,state,phone,email,invoicenumbe
  	
  	//var html="";
 	//html += "<html><body><div id=\"top-bar\"><div id=\"doc-title\"><span class=\"name\">sample invoice : Sheet1<\/span><\/div><\/div><div id=\"sheets-viewport\"><div id=\"0\" style=\"display:none;position:relative;\" dir=\"ltr\"><div class=\"ritz grid-container\" dir=\"ltr\"><table class=\"waffle\" cellspacing=\"0\" cellpadding=\"0\"><thead><tr><th class=\"row-header freezebar-origin-ltr header-shim row-header-shim\"><\/th><th id=\"0C0\" style=\"width:195px\" class=\"header-shim\"><\/th><th id=\"0C1\" style=\"width:286px\" class=\"header-shim\"><\/th><th id=\"0C2\" style=\"width:100px\" class=\"header-shim\"><\/th><th id=\"0C3\" style=\"width:100px\" class=\"header-shim\"><\/th><th id=\"0C4\" style=\"width:100px\" class=\"header-shim\"><\/th><\/tr><\/thead><tbody><tr style='height:20px;'><th id=\"0R0\" style=\"height: 20px;\" class=\"row-headers-background row-header-shim\"><div class=\"row-header-wrapper\" style=\"line-height: 20px;\">1<\/div><\/th><td><\/td><td><\/td><td><\/td><td><\/td><td><\/td><\/tr><tr style='height:20px;'><th id=\"0R1\" style=\"height: 20px;\" class=\"row-headers-background row-header-shim\"><div class=\"row-header-wrapper\" style=\"line-height: 20px;\">2<\/div><\/th><td class=\"s0\" dir=\"ltr\" colspan=\"5\">DbayCo Inc. 130 Moreland Rd., Brookfield, WI 53222<\/td><\/tr><tr style='height:20px;'><th id=\"0R2\" style=\"height: 20px;\" class=\"row-headers-background row-header-shim\"><div class=\"row-header-wrapper\" style=\"line-height: 20px;\">3<\/div><\/th><td class=\"s1\" dir=\"ltr\" colspan=\"5\">Phone: 262-501-2948, Fax: 262-290-3141. Email: deen@idevice.net<\/td><\/tr><tr style='height:20px;'><th id=\"0R3\" style=\"height: 20px;\" class=\"row-headers-background row-header-shim\"><div class=\"row-header-wrapper\" style=\"line-height: 20px;\">4<\/div><\/th><td class=\"s2\" colspan=\"5\"><\/td><\/tr><tr style='height:20px;'><th id=\"0R4\" style=\"height: 20px;\" class=\"row-headers-background row-header-shim\"><div class=\"row-header-wrapper\" style=\"line-height: 20px;\">5<\/div><\/th><td class=\"s3\" dir=\"ltr\" colspan=\"3\">INVOICE<\/td><td class=\"s0\" dir=\"ltr\" colspan=\"2\">WAN-20150225-1<\/td><\/tr><tr style='height:20px;'><th id=\"0R5\" style=\"height: 20px;\" class=\"row-headers-background row-header-shim\"><div class=\"row-header-wrapper\" style=\"line-height: 20px;\">6<\/div><\/th><td class=\"s2\" colspan=\"2\" rowspan=\"2\"><\/td><td class=\"s2\" colspan=\"3\"><\/td><\/tr><tr style='height:20px;'><th id=\"0R6\" style=\"height: 20px;\" class=\"row-headers-background row-header-shim\"><div class=\"row-header-wrapper\" style=\"line-height: 20px;\">7<\/div><\/th><td class=\"s4\"><\/td><td class=\"s5\" dir=\"ltr\"><\/td><td class=\"s5\" dir=\"ltr\"><\/td><\/tr><tr style='height:20px;'><th id=\"0R7\" style=\"height: 20px;\" class=\"row-headers-background row-header-shim\"><div class=\"row-header-wrapper\" style=\"line-height: 20px;\">8<\/div><\/th><td class=\"s2\" dir=\"ltr\">Wannoorbaya WChik<\/td><td class=\"s2\" rowspan=\"4\"><\/td><td class=\"s5\" dir=\"ltr\"><\/td><td class=\"s5\" dir=\"ltr\">230<\/td><td class=\"s5\" dir=\"ltr\"><\/td><\/tr><tr style='height:20px;'><th id=\"0R8\" style=\"height: 20px;\" class=\"row-headers-background row-header-shim\"><div class=\"row-header-wrapper\" style=\"line-height: 20px;\">9<\/div><\/th><td class=\"s2\" dir=\"ltr\">2258 S Sanctuary Dr<\/td><td class=\"s5\" dir=\"ltr\"><\/td><td class=\"s5\" dir=\"ltr\"><\/td><td class=\"s6\" dir=\"ltr\">due 4\/1\/2015<\/td><\/tr><tr style='height:20px;'><th id=\"0R9\" style=\"height: 20px;\" class=\"row-headers-background row-header-shim\"><div class=\"row-header-wrapper\" style=\"line-height: 20px;\">10<\/div><\/th><td class=\"s2\" dir=\"ltr\">New Berlin, WI 53151<\/td><td class=\"s2\" colspan=\"3\" rowspan=\"2\"><\/td><\/tr><tr style='height:20px;'><th id=\"0R10\" style=\"height: 20px;\" class=\"row-headers-background row-header-shim\"><div class=\"row-header-wrapper\" style=\"line-height: 20px;\">11<\/div><\/th><td class=\"s2\" dir=\"ltr\">Date: 2\/28\/2014<\/td><\/tr><tr style='height:20px;'><th id=\"0R11\" style=\"height: 20px;\" class=\"row-headers-background row-header-shim\"><div class=\"row-header-wrapper\" style=\"line-height: 20px;\">12<\/div><\/th><td class=\"s2\" colspan=\"5\" rowspan=\"2\"><\/td><\/tr><tr style='height:20px;'><th id=\"0R12\" style=\"height: 20px;\" class=\"row-headers-background row-header-shim\"><div class=\"row-header-wrapper\" style=\"line-height: 20px;\">13<\/div><\/th><\/tr><tr style='height:20px;'><th id=\"0R13\" style=\"height: 20px;\" class=\"row-headers-background row-header-shim\"><div class=\"row-header-wrapper\" style=\"line-height: 20px;\">14<\/div><\/th><td class=\"s7\" dir=\"ltr\">Item no.<\/td><td class=\"s7\" dir=\"ltr\">Description<\/td><td class=\"s7\" dir=\"ltr\">Qty<\/td><td class=\"s7\" dir=\"ltr\">Unit\/Price<\/td><td class=\"s8\" dir=\"ltr\">Price<\/td><\/tr><tr style='height:20px;'><th id=\"0R14\" style=\"height: 20px;\" class=\"row-headers-background row-header-shim\"><div class=\"row-header-wrapper\" style=\"line-height: 20px;\">15<\/div><\/th><td class=\"s2\" dir=\"ltr\"><\/td><td class=\"s2\" dir=\"ltr\"><\/td><td class=\"s2\" dir=\"ltr\"><\/td><td class=\"s2\" dir=\"ltr\"><\/td><td class=\"s2\" dir=\"ltr\"><\/td><\/tr><tr style='height:20px;'><th id=\"0R15\" style=\"height: 20px;\" class=\"row-headers-background row-header-shim\"><div class=\"row-header-wrapper\" style=\"line-height: 20px;\">16<\/div><\/th><td class=\"s9\" dir=\"ltr\">1<\/td><td class=\"s2\" dir=\"ltr\">Mow Lawn<\/td><td class=\"s9\" dir=\"ltr\">1<\/td><td class=\"s9\" dir=\"ltr\">100<\/td><td class=\"s10\" dir=\"ltr\">100<\/td><\/tr><tr style='height:20px;'><th id=\"0R16\" style=\"height: 20px;\" class=\"row-headers-background row-header-shim\"><div class=\"row-header-wrapper\" style=\"line-height: 20px;\">17<\/div><\/th><td class=\"s9\" dir=\"ltr\">2<\/td><td class=\"s2\" dir=\"ltr\">Cut Trees<\/td><td class=\"s9\" dir=\"ltr\">1<\/td><td class=\"s9\" dir=\"ltr\">120<\/td><td class=\"s10\" dir=\"ltr\">120<\/td><\/tr><tr style='height:20px;'><th id=\"0R17\" style=\"height: 20px;\" class=\"row-headers-background row-header-shim\"><div class=\"row-header-wrapper\" style=\"line-height: 20px;\">18<\/div><\/th><td class=\"s11\"><\/td><td class=\"s11\"><\/td><td class=\"s11\"><\/td><td class=\"s11\" dir=\"ltr\"><\/td><td class=\"s12\" dir=\"ltr\"><\/td><\/tr><tr style='height:20px;'><th id=\"0R18\" style=\"height: 20px;\" class=\"row-headers-background row-header-shim\"><div class=\"row-header-wrapper\" style=\"line-height: 20px;\">19<\/div><\/th><td><\/td><td><\/td><td class=\"s13\"><\/td><td class=\"s13\" dir=\"ltr\">SubTotal<\/td><td class=\"s10\" dir=\"ltr\">220<\/td><\/tr><tr style='height:20px;'><th id=\"0R19\" style=\"height: 20px;\" class=\"row-headers-background row-header-shim\"><div class=\"row-header-wrapper\" style=\"line-height: 20px;\">20<\/div><\/th><td><\/td><td><\/td><td class=\"s13\"><\/td><td class=\"s13\" dir=\"ltr\">Tax<\/td><td class=\"s10\" dir=\"ltr\">10<\/td><\/tr><tr style='height:20px;'><th id=\"0R20\" style=\"height: 20px;\" class=\"row-headers-background row-header-shim\"><div class=\"row-header-wrapper\" style=\"line-height: 20px;\">21<\/div><\/th><td><\/td><td><\/td><td class=\"s13\"><\/td><td class=\"s13\" dir=\"ltr\">Other<\/td><td class=\"s10\" dir=\"ltr\">0<\/td><\/tr><tr style='height:20px;'><th id=\"0R21\" style=\"height: 20px;\" class=\"row-headers-background row-header-shim\"><div class=\"row-header-wrapper\" style=\"line-height: 20px;\">22<\/div><\/th><td><\/td><td><\/td><td class=\"s13\"><\/td><td class=\"s13\" dir=\"ltr\">Discount<\/td><td class=\"s10\" dir=\"ltr\">0<\/td><\/tr><tr style='height:20px;'><th id=\"0R22\" style=\"height: 20px;\" class=\"row-headers-background row-header-shim\"><div class=\"row-header-wrapper\" style=\"line-height: 20px;\">23<\/div><\/th><td><\/td><td><\/td><td class=\"s13\" dir=\"ltr\"><\/td><td class=\"s13\" dir=\"ltr\">Paid<\/td><td class=\"s10\" dir=\"ltr\">0<\/td><\/tr><tr style='height:20px;'><th id=\"0R23\" style=\"height: 20px;\" class=\"row-headers-background row-header-shim\"><div class=\"row-header-wrapper\" style=\"line-height: 20px;\">24<\/div><\/th><td><\/td><td><\/td><td class=\"s14\" dir=\"ltr\">Total due by<\/td><td class=\"s15\" dir=\"ltr\">4\/1\/2015<\/td><td class=\"s15\" dir=\"ltr\">230<\/td><\/tr><\/tbody><\/table><\/div><\/div><\/div><\/body><\/html>";
-	var coName = 'Jack Mow Inc.';
+	/*var coName = 'Jack Mow Inc.';
 	var coAddress = "1125 Bluemound Rd., Brookfield, WI 53222";
 	var coPhone = "262-290-3141";
 	var coFax = "262-290-3142";
-	var coEmail = "sales@jackmowinc.com";
+	var coEmail = "sales@jackmowinc.com";*/
 	
-	var invoiceno = "002345";
+	var coName = Titanium.App.Properties.getString("coName");
+	var coAddress = Titanium.App.Properties.getString("coStreetAddress")+", \n"+Titanium.App.Properties.getString("coCity")
+					+", "+Titanium.App.Properties.getString("coState")+" "+Titanium.App.Properties.getString("coZip");
+	var tmpphone = Titanium.App.Properties.getString("coPhone");
+	var coPhone = "("+tmpphone.substr(0,3)+")"+tmpphone.substr(3,3)+"-"+tmpphone.substr(6,4);
+	var coFax = coPhone;
+	var coEmail = Titanium.App.Properties.getString("coEmail");
+	var invoiceno = invoicenumber;
+	
+	var custphone = "("+phone.substr(0,3)+")"+phone.substr(3,3)+"-"+phone.substr(6,4);
 	
 	adhocs.fetch();
 	console.log("invoicedetail.js::emailpdf:: adhocs contents "+JSON.stringify(adhocs)); 
@@ -581,7 +599,7 @@ function emailpdf(firstname,lastname,address,city,state,phone,email,invoicenumbe
 	strVar += "		<article>";
 	strVar += "			<h1>Recipient<\/h1>";
 	strVar += "			<address contenteditable>";
-	strVar += "				<p>"+firstname+" "+lastname+"<br>"+address+"<br>"+city+", "+state+"<br> phone:  "+phone+"<br> email: "+email+"<\/p>";
+	strVar += "				<p>"+firstname+" "+lastname+"<br>"+address+"<br>"+city+", "+state+"<br> phone:  "+custphone+"<br> email: "+email+"<\/p>";
 	strVar += "			<\/address>";
 	strVar += "			<table class=\"meta\">";
 	strVar += "				<tr>";
@@ -679,7 +697,7 @@ function viewpdf(url){
 
 }
  
-function uploadFile(file,filename){
+function uploadFile(file,filename,parentid){
  		var fileget = Ti.Filesystem.getFile(file);
 		var fileread = fileget.read();
 		var filebase64 = Ti.Utils.base64encode(fileread);
@@ -687,7 +705,12 @@ function uploadFile(file,filename){
 	 		var parts = [];
 	 		var bound = 287032396531387;
 	 		var meta = '\{'
-	 		+	'\"title\": \"'+filename+'\"'
+	 		+	'\"title\": \"'+filename+'\",'
+	 		+'\"parents\": ['
+		  	+'{'
+		   	+'\"id\": \"'+parentid+'\"'
+		 	+' }'
+		 	+']'
 			+	'\}';
 			var parts = [];
 	        parts.push('--' + bound);
@@ -710,7 +733,7 @@ function uploadFile(file,filename){
 			    	}     
 			    },
 			    onerror: function(e) {
-			    	Ti.API.info("error e: "+JSON.stringify(e));
+			    	Ti.API.info("invoicedetail.js:uploadFile::parentid: "+parentid+" :error e: "+JSON.stringify(e));
 			        alert("invoicedetail::uploadFile::unable to talk to the cloud, will try later"); 
 			    }
 			});
@@ -1046,13 +1069,15 @@ function prefetchPayment(e){
         console.log("invoicedetail.js::JSON stringify payment data on prefetch: "+JSON.stringify(payment));
 }
 
-function dummyRefresh(paid){
+function dummyRefresh(paid,balance,lastpaiddate){
 	console.log("invoicedetail.js::dummyRefresh:: balance: "+paid);
 	someDummy.set({'id': '1234',
-		'paid': 'Paid: '+paid
+		'paid': 'Paid: '+paid,
+		'balance': +balance,
+		'lastpaiddate': 'Last paid date: ' +lastpaiddate
 		});
 	someDummy.fetch();
 	console.log("invoicedetail.js:dummyRefresh: JSON.stringify(someDummy):: "+JSON.stringify(someDummy));
-	Alloy.Globals.updateExistingSpreadsheetAndDB("invoice",col1,col2,lastname,newtotal,newbal,paid,col7,col8,col9,col10,col11,col12,col13,col14,col15,col16,edithref,selfhref);
+	//Alloy.Globals.updateExistingSpreadsheetAndDB("invoice",col1,col2,lastname,newtotal,newbal,paid,col7,col8,col9,col10,col11,col12,col13,col14,col15,col16,edithref,selfhref);
 
 }	

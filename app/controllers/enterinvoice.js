@@ -4,9 +4,10 @@ var total = 0;
 exports.openMainWindow = function(_tab) {
   _tab.open($.enterinvoice_window);
   Ti.API.info("This is child widow enterinvoice.js" +JSON.stringify(_tab));
-    Alloy.Globals.checkNetworkAndGoogleAuthorized('1gnkP116nsTVxtrw6d_mXVdOiesQEPH7LVUIyHUfx9EE');
-	//Alloy.Globals.checkGoogleisAuthorized();
-	googleAuth.authorize();
+    //Alloy.Globals.checkNetworkAndGoogleAuthorized('1gnkP116nsTVxtrw6d_mXVdOiesQEPH7LVUIyHUfx9EE');
+	(Alloy.Globals.googleAuthSheet.getAccessToken()) || Alloy.Globals.googleAuthSheet.Authorized();
+	//googleAuth.authorize();
+	
 	console.log("enterinvoice.js::openMainWindow:: $.enterinvoice_table.data[0] count "+$.enterinvoice_table.data[0].rowCount+" contents: "+JSON.stringify($.enterinvoice_table.data[0].rows));
  	if (args.clienttitle) {  //when user select existing client
 		selectClient(args);

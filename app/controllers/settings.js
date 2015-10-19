@@ -43,3 +43,12 @@ $.row_empselect.addEventListener("click", function(e){
 	});
   	empSelectController.openMainWindow($.tab_settings);	
 });
+
+function coName(e) {Titanium.App.Properties.setString("coName", e.value);}
+function coStreetAddress(e) {Titanium.App.Properties.setString("coStreetAddress", e.value);}
+function coCity(e) {Titanium.App.Properties.setString("coCity", e.value);}
+function coState(e) {Titanium.App.Properties.setString("coState", e.value);}
+function coZip(e) {Titanium.App.Properties.setString("coZip", e.value);}
+function coPhone(e) {Titanium.App.Properties.setString("coPhone", e.value);}
+
+function coEmail(e){Titanium.App.Properties.setString("coEmail", e.value);}
