@@ -24,6 +24,11 @@ exports.openMainWindow = function(_tab) {
 			alert("Loading data from the cloud. Please click OK and try again.");
 		}
   });
+  //find deafult logo if need to generate invoice
+  var kraniemailid = Titanium.App.Properties.getString('kraniemailid');
+  var name = kraniemailid.split('@')[0].trim();
+  var parentid = Titanium.App.Properties.getString(name+"_invoice");
+  Alloy.Globals.checkFileExistThenUpdateTitaniumProperties(name+"_defaultlogo"); //check the logo
 };
 Alloy.Collections.adhoc.deleteAll(); //reset adhoc tables.
 var someDummy = Alloy.Models.dummy;
@@ -358,7 +363,9 @@ $.jobitem_row.addEventListener("click",function(e){
 var price = 100;
 var qty = 10;
 var subtotal = 1000;
-var logourl = "https://docs.google.com/drawings/d/1Z3O9n2O1rS5CBQuMJwiRSouJRaRRZFVS8-N5zEocN8c/pub?w=144&h=144";
+//var logourl = "https://docs.google.com/drawings/d/1Z3O9n2O1rS5CBQuMJwiRSouJRaRRZFVS8-N5zEocN8c/pub?w=144&h=144";
+//var logourl = "https://docs.google.com/uc?id=0B22E-wz0NGrrSE9aWVpGSEFDSmM&export=download";
+var logourl = Titanium.App.Properties.getString('logourl');
 function emailpdf(firstname,lastname,address,city,state,phone,email,invoicenumber,company,total,balance,paid,lastpaiddate,duedate,price){
 	
 	console.log("invoicedetail.js::emailpdf::  firstname " + firstname 	+" lastname " + lastname 	+" address " + address 	+" city " + city 	
@@ -690,7 +697,10 @@ function viewpdf(url){
 		docViewer.show();
 		var theimage = docViewer.toImage;
 		console.log("invoicedetail.js::viewpdf: JSON.stringify(docViewer) + JSON.stringify(theimage) : "+JSON.stringify(docViewer) +" : theimage: "+ JSON.stringify(theimage));
-		Alloy.Globals.uploadPictoGoogle(theimage,'pdftoimage1.jpg') ;
+    	 var kraniemailid = Titanium.App.Properties.getString('kraniemailid');
+		 var name = kraniemailid.split('@')[0].trim();
+     	 var parentid = Titanium.App.Properties.getString(name+"_invoice");
+		Alloy.Globals.uploadPictoGoogle(theimage,'pdftoimage1.jpg',parentid) ;
 		});
 	
 	navWin.open();

@@ -18,6 +18,11 @@
 		  <TableViewRow id="getdatainput" backgroundColor="transparent" opacity="0" color="white" Title="Get Data Input">
 		  	<Label id="getdatainput_label" color="yellow" top="5" left="50" text="Get Data Based on URL entered"/>
 		  </TableViewRow>
+ 		  <TableViewRow id="renameFile" backgroundColor="transparent" opacity="0" color="white" height="80">
+ 		  	<TextField id="renameFileSID_tf" top="10" hintText="SID"></TextField>
+ 		  	<TextField id="renameFileNewName_tf" top="30" hintText="NewName"></TextField>
+		  	<Button id="renameFile_button" top="60" left="30" title="renameFile" onClick="renameFile"/>
+		  </TableViewRow>
 		  <TableViewRow id="checkuniqueid" backgroundColor="transparent" opacity="0" color="white" Title="checkuniqueid">
 		  	<Label id="checkuniqueid_label" color="yellow" top="5" left="50" text="Check Unique ID"/>
 		  </TableViewRow>

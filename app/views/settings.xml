@@ -49,7 +49,21 @@
  	  			<TextField id="companyemail_tf" width="Ti.UI.Fill" left="20" hintText="Email: support@zefiland.com" value="" onBlur="coEmail"/>
  	  		</TableViewRow>
  	  	</TableViewSection>
+ 	  	<TableViewSection headerTitle="Logo">
+ 	  		<TableViewRow id="logo_row" height="Ti.UI.Size">
+ 	  		</TableViewRow>
+  		</TableViewSection>
 	  </TableView>
+		<Toolbar id="jobdetailtoolbar" platform="ios" bottom="0" borderTop="true" borderBottom="false">
+			<Items id="itemjobdetail">
+				<FlexSpace/>
+				<Button systemButton="ACTION" onClick="uploadFile"/>
+				<Button systemButton="CAMERA" onClick="takePic"/>
+			 	<FlexSpace/> 
+			 	<FlexSpace/>
+			 	<Button systemButton="DISCLOSURE"/>          	
+			</Items>
+		</Toolbar>   
   </Window>
   </Tab>
 </Alloy>

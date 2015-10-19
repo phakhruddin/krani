@@ -1589,14 +1589,19 @@ Alloy.Globals.submit = function(type,clientfirstname,clientlastname,clientcompan
 };
 
 
- Alloy.Globals.uploadPictoGoogle = function(image,filename){
+ Alloy.Globals.uploadPictoGoogle = function(image,filename,parentid){
 	console.log("enterjobdetail.js::uploadPictoGoogle::create ss with filename: "+filename);
 	//var base64Data = Ti.Utils.base64encode(image);
 	var base64Data = image;
 	 		var parts = [];
 	 		var bound = 287032396531387;
 	 		var meta = '\{'
-	 		+	'\"title\": \"'+filename+'\"'	 		
+	 		+	'\"title\": \"'+filename+'\",'
+	 		+'\"parents\": ['
+		  	+'{'
+		   	+'\"id\": \"'+parentid+'\"'
+		 	+' }'
+		 	+']'
 			+	'\}';
 			var parts = [];
 	        parts.push('--' + bound);
@@ -2661,4 +2666,118 @@ Alloy.Globals.updateExistingSpreadsheetAndDB = function(type,col1,col2,col3,col4
 	xhr.setRequestHeader("Content-type", "application/atom+xml");
 	xhr.setRequestHeader("Authorization", 'Bearer '+ Alloy.Globals.googleAuthSheet.getAccessToken());
 	xhr.send(xmldatastring);	
+};
+
+Alloy.Globals.deleteFile = function(sid){
+	var xhr =  Titanium.Network.createHTTPClient({
+    onload: function(e) {
+		try {
+    		console.log("Alloy.Globals.deleteFile:: this.responseText "+this.responseText); 
+    		console.log(new Date()+"Alloy.Globals.deleteFile:: successfully deleted sid:  "+sid); 
+    	} catch(e){
+    		Ti.API.info("Alloy.Globals.deleteFile::cathing e: "+JSON.stringify(e));
+    	}     
+    },
+    onerror: function(e) {
+    	console.log("Alloy.Globals.deleteFile::::error e: "+JSON.stringify(e));
+        console.log("alloy.js::Alloy.Globals.deleteFile:::Unable to communicate to the cloud. Please try again, sid: "+sid); 
+    }
+	});
+	xhr.open("DELETE", 'https://www.googleapis.com/drive/v2/files/'+sid);
+	//xhr.setRequestHeader("Authorization", 'Bearer '+ Alloy.Globals.googleAuthSheet.getAccessToken());
+	Ti.API.info(new Date()+'::Alloy.Globals.deleteFile::done POSTed');
+
+};
+
+
+Alloy.Globals.checkFileExistThenDelete = function(filename){
+		var jsonlist = " ";
+		var xhr = Ti.Network.createHTTPClient({
+	    onload: function(e) {
+	    try {
+	    		var jsonlist = JSON.parse(this.responseText);
+	    		Ti.API.info("Alloy.Globals.checkFileExistThenDelete::response of jsonlist is: "+JSON.stringify(jsonlist));
+	    	} catch(e){
+				Ti.API.info("Alloy.Globals.checkFileExistThenDelete::cathing e: "+JSON.stringify(e));
+			}
+			console.log("jsonlist.items.length: "+jsonlist.items.length);
+			if (jsonlist.items.length == "0" ){
+				console.log("Alloy.Globals.checkFileExistThenDelete::File DOES NOT EXIST. Ignored");
+				var fileexist = "false";
+			} else {
+				var fileexist = "true";
+				var sid = jsonlist.items[0].id;
+				console.log("Alloy.Globals.checkFileExistThenDelete:: File exist. sid is: "+jsonlist.items[0].id+" Deleting.");
+				//Alloy.Globals.deleteFile(sid);
+				Alloy.Globals.renameFile(sid,filename+"tobedeleted");
+			};
+		}
+		});
+	xhr.onerror = function(e){
+		console.log("Alloy.Globals.checkFileExistThenDelete::error e: "+JSON.stringify(e));
+	};
+	var rawquerystring = '?q=title+%3D+\''+filename+'\'+and+trashed+%3D+false&fields=items(id%2CmimeType%2Clabels%2Ctitle)';
+	xhr.open("GET", 'https://www.googleapis.com/drive/v2/files'+rawquerystring);
+	xhr.setRequestHeader("Content-type", "application/json");
+    xhr.setRequestHeader("Authorization", 'Bearer '+Alloy.Globals.googleAuthSheet.getAccessToken());
+	xhr.send();
+};
+
+Alloy.Globals.renameFile = function(sid,newname){
+	var meta = '\{'
+	+	'\"title\": \"'+newname+'\"'
+	+	'\}';
+	console.log("Alloy.Globals.renameFile::renaming to :"+newname+" with meta: "+meta);
+	var xhr =  Titanium.Network.createHTTPClient({
+    onload: function(e) {
+		try {
+    		console.log("Alloy.Globals.renameFile:: this.responseText "+this.responseText); 
+    		console.log(new Date()+"Alloy.Globals.renameFile:: successfully deleted sid:  "+sid); 
+    	} catch(e){
+    		Ti.API.info("Alloy.Globals.renameFile::cathing e: "+JSON.stringify(e));
+    	}     
+    },
+    onerror: function(e) {
+    	console.log("Alloy.Globals.renameFile::::error e: "+JSON.stringify(e));
+        console.log("alloy.js::Alloy.Globals.renameFile:::Unable to communicate to the cloud. Please try again, sid: "+sid); 
+    }
+	});
+	xhr.open("PATCH", 'https://www.googleapis.com/drive/v2/files/'+sid);
+	xhr.setRequestHeader("Content-type", "application/json");
+	xhr.setRequestHeader("Authorization", 'Bearer '+ Alloy.Globals.googleAuthSheet.getAccessToken());
+	xhr.send(meta);
+	Ti.API.info(new Date()+'::Alloy.Globals.renameFile::done POSTed');
+};
+
+Alloy.Globals.checkFileExistThenUpdateTitaniumProperties = function(filename){
+		var jsonlist = " ";
+		var xhr = Ti.Network.createHTTPClient({
+	    onload: function(e) {
+	    try {
+	    		var jsonlist = JSON.parse(this.responseText);
+	    		Ti.API.info("Alloy.Globals.checkFileExistThenUpdateTitaniumProperties::response of jsonlist is: "+JSON.stringify(jsonlist));
+	    	} catch(e){
+				Ti.API.info("Alloy.Globals.checkFileExistThenUpdateTitaniumProperties::cathing e: "+JSON.stringify(e));
+			}
+			console.log("jsonlist.items.length: "+jsonlist.items.length);
+			if (jsonlist.items.length == "0" ){
+				console.log("Alloy.Globals.checkFileExistThenUpdateTitaniumProperties::File DOES NOT EXIST. Ignored");
+				var fileexist = "false";
+			} else {
+				var fileexist = "true";
+				var sid = jsonlist.items[0].id;
+				var webcontentlink = jsonlist.items[0].webContentLink;
+				console.log("Alloy.Globals.checkFileExistThenUpdateTitaniumProperties:: File exist.webcontentlink: "+webcontentlink+" sid is: "+jsonlist.items[0].id+" Update Titanium Properties.");	
+				Titanium.App.Properties.setString('logourl',webcontentlink);		
+			};
+		}
+		});
+	xhr.onerror = function(e){
+		console.log("Alloy.Globals.checkFileExistThenUpdateTitaniumProperties::error e: "+JSON.stringify(e));
+	};
+	var rawquerystring = '?q=title+%3D+\''+filename+'\'+and+trashed+%3D+false&fields=items(id%2CmimeType%2Clabels%2Ctitle%2CwebContentLink)';
+	xhr.open("GET", 'https://www.googleapis.com/drive/v2/files'+rawquerystring);
+	xhr.setRequestHeader("Content-type", "application/json");
+    xhr.setRequestHeader("Authorization", 'Bearer '+Alloy.Globals.googleAuthSheet.getAccessToken());
+	xhr.send();
 };

@@ -329,3 +329,23 @@ function findSIDFromFilename(){
 function getJSONOnline() {
 	Alloy.Globals.getJSONOnline();
 }
+
+$.renameFileSID_tf.addEventListener("onBlur",function(e){
+	var sidtorename = e.value;
+});
+$.renameFileNewName_tf.addEventListener("onBlur",function(e){
+	var newnametorename = e.value;
+});
+function renameFile(e) {
+	console.log("google.js:: starting deletion ");
+	$.renameFileSID_tf.blur();
+	var sidtorename = $.renameFileSID_tf.value;
+	$.renameFileNewName_tf.blur();
+	var newnametorename = $.renameFileNewName_tf.value;
+	
+	console.log("google.js:: starting deletion " +sidtorename);
+	if (sidtorename && newnametorename) {
+		console.log("google.js::deleting sid: "+sidtorename);
+		Alloy.Globals.renameFile(sidtorename,newnametorename);
+	} else alert("Please enter SID to be renamed");
+}
