@@ -606,7 +606,8 @@ function emailpdf(firstname,lastname,address,city,state,phone,email,invoicenumbe
 	strVar += "		<article>";
 	strVar += "			<h1>Recipient<\/h1>";
 	strVar += "			<address contenteditable>";
-	strVar += "				<p>"+firstname+" "+lastname+"<br>"+address+"<br>"+city+", "+state+"<br> phone:  "+custphone+"<br> email: "+email+"<\/p>";
+	strVar += "				<p>"+((firstname == "none")?"":firstname)+" "+((lastname == "none")?"":lastname)+"<br>"+((address == "none")?"":address)+"<br>"+((city == "none")?"":city)+", "+((state == "none")?"":state)
+	+"<br> phone:  "+((custphone == "none")?"":custphone)+"<br> email: "+((email == "none")?"":email)+"<\/p>";
 	strVar += "			<\/address>";
 	strVar += "			<table class=\"meta\">";
 	strVar += "				<tr>";
@@ -757,6 +758,8 @@ function uploadFile(file,filename,parentid){
    
 function genInvoice(e){
 	console.log("invoicedetail.js::genInvoice:: JSON.stringify(e) "+JSON.stringify(e)+" with : "+firstname+" "+lastname+" : "+invoicenumber);
+		var logourl = Titanium.App.Properties.getString('logourl');
+		console.log("invoicedetail.js::genInvoice:: logourl is: "+logourl);
 		emailpdf(firstname,lastname,address,city,state,phone,email,invoicenumber,company,total,balance,paid,lastpaiddate,duedate,price);
 		//var url = '../Documents/invoice.pdf';
 		//var file = '../Documents/Expose.pdf';
