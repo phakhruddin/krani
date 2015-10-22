@@ -47,11 +47,11 @@ exports.definition = {
 				 
 				},
 				
-			deleteCol1 : function(col1) {
+			deleteCol16 : function(col16) {
  
 				var collection = this;
 				 
-				var sql = "DELETE FROM " + collection.config.adapter.collection_name +" WHERE col1=\""+col1+"\"";
+				var sql = "DELETE FROM " + collection.config.adapter.collection_name +" WHERE col16=\""+col16+"\"";
 				db = Ti.Database.open(collection.config.adapter.db_name);
 				db.execute(sql);
 				db.close();

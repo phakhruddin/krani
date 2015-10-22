@@ -426,12 +426,12 @@ function emailpdf(firstname,lastname,address,city,state,phone,email,invoicenumbe
 	var coAddress = Titanium.App.Properties.getString("coStreetAddress")+", \n"+Titanium.App.Properties.getString("coCity")
 					+", "+Titanium.App.Properties.getString("coState")+" "+Titanium.App.Properties.getString("coZip");
 	var tmpphone = Titanium.App.Properties.getString("coPhone");
-	var coPhone = "("+tmpphone.substr(0,3)+")"+tmpphone.substr(3,3)+"-"+tmpphone.substr(6,4);
+	if(tmpphone) {var coPhone = "("+tmpphone.substr(0,3)+")"+tmpphone.substr(3,3)+"-"+tmpphone.substr(6,4);} else var tmpphone="";
 	var coFax = coPhone;
 	var coEmail = Titanium.App.Properties.getString("coEmail");
 	var invoiceno = invoicenumber;
 	
-	var custphone = "("+phone.substr(0,3)+")"+phone.substr(3,3)+"-"+phone.substr(6,4);
+	if (phone) { var custphone = "("+phone.substr(0,3)+")"+phone.substr(3,3)+"-"+phone.substr(6,4);} else var custphone = "";
 	
 	adhocs.fetch();
 	console.log("invoicedetail.js::emailpdf:: adhocs contents "+JSON.stringify(adhocs)); 

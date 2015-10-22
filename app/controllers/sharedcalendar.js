@@ -2,7 +2,9 @@ exports.openMainWindow = function(_tab) {
   _tab.open($.sharedcalendar_window);
   Ti.API.info("This is child widow: " +JSON.stringify(_tab));
   Alloy.Globals.getPrivateData('1WUtkBcD1q3ezozI98w0sq42rl1TwIOTMq25Yayj-sEk','master');
-  var url = "https://www.google.com/calendar/feeds/idevice.net%40gmail.com/private-bda51ec0064db35a76e6bd97730497e8/basic";
+  //var url = "https://www.google.com/calendar/feeds/idevice.net%40gmail.com/private-bda51ec0064db35a76e6bd97730497e8/basic";
+  var kraniemailid = Titanium.App.Properties.getString('kraniemailid');console.log("sharedcalendar.js::kraniemailid:: "+kraniemailid);
+  var url = "https://www.google.com/calendar/feeds/"+kraniemailid+"%40gmail.com/private-bda51ec0064db35a76e6bd97730497e8/basic";
   getSharedCalendarData(url);
   
   	$.save_url_button.addEventListener('click', function(_e) {
@@ -50,12 +52,13 @@ var googleAuthCalendar = new GoogleAuth({
 	scope : ['https://spreadsheets.google.com/feeds', 'https://docs.google.com/feeds','https://www.googleapis.com/auth/calendar','https://www.googleapis.com/auth/calendar.readonly'],
 	quiet: false
 });
-
-
-var url = "https://www.google.com/calendar/feeds/idevice.net%40gmail.com/private-bda51ec0064db35a76e6bd97730497e8/basic";
+;
+var kraniemailid = Titanium.App.Properties.getString('kraniemailid');console.log("sharedcalendar.js::kraniemailid:: "+kraniemailid);
+var url = "https://www.google.com/calendar/feeds/"+kraniemailid +"%40gmail.com/private-bda51ec0064db35a76e6bd97730497e8/basic";
+//var url = "https://www.google.com/calendar/feeds/idevice.net%40gmail.com/private-bda51ec0064db35a76e6bd97730497e8/basic";
 
 var getSharedCalendarData = function(url) {	
-	Ti.API.info("URL is: "+url);
+	Ti.API.info("getSharedCalendarData::URL is: "+url);
 	var thefile = "calendar.txt";
 	var data = [];
 	//Alloy.Globals.checkGoogleisAuthorized();
@@ -85,11 +88,11 @@ var getSharedCalendarData = function(url) {
 		xhr.onerror = function(e){
 			//alert(e);
 			alert("sharedcalendar::getSharedCalendarData::Unable to connect to the network. The info displayed here is NOT the latest.");
-			console.log("response txt after failure is: "+this.responseText);
+			console.log("sharedcalendar::getSharedCalendarData::response txt after failure is: "+this.responseText);
 		};
 		xhr.open("GET", url);
 		xhr.send();
-		Ti.API.info(" Data were successfuly downloaded from "+url+". Please proceed.");
+		Ti.API.info(" sharedcalendar.js::getSharedCalendarData:Data were successfuly downloaded from "+url+". Please proceed.");
 		
 	}, function() {
 		console.log('Sh cal Authorized first, see next window: ');
@@ -132,7 +135,9 @@ function postCreateEvent(startdateTime,enddateTime,location,summary,description,
 	var colorid = colorid || "3";
 	var organizerself ="true";
 	//var url = 'https://www.googleapis.com/calendar/v3/calendars/idevice.net%40gmail.com/events?access_token='+googleAuthCalendar.getAccessToken();
-	var url = 'https://www.googleapis.com/calendar/v3/calendars/idevice.net@gmail.com/events';
+	//var url = 'https://www.googleapis.com/calendar/v3/calendars/idevice.net@gmail.com/events';
+	var kraniemailid = Titanium.App.Properties.getString('kraniemailid');console.log("sharedcalendar.js::kraniemailid:: "+kraniemailid);
+	var url = 'https://www.googleapis.com/calendar/v3/calendars/'+kraniemailid+'@gmail.com/events';
 	var recurrences ="";
 	var attendeesstrbody = [];
 	var attendeesstrstart = '\"attendees\": \[';

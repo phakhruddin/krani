@@ -206,15 +206,16 @@ function uploadFile(e){
 	                if(e.mediaType === Titanium.Media.MEDIA_TYPE_PHOTO){
 	                       var imageView = Titanium.UI.createImageView({
 	                                image:e.media,
-	                                width:300,
-	                                height:300
+	                                width:100,
+	                                height:100
 	                        });
 	                        var image = imageView.toImage();
 	                        console.log("settings.js::beginning to upload to the cloud.");
 	                        var date = new Date();
 							var imagefilename = filename;
 							console.log("settings.js::JSON stringify e takePic: Alloy.Globals.uploadPictoGoogle(image,"+imagefilename+","+parentid+")");
-					        Alloy.Globals.uploadPictoGoogle(image,imagefilename,parentid);
+							UploadPhotoToServer(image,parentid);
+					        //Alloy.Globals.uploadPictoGoogle(image,imagefilename,parentid);
 	                } else if (e.mediaType === Titanium.Media.MEDIA_TYPE_VIDEO){
 	                        var w = Titanium.UI.createWindow({
 	                                title:"Job Video",

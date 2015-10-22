@@ -27,10 +27,7 @@ function transformFunction(model) {
         transform.date = "Date: "+transform.col1;
         transform.notes = "Notes: "+transform.col2;
         transform.img = (transform.col4)?transform.col4:"none";
-        
-        lat1=transform.col8;
-        lon1=transform.col9;
-        transform.address = "Lat: "+transform.col8+" , Lon:"+transform.col9;
+		transform.jobid = transform.col16;
         var newRow = Ti.UI.createTableViewRow({});
         var newImageView = Ti.UI.createImageView({
                 image : transform.img,
@@ -439,6 +436,8 @@ var filename = 'project_'+projectid+'_'+firstname+'_'+lastname;
 Titanium.App.Properties.setString('filename',filename);
 console.log("enterjobdetail.js::value derived from args: projectid: "+projectid+" firstname: "+firstname+" lastname: "+lastname);
 //var filename = "project"+jsonargs.title.split(':')[15];
+//display customer name and jobid on tableview section.
+$.name_section.headerTitle = firstname+" "+lastname+"    Project#: "+projectid;
 
 function createSpreadsheet(filename,parentid) {
 	console.log("enterjobdetail.js::create ss with filename: "+filename+" and parentid: "+parentid);
@@ -646,6 +645,8 @@ $.labor_table.addEventListener("delete", function(e){
 	var existingurlsidtag = urls.split(',')[0];
 	var existingurlsselfhref = urls.split(',')[1];
 	var existingurlsedithref = urls.split(',')[2];
+	var uniqueid =  e.row.metadata.split(':')[1];
+	Alloy.Collections.joblog.deleteCol16(uniqueid); //deleting the database
 	console.log("enterjobdetail.js::$.labor_table delete: idtag:"+existingurlsidtag+" selfhref: "+existingurlsselfhref+" edithref: "+existingurlsedithref);
 	var xhr = Ti.Network.createHTTPClient({
 	    onload: function(e) {
@@ -664,14 +665,20 @@ $.labor_table.addEventListener("delete", function(e){
 	console.log("enterjobdetail.js::$.labor_table delete: DONE: DELETE "+existingurlsedithref);
 });
 
-/*
-$.jobdetailtf.addEventListener("focus", function(e){
-                console.log("enterjobdetail.js::JSON.stringify(e)  :" +JSON.stringify(e));
-                
-    });*/
-/*
-function largeTF(e){
-        console.log("enterjobdetail.js::JSON.stringify(e) largeTF  :" +JSON.stringify(e));
-        //$.itemjobdetail.add(textfield);
-}
-*/
+var refresh = Ti.UI.createRefreshControl({
+    tintColor:'orange'
+});
+
+$.labor_table.refreshControl=refresh;
+
+refresh.addEventListener('refreshstart',function(e){
+	if(sid){Alloy.Globals.getPrivateData(sid,"project");};
+	setTimeout(function(){
+		
+		/*
+        console.log('credit::refresh:: JSON.stringify(e): '+JSON.stringify(e));
+        var content=Alloy.Globals.fetchingData('creditmodel');
+		console.log("credit.js::JSON stringify content: "+JSON.stringify(content));*/
+        refresh.endRefreshing();
+    }, 2000);
+});

@@ -11,7 +11,7 @@ $.ptr.refresh();
 
 function transformFunction(model) {
 	var transform = model.toJSON();
-	console.log("project.js::transform col1 data:: "+JSON.stringify(transform.col1));
+	console.log("project.js::transform col1 data:: "+JSON.stringify(transform.col1)+" col16:"+JSON.stringify(transform.col16));
 	transform.title = transform.col1.trim()+":"+transform.col2.trim()+":"+transform.col3.trim()+":"+transform.col4.trim()+":"+transform.col5.trim()+":"+transform.col6+":"+transform.col7+":"
 	+transform.col8+":"+transform.col9+":"+transform.col10+":"+transform.col11+":"+transform.col12+":"+transform.col13+":"+transform.col14+":"
 	+transform.col15+":"+transform.col16;
@@ -31,7 +31,7 @@ function transformFunction(model) {
 	}
 	datesraw = transform.col15;
 	datesdata = datesraw.replace(/cOlOn/g,":");
-	transform.datedue = "due date: "+JSON.parse(datesdata)[0].duedate;;
+	if(transform.datedue != "none" || transform.datedue != "NA" ){transform.datedue = "due date: "+JSON.parse(datesdata)[0].duedate; } else { transform.datedue = "due date: ";} ;
 	return transform;
 }
 
@@ -64,8 +64,14 @@ if (args.sourcecall) {
 		Alloy.Globals.openDetail(e);
 		var title = e.row.title;
 		var clientController = Alloy.createController('projectdetail',{
-			title: title
+			title: title,
+			callbackFunction : pulledEvent
 		});
 		clientController.openMainWindow($.tab_projectlist);
 	});
+}
+
+function pulledEvent(e){
+	console.log("project.js:pulledEvent:: Alloy.Collections.project.fetch()");
+	Alloy.Collections.project.fetch();
 }

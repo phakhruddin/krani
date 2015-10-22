@@ -11,7 +11,8 @@ exports.openMainWindow = function(_tab) {
 
 //$.back_button.sid = "1234";
 
-Alloy.Globals.checkNetworkAndGoogleAuthorized('1gnkP116nsTVxtrw6d_mXVdOiesQEPH7LVUIyHUfx9EE');
+//Alloy.Globals.checkNetworkAndGoogleAuthorized('1gnkP116nsTVxtrw6d_mXVdOiesQEPH7LVUIyHUfx9EE');
+
 
 //reset all variables.
 	Ti.App.Properties.removeProperty('dbNeedSync');
@@ -574,7 +575,21 @@ if (args.notesraw) {
 //(args.state)?$.projectclientstate_tf.value=args.state:$.projectclientstate_tf.value=" ";
 (itemdescrvalue)?$.projectdescr_tf.value=itemdescrvalue:$.projectdescr_tf.value=" ";
  
- 
+var refresh = Ti.UI.createRefreshControl({
+    tintColor:'orange'
+});
+
+$.enterproject_table.refreshControl=refresh;
+
+refresh.addEventListener('refreshstart',function(e){
+	setTimeout(function(){
+		/*
+        console.log('credit::refresh:: JSON.stringify(e): '+JSON.stringify(e));
+        var content=Alloy.Globals.fetchingData('creditmodel');
+		console.log("credit.js::JSON stringify content: "+JSON.stringify(content));*/
+        refresh.endRefreshing();
+    }, 2000);
+}); 
 
 
 

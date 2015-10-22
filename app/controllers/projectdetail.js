@@ -10,7 +10,7 @@ exports.openMainWindow = function(_tab) {
   prefetchJoblog();
 };
 
-
+callbackFunction = args.callbackFunction;
 
 console.log("projectdetail.js::JSON.stringify(args) :"+JSON.stringify(args));
 
@@ -33,7 +33,8 @@ var state = data[8];
 var country = data[9];
 var fulladdress = ( address && city && state ) && address+' , '+city+' , '+state || "Please enter address";
 var fulladdress = ( address == "none" || city == "none" || state == "none" ) && "Please enter address"  || address+' , '+city+' , '+state ;
-var percentcomplete = data[10];
+//var percentcomplete = data[10];
+var status = data[10];
 var customerid = data[12];
 var notesraw = data[11];
 var nextappt = data[13];
@@ -60,9 +61,10 @@ someDummy.set('fulladdress',+fulladdress);
 someDummy.set('country', country);
 someDummy.set('firstname', firstname);
 someDummy.set('lastname', lastname);
-someDummy.set('percentcomplete', percentcomplete);
+someDummy.set('status', status);
 someDummy.set('nextappt', nextappt);
 someDummy.set('datedue', datedue);
+someDummy.set('projectid', projectid);
 
 var nextapptlabel = Ti.UI.createLabel ({
 		color : "green",
@@ -85,45 +87,7 @@ var dateduelabel = Ti.UI.createLabel ({
         },
         text : datedue
 });
-
-if (percentcomplete == "0") {
-	var status = "NOT STARTED";
-	var color = "red";
-	var left = 153;
-} else if ( percentcomplete == "100" ) {
-	var status = "COMPLETED";
-	var color = "green";
-	var left = 164;
-} else {
-	var status = "PENDING";
-	var color = "orange";
-	var left = 167;
-}
         
-var statuslabel = Ti.UI.createLabel ({
-        color : color,
-        left  : left,
-        textAlign : "Ti.UI.TEXT_ALIGNMENT_CENTER",
-        top : "10",
-        font:{
-        	fontSize:18
-        },
-        text : status
-});
-
-var percentcompletelabel = Ti.UI.createLabel ({
-        color : color,
-        left  : "135",
-        textAlign : "Ti.UI.TEXT_ALIGNMENT_CENTER",
-        top : "32",
-        font:{
-        	fontSize:12
-        },
-        text : 'Percentage Completion: '+percentcomplete+"%"
-});
-
-$.status_row.add(statuslabel);
-$.status_row.add(percentcompletelabel);
 $.nextapptdetail_row.add(dateduelabel);
 //$.nextapptdetail_row.add(nextapptlabel);
 
@@ -633,7 +597,7 @@ function editAction(e){
 			selfhref : selfhref,
 			status : status,
 			notesraw : notesraw,
-			percentcomplete : percentcomplete,
+			status : status,
 			nextappt : nextappt,
 			dates : dates,
 			datesdata : datesdata,
@@ -642,4 +606,117 @@ function editAction(e){
 		projectController.openMainWindow($.tab_projectdetail);	
 }
 
+//STATUS CHANGE OPTION
 
+var tr = Titanium.UI.create2DMatrix();
+tr = tr.rotate(90);
+ 
+var drop_button =  Titanium.UI.createButton({
+		style:Titanium.UI.iPhone.SystemButton.DISCLOSURE,
+		transform:tr
+});
+
+//TODO: Use TableviewRow label instead of text field.
+var my_combo = Titanium.UI.createTextField({
+	//hintText:"In Progress",
+	value:status,
+	height:Ti.UI.SIZE,
+	width:"300",
+	borderStyle:Titanium.UI.INPUT_BORDERSTYLE_ROUNDED,
+	leftButton:drop_button,
+	leftButtonMode:Titanium.UI.INPUT_BUTTONMODE_ALWAYS,
+	font:{fontSize:24,textAlign:Ti.UI.TEXT_ALIGNMENT_CENTER}
+});
+
+var picker_view = Titanium.UI.createView({
+	height:251,
+	bottom:0
+});
+ 
+var cancel =  Titanium.UI.createButton({
+	title:'Cancel',
+	style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED
+});
+ 
+var done =  Titanium.UI.createButton({
+	title:'Done',
+	style:Titanium.UI.iPhone.SystemButtonStyle.DONE
+});
+ 
+var spacer =  Titanium.UI.createButton({
+	systemButton:Titanium.UI.iPhone.SystemButton.FLEXIBLE_SPACE
+});
+ 
+var toolbar =  Titanium.UI.createToolbar({
+	top:0,
+	items:[cancel,spacer,done]
+});
+
+var status = [ {'text':'Completed','color':'green'}, {'text':'In Progress','color':'orange'}, {'text':'Awaiting Customer','color':'yellow'}, {'text':'Not Started','color':'red'}, {'text':'Invoiced','color':"black"} ];
+
+var pickerColumn = Ti.UI.createPickerColumn();
+for (i=0;i<status.length;i++){
+	if(my_combo.value == status[i].text){my_combo.color=status[i].color;};//process the color on initial view
+	var pickerRow = Titanium.UI.createPickerRow();
+	var pickerLabel = Titanium.UI.createLabel({text:status[i].text,color:status[i].color,font:{fontSize:14}});	
+	pickerRow.add(pickerLabel);
+	pickerRow.id=status[i].text;
+	pickerRow.colorid=status[i].color;
+	pickerColumn.addRow(pickerRow);
+}
+
+var picker = Ti.UI.createPicker({
+  top:43,
+  columns: [pickerColumn],
+  selectionIndicator: true
+});
+ 
+picker_view.add(toolbar);
+picker_view.add(picker);
+
+var slide_in =  Titanium.UI.createAnimation({bottom:0});
+var slide_out =  Titanium.UI.createAnimation({bottom:-551});
+//var slide_out =  Titanium.UI.createAnimation({bottom:-251});
+my_combo.addEventListener('focus', function() {
+	picker_view.animate(slide_out);
+});
+ 
+drop_button.addEventListener('click',function(e) {
+	console.log("projectdetail.js::drop_button:: JSON.stringify(e): "+JSON.stringify(e));
+	$.status_row.height=Ti.UI.Size;
+	$.status_row.add(picker_view);
+	my_combo.blur();
+	picker_view.show();
+	picker_view.animate(slide_in);		
+});
+ 
+cancel.addEventListener('click',function() {
+	//picker_view.animate(slide_out);
+	picker_view.hide();
+});
+
+picker.addEventListener('change',function(e) {
+    Ti.API.info("You selected row: "+e.row.title+", column: "+JSON.stringify(e.column));
+    Ti.API.info("row index: "+e.rowIndex+", column index: "+e.columnIndex);
+});
+
+done.addEventListener('click',function(e) {
+	console.log("projectdetail.js::done:picker: JSON.stringify(e)" + JSON.stringify(e)+ " JSON.stringify() " +JSON.stringify(picker.getSelectedRow(0)));
+	my_combo.value =  picker.getSelectedRow(0).id;
+	my_combo.color = picker.getSelectedRow(0).colorid;
+	//picker_view.animate(slide_out);
+	picker_view.hide();
+	$.status_row.add(my_combo);
+	$.status_row.height="30";
+	var status = my_combo.value;
+	Alloy.Globals.updateExistingSpreadsheetAndDB("project",projectname,firstname,lastname,company,phone,email,address,city,state,country,status,notesraw,customerid,"none",dates,projectid,edithref,selfhref,idtag);
+	var projectsid = Titanium.App.Properties.getString('project');
+	Alloy.Globals.getPrivateData(projectsid,"project");
+	callbackFunction();
+});
+
+$.status_row.add(my_combo);
+
+$.projectdetail_window.addEventListener("close",function(){
+	
+});

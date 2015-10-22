@@ -581,7 +581,7 @@ $.ptr.refresh();
 	{
 		valueData.text = picker.getSelectedRow(0).title;;
 		tableView.setData(array);
-		Ti.API.info("valueData: "+JSON.stringify(valueData));
+		Ti.API.info("schedule::picker:valueData: "+JSON.stringify(valueData));
 	});
 	
 	titleText.addEventListener('focus',function() {
@@ -598,7 +598,7 @@ $.ptr.refresh();
 		var enddateTime = enddateData.textid;
 		var startdateTime = dateData.textid;
 		var organizerdisplayName = valueData.text;
-		console.log(" summary, organizerdisplayName, startdateTime, enddateTime, description :" +summary+", "+organizerdisplayName+", "+startdateTime+", "+enddateTime+" , "+description);
+		console.log("schedule:submitLabel: summary, organizerdisplayName, startdateTime, enddateTime, description :" +summary+", "+organizerdisplayName+", "+startdateTime+", "+enddateTime+" , "+description);
 		alert("event created");
 		//Alloy.Globals.postCreateEvent(startdateTime,enddateTime,location,summary,description,organizerdisplayName,organizeremail,colorid,attendeeslist)
 		googleAuthCalendar.isAuthorized(function() {
@@ -607,7 +607,9 @@ $.ptr.refresh();
 				console.log('Schedule submit: Authorized first, see next window: ');
 		});
 		//var calid="idevice.net@gmail.com";
-		var calid="2elugripfnsd2hblojnu4t72u0@group.calendar.google.com";
+		var kraniemailid = Titanium.App.Properties.getString('kraniemailid');console.log("schedule.js::kraniemailid:: "+kraniemailid);
+		var calid = kraniemailid;
+		//var calid="2elugripfnsd2hblojnu4t72u0@group.calendar.google.com";
 		postCreateEvent(calid,startdateTime,enddateTime,"",summary,description,organizerdisplayName);
 		
 	});
@@ -642,11 +644,11 @@ function createEventFuture() {
 
 function sharedCalendar() {
 	googleAuthCalendar;
-	console.log('Access Token for Calendar is: ' + googleAuthCalendar.getAccessToken());
+	console.log('schedule::getSharedCalendar:Access Token for Calendar is: ' + googleAuthCalendar.getAccessToken());
 	googleAuthCalendar.isAuthorized(function() {
-		console.log('Access Token: ' + googleAuthCalendar.getAccessToken());
+		console.log('schedule::getSharedCalendar:Access Token: ' + googleAuthCalendar.getAccessToken());
 	}, function() {
-		console.log('Sch shared cal Authorized first, see next window: ');
+		console.log('schedule::getSharedCalendar::Sch shared cal Authorized first, see next window: ');
 		});
 	Alloy.Globals.createController('sharedcalendar',$.schedule_tab);
 }
@@ -726,7 +728,7 @@ function transformFunction(model) {
 // 24hrs - 86400000
 function filterFunction(collection) { 
 		var sorttype = Titanium.App.Properties.getString('sorttype'); 
-	    console.log("sorttype in filter : "+sorttype); 
+	    console.log("schedule::filterFunction:sorttype in filter : "+sorttype); 
 	    //console.log("JSON stringify collection: " +JSON.stringify(collection));
 	    if (sorttype == "Today")  {
 	    	//Alloy.Collections.schedule.today();
@@ -744,8 +746,8 @@ function filterFunction(collection) {
 }
 
 function buttonAction(e){
-	console.log("JSON stringify e : " +JSON.stringify(e));
-	console.log("JSON stringify e.source : " +JSON.stringify(e.source));
+	console.log("schedule::buttonAction:JSON stringify e : " +JSON.stringify(e));
+	console.log("schedule::buttonAction:JSON stringify e.source : " +JSON.stringify(e.source));
 	var someDummy = Alloy.Models.dummy;
 	someDummy.set('id', '1234');
     var today = new Date();
@@ -807,27 +809,29 @@ function buttonAction(e){
 
 function refreshCalendar() {
 	//var calid = 'idevice.net@gmail.com';
-	var calid = '2elugripfnsd2hblojnu4t72u0@group.calendar.google.com';
+	//var calid = '2elugripfnsd2hblojnu4t72u0@group.calendar.google.com';
+	var kraniemailid = Titanium.App.Properties.getString('kraniemailid');console.log("schedule.js::kraniemailid:: "+kraniemailid);
+	var calid = kraniemailid;
 	var url = 'https://www.googleapis.com/calendar/v3/calendars/'+calid+'/events'+"?access_token="+googleAuthCalendar.getAccessToken();;
 	getSharedCalendarData(url);
 }
 
 
 var getSharedCalendarData = function(url) {	
-	Ti.API.info("URL is: "+url);
+	Ti.API.info("schedule::getSharedCalendarData:URL is: "+url);
 	var thefile = "calendar.txt";
 	var data = [];
 	//Alloy.Globals.checkGoogleisAuthorized();
 	//Alloy.Globals.checkNetworkAndGoogleAuthorized('1gnkP116nsTVxtrw6d_mXVdOiesQEPH7LVUIyHUfx9EE');
 	//googleAuthCalendar;
-	console.log('Access Token for Calendar is: ' + googleAuthCalendar.getAccessToken());
+	console.log('schedule::getSharedCalendarData:Access Token for Calendar is: ' + googleAuthCalendar.getAccessToken());
 	googleAuthCalendar.isAuthorized(function() {
-		console.log('Access Token: ' + googleAuthCalendar.getAccessToken());
+		console.log('schedule::getSharedCalendarData:Access Token: ' + googleAuthCalendar.getAccessToken());
 		
 		var xhr = Ti.Network.createHTTPClient({
 		    onload: function(e) {
 		    try {
-				console.log("response txt is: "+this.responseText);
+				console.log("schedule::getSharedCalendarData:response txt is: "+this.responseText);
 				var file = Ti.Filesystem.getFile(
 					Ti.Filesystem.tempDirectory, thefile
 				);
@@ -868,14 +872,14 @@ var getSharedCalendarData = function(url) {
 		xhr.onerror = function(e){
 			//alert(e);
 			alert("schedule::getSharedCalendarData::Unable to connect to the network. The info displayed here is NOT the latest.");
-			console.log("response txt after failure is: "+this.responseText);
+			console.log("schedule::getSharedCalendarData:response txt after failure is: "+this.responseText);
 		};
 		xhr.open("GET", url);
 		xhr.send();
-		Ti.API.info(" Data were successfuly downloaded from "+url+". Please proceed.");
+		Ti.API.info(" schedule::getSharedCalendarData:Data were successfuly downloaded from "+url+". Please proceed.");
 		
 	}, function() {
-		console.log('Sch get shrd cal Authorized first, see next window: ');
+		console.log('schedule::getSharedCalendarData:Sch get shrd cal Authorized first, see next window: ');
 		googleAuthCalendar.authorize();
 		///Alloy.Globals.LaunchWindowGoogleAuth();
 	});
@@ -883,7 +887,7 @@ var getSharedCalendarData = function(url) {
 };
 
 function selectItem(e) {
-	console.log("JSON stringify: "+JSON.stringify(e));
+	console.log("schedule::selectItem:JSON stringify: "+JSON.stringify(e));
 }
 
 function doClick(e) {
@@ -910,6 +914,8 @@ function postCreateEvent(calid,startdateTime,enddateTime,location,summary,descri
 	var organizerself ="true";
 	//var url = 'https://www.googleapis.com/calendar/v3/calendars/idevice.net%40gmail.com/events?access_token='+googleAuthCalendar.getAccessToken();
 	///var url = 'https://www.googleapis.com/calendar/v3/calendars/idevice.net@gmail.com/events';
+	var kraniemailid = Titanium.App.Properties.getString('kraniemailid');console.log("schedule.js::kraniemailid:: "+kraniemailid);
+	var calid = kraniemailid;
 	var url = 'https://www.googleapis.com/calendar/v3/calendars/'+calid+'/events';
 	var recurrences ="";
 	var attendeesstrbody = [];

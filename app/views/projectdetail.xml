@@ -8,7 +8,7 @@
 <Button id="edit_rightnavbutton" systemButton="Ti.UI.iPhone.SystemButton.EDIT" onClick="editAction" /> 
 	</RightNavButton>
 	  <TableView id="projectdetail_table"  backgroundColor="transparent">
-	  	<TableViewSection headerTitle="{dummy.projectname}">
+	  	<TableViewSection headerTitle="Project#: {dummy.projectid}">
 		  <TableViewRow id="projectdetail_row"  height="180">
 		  	  <Label id="label_header" left="20" color="#333" top="5" text="{dummy.projectname}" />
 		  	  <Label left="20" color="#333" top="40" text="Client:" />
