@@ -4,7 +4,7 @@ exports.openMainWindow = function(_tab) {
   Ti.API.info("This is child widow checking _tab : " +JSON.stringify(_tab));
    	$.labor_table.search = $.search_history;
 	Alloy.Collections.labor.fetch();	
-	
+/*	
 	$.labor_window.addEventListener("click", function(e){
 		Alloy.Globals.openDetail(e);
 		var title = e.row.title;
@@ -36,9 +36,72 @@ exports.openMainWindow = function(_tab) {
 		}
 
 });
-
+*/
   
 };
+
+function rowAction(e){
+		console.log("location.js::rowAction:: JSON.stringify(e): "+JSON.stringify(e));
+		
+			Alloy.Globals.openDetail(e);
+		var title = e.row.title;
+	
+		Ti.API.info('input details : '+title);
+		var firstname = title.split(':')[1].trim();
+		var lastname = title.split(':')[2].trim();
+		var name = firstname+" "+lastname.trim();
+		var latitude = title.split(':')[7].trim().toString();
+		var longitude = title.split(':')[8].trim().toString();
+		
+		switch(e.source.image) {
+	    case "EditControl.png":
+	        e.source.image="EditControlSelected.png";
+	        setTimeout(function(){
+	    		addLabor(e);      		
+	    	},500);   	 
+	        break;
+	    case "EditControlSelected.png": 
+	    	e.source.image="EditControl.png";
+	        break;
+	    default:
+	
+		    Alloy.Globals.UpdateMap(latitude,longitude,name);
+			
+			var checked = Ti.UI.createImageView({
+				top: 10,
+				left: 300,
+				height : 30,
+				width : 30,
+				image : "check70.png"
+			});
+			
+			if (args.source == "settings"){
+				console.log("location.js: source is : "+args.source);
+				console.log("location.js: JSON.stringify(e) : "+ JSON.stringify(e));
+				e.row.titleid = "rowidimage";
+				console.log("location.js: JSON.stringify(e) : "+ JSON.stringify(e));
+			}
+		} 
+		/*
+		//Alloy.Globals.UpdateMap('41.981233','-87.868259',"None");	
+		
+		Alloy.Globals.UpdateMap(latitude,longitude,name);
+		
+		var checked = Ti.UI.createImageView({
+			top: 10,
+			left: 300,
+			height : 30,
+			width : 30,
+			image : "check70.png"
+		});
+		
+		if (args.source == "settings"){
+			console.log("location.js: source is : "+args.source);
+			console.log("location.js: JSON.stringify(e) : "+ JSON.stringify(e));
+			e.row.titleid = "rowidimage";
+			console.log("location.js: JSON.stringify(e) : "+ JSON.stringify(e));
+		}*/
+}
 
 function transformFunction(model) {
 	var currentaddr;
@@ -51,10 +114,11 @@ function transformFunction(model) {
 	
 	lat1=transform.col8;
 	lon1=transform.col9;
+	
 	getAddress = function(latitude,longitude, callback){
     	Titanium.Geolocation.reverseGeocoder(latitude,longitude,function(evt)
         {
-            Ti.API.info("reverse geolocation result = "+JSON.stringify(evt));
+            ////Ti.API.info("reverse geolocation result = "+JSON.stringify(evt));
         	if(callback) {
             	callback.call(null, evt);
         	}
@@ -62,10 +126,10 @@ function transformFunction(model) {
 	};
 	myCallback = function(e) {
     	//myComonent.setTitle(e.places.address);
-    	console.log("JSON stringify e after callback : " +JSON.stringify(e));
+    	///console.log("JSON stringify e after callback : " +JSON.stringify(e));
     	          places = e.places;
             if (places && places.length) {
-						console.log("JSON stringify : "+JSON.stringify(places));
+						////console.log("JSON stringify : "+JSON.stringify(places));
 						//currentaddr = places[0].address;
 							currentaddr = places.address;				
 					} else {
@@ -86,5 +150,43 @@ function checkAllLoc() {
 function updateLoc() {
 	Alloy.Globals.CheckLoc();
 }
+
+function addLabor(e){
+	console.log("location.js::addLabor:JSON.stringify(e): "+JSON.stringify(e));
+	var item = "labor";
+	var sid = Titanium.App.Properties.getString(item,"none");
+	Alloy.Globals.getPrivateData(sid,item);
+	if (e.row) {
+		console.log("location.js::addLabor:e.row.title: "+e.row.title);
+		var tabViewOneChildController = Alloy.createController("enteremployee",{
+  		title:e.row.title
+  	});
+	} else {
+		var tabViewOneChildController = Alloy.createController("enteremployee");
+	}
+  	tabViewOneChildController.openMainWindow($.location_tab);	
+}
+
+var editbutton = Titanium.UI.createButton({
+   systemButton:"CAMERA",
+   left:"20"
+});
+
+function editAction(e){
+	console.log("location.js::editAction:JSON.stringify(e): "+JSON.stringify(e));
+}
+
+function editEmployee(e){
+	console.log("location.js::editEmployee:JSON.stringify(e): "+JSON.stringify(e));	
+}
+
+$.sortview.hide();
+$.location_tab.addEventListener("focus",function(){
+	$.sortview.show();
+});
+$.labor_table.addEventListener("scroll",function(){
+	$.sortview.hide();
+	$.location_tab.addEventListener("singletap",function(){$.sortview.show();});
+});
 
 
