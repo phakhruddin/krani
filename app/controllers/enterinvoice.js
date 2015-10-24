@@ -318,10 +318,10 @@ $.itemlist_tf.addEventListener('blur', function(_e) {
 	console.log("clientfirstname: "+clientfirstname+" clientlastname "+clientlastname);	
 	if (name.match(/[A-Za-z].+/)) {		
 		console.log('submit('+invoicenumber+','+clientfirstname+','+clientlastname+','+total+','+bal+','+paid+','+lastpaiddate+','+followupdate+','+customerid+','+clientemail+','+duedate+','
-	+currency+','+status+')');
-		submit(invoicenumber,clientfirstname,clientlastname,total,bal,paid,lastpaiddate,followupdate,customerid,clientemail,duedate,currency,status);
-		console.log('submitproject('+clientproject+','+clientfirstname+','+clientlastname+','+total+','+bal+','+paid+','+lastpaiddate+','+followupdate+','+customerid+','+clientemail+','+duedate+','
-	+currency+','+status+')');
+	+currency+','+status+','+clientphone+')');
+		submit(invoicenumber,clientfirstname,clientlastname,total,bal,paid,lastpaiddate,followupdate,customerid,clientemail,duedate,currency,status,clientphone);
+		console.log('submitproject('+clientproject+','+clientfirstname+','+clientlastname+','+clientcompany+','+clientphone+','+clientemail+','+clientaddress+','+clientcity+','+clientstate+','+country+','+notes+','
+	+customerid+','+dates+','+projectid+')');
 		submitproject(clientproject,clientfirstname,clientlastname,clientcompany,clientphone,clientemail,clientaddress,clientcity,clientstate,country,"0",notes,customerid,"none",dates,projectid);
 	}
 	$.enterinvoice_window.setRightNavButton($.geninvoice);
@@ -333,13 +333,13 @@ $.itemlist_tf.addEventListener('blur', function(_e) {
 	}
  }; 
  
- function submit(invoicenumber,clientfirstname,clientlastname,total,bal,paid,lastpaiddate,followupdate,clientphone,clientemail,duedate,currency,status) {	
+ function submit(invoicenumber,clientfirstname,clientlastname,total,bal,paid,lastpaiddate,followupdate,customerid,clientemail,duedate,currency,status,clientphone) {	
  	var now = new Date();
 	var xmldatastring = '<entry xmlns=\'http://www.w3.org/2005/Atom\' xmlns:gsx=\'http://schemas.google.com/spreadsheets/2006/extended\'>'
 	+'<gsx:col1>'+invoicenumber+'</gsx:col1><gsx:col2>'+clientfirstname+'</gsx:col2><gsx:col3>'
 	+clientlastname+'</gsx:col3><gsx:col4>'+total+'</gsx:col4><gsx:col5>'
-	+bal+'</gsx:col5><gsx:col6>'+paid+'</gsx:col6><gsx:col7>'+lastpaiddate+'</gsx:col7><gsx:col8>'+followupdate+'</gsx:col8><gsx:col9>'+clientphone
-	+'</gsx:col9><gsx:col10>'+clientemail+'</gsx:col10><gsx:col11>'+duedate+'</gsx:col11><gsx:col12>'+currency+'</gsx:col12><gsx:col13>'+status+'</gsx:col13><gsx:col14>NA</gsx:col14><gsx:col15>NA</gsx:col15><gsx:col16>NA</gsx:col16></entry>';
+	+bal+'</gsx:col5><gsx:col6>'+paid+'</gsx:col6><gsx:col7>'+lastpaiddate+'</gsx:col7><gsx:col8>'+followupdate+'</gsx:col8><gsx:col9>'+customerid
+	+'</gsx:col9><gsx:col10>'+clientemail+'</gsx:col10><gsx:col11>'+duedate+'</gsx:col11><gsx:col12>'+clientphone+'</gsx:col12><gsx:col13>'+status+'</gsx:col13><gsx:col14>NA</gsx:col14><gsx:col15>NA</gsx:col15><gsx:col16>NA</gsx:col16></entry>';
 	Ti.API.info('xmldatastring to POST: '+xmldatastring);
 	var xhr =  Titanium.Network.createHTTPClient({
     onload: function() {

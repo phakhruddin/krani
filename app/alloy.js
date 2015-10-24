@@ -895,7 +895,7 @@ Alloy.Globals.uploadFile = function(file,filename,parentid) {
 		});
 		xhr.open("POST", url);
 		xhr.setRequestHeader("Content-type", "multipart/mixed; boundary=" + bound);
-		xhr.setRequestHeader("Authorization", 'Bearer '+googleAuthSheet.getAccessToken());
+		xhr.setRequestHeader("Authorization", 'Bearer '+Alloy.Globals.googleAuthSheet.getAccessToken());
 		xhr.setRequestHeader("Content-Length", "2000000");
 		xhr.send(parts.join("\r\n"));
 		Ti.API.info('done POSTed');
@@ -1590,7 +1590,7 @@ Alloy.Globals.submit = function(type,clientfirstname,clientlastname,clientcompan
 
 
  Alloy.Globals.uploadPictoGoogle = function(image,filename,parentid){
-	console.log("enterjobdetail.js::uploadPictoGoogle::create ss with filename: "+filename);
+	console.log("Alloy.Globals.uploadPictoGoogle::uploadPictoGoogle::create ss with filename: "+filename);
 	//var base64Data = Ti.Utils.base64encode(image);
 	var base64Data = image;
 	 		var parts = [];
@@ -1619,31 +1619,31 @@ Alloy.Globals.submit = function(type,clientfirstname,clientlastname,clientcompan
 			    onload: function() {
 			    	try {
 			    		var json = JSON.parse(this.responseText);
-	    				Ti.API.info("enterjobdetail.js::uploadPictoGoogle::response is: "+JSON.stringify(json));
+	    				Ti.API.info("Alloy.Globals.uploadPictoGoogle::uploadPictoGoogle::response is: "+JSON.stringify(json));
 	    				var id = json.id;
 	    				var webcontentlink = json.webContentLink;
-	    				Ti.API.info("enterjobdetail.js::uploadPictoGoogle::id is: "+id+" webcontentlink: "+webcontentlink);
+	    				Ti.API.info("Alloy.Globals.uploadPictoGoogle::uploadPictoGoogle::id is: "+id+" webcontentlink: "+webcontentlink);
 	    				shareAnyonePermission(id);
 	    				var e = {"value":"none","source":{"_hintText":id}};
-	    				console.log("enterjobdetail.js::uploadPictoGoogle::entering urlimage with info below e: "+JSON.stringify(e));
+	    				console.log("Alloy.Globals.uploadPictoGoogle::uploadPictoGoogle::entering urlimage with info below e: "+JSON.stringify(e));
 	    				enterNotes(e,webcontentlink);
 			    	} catch(e){
-			    		Ti.API.info("enterjobdetail.js::uploadPictoGoogle::cathing e: "+JSON.stringify(e));
+			    		Ti.API.info("Alloy.Globals.uploadPictoGoogle::uploadPictoGoogle::cathing e: "+JSON.stringify(e));
 			    	} 
 			    	return id;    
 			    },
 			    onerror: function(e) {
-			    	Ti.API.info("enterjobdetail.js::uploadPictoGoogle::error e: "+JSON.stringify(e));
+			    	Ti.API.info("Alloy.Globals.uploadPictoGoogle::uploadPictoGoogle::error e: "+JSON.stringify(e));
 			        alert("alloy.js::uploadPictoGoogle::unable to talk to the cloud, will try later"); 
 			    }
 			});
 			xhr.open("POST", url);
 			xhr.setRequestHeader("Content-type", "multipart/mixed; boundary=" + bound);
-			xhr.setRequestHeader("Authorization", 'Bearer '+googleAuthSheet.getAccessToken());
+			xhr.setRequestHeader("Authorization", 'Bearer '+Alloy.Globals.googleAuthSheet.getAccessToken());
 			//xhr.setRequestHeader("Content-Length", "2000000");
 			xhr.send(parts.join("\r\n"));
 			Ti.API.info('done POSTed');
-			//Ti.API.info("enterjobdetail.js::uploadPictoGoogle::sid outside is: "+id);
+			//Ti.API.info("Alloy.Globals.uploadPictoGoogle::uploadPictoGoogle::sid outside is: "+id);
 };
 
 //After revamp

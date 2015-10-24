@@ -27,8 +27,10 @@
 	  </TableViewSection>
 	  <TableViewSection  headerTitle="Action">
 	  	  <TableViewRow id="action_row" Title="duedate" height="Ti.UI.Size">
-	   		  <Button id="phone_button" left="20%" top="10" height="30" width="Ti.UI.SIZE" color="gray" textAlign="Ti.UI.TEXT_ALIGNMENT_CENTER" image="light_phone@2x.png" title="{dummy.phone}"/>
-	   		  <Button id="email_button" left="20%" top="40" height="30" width="Ti.UI.SIZE" color="gray" textAlign="Ti.UI.TEXT_ALIGNMENT_CENTER" image="light_mail@2x.png" title="{dummy.email}"/>
+	   		  <Button id="phone_button" left="20%" top="10" height="30" width="Ti.UI.SIZE" color="gray" textAlign="Ti.UI.TEXT_ALIGNMENT_CENTER" 
+	   		  	image="light_phone@2x.png" title="{dummy.phone}" onClick="actionPhone" />
+	   		  <Button id="email_button" left="20%" top="40" height="30" width="Ti.UI.SIZE" color="gray" textAlign="Ti.UI.TEXT_ALIGNMENT_CENTER" 
+	   		  	image="light_mail@2x.png" title="{dummy.email}" onClick="actioneMail"  />
 	   		  <Button id="invoice_button" left="30%" top="70" title="Generate Invoice in PDF" textAlign="Ti.UI.TEXT_ALIGNMENT_CENTER" onClick="genInvoice"/>
 	   		  <Label id="noaction_button" color="blue" textAlign="Ti.UI.TEXT_ALIGNMENT_CENTER" top="20" text="NO ACTION" />
 		  </TableViewRow>  		 

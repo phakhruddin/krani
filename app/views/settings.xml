@@ -20,18 +20,18 @@
 		 	  	<TableViewSection headerTitle="Please enter if not present"/>
  	  	<TableViewSection headerTitle="Company Name">
 	  		<TableViewRow height="40">
- 	  			<TextField id="companygmail_tf"  width="300" left="20" hintText="" onBlur="coGmail" keyboardType="Titanium.UI.KEYBOARD_EMAIL" />
+ 	  			<TextField id="companygmail_tf"  width="320" left="20" hintText="" onBlur="coGmail" keyboardType="Titanium.UI.KEYBOARD_EMAIL" />
  	  		</TableViewRow>
  	  		<TableViewRow height="40">
- 	  			<TextField id="companyname_tf" width="300" left="20" onBlur="coName" />
+ 	  			<TextField id="companyname_tf" width="320" left="20" onBlur="coName" />
  	  		</TableViewRow>
  	  	</TableViewSection>
  	  	<TableViewSection headerTitle="Company Address">
- 	  		<TableViewRow height="30">
- 	  			<TextField id="streetaddress_tf" width="300" left="20" hintText="Address: 2855 W Bluemound Dr" value="" onBlur="coStreetAddress"/>
+ 	  		<TableViewRow height="40">
+ 	  			<TextField id="streetaddress_tf" width="320" left="20" hintText="Address: 2855 W Bluemound Dr" value="" onBlur="coStreetAddress"/>
  	  		</TableViewRow>
- 	  		<TableViewRow height="30">
- 	  			<TextField id="city_tf" left="20" width="150" value="" onBlur="coCity" />
+ 	  		<TableViewRow height="40">
+ 	  			<TextField id="city_tf" left="20" width="160" value="" onBlur="coCity" />
  	  			<TextField id="state_tf" left="200"  width="70" value="" onBlur="coState" />
  	  			<TextField id="zipcode_tf" left="280"  width="90" value="" onBlur="coZip" keyboardType="Ti.UI.KEYBOARD_DECIMAL_PAD" >
         		<KeyboardToolbar id="ktb_textarea">

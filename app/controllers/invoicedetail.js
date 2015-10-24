@@ -47,13 +47,13 @@ var balance = col5 = data[4];
 var paid = col6 = data[5];
 var lastpaiddate = col7 = data[6];
 var followupdate = col8 = data[7];
-var phone = col3 = col9 = data[8];
+var customerid = col9 = data[8];
 var email = col10 = data[9];
 var duedate = col11 = data[10];
-var notes = col12 = data[11];
+var phone = col12 = data[11];
 var status = col13 = data[12];
 var currency = col15 = data[14];
-var col14 = col16 = data[15];
+var notes = col14 = col16 = data[15];
 var filename = 'payment_'+invoicenumber+'_'+firstname+'_'+lastname; $.totalbalance_row.filename = filename;
 var idtag = data[13].replace(/xCoLoNx/g,',').split(',')[0].replace('yCoLoNy',':');
 var selfhref = data[13].replace(/xCoLoNx/g,',').split(',')[1].replace('yCoLoNy',':');
@@ -701,7 +701,7 @@ function viewpdf(url){
     	 var kraniemailid = Titanium.App.Properties.getString('kraniemailid');
 		 var name = kraniemailid.split('@')[0].trim();
      	 var parentid = Titanium.App.Properties.getString(name+"_invoice");
-		Alloy.Globals.uploadPictoGoogle(theimage,'pdftoimage1.jpg',parentid) ;
+		//Alloy.Globals.uploadPictoGoogle(theimage,'pdftoimage1.jpg',parentid) ;
 		});
 	
 	navWin.open();
@@ -1094,3 +1094,20 @@ function dummyRefresh(paid,balance,lastpaiddate){
 	//Alloy.Globals.updateExistingSpreadsheetAndDB("invoice",col1,col2,lastname,newtotal,newbal,paid,col7,col8,col9,col10,col11,col12,col13,col14,col15,col16,edithref,selfhref);
 
 }	
+
+function actionPhone(e){
+	console.log("invoicedetail.js:actionPhone:JSON.stringify(e): "+JSON.stringify(e));
+	var phonenumber = e.source.title.split(':')[1].trim();
+	//var phonenumber = "2623526221";
+	//Ti.Platform.openURL('telprompt://' + phonenumber);; 
+	Ti.Platform.openURL('tel:'+phonenumber+'');; 
+}
+function actioneMail(e){
+	console.log("invoicedetail.js:actioneMail:JSON.stringify(e): "+JSON.stringify(e));
+	var email = e.source.title.split(':')[1].trim();
+	var emailDialog = Ti.UI.createEmailDialog();
+	emailDialog.subject = "Invoice #";
+	emailDialog.toRecipients = [email];
+	emailDialog.messageBody = '<b>Follow up on Invoice#: </b>';
+	emailDialog.open();
+}
