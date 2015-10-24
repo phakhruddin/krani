@@ -252,7 +252,7 @@ function login(e) {
 				$.status_view.height="1%";
 				$.status_label.text="";
 				$.login_button.title="Logout";
-				$.logout_button.title="";
+				$.logout_button.title=Titanium.App.Properties.getString("kraniemailid").split('@')[0].trim();
 				Alloy.Globals.loginActivity();
 				$.tabviewone_window.remove(loadingView);
 			},2000);
@@ -319,7 +319,10 @@ function login(e) {
 						    		Ti.API.info("response is: "+JSON.stringify(json));
 						    		var emailid = json.email;
 						    		Titanium.App.Properties.setString('emailid',emailid);
-						    		Titanium.App.Properties.setString('kraniemailid',emailid);
+						    		//Set the company emailid. Set to oneself if this is not a shared account.
+						    		if (Titanium.App.Properties.getString('kraniemailid')){
+						    			var kraniemailid = Titanium.App.Properties.getString('kraniemailid');
+						    		} else {Titanium.App.Properties.setString('kraniemailid',emailid);var kraniemailid=emaild;};
 						    		console.log("tabViewOne.js::args inside getEmail: emailid "+emailid+" :: "+JSON.stringify(e));
 						    		
 						    	} catch(e){
@@ -397,7 +400,7 @@ function login(e) {
 			$.status_label.text="";
 			$.login_button.title="Logout";
 			$.tabviewone_window.remove(refreshView);
-			$.logout_button.title="";
+			$.logout_button.title=Titanium.App.Properties.getString("kraniemailid").split('@')[0].trim();
 		},2000);
         break;
     case "RefreshAgain":

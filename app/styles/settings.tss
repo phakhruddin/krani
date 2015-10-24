@@ -34,4 +34,8 @@
 	font: {
 		fontSize: "10"
 	}
+},
+"TextField":{
+	borderStyle: Ti.UI.INPUT_BORDERSTYLE_ROUNDED,
+  	color: '#336699'
 }

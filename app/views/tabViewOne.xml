@@ -64,7 +64,7 @@
 		   </TableViewRow>
 		   <TableViewRow id="settings" backgroundColor="transparent" Title="Settings">
 		   		  <Label id="label_settings" color="orange"  left="80" text="Settings"/>
-		   		  <ImageView image="gear16.png" left="20" height="30" width="30"/>
+		   		  <ImageView image="Gear@3x.png" left="20" height="30" width="30"/>
 		   </TableViewRow>
 		   <TableViewRow id="google" Title="google"/>
 		   <TableViewRow id="bootstrap" Title="bootstrap"/>

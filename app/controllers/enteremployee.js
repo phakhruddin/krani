@@ -116,7 +116,7 @@ Titanium.App.Properties.setInt('count',count);
  	var lon="-88.223041";
  	var country = "USA"; var none="none";
 	console.log("enteremployee.js::saveHandler::employeefirstname: submit("+ employeeid+","+employeefirstname+","+employeelastname+","+employeejobtitle+","+employeephone+","+employeeemail+","+lat+","+lon+","+employeestreetaddress+","+employeecity+","+employeestate+","+country+","+notes+","+employeeid +")");	
-	submit(employeeid,employeefirstname,employeelastname,employeejobtitle,employeephone,employeeemail,lat,lon,employeestreetaddress,employeecity,employeestate,country,notes,employeeid);
+	submit(employeeid,employeefirstname,employeelastname,employeejobtitle,employeephone,employeeemail,lat,lon,employeestreetaddress,employeecity,employeestate,country,notes	,employeeid);
 	///console.log('submit('+employeenumber+','+name+','+customerno+','+total+','+bal+','+paid+','+lastpaiddate+','+followupdate+','+employeephone+','+employeeemail+','+duedate+','
 	///+currency+','+status+')');
  }; 

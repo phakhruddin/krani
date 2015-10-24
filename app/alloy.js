@@ -2185,7 +2185,10 @@ Alloy.Globals.initialUserSetup = function(e){
 		    try {
 		    		var json = JSON.parse(this.responseText);
 		    		Ti.API.info("Alloy.Globals.initialUserSetup::response is: "+JSON.stringify(json));
-		    		var kraniemailid = json.email;		    		
+		    		var emailid = json.email;	
+		    		if (Titanium.App.Properties.getString('kraniemailid')){
+						    			var kraniemailid = Titanium.App.Properties.getString('kraniemailid');
+		    		} else {Titanium.App.Properties.setString('kraniemailid',emailid);var kraniemailid=emaild;};	    		
 					//create datastore START
 					var name = kraniemailid.split('@')[0].trim(); //use kraniemailid for uniqueness
 					console.log("advance::checkInfo: name: "+name);
@@ -2206,7 +2209,9 @@ Alloy.Globals.initialUserSetup = function(e){
 					Ti.API.info("cathing e: "+JSON.stringify(e));
 				}
 				return kraniemailid;
-				Titanium.App.Properties.setString('kraniemailid',kraniemailid);
+				if (Titanium.App.Properties.getString('kraniemailid')){
+		    			var kraniemailid = Titanium.App.Properties.getString('kraniemailid');
+	    		} else {Titanium.App.Properties.setString('kraniemailid',emailid);var kraniemailid=emaild;};
 			}
 			});
 		xhr.onerror = function(e){
@@ -2539,7 +2544,8 @@ Alloy.Globals.stampSIDFromCoreDirname = function(dirname){
 
 Alloy.Globals.stampSIDFromCoreFilenameGroup = function(emailid){
 	for (i=0;i<Alloy.Globals.corefilenamearray.length;i++){
-		var name = emailid.split('@')[0].trim();
+		var kraniemailid = Titanium.App.Properties.getString('kraniemailid');
+		var name = kraniemailid.split('@')[0].trim();
 		var newfilename = name+"_"+Alloy.Globals.corefilenamearray[i]+"list";
 		console.log("alloy.js::Alloy.Globals.stampSIDFromCoreFilenameGroup:: Alloy.Globals.stampSIDFromCoreFilename("+newfilename+"); ");
 		Alloy.Globals.stampSIDFromCoreFilename(newfilename);
@@ -2560,16 +2566,21 @@ Alloy.Globals.loginActivity = function(e){
 	    		Ti.API.info("response is: "+JSON.stringify(json));
 	    		var emailid = json.email;
 	    		Titanium.App.Properties.setString('emailid',emailid);
-	    		Titanium.App.Properties.setString('kraniemailid',emailid);
+	    		if (Titanium.App.Properties.getString('kraniemailid')){
+						    			var kraniemailid = Titanium.App.Properties.getString('kraniemailid');
+		    		} else {Titanium.App.Properties.setString('kraniemailid',emailid);var kraniemailid=emaild;};
 	    		console.log("tabViewOne.js::args inside getEmail: emailid "+emailid+" :: "+JSON.stringify(e));
 	    		Alloy.Globals.getJSONOnline();
 				for (i=0;i<Alloy.Globals.corefilenamearray.length;i++){
-					var name = emailid.split('@')[0].trim();
+					var kraniemailid = Titanium.App.Properties.getString('kraniemailid');
+					var name = kraniemailid.split('@')[0].trim();
+					//var name = emailid.split('@')[0].trim();
 					var newfilename = name+"_"+Alloy.Globals.corefilenamearray[i]+"list";
 					var newdirname = name+"_"+Alloy.Globals.corefilenamearray[i];
 					console.log("alloy.js::Alloy.Globals.loginActivity:Alloy.Globals.stampSIDFromCoreFilename("+newfilename+"); Alloy.Globals.stampSIDFromCoreDirname("+newdirname+"); ");
 					Alloy.Globals.stampSIDFromCoreFilename(newfilename);
 					Alloy.Globals.stampSIDFromCoreDirname(newdirname);
+					Alloy.Globals.checkFileExistThenUpdateTitaniumProperties(name+"_defaultlogo"); //update defaultlogo webcontent links
 				}
 	    		
 	    	} catch(e){

@@ -176,14 +176,14 @@ if (projectitemsarray.length>0) {
 			left: "85%",
 			height : 30,
 			width : 30,
-			image : "square82.png"
+			image : "EditControl.png"
 		});
 		var checked = Ti.UI.createButton({
 			top: topvalue,
 			left: "85%",
 			height : 30,
 			width : 30,
-			image : "check70.png"
+			image : "EditControlSelected.png"
 		});
 		var projectnamelabel = Ti.UI.createLabel ({
 			color : "#333",
@@ -241,7 +241,7 @@ if (projectitemsarray.length>0) {
 		});
 		if ( projectitems.length > 1) {$.jobitem_row.add(itemtitlelabel); }
 		for (i=1;i<projectitems.length;i++){
-			topvalue=topvalue+14;
+			topvalue=topvalue+18;
 			var itembodylabel = Ti.UI.createLabel ({
 				color : "#333",
 				left  : "20",
@@ -293,7 +293,7 @@ if (projectitemsarray.length>0) {
 		}
 		topvalue=topvalue+20;
 		var grayline = Ti.UI.createImageView({
-			image: "grayline.png",
+			image: "list_divider@2x.png",
 			height: "2",
 			width: "90%",
 			left: "20",
@@ -320,14 +320,14 @@ var adhocs = Alloy.Collections.instance('adhoc');
 //selection on invoce.
 $.jobitem_row.addEventListener("click",function(e){
 	console.log("invoicedetail.js::jobitem_row event listener: JSON.stringify(e): "+JSON.stringify(e));
-	if (e.source.image=="square82.png"){
+	if (e.source.image=="EditControl.png"){
 		console.log("invoicedetail.js::after "+e.source.image+" clicked: JSON.stringify(e): "+JSON.stringify(e));
 		console.log("invoicedetail.js::after "+e.source.image+" clicked: retrieved JSON.stringify(e.source.titleid): "+JSON.stringify(e.source.titleid));
 		var info=e.source.titleid;
 		var infostring = JSON.stringify(e.source.titleid);
 		var infostringmod = infostring.replace(/\[/g,"xSqBracketOpen").replace(/\]/g,"xSqBracketClose");
 		console.log("invoicedetail.js::after "+e.source.image+" clicked: retrieved project name at Pos 0 again: "+info[0].names);
-		e.source.image="check70.png";
+		e.source.image="EditControlSelected.png";
 		var itemid = Date.now().toString();
 		//update adhoc table.
 		var dataModel = Alloy.createModel("adhoc",{
@@ -344,7 +344,7 @@ $.jobitem_row.addEventListener("click",function(e){
 		console.log("invoicedetail.js::itemid, "+itemid+", stamp to "+e.source.image+" clicked: JSON.stringify(e): "+JSON.stringify(e));
 	} else {
 		console.log("invoicedetail.js::after "+e.source.image+" clicked: JSON.stringify(e): "+JSON.stringify(e));
-		e.source.image="square82.png";
+		e.source.image="EditControl.png";
 		var itemid=e.source.itemid;
 		adhocs.fetch();
 		var theadhoc = adhocs.where({

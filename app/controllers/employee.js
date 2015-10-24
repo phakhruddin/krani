@@ -15,14 +15,14 @@ exports.openMainWindow = function(_tab) {
 			if (indexselect || indexselect == "0"){
 				if (indexselect == e.index){
 					console.log("location.js: previous e.source.image : "+ e.source.image+" indexselect : "+indexselect);
-					e.source.image = "square82.png";
+					e.source.image = "EditControl.png";
 					e.row.backgroundColor = "transparent";
 					indexselect = null; //reset indexselect		
 					console.log("location.js: e.source.image : "+ e.source.image);		
 				}			
 			} else {
-				if (e.source.image == "square82.png") {
-					e.source.image = "check70.png";
+				if (e.source.image == "EditControl.png") {
+					e.source.image = "EditControlSelected.png";
 					e.row.backgroundColor = "#87CEFA";
 					indexselect = e.index;
 					e.row.id = "selected";
@@ -32,7 +32,7 @@ exports.openMainWindow = function(_tab) {
 					Titanium.App.Properties.setString('employee',employee);
 					console.log("location.js: employee: "+ Titanium.App.Properties.getString('employee'));
 				} else {
-					e.source.image = "square82.png";
+					e.source.image = "EditControl.png";
 					e.row.backgroundColor = "transparent";
 					console.log("location.js: e.source.image : "+ e.source.image);
 					indexselect = null;
@@ -51,7 +51,7 @@ function transformFunction(model) {
 	transform.custom = transform.col2+"  "+transform.col3;
 	transform.phone = "Phone: "+transform.col5;
 	transform.email = "Email: "+transform.col6;
-	transform.img ="square82.png";
+	transform.img ="EditControl.png";
 	return transform;
 }
 

@@ -273,7 +273,7 @@ $.lineitem_tf.addEventListener('blur', function(_e) {
 	var paid = "50%";
 	var dates = "[{\"nextapptdate\"cOlOn\"5/1/2015\",\"duedate\"cOlOn\"6/1/2015\",\"lastpaiddate\"cOlOn\"4/1/2015\"}]";
 	var currency = "USD";
-	var status = (status)?status:"0";
+	var status = (status)?status:"Not Started";
 	var country = "USA";
 	var clientproject = projectname[0].name;
 	var notes = JSON.stringify(item).toString().replace(/:/g,'cOlOn');

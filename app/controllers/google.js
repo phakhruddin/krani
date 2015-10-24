@@ -224,6 +224,7 @@ function checkSid(e){
 
 function getIndex() {
 	var emailid = Titanium.App.Properties.getString('emailid');
+	var kraniemailid = Titanium.App.Properties.getString('kraniemailid');
 	var name = kraniemailid.split('@')[0].trim();
 	console.log("google.js:: executing Alloy.Globals.getPrivateIndex(name) with: "+name);
 	Alloy.Globals.getPrivateIndex(name);

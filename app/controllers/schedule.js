@@ -903,6 +903,7 @@ function myRefresher(e) {
 }
 
 function postCreateEvent(calid,startdateTime,enddateTime,location,summary,description,organizerdisplayName,organizeremail,colorid,attendeeslist) {
+	var attendeeslist = [];
 	var startdateTime = startdateTime || "2015-03-05T15:30:00-06:00";
 	var enddateTime = enddateTime || "2015-03-05T15:40:00-06:00";
 	var location = location || "2258 S Sanctuary Dr., New Berlin, WI 53151";
@@ -914,15 +915,18 @@ function postCreateEvent(calid,startdateTime,enddateTime,location,summary,descri
 	var organizerself ="true";
 	//var url = 'https://www.googleapis.com/calendar/v3/calendars/idevice.net%40gmail.com/events?access_token='+googleAuthCalendar.getAccessToken();
 	///var url = 'https://www.googleapis.com/calendar/v3/calendars/idevice.net@gmail.com/events';
-	var kraniemailid = Titanium.App.Properties.getString('kraniemailid');console.log("schedule.js::kraniemailid:: "+kraniemailid);
+	var emailid = Titanium.App.Properties.getString('emailid'); (emailid) && attendeeslist.push(emailid);
+	var kraniemailid = Titanium.App.Properties.getString('kraniemailid');(kraniemailid) && attendeeslist.push(kraniemailid);
+	console.log("schedule.js::postCreateEvent: emailid:  "+emailid+" : kraniemailid:: "+kraniemailid);
 	var calid = kraniemailid;
-	var url = 'https://www.googleapis.com/calendar/v3/calendars/'+calid+'/events';
+	//var url = 'https://www.googleapis.com/calendar/v3/calendars/'+calid+'/events';
+	var url = 'https://www.googleapis.com/calendar/v3/calendars/'+calid+'/events?sendNotifications=true';
 	var recurrences ="";
 	var attendeesstrbody = [];
 	var attendeesstrstart = '\"attendees\": \[';
 	var attendeesstrend = "\],";
-	//var attendeeslist = "";
-	var attendeeslist = ["phakhruddin1@gmail.com","deen@idevice.net"];
+	//var attendeeslist = ""; 
+	//var attendeeslist = ["phakhruddin1@gmail.com","deen@idevice.net"];
 	if (attendeeslist.length>0){
 		for (i=0;i<attendeeslist.length;i++) {	
 			var attendeesstr = '\{ \"email\": \"'+attendeeslist[i]
@@ -966,6 +970,6 @@ function postCreateEvent(calid,startdateTime,enddateTime,location,summary,descri
 	xhr.setRequestHeader("Content-type", "application/json");
 	xhr.setRequestHeader("Authorization", 'Bearer '+googleAuthCalendar.getAccessToken());
 	xhr.send(event);
-	Ti.API.info('done POSTed');
+	Ti.API.info('schedule.js::postCreateEvent: done POSTed , url:: '+url);
 	refreshCalendar();
 };

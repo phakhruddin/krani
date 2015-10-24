@@ -44,28 +44,44 @@ $.row_empselect.addEventListener("click", function(e){
   	empSelectController.openMainWindow($.tab_settings);	
 });
 
+$.companygmail_tf.hintText=Titanium.App.Properties.getString("kraniemailid")?"Gmail: "+Titanium.App.Properties.getString("kraniemailid"):"GMail e.g: ZefiLandscape@gmail.com";
+$.companyname_tf.hintText=Titanium.App.Properties.getString("coName")?"Name: "+Titanium.App.Properties.getString("coName"):"Name e.g.: Zefi Landscape LLC";
+$.streetaddress_tf.hintText=Titanium.App.Properties.getString("coStreetAddress")?"Address: "+Titanium.App.Properties.getString("coStreetAddress"):"Address e.g.: 100 W East Ave";
+$.city_tf.hintText=Titanium.App.Properties.getString("coCity")?"City: "+Titanium.App.Properties.getString("coCity"):"City";
+$.state_tf.hintText=Titanium.App.Properties.getString("coState","STATE");
+$.zipcode_tf.hintText=Titanium.App.Properties.getString("coZip")?+Titanium.App.Properties.getString("coZip"):"Zipcode";
+$.companyphone_tf.hintText=Titanium.App.Properties.getString("coPhone")?"Phone: "+Titanium.App.Properties.getString("coPhone"):"Phone: (414)555-1212";
 function coName(e) {Titanium.App.Properties.setString("coName", e.value);}
+function coGmail(e) {Titanium.App.Properties.setString("kraniemailid", e.value);}
 function coStreetAddress(e) {Titanium.App.Properties.setString("coStreetAddress", e.value);}
 function coCity(e) {Titanium.App.Properties.setString("coCity", e.value);}
 function coState(e) {Titanium.App.Properties.setString("coState", e.value);}
 function coZip(e) {Titanium.App.Properties.setString("coZip", e.value);}
 function coPhone(e) {Titanium.App.Properties.setString("coPhone", e.value);}
 
-function coEmail(e){Titanium.App.Properties.setString("coEmail", e.value);}
-
+//LOGO
 var logourl = Titanium.App.Properties.getString("logourl");
 var logoview = Ti.UI.createImageView ({
         image : logourl,
-        top : 50,
-        height : Ti.UI.SIZE,
-        width : Ti.UI.FILL
+        top : 10,
+        height : "150",
+        width : "150"
 });
+
+if ( logourl ) {
+ 	var logourl = Titanium.App.Properties.getString('logourl') ; 
+ 	console.log("settings.js::logo url is: "+logourl); 
+ 	$.logo_row.add(logoview);
+ } else { console.log("settings.js::logo does not exists.");};
+
+ 
 
 //getParentID for logo
  var kraniemailid = Titanium.App.Properties.getString('kraniemailid');
  var name = kraniemailid.split('@')[0].trim();
  var parentid = Titanium.App.Properties.getString(name+"_invoice");
  var filename = name+'_defaultlogo';
+ 
  
  function shareAnyonePermission(sid){
 	console.log("settings.js::shareAnyonePermission::sid: "+sid);
@@ -245,5 +261,13 @@ function uploadFile(e){
 	        videoQuality:Titanium.Media.QUALITY_HIGH
 	});
 	//win.open();
+}
+
+function phoneBlur(){
+	$.companyphone_tf.blur();
+}
+
+function zipBlur(){
+	$.zipcode_tf.blur();
 }
    
