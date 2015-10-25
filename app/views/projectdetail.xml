@@ -38,7 +38,7 @@
 		  	  <Button id="joblog_button" left="100" title="View/Update Job Logs > "/>  	  
 		  </TableViewRow>
 		  <TableViewRow id="jobreport_row"  color="blue">
-		  	<Button id="jobreport_button" left="100" title="Generate Report in PDF > "/>
+		  	<Button id="jobreport_button" left="100" title="Generate Report in PDF > " onClick="genJoblog" />
 		  </TableViewRow>
 		  <!--TableViewRow id="jobdetail_row">
 		  	  <Button id="jobdetail_label" title="Job Details > " onClick="JobDetail" />

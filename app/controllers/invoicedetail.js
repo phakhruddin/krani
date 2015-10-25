@@ -524,7 +524,7 @@ function emailpdf(firstname,lastname,address,city,state,phone,email,invoicenumbe
 	strVar += "html { font: 16px\/1 'Open Sans', sans-serif; overflow: auto; padding: 0.5in; }";
 	strVar += "html { background: #999; cursor: default; }";
 	strVar += "";
-	strVar += "body { box-sizing: border-box; height: 11in; margin: 0 auto; overflow: hidden; padding: 0.5in; width: 8.5in; }";
+	strVar += "body { box-sizing: border-box; height: auto; margin: 0 auto; overflow: hidden; padding: 0.5in; width: 8.5in; }";
 	strVar += "body { background: #FFF; border-radius: 1px; box-shadow: 0 0 1in -0.25in rgba(0, 0, 0, 0.5); }";
 	strVar += "";
 	strVar += "\/* header *\/";
@@ -603,7 +603,7 @@ function emailpdf(firstname,lastname,address,city,state,phone,email,invoicenumbe
 	strVar += "			<\/address>";
 	strVar += "			<span><img alt=\"\" src=\""+logourl+"\"><input type=\"file\" accept=\"image\/*\"><\/span>";
 	strVar += "		<\/header>";
-	strVar += "		<article>";
+	//strVar += "		<article>";
 	strVar += "			<h1>Recipient<\/h1>";
 	strVar += "			<address contenteditable>";
 	strVar += "				<p>"+((firstname == "none")?"":firstname)+" "+((lastname == "none")?"":lastname)+"<br>"+((address == "none")?"":address)+"<br>"+((city == "none")?"":city)+", "+((state == "none")?"":state)
@@ -620,7 +620,7 @@ function emailpdf(firstname,lastname,address,city,state,phone,email,invoicenumbe
 	strVar += "				<\/tr>";
 	strVar += "				<tr>";
 	strVar += "					<th><span contenteditable>Amount Due<\/span><\/th>";
-	strVar += "					<td><span id=\"prefix\" contenteditable>$<\/span><span>600.00<\/span><\/td>";
+	strVar += "					<td><span id=\"prefix\" contenteditable>$<\/span><span>"+balance+"<\/span><\/td>";
 	strVar += "				<\/tr>";
 	strVar += "			<\/table>";
 	strVar += "			<table class=\"inventory\">";
@@ -649,7 +649,7 @@ function emailpdf(firstname,lastname,address,city,state,phone,email,invoicenumbe
 	strVar += "					<td><span data-prefix>$<\/span><span>"+balance+"<\/span><\/td>";
 	strVar += "				<\/tr>";
 	strVar += "			<\/table>";
-	strVar += "		<\/article>";
+	//strVar += "		<\/article>";
 	strVar += "		<aside>";
 	strVar += "			<h1><span contenteditable>Additional Notes<\/span><\/h1>";
 	strVar += "			<div contenteditable>";

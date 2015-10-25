@@ -723,34 +723,73 @@ $.projectdetail_window.addEventListener("close",function(){
 
 //JOB REPORT EMAIL PDF START
 
-function emailpdf(firstname,lastname,address,city,state,phone,email,projectid,company,total,balance,paid,lastpaiddate,duedate,price){
+function viewpdf(url){
+	var win = Ti.UI.createWindow();
+	// Use a NavigationWindow to create a navigation bar for the window
+	var navWin = Ti.UI.iOS.createNavigationWindow({
+		backgroundColor: "gray",
+		window: win
+		});
+	
+	var navButton = Titanium.UI.createButton({title:'Back'});
+	win.RightNavButton = navButton;
+	//var leftNavButton = Titanium.UI.createButton({title:'Back'});
+	//win.LeftNavButton = leftNavButton;
+	
+	var winButton = Titanium.UI.createButton({
+	    title:'View PDF',
+	    height:40,
+	    width:200,
+	    top:270
+	});
+	
+	win.add(winButton);
+	
+	// Create a document viewer to preview a PDF file
+	var url = Ti.Filesystem.getFile(Ti.Filesystem.applicationDataDirectory,url);
+	url.rename('projectreport.pdf');
+	var docViewer = Ti.UI.iOS.createDocumentViewer({url:url.nativePath});
+	navButton.addEventListener('click', function(){
+	    //docViewer.show({view:navButton, animated: true});
+	    navWin.close();
+	});
+	// The document viewer immediately launches without an animation
+	winButton.addEventListener('click', function(){
+		docViewer.show();
+		var theimage = docViewer.toImage;
+		console.log("invoicedetail.js::viewpdf: JSON.stringify(docViewer) + JSON.stringify(theimage) : "+JSON.stringify(docViewer) +" : theimage: "+ JSON.stringify(theimage));
+    	 var kraniemailid = Titanium.App.Properties.getString('kraniemailid');
+		 var name = kraniemailid.split('@')[0].trim();
+     	 var parentid = Titanium.App.Properties.getString(name+"_invoice");
+		//Alloy.Globals.uploadPictoGoogle(theimage,'pdftoimage1.jpg',parentid) ;
+		});
+	
+	navWin.open();
+
+}
+ 
+
+function emailpdf(firstname,lastname,address,city,state,phone,email,projectid,company,projectname){
 	
 	console.log("projectdetail.js::emailpdf::  firstname " + firstname 	+" lastname " + lastname 	+" address " + address 	+" city " + city 	
-	+" state " + state 	+" phone " + phone 	+" email " + email 	+" projectid " + projectid 	+" company " + company 	+" total " + total 	
-	+" balance " + balance 	+" paid " + paid 	+" lastpaiddate " + lastpaiddate 	+" duedate " + duedate 	+" price " + price);
+	+" state " + state 	+" phone " + phone 	+" email " + email 	+" projectid " + projectid 	+" company " + company);
 	
 	var html2pdf = require('com.factisresearch.html2pdf');  
  	Ti.API.info("module is => " + html2pdf);
  	
- 	var oldfile = Ti.Filesystem.getFile('invoice.pdf'); if (oldfile.exists()) { oldfile.deleteFile(); } // cleanup old file
+ 	var oldfile = Ti.Filesystem.getFile('projectreport.pdf'); if (oldfile.exists()) { oldfile.deleteFile(); } // cleanup old file
    
  	html2pdf.addEventListener('pdfready', function(e) {  
 	     var file = Ti.Filesystem.getFile(e.pdf);   
 	    console.log("projectdetail.js::html2pdf.addEventListener:: Ti.Filesystem.applicationDataDirectory "+Ti.Filesystem.applicationDataDirectory);
-		var oldfile = Ti.Filesystem.getFile(Ti.Filesystem.applicationDataDirectory,'invoice.pdf');
+		var oldfile = Ti.Filesystem.getFile(Ti.Filesystem.applicationDataDirectory,'projectreport.pdf');
 		if (oldfile.exists()) { oldfile.deleteFile(); }
 		var orgfile =  Ti.Filesystem.getFile(Ti.Filesystem.applicationDataDirectory,'Expose.pdf');
-        var renamesuccess = orgfile.rename('invoice.pdf');
+        var renamesuccess = orgfile.rename('projectreport.pdf');
         console.log("projectdetail.js::html2pdf.addEventListener:: renamesuccess "+renamesuccess);
-	     ///var emailDialog = Ti.UI.createEmailDialog();  
-	     ///var newfile = file.rename('invoice.pdf');
-	     //emailDialog.addAttachment(Ti.Filesystem.getFile(e.pdf));
-	     //emailDialog.open();  
-	     ///file.rename('invoice.pdf');
-	     var url = '../Documents/invoice.pdf';
-	     //var url = '../Documents/Expose.pdf';
+	     var url = '../Documents/projectreport.pdf';
 	     var newurl = Ti.Filesystem.getFile(url);
-	     var file = 'invoice.pdf';
+	     var file = 'projectreport.pdf';
 	     console.log("opening viewpdf(url) on "+file);
      	 viewpdf(file);
      	 (Alloy.Globals.googleAuthSheet.getAccessToken()) || Alloy.Globals.googleAuthSheet.Authorized();
@@ -758,26 +797,14 @@ function emailpdf(firstname,lastname,address,city,state,phone,email,projectid,co
      	 var date = new Date();
      	 var dateinsert = date.getFullYear()+""+(date.getMonth()+1)+""+date.getDate()+""+date.getHours();
      	 var pdffilename = projectid+"_"+firstname+"_"+lastname+"_"+dateinsert;
-     	 var predocViewer = Ti.UI.iOS.createDocumentViewer({url:'invoice.pdf'});
-     	 //var imagefile = predocViewer.toImage();
+     	 var predocViewer = Ti.UI.iOS.createDocumentViewer({url:'projectreport.pdf'});
      	 var jpgfilename = "jpg_"+projectid+"_"+firstname+"_"+lastname+"_"+dateinsert;
      	 var kraniemailid = Titanium.App.Properties.getString('kraniemailid');
 		 var name = kraniemailid.split('@')[0].trim();
-     	 var parentid = Titanium.App.Properties.getString(name+"_invoice");
+     	 var parentid = Titanium.App.Properties.getString(name+"_project");
      	 console.log(new Date()+"::projectdetail.js::html2pdf::Alloy.Globals.uploadFile("+file+","+pdffilename+","+parentid+")");
      	 Alloy.Globals.uploadFile(file,pdffilename,parentid) ;
-     	 //Alloy.Globals.uploadFile(imagefile,jpgfilename) ;
  	});  
- 	
- 	//var html = '<html><body><p>dBayCo Inc. limited </p></body></html>'; 
- 	
- 	//var html="";
-	//html += "<html><body><div id=\"top-bar\"><div id=\"doc-title\"><span class=\"name\">sample invoice : Sheet1<\/span><\/div><\/div><div id=\"sheets-viewport\"><div id=\"0\" style=\"display:none;position:relative;\" dir=\"ltr\"><div class=\"ritz grid-container\" dir=\"ltr\"><table class=\"waffle\" cellspacing=\"0\" cellpadding=\"0\"><thead><tr><th class=\"row-header freezebar-origin-ltr header-shim row-header-shim\"><\/th><th id=\"0C0\" style=\"width:195px\" class=\"header-shim\"><\/th><th id=\"0C1\" style=\"width:286px\" class=\"header-shim\"><\/th><th id=\"0C2\" style=\"width:100px\" class=\"header-shim\"><\/th><th id=\"0C3\" style=\"width:100px\" class=\"header-shim\"><\/th><th id=\"0C4\" style=\"width:100px\" class=\"header-shim\"><\/th><\/tr><\/thead><tbody><tr style='height:20px;'><th id=\"0R0\" style=\"height: 20px;\" class=\"row-headers-background row-header-shim\"><div class=\"row-header-wrapper\" style=\"line-height: 20px;\">1<\/div><\/th><td><\/td><td><\/td><td><\/td><td><\/td><td><\/td><\/tr><tr style='height:20px;'><th id=\"0R1\" style=\"height: 20px;\" class=\"row-headers-background row-header-shim\"><div class=\"row-header-wrapper\" style=\"line-height: 20px;\">2<\/div><\/th><td class=\"s0\" dir=\"ltr\" colspan=\"5\">DbayCo Inc. 130 Moreland Rd., Brookfield, WI 53222<\/td><\/tr><tr style='height:20px;'><th id=\"0R2\" style=\"height: 20px;\" class=\"row-headers-background row-header-shim\"><div class=\"row-header-wrapper\" style=\"line-height: 20px;\">3<\/div><\/th><td class=\"s1\" dir=\"ltr\" colspan=\"5\">Phone: 262-501-2948, Fax: 262-290-3141. Email: deen@idevice.net<\/td><\/tr><tr style='height:20px;'><th id=\"0R3\" style=\"height: 20px;\" class=\"row-headers-background row-header-shim\"><div class=\"row-header-wrapper\" style=\"line-height: 20px;\">4<\/div><\/th><td class=\"s2\" colspan=\"5\"><\/td><\/tr><tr style='height:20px;'><th id=\"0R4\" style=\"height: 20px;\" class=\"row-headers-background row-header-shim\"><div class=\"row-header-wrapper\" style=\"line-height: 20px;\">5<\/div><\/th><td class=\"s3\" dir=\"ltr\" colspan=\"3\">INVOICE<\/td><td class=\"s0\" dir=\"ltr\" colspan=\"2\">WAN-20150225-1<\/td><\/tr><tr style='height:20px;'><th id=\"0R5\" style=\"height: 20px;\" class=\"row-headers-background row-header-shim\"><div class=\"row-header-wrapper\" style=\"line-height: 20px;\">6<\/div><\/th><td class=\"s2\" colspan=\"2\" rowspan=\"2\"><\/td><td class=\"s2\" colspan=\"3\"><\/td><\/tr><tr style='height:20px;'><th id=\"0R6\" style=\"height: 20px;\" class=\"row-headers-background row-header-shim\"><div class=\"row-header-wrapper\" style=\"line-height: 20px;\">7<\/div><\/th><td class=\"s4\"><\/td><td class=\"s5\" dir=\"ltr\"><\/td><td class=\"s5\" dir=\"ltr\"><\/td><\/tr><tr style='height:20px;'><th id=\"0R7\" style=\"height: 20px;\" class=\"row-headers-background row-header-shim\"><div class=\"row-header-wrapper\" style=\"line-height: 20px;\">8<\/div><\/th><td class=\"s2\" dir=\"ltr\">Wannoorbaya WChik<\/td><td class=\"s2\" rowspan=\"4\"><\/td><td class=\"s5\" dir=\"ltr\"><\/td><td class=\"s5\" dir=\"ltr\">230<\/td><td class=\"s5\" dir=\"ltr\"><\/td><\/tr><tr style='height:20px;'><th id=\"0R8\" style=\"height: 20px;\" class=\"row-headers-background row-header-shim\"><div class=\"row-header-wrapper\" style=\"line-height: 20px;\">9<\/div><\/th><td class=\"s2\" dir=\"ltr\">2258 S Sanctuary Dr<\/td><td class=\"s5\" dir=\"ltr\"><\/td><td class=\"s5\" dir=\"ltr\"><\/td><td class=\"s6\" dir=\"ltr\">due 4\/1\/2015<\/td><\/tr><tr style='height:20px;'><th id=\"0R9\" style=\"height: 20px;\" class=\"row-headers-background row-header-shim\"><div class=\"row-header-wrapper\" style=\"line-height: 20px;\">10<\/div><\/th><td class=\"s2\" dir=\"ltr\">New Berlin, WI 53151<\/td><td class=\"s2\" colspan=\"3\" rowspan=\"2\"><\/td><\/tr><tr style='height:20px;'><th id=\"0R10\" style=\"height: 20px;\" class=\"row-headers-background row-header-shim\"><div class=\"row-header-wrapper\" style=\"line-height: 20px;\">11<\/div><\/th><td class=\"s2\" dir=\"ltr\">Date: 2\/28\/2014<\/td><\/tr><tr style='height:20px;'><th id=\"0R11\" style=\"height: 20px;\" class=\"row-headers-background row-header-shim\"><div class=\"row-header-wrapper\" style=\"line-height: 20px;\">12<\/div><\/th><td class=\"s2\" colspan=\"5\" rowspan=\"2\"><\/td><\/tr><tr style='height:20px;'><th id=\"0R12\" style=\"height: 20px;\" class=\"row-headers-background row-header-shim\"><div class=\"row-header-wrapper\" style=\"line-height: 20px;\">13<\/div><\/th><\/tr><tr style='height:20px;'><th id=\"0R13\" style=\"height: 20px;\" class=\"row-headers-background row-header-shim\"><div class=\"row-header-wrapper\" style=\"line-height: 20px;\">14<\/div><\/th><td class=\"s7\" dir=\"ltr\">Item no.<\/td><td class=\"s7\" dir=\"ltr\">Description<\/td><td class=\"s7\" dir=\"ltr\">Qty<\/td><td class=\"s7\" dir=\"ltr\">Unit\/Price<\/td><td class=\"s8\" dir=\"ltr\">Price<\/td><\/tr><tr style='height:20px;'><th id=\"0R14\" style=\"height: 20px;\" class=\"row-headers-background row-header-shim\"><div class=\"row-header-wrapper\" style=\"line-height: 20px;\">15<\/div><\/th><td class=\"s2\" dir=\"ltr\"><\/td><td class=\"s2\" dir=\"ltr\"><\/td><td class=\"s2\" dir=\"ltr\"><\/td><td class=\"s2\" dir=\"ltr\"><\/td><td class=\"s2\" dir=\"ltr\"><\/td><\/tr><tr style='height:20px;'><th id=\"0R15\" style=\"height: 20px;\" class=\"row-headers-background row-header-shim\"><div class=\"row-header-wrapper\" style=\"line-height: 20px;\">16<\/div><\/th><td class=\"s9\" dir=\"ltr\">1<\/td><td class=\"s2\" dir=\"ltr\">Mow Lawn<\/td><td class=\"s9\" dir=\"ltr\">1<\/td><td class=\"s9\" dir=\"ltr\">100<\/td><td class=\"s10\" dir=\"ltr\">100<\/td><\/tr><tr style='height:20px;'><th id=\"0R16\" style=\"height: 20px;\" class=\"row-headers-background row-header-shim\"><div class=\"row-header-wrapper\" style=\"line-height: 20px;\">17<\/div><\/th><td class=\"s9\" dir=\"ltr\">2<\/td><td class=\"s2\" dir=\"ltr\">Cut Trees<\/td><td class=\"s9\" dir=\"ltr\">1<\/td><td class=\"s9\" dir=\"ltr\">120<\/td><td class=\"s10\" dir=\"ltr\">120<\/td><\/tr><tr style='height:20px;'><th id=\"0R17\" style=\"height: 20px;\" class=\"row-headers-background row-header-shim\"><div class=\"row-header-wrapper\" style=\"line-height: 20px;\">18<\/div><\/th><td class=\"s11\"><\/td><td class=\"s11\"><\/td><td class=\"s11\"><\/td><td class=\"s11\" dir=\"ltr\"><\/td><td class=\"s12\" dir=\"ltr\"><\/td><\/tr><tr style='height:20px;'><th id=\"0R18\" style=\"height: 20px;\" class=\"row-headers-background row-header-shim\"><div class=\"row-header-wrapper\" style=\"line-height: 20px;\">19<\/div><\/th><td><\/td><td><\/td><td class=\"s13\"><\/td><td class=\"s13\" dir=\"ltr\">SubTotal<\/td><td class=\"s10\" dir=\"ltr\">220<\/td><\/tr><tr style='height:20px;'><th id=\"0R19\" style=\"height: 20px;\" class=\"row-headers-background row-header-shim\"><div class=\"row-header-wrapper\" style=\"line-height: 20px;\">20<\/div><\/th><td><\/td><td><\/td><td class=\"s13\"><\/td><td class=\"s13\" dir=\"ltr\">Tax<\/td><td class=\"s10\" dir=\"ltr\">10<\/td><\/tr><tr style='height:20px;'><th id=\"0R20\" style=\"height: 20px;\" class=\"row-headers-background row-header-shim\"><div class=\"row-header-wrapper\" style=\"line-height: 20px;\">21<\/div><\/th><td><\/td><td><\/td><td class=\"s13\"><\/td><td class=\"s13\" dir=\"ltr\">Other<\/td><td class=\"s10\" dir=\"ltr\">0<\/td><\/tr><tr style='height:20px;'><th id=\"0R21\" style=\"height: 20px;\" class=\"row-headers-background row-header-shim\"><div class=\"row-header-wrapper\" style=\"line-height: 20px;\">22<\/div><\/th><td><\/td><td><\/td><td class=\"s13\"><\/td><td class=\"s13\" dir=\"ltr\">Discount<\/td><td class=\"s10\" dir=\"ltr\">0<\/td><\/tr><tr style='height:20px;'><th id=\"0R22\" style=\"height: 20px;\" class=\"row-headers-background row-header-shim\"><div class=\"row-header-wrapper\" style=\"line-height: 20px;\">23<\/div><\/th><td><\/td><td><\/td><td class=\"s13\" dir=\"ltr\"><\/td><td class=\"s13\" dir=\"ltr\">Paid<\/td><td class=\"s10\" dir=\"ltr\">0<\/td><\/tr><tr style='height:20px;'><th id=\"0R23\" style=\"height: 20px;\" class=\"row-headers-background row-header-shim\"><div class=\"row-header-wrapper\" style=\"line-height: 20px;\">24<\/div><\/th><td><\/td><td><\/td><td class=\"s14\" dir=\"ltr\">Total due by<\/td><td class=\"s15\" dir=\"ltr\">4\/1\/2015<\/td><td class=\"s15\" dir=\"ltr\">230<\/td><\/tr><\/tbody><\/table><\/div><\/div><\/div><\/body><\/html>";
-	/*var coName = 'Jack Mow Inc.';
-	var coAddress = "1125 Bluemound Rd., Brookfield, WI 53222";
-	var coPhone = "262-290-3141";
-	var coFax = "262-290-3142";
-	var coEmail = "sales@jackmowinc.com";*/
 	
 	var coName = Titanium.App.Properties.getString("coName");
 	var coAddress = Titanium.App.Properties.getString("coStreetAddress")+", \n"+Titanium.App.Properties.getString("coCity")
@@ -787,52 +814,49 @@ function emailpdf(firstname,lastname,address,city,state,phone,email,projectid,co
 	var coFax = coPhone;
 	var coEmail = Titanium.App.Properties.getString("coEmail");
 	var invoiceno = projectid;
+	var logourl = Titanium.App.Properties.getString('logourl');
 	
 	if (phone) { var custphone = "("+phone.substr(0,3)+")"+phone.substr(3,3)+"-"+phone.substr(6,4);} else var custphone = "";
 	
-	adhocs.fetch();
-	console.log("projectdetail.js::emailpdf:: adhocs contents "+JSON.stringify(adhocs)); 
-	console.log("projectdetail.js::emailpdf:: adhocs.length: "+adhocs.length); 
 	var strVarItems="";
-	for (i=0;i<adhocs.length;i++){
-		console.log("projectdetail.js::emailpdf:: adhocs.models["+i+"].toJSON().col3: "+adhocs.models[i].toJSON().col3);
-		var jobitemstring=adhocs.models[i].toJSON().col3.replace(/xSqBracketOpen/,'[').replace(/xSqBracketClose/,']');
-		console.log("projectdetail.js::emailpdf:: adhocs extraction: jobitemstring.length "+jobitemstring.length+ "jobitemstring : "+jobitemstring);
-		var jobitemjson = JSON.parse(jobitemstring);
-		for (j=0;j<jobitemjson.length;j++){
-			var names=jobitemjson[0].names;
-			console.log("projectdetail.js::emailpdf:: adhocs extraction:  names : "+jobitemjson[j].names+" : "+jobitemjson[j].descr+" : "+jobitemjson[j].lineitem+" : "+jobitemjson[j].price+" : "+jobitemjson[j].qty);
+	
+	var joblog  = Alloy.Collections.instance('joblog');
+    joblog.fetch();
+    console.log("projectdetail.js::JSON stringify joblog data on emailpdf: "+JSON.stringify(joblog));
+    var jobitemjson = joblog.toJSON();
+    console.log("projectdetail.js::jobitemjson.length: "+jobitemjson.length);
+    for (j=0;j<jobitemjson.length;j++){
+		console.log("projectdetail.js::emailpdf:: adhocs jobitemjson:  col1 : "+jobitemjson[j].col1+" : "+jobitemjson[j].col2+" : "+jobitemjson[j].col5);
+		var picurl = jobitemjson[j].col4;
+		strVarItems += "						<td><a class=\"cut\">-<\/a><span contenteditable>"+jobitemjson[j].col1+"<\/span><\/td>";
+		if (jobitemjson[j].col2 != "none"){strVarItems += "						<td><span contenteditable>"+jobitemjson[j].col2+"<\/span><\/td>";};
+		if (picurl != "none"){
+			strVarItems += "			<table class=\"inventory\">";
+			strVarItems += "				<thead>";
+			strVarItems += "					<tr>";
+			strVarItems += "						<th><span contenteditable>Date<\/span><\/th>";
+			strVarItems += "						<th><span contenteditable>Description<\/span><\/th>";
+			strVarItems += "						<th><span contenteditable>Report by<\/span><\/th>";
+			strVarItems += "					<\/tr>";
+			strVarItems += "				<\/thead>";
 			strVarItems += "				<tbody>";
 			strVarItems += "					<tr>";
-			if(j>0){
-				console.log("projectdetail.js::emailpdf:: names comparison:  "+jobitemjson[j].names+" vs. "+jobitemjson[j-1].names);
-				if(jobitemjson[j].names==jobitemjson[j-1].names){
-					strVarItems += "						<td><a class=\"cut\">-<\/a><span contenteditable> <\/span><\/td>";
-				} else {
-					strVarItems += "						<td><a class=\"cut\">-<\/a><span contenteditable>"+jobitemjson[j].names+"<\/span><\/td>";
-				}
-				if(jobitemjson[j].descr==jobitemjson[j-1].descr){
-					strVarItems += "						<td><span contenteditable> <\/span><\/td>";
-				} else {
-					strVarItems += "						<td><span contenteditable>"+jobitemjson[j].descr+"<\/span><\/td>";
-				}
-			} else {
-				strVarItems += "						<td><a class=\"cut\">-<\/a><span contenteditable>"+jobitemjson[j].names+"<\/span><\/td>";
-				strVarItems += "						<td><span contenteditable>"+jobitemjson[j].descr+"<\/span><\/td>";
-			}
-			strVarItems += "						<td><span contenteditable>"+jobitemjson[j].lineitem+"<\/span><\/td>";
-			strVarItems += "						<td><span contenteditable>"+jobitemjson[j].qty+"<\/span><\/td>";
-			(isNaN(jobitemjson[j].price))?strVarItems += "						<td><span>"+jobitemjson[j].price+"<\/span><\/td>":strVarItems += "						<td><span data-prefix>$<\/span><span>"+jobitemjson[j].price+"<\/span><\/td>";
+		strVarItems += "						<td><a class=\"cut\">-<\/a><span contenteditable>"+jobitemjson[j].col1+"<\/span><\/td>";
+			strVarItems += "						<td><span><img alt=\"\" src=\""+jobitemjson[j].col4+"\"><input type=\"file\" title=\"image\" accept=\"image\/*\"><\/span><\/td>";
 			strVarItems += "					<\/tr>";
-			strVarItems += "				<\/tbody>";
+		} else {
+			strVarItems += "						<td><span contenteditable>"+jobitemjson[j].col5+"<\/span><\/td>";
+			strVarItems += "					<\/tr>";
 		}
-	}
-  
+		strVarItems += "				<\/tbody>";
+		strVar += "			<\/table>";
+    }
+
 	var strVar="";
 	strVar += "<html>";
 	strVar += "	<head>";
 	strVar += "		<meta charset=\"utf-8\">";
-	strVar += "		<title>Invoice<\/title>";
+	strVar += "		<title>Project Report<\/title>";
 	strVar += "<style>";
 	strVar += "    \/* reset *\/";
 	strVar += "";
@@ -871,6 +895,8 @@ function emailpdf(firstname,lastname,address,city,state,phone,email,projectid,co
 	strVar += "";
 	strVar += "table { font-size: 75%; table-layout: fixed; width: 100%; }";
 	strVar += "table { border-collapse: separate; border-spacing: 2px; }";
+	strVar += "table input { cursor: pointer; -ms-filter:\"progid:DXImageTransform.Microsoft.Alpha(Opacity=0)\"; height: 100%; left: 0; opacity: 0; position: absolute; top: 0; width: 100%; }";
+	strVar += "table img { max-height: 100%; max-width: 150%; }";
 	strVar += "th, td { border-width: 1px; padding: 0.5em; position: relative; text-align: left; }";
 	strVar += "th, td { border-radius: 0.25em; border-style: solid; }";
 	strVar += "th { background: #EEE; border-color: #BBB; }";
@@ -881,8 +907,10 @@ function emailpdf(firstname,lastname,address,city,state,phone,email,projectid,co
 	strVar += "html { font: 16px\/1 'Open Sans', sans-serif; overflow: auto; padding: 0.5in; }";
 	strVar += "html { background: #999; cursor: default; }";
 	strVar += "";
-	strVar += "body { box-sizing: border-box; height: 11in; margin: 0 auto; overflow: hidden; padding: 0.5in; width: 8.5in; }";
+	//strVar += "body { box-sizing: border-box; height: 11in; margin: 0 auto; overflow: hidden; padding: 0.5in; width: 8.5in; }";
+	strVar += "body { box-sizing: border-box; height: auto; margin: 0 auto; overflow: hidden; padding: 0.5in; width: 8.5in; }";
 	strVar += "body { background: #FFF; border-radius: 1px; box-shadow: 0 0 1in -0.25in rgba(0, 0, 0, 0.5); }";
+	strVar += "div   { page-break-inside:avoid; }";
 	strVar += "";
 	strVar += "\/* header *\/";
 	strVar += "";
@@ -918,6 +946,7 @@ function emailpdf(firstname,lastname,address,city,state,phone,email,projectid,co
 	strVar += "\/* table items *\/";
 	strVar += "";
 	strVar += "table.inventory { clear: both; width: 100%; }";
+	strVar += "table.inventory { page-break-inside:never; }";
 	strVar += "table.inventory th { font-weight: bold; text-align: center; }";
 	strVar += "";
 	strVar += "table.inventory td:nth-child(1) { width: 26%; }";
@@ -950,7 +979,7 @@ function emailpdf(firstname,lastname,address,city,state,phone,email,projectid,co
 	strVar += "	<\/head>";
 	strVar += "	<body>";
 	strVar += "		<header>";
-	strVar += "			<h1>Invoice<\/h1>";
+	strVar += "			<h1>Project Report<\/h1>";
 	strVar += "			<address contenteditable>";
 	strVar += "				<p>"+coName+"<\/p>";
 	strVar += "				<p>"+coAddress+"<\/p>";
@@ -968,51 +997,29 @@ function emailpdf(firstname,lastname,address,city,state,phone,email,projectid,co
 	strVar += "			<\/address>";
 	strVar += "			<table class=\"meta\">";
 	strVar += "				<tr>";
-	strVar += "					<th><span contenteditable>Invoice #<\/span><\/th>";
-	strVar += "					<td><span contenteditable>"+projectid+"<\/span><\/td>";
+	strVar += "					<th><span contenteditable>Project Name<\/span><\/th>";
+	strVar += "					<td><span contenteditable>"+projectname+"<\/span><\/td>";
 	strVar += "				<\/tr>";
 	strVar += "				<tr>";
 	strVar += "					<th><span contenteditable>Date<\/span><\/th>";
 	strVar += "					<td><span contenteditable>"+(new Date()).toString().slice(4,16)+"<\/span><\/td>";
 	strVar += "				<\/tr>";
 	strVar += "				<tr>";
-	strVar += "					<th><span contenteditable>Amount Due<\/span><\/th>";
-	strVar += "					<td><span id=\"prefix\" contenteditable>$<\/span><span>600.00<\/span><\/td>";
+	strVar += "					<th><span contenteditable>Project #<\/span><\/th>";
+	strVar += "					<td><span id=\"prefix\" contenteditable><\/span><span>"+projectid+"<\/span><\/td>";
 	strVar += "				<\/tr>";
 	strVar += "			<\/table>";
 	strVar += "			<table class=\"inventory\">";
 	strVar += "				<thead>";
 	strVar += "					<tr>";
-	strVar += "						<th><span contenteditable>Project<\/span><\/th>";
+	strVar += "						<th><span contenteditable>Date<\/span><\/th>";
 	strVar += "						<th><span contenteditable>Description<\/span><\/th>";
-	strVar += "						<th><span contenteditable>Item<\/span><\/th>";
-	strVar += "						<th><span contenteditable>Quantity<\/span><\/th>";
-	strVar += "						<th><span contenteditable>Price<\/span><\/th>";
+	strVar += "						<th><span contenteditable>Report by<\/span><\/th>";
 	strVar += "					<\/tr>";
 	strVar += "				<\/thead>";
 	strVar += strVarItems;
-	strVar += "			<\/table>";
-	strVar += "			<table class=\"balance\">";
-	strVar += "				<tr>";
-	strVar += "					<th><span contenteditable>Total<\/span><\/th>";
-	strVar += "					<td><span data-prefix>$<\/span><span>"+subtotal+"<\/span><\/td>";
-	strVar += "				<\/tr>";
-	strVar += "				<tr>";
-	strVar += "					<th><span contenteditable>Amount Paid<\/span><\/th>";
-	strVar += "					<td><span data-prefix>$<\/span><span contenteditable>"+paid+"<\/span><\/td>";
-	strVar += "				<\/tr>";
-	strVar += "				<tr>";
-	strVar += "					<th><span contenteditable>Balance Due<\/span><\/th>";
-	strVar += "					<td><span data-prefix>$<\/span><span>"+balance+"<\/span><\/td>";
-	strVar += "				<\/tr>";
-	strVar += "			<\/table>";
+	//strVar += "			<\/table>";
 	strVar += "		<\/article>";
-	strVar += "		<aside>";
-	strVar += "			<h1><span contenteditable>Additional Notes<\/span><\/h1>";
-	strVar += "			<div contenteditable>";
-	strVar += "				<p>A finance charge of 1.5% will be made on unpaid balances after 30 days.<\/p>";
-	strVar += "			<\/div>";
-	strVar += "		<\/aside>";
 	strVar += "	<\/body>";
 	strVar += "<\/html>";
    
@@ -1020,6 +1027,14 @@ function emailpdf(firstname,lastname,address,city,state,phone,email,projectid,co
  
 }
 
+
+function genJoblog(e){
+	console.log("invoicedetail.js::genInvoice:: JSON.stringify(e) "+JSON.stringify(e)+" with : "+firstname+" "+lastname+" : "+projectid+" projectname: "+projectname);
+		var logourl = Titanium.App.Properties.getString('logourl');
+		console.log("invoicedetail.js::genInvoice:: logourl is: "+logourl);
+
+		emailpdf(firstname,lastname,address,city,state,phone,email,projectid,company,projectname);
+};
 
 
 $.jobreport_button.addEventListener("click",function(e){

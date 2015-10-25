@@ -31,7 +31,11 @@ function transformFunction(model) {
 	}
 	datesraw = transform.col15;
 	datesdata = datesraw.replace(/cOlOn/g,":");
-	if(transform.datedue != "none" || transform.datedue != "NA" ){transform.datedue = "due date: "+JSON.parse(datesdata)[0].duedate; } else { transform.datedue = "due date: ";} ;
+	datesdata = JSON.parse(datesdata);
+	console.log("project.js::transformfunction: JSON.stringify(datesraw): "+JSON.stringify(datesraw)+"due date: "+datesdata[0].duedate);
+	if (datesdata) {
+		if(transform.datedue != "none" || transform.datedue != "NA" ){transform.datedue = "due date: "+datesdata[0].duedate; } else { transform.datedue = "due date: ";} ;
+	} else transform.datedue = "due date: ";
 	return transform;
 }
 
