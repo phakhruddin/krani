@@ -29,9 +29,12 @@
 	  </TableViewSection>
 	  <TableViewSection headerTitle="Dates" >
 		  <TableViewRow id="nextapptdetail_row" Title="nextapptDetail" height="54">
-		  	  <Label top="10" left="20" color="#333" text="Next appointment date: " />
-	   		  <Label top="30" left="20" color="#333" text="Due Date: " />
+		  	  <Button id="nextapptdate_button" top="10" left="20" title="Next appointment date: " onClick="nextapptdateAction" />
+		  	  <Label id="nextapptdate_label" top="10" left="200" color="black" textAlign="Ti.UI.TEXT_ALIGNMENT_LEFT"/>
+	   		  <Button top="30" id="duedate_button" left="20" title="Due Date: "  onClick="duedateAction" />
+	   		  <Label id="datedue_label" top="30" left="200" color="black" textAlign="Ti.UI.TEXT_ALIGNMENT_LEFT"/>
 		  </TableViewRow>
+		  <TableViewRow id="datepicker_row" height="1"/>
 	  </TableViewSection>
 	  <TableViewSection headerTitle="Job Logs" >
 		  <TableViewRow id="joblog_row"  color="blue">

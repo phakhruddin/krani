@@ -11,7 +11,7 @@ $.ptr.refresh();
 
 function transformFunction(model) {
 	var transform = model.toJSON();
-	console.log("project.js::transform col1 data:: "+JSON.stringify(transform.col1)+" col16:"+JSON.stringify(transform.col16));
+	console.log("project.js::transform col1 data:: "+JSON.stringify(transform.col1)+" col15:"+JSON.stringify(transform.col15)+" col16:"+JSON.stringify(transform.col16));
 	transform.title = transform.col1.trim()+":"+transform.col2.trim()+":"+transform.col3.trim()+":"+transform.col4.trim()+":"+transform.col5.trim()+":"+transform.col6+":"+transform.col7+":"
 	+transform.col8+":"+transform.col9+":"+transform.col10+":"+transform.col11+":"+transform.col12+":"+transform.col13+":"+transform.col14+":"
 	+transform.col15+":"+transform.col16;
@@ -30,12 +30,15 @@ function transformFunction(model) {
 		transform.addresscolor = "red";
 	}
 	datesraw = transform.col15;
-	datesdata = datesraw.replace(/cOlOn/g,":");
-	datesdata = JSON.parse(datesdata);
-	console.log("project.js::transformfunction: JSON.stringify(datesraw): "+JSON.stringify(datesraw)+"due date: "+datesdata[0].duedate);
-	if (datesdata) {
-		if(transform.datedue != "none" || transform.datedue != "NA" ){transform.datedue = "due date: "+datesdata[0].duedate; } else { transform.datedue = "due date: ";} ;
+	if (datesraw != "NA"){
+		datesdata = datesraw.replace(/cOlOn/g,":");
+		datesdata = JSON.parse(datesdata);
+		console.log("project.js::transformfunction: JSON.stringify(datesraw): "+JSON.stringify(datesraw)+"due date: "+datesdata[0].duedate);
+		if (datesdata) {
+			if(transform.datedue != "none" || transform.datedue != "NA" ){transform.datedue = "due date: "+datesdata[0].duedate; } else { transform.datedue = "due date: ";} ;
+		} else transform.datedue = "due date: ";
 	} else transform.datedue = "due date: ";
+	
 	return transform;
 }
 

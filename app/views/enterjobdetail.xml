@@ -31,7 +31,8 @@
             	<Button systemButton="CAMERA" onClick="takePic"/>
              	<FlexSpace/> 
              	<FlexSpace/>
-             	<Button systemButton="DISCLOSURE" onClick="getParentFolder"/>          	
+             	<Button title="Submit Report" onClick="getReport"/>  
+             	<FlexSpace/>        	
             </Items>
         </Toolbar>   
   </Window>

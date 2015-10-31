@@ -134,6 +134,13 @@ function jobDetailAddRow (date,notesbody,imageurl,jobcommentdata,employee) {
                 borderWidth:"0.1",
                 borderColor:"white"
         });
+        var selectbutton = Ti.UI.createButton({
+        	image:"EditControl.png",
+        	right:"45",
+        	width:"30",
+        	height:"30"
+        });
+
         innerview.add(datelabel);
         innerview.add(employeelabel);
         innerview.add(blueline);
@@ -143,11 +150,12 @@ function jobDetailAddRow (date,notesbody,imageurl,jobcommentdata,employee) {
                 var noteslabelheight = ((Math.round(notesbody.split('').length/50)+(notesbody.split(/\r?\n|\r/).length))*14)+14;
                 //console.log("enterjobdetail.js::noteslabelheight: "+noteslabelheight+" notesbody count: "+notesbody.split(' ').length);
                 innerview.height = 60+noteslabelheight;
+                selectbutton.top="40";
                // innerview.height = "100";
         } else {
                 //imagelabel.height = 200;
                 imagelabel.height = Ti.UI.SIZE;
-                imagelabel.width = 340;
+                imagelabel.width = 340;    
         };
         if (imageurl != "none") {
         	innerview.add(imagelabel);
@@ -158,35 +166,45 @@ function jobDetailAddRow (date,notesbody,imageurl,jobcommentdata,employee) {
                 width: Ti.UI.FILL,
                 height: Ti.UI.SIZE
         		});
+        		selectbutton.top="225";      
         	};
         if ( notesbody != "none" && imageurl != "none") {
                 imagelabel.top = 50;
                 noteslabel.top = 220;
         };
         jobrow.add(innerview);
+        //$.job_row.add(innerview);
+        jobrow.add(selectbutton);
         jobrow.metadata = jobcommentdata; // add metadata info
-        
+        //$.job_row.metadata = jobcommentdata; // add metadata info
+      /*  
         var jobtable = Ti.UI.createTableView({
                 backgroundColor: "white",
                 separatorStyle :"Titanium.UI.iPhone.TableViewSeparatorStyle.NONE"
         });
-        jobtable.add(jobrow);
+        jobtable.add(jobrow);*/
         
-        $.labor_table.appendRow(jobrow);
+       $.labor_table.appendRow(jobrow);
 
 };
+
+
 
 //Add row here.
 var sid = args.sid;
 console.log("enterjobdetail.js::sid right before key in contents value: "+sid);
 console.log("enterjobdetail.js::content.length: "+content.length);
+var jobcommentdata = [];
 for (i=0;i<content.length;i++){
 		var notesbody = content[i].col2;
         var imageurl = content[i].col4;
         var date = content[i].col1;
-        var jobcommentdata = content[i].col14+":"+content[i].col16;
+        for (j=1;j<17;j++){
+        	eval("jobcommentdata.push(content[i].col"+j+")"); // feed metadata
+        }
         var employee = content[i].col5;
-        jobDetailAddRow (date,notesbody,imageurl,jobcommentdata,employee);      
+        jobDetailAddRow (date,notesbody,imageurl,jobcommentdata,employee); 
+        var jobcommentdata = [];
         }
 
 
@@ -640,12 +658,12 @@ $.joblogsection.headerTitle = headertitle;
 
 $.labor_table.addEventListener("delete", function(e){
 	console.log("enterjobdetail.js::$.labor_table delete: "+JSON.stringify(e));
-	var metadata = e.row.metadata;
+	var metadata = e.row.metadata[13];
 	var urls = metadata.replace(/yCoLoNy/g,':').replace(/xCoLoNx/g,',');
 	var existingurlsidtag = urls.split(',')[0];
 	var existingurlsselfhref = urls.split(',')[1];
 	var existingurlsedithref = urls.split(',')[2];
-	var uniqueid =  e.row.metadata.split(':')[1];
+	var uniqueid = e.row.metadata.split(':')[16];
 	Alloy.Collections.joblog.deleteCol16(uniqueid); //deleting the database
 	console.log("enterjobdetail.js::$.labor_table delete: idtag:"+existingurlsidtag+" selfhref: "+existingurlsselfhref+" edithref: "+existingurlsedithref);
 	var xhr = Ti.Network.createHTTPClient({
@@ -665,6 +683,53 @@ $.labor_table.addEventListener("delete", function(e){
 	console.log("enterjobdetail.js::$.labor_table delete: DONE: DELETE "+existingurlsedithref);
 });
 
+//Select which ones to be included in the report
+$.labor_table.addEventListener("click",function(e){
+	console.log("enterjobdetail.js::$.labor_table JSON.stringify(e): "+JSON.stringify(e));
+	var jobitemid = e.row.metadata[15];
+	console.log("enterjobdetail.js::jobitemid: "+jobitemid);
+	switch(e.source.image) {
+	    case "EditControl.png":
+	       	e.source.image="EditControlSelected.png";
+	        var joblog = Alloy.Collections.instance('joblog');
+        	joblog.fetch();
+        	Alloy.Collections.joblog.deleteCol16(jobitemid);
+        	joblog.get(jobitemid).set({
+        		col1: e.row.metadata[0],
+        		col2: e.row.metadata[1],
+        		col3: e.row.metadata[2],
+        		col4: e.row.metadata[3],
+        		col5: e.row.metadata[4],
+        		col6:"report",
+        		col7: "none",col8: "none",col9: "none",col11: "none",col12: "none",col13: "none",col15: "none",
+        		col10: e.row.metadata[9],
+        		col14: e.row.metadata[13],
+        		col16: jobitemid	
+    			}).save();
+        	console.log("enterjobdetail.js::update joblog on itemid "+jobitemid+" JSON.stringify(joblog): "+JSON.stringify(joblog));
+	        break;
+	    case "EditControlSelected.png": 
+	    	e.source.image="EditControl.png";
+	        var joblog = Alloy.Collections.instance('joblog');
+        	joblog.fetch();
+        	Alloy.Collections.joblog.deleteCol16(jobitemid);
+        	joblog.get(jobitemid).set({
+        		col1: e.row.metadata[0],
+        		col2: e.row.metadata[1],
+        		col3: e.row.metadata[2],
+        		col4: e.row.metadata[3],
+        		col5: e.row.metadata[4],
+        		col6:"none",
+        		col7: "none",col8: "none",col9: "none",col11: "none",col12: "none",col13: "none",col15: "none",
+        		col10: e.row.metadata[9],
+        		col14: e.row.metadata[13],
+        		col16: jobitemid	
+    			}).save();
+        	console.log("enterjobdetail.js::update joblog on itemid "+jobitemid+" JSON.stringify(joblog): "+JSON.stringify(joblog));
+	        break;
+    }
+});
+
 var refresh = Ti.UI.createRefreshControl({
     tintColor:'orange'
 });
@@ -682,3 +747,19 @@ refresh.addEventListener('refreshstart',function(e){
         refresh.endRefreshing();
     }, 2000);
 });
+
+genJoblog = args.functionfromSource;
+
+function getReport(){
+	var joblogs = Alloy.Collections.instance('joblog');
+	joblogs.fetch();	
+	var thejoblog = joblogs.where({col6:"report"}); //FILTER
+		if (thejoblog.length > 0 ){
+		for (j=0;j<thejoblog.length;j++){
+			   var thejoblogjson = thejoblog[j].toJSON(); // EXTRACT ONE ROW. IF MANY. FOR LOOP.
+    		   console.log("enterjobdetail.js::thejoblogjson.col2 :"+thejoblogjson.col2+" col4: "+thejoblogjson.col4+" col6: "+thejoblogjson.col6+" col16: "+thejoblogjson.col16);
+		}
+	}
+	console.log("projectdetail.js: genReport: execute the source genJoblog()");
+	genJoblog;
+}

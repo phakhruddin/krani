@@ -76,7 +76,7 @@ var nextapptlabel = Ti.UI.createLabel ({
 		},
 		text : nextappt
 });
-        
+/*        
 var dateduelabel = Ti.UI.createLabel ({
         color : "green",
         left  : "200",
@@ -86,9 +86,11 @@ var dateduelabel = Ti.UI.createLabel ({
         	fontSize:12
         },
         text : datedue
-});
+});*/
+
+$.datedue_label.text = datedue;
         
-$.nextapptdetail_row.add(dateduelabel);
+///$.nextapptdetail_row.add(dateduelabel);
 //$.nextapptdetail_row.add(nextapptlabel);
 
 
@@ -109,8 +111,10 @@ function addressAction(e) {
 };
 
 function JobDetail(e){
-	console.log("projectdetail.js::JSON stringify e: "+JSON.stringify(e));
-	var tabViewOneController = Alloy.createController("jobdetail");
+	console.log("projectdetail.js::JobDetail: JSON stringify e: "+JSON.stringify(e));
+	var tabViewOneController = Alloy.createController("jobdetail",{
+		functionfromSource:genJoblog
+	});
 	tabViewOneController.openMainWindow($.tab_projectdetail);	
                                                                                                        }
 
@@ -610,15 +614,23 @@ function editAction(e){
 
 var tr = Titanium.UI.create2DMatrix();
 tr = tr.rotate(90);
- 
+/* 
 var drop_button =  Titanium.UI.createButton({
 		style:Titanium.UI.iPhone.SystemButton.DISCLOSURE,
 		transform:tr
+});*/
+
+var drop_button = Titanium.UI.createButton({
+	image : "downbutton.png",
+	height : "40",
+	width : "15",
+	transform:tr
 });
 
 //TODO: Use TableviewRow label instead of text field.
 var my_combo = Titanium.UI.createTextField({
 	//hintText:"In Progress",
+	left: "100",
 	value:status,
 	height:Ti.UI.SIZE,
 	width:"300",
@@ -826,30 +838,24 @@ function emailpdf(firstname,lastname,address,city,state,phone,email,projectid,co
     var jobitemjson = joblog.toJSON();
     console.log("projectdetail.js::jobitemjson.length: "+jobitemjson.length);
     for (j=0;j<jobitemjson.length;j++){
-		console.log("projectdetail.js::emailpdf:: adhocs jobitemjson:  col1 : "+jobitemjson[j].col1+" : "+jobitemjson[j].col2+" : "+jobitemjson[j].col5);
-		var picurl = jobitemjson[j].col4;
-		strVarItems += "						<td><a class=\"cut\">-<\/a><span contenteditable>"+jobitemjson[j].col1+"<\/span><\/td>";
-		if (jobitemjson[j].col2 != "none"){strVarItems += "						<td><span contenteditable>"+jobitemjson[j].col2+"<\/span><\/td>";};
-		if (picurl != "none"){
-			strVarItems += "			<table class=\"inventory\">";
-			strVarItems += "				<thead>";
-			strVarItems += "					<tr>";
-			strVarItems += "						<th><span contenteditable>Date<\/span><\/th>";
-			strVarItems += "						<th><span contenteditable>Description<\/span><\/th>";
-			strVarItems += "						<th><span contenteditable>Report by<\/span><\/th>";
-			strVarItems += "					<\/tr>";
-			strVarItems += "				<\/thead>";
-			strVarItems += "				<tbody>";
-			strVarItems += "					<tr>";
-		strVarItems += "						<td><a class=\"cut\">-<\/a><span contenteditable>"+jobitemjson[j].col1+"<\/span><\/td>";
-			strVarItems += "						<td><span><img alt=\"\" src=\""+jobitemjson[j].col4+"\"><input type=\"file\" title=\"image\" accept=\"image\/*\"><\/span><\/td>";
-			strVarItems += "					<\/tr>";
-		} else {
-			strVarItems += "						<td><span contenteditable>"+jobitemjson[j].col5+"<\/span><\/td>";
-			strVarItems += "					<\/tr>";
-		}
-		strVarItems += "				<\/tbody>";
-		strVar += "			<\/table>";
+    	if (jobitemjson[j].col6 == "report"){
+			console.log("projectdetail.js::emailpdf:: adhocs jobitemjson:  col1 : "+jobitemjson[j].col1+" : "+jobitemjson[j].col2+" : "+jobitemjson[j].col5);
+			var picurl = jobitemjson[j].col4;
+			if (jobitemjson[j].col2 != "none"){strVarItems += "						<td><span contenteditable>"+jobitemjson[j].col1+"<\/span><\/td>";};
+			if (picurl != "none"){
+				strVarItems += "			<table class=\"inventory\">";
+				strVarItems += "				<tbody>";
+				strVarItems += "					<tr>";
+				strVarItems += "						<td><a class=\"cut\">-<\/a><span contenteditable>"+jobitemjson[j].col1+"<\/span><\/td>";
+				strVarItems += "						<td><span><img alt=\"\" src=\""+jobitemjson[j].col4+"\"><input type=\"file\" title=\"image\" accept=\"image\/*\"><\/span><\/td>";
+				strVarItems += "					<\/tr>";
+			} else {
+				strVarItems += "						<td><a class=\"cut\">-<\/a><span contenteditable>"+jobitemjson[j].col2+"<\/span><\/td>";
+				strVarItems += "					<\/tr>";
+			}
+			strVarItems += "				<\/tbody>";
+			strVar += "			<\/table>";
+    	}
     }
 
 	var strVar="";
@@ -1014,7 +1020,6 @@ function emailpdf(firstname,lastname,address,city,state,phone,email,projectid,co
 	strVar += "					<tr>";
 	strVar += "						<th><span contenteditable>Date<\/span><\/th>";
 	strVar += "						<th><span contenteditable>Description<\/span><\/th>";
-	strVar += "						<th><span contenteditable>Report by<\/span><\/th>";
 	strVar += "					<\/tr>";
 	strVar += "				<\/thead>";
 	strVar += strVarItems;
@@ -1040,3 +1045,52 @@ function genJoblog(e){
 $.jobreport_button.addEventListener("click",function(e){
 	console.log("projectdetail.js::jobreport_button:JSON.stringify(e)" + JSON.stringify(e));
 });
+
+//Date action
+var dateduePicker = Titanium.UI.createPicker({top:0, type:Titanium.UI.PICKER_TYPE_DATE});
+dateduePicker.selectionIndicator=true;
+dateduePicker.addEventListener("change",function(e) {
+	console.log("projectdetail.js::dateduepicker on change: "+JSON.stringify(e));
+	//$.datedue_label.text = e.value.toString().split('T')[0].replace(/(\d+)-(\d+)-(\d+)/,'$3/$2/$2');
+	var utcdate = Date.parse(e.value.toString());
+	var regdate = new Date(utcdate);
+	$.datedue_label.text = ( (new Date(utcdate)).getMonth() + 1 )+"/"+(new Date(utcdate)).getDate()+"/"+(new Date(utcdate)).getFullYear();
+});
+
+function duedateAction(e){
+	console.log("projectdetail.js::duedate:: JSON.stringify(e): "+JSON.stringify(e));
+	if (e.source.textid=="pickershow") {
+		dateduePicker.hide(); $.duedate_button.textid="pickerhide";
+		$.datepicker_row.height="1";
+		$.datepicker_row.remove(dateduePicker);
+	} else {
+		$.datepicker_row.height="170";
+		$.datepicker_row.add(dateduePicker);
+		dateduePicker.show(); $.duedate_button.textid="pickershow";
+
+	}	
+}
+dateduePicker.hide();
+
+var nextapptdatePicker = Titanium.UI.createPicker({top:0, type:Titanium.UI.PICKER_TYPE_DATE});
+nextapptdatePicker.selectionIndicator=true;
+nextapptdatePicker.addEventListener("change",function(e) {
+	console.log("projectdetail.js::nextapptdatepicker on change: "+JSON.stringify(e));
+	var utcdate = Date.parse(e.value.toString());
+	var regdate = new Date(utcdate);
+	$.nextapptdate_label.text = ( (new Date(utcdate)).getMonth() + 1 )+"/"+(new Date(utcdate)).getDate()+"/"+(new Date(utcdate)).getFullYear();
+});
+
+function nextapptdateAction(e){
+	console.log("projectdetail.js::nextapptdate:: JSON.stringify(e): "+JSON.stringify(e));
+	if (e.source.textid=="pickershow") {
+		dateduePicker.hide(); $.nextapptdate_button.textid="pickerhide";
+		$.datepicker_row.height="1";
+		$.datepicker_row.remove(nextapptdatePicker);
+	} else {
+		$.datepicker_row.height="170";
+		$.datepicker_row.add(nextapptdatePicker);
+		dateduePicker.show(); $.nextapptdate_button.textid="pickershow";
+	}
+}
+nextapptdatePicker.hide();
