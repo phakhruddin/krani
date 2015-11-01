@@ -12,29 +12,30 @@
 		  <TableViewRow id="projectdetail_row"  height="180">
 		  	  <Label id="label_header" left="20" color="#333" top="5" text="{dummy.projectname}" />
 		  	  <Label left="20" color="#333" top="40" text="Client:" />
-	   		  <Button left="100" top="35" title="{dummy.fullname}" onClick="nameAction"/>
+	   		  <Label left="100" color="black" top="35" text="{dummy.fullname}" onClick="nameAction"/>
 	   		  <Label left="20" color="#333" top="60" text="Phone:" />
-	   		  <Button left="100" top="55" title="{dummy.phone}" onClick="phoneAction"/>
+	   		  <Label left="100"  color="black"  top="55" text="{dummy.phone}" onClick="phoneAction"/>
 	   		  <Label left="20" color="#333" top="80" text="Email:" />
-	   		  <Button left="100" top="75" title="{dummy.email}" onClick="emailAction"/>
+	   		  <Label left="100"   color="black" top="75" text="{dummy.email}" onClick="emailAction"/>
 	   		  <Label left="20" color="#333" top="100" text="Company:" />
-	   		  <Label left="100" top="100" text="{dummy.company}" />
+	   		  <Label left="100"  color="black" top="100" text="{dummy.company}" />
 	   		  <Label left="20" color="#333" top="120" text="Address:" />
-	   		  <Button left="100" top="115" title="{dummy.address}" onClick="addressAction"/>
-	   		  <Button left="100" top="135" title="{dummy.citystate}" onClick="addressAction" />
+	   		  <Label left="100"  color="black" top="115" text="{dummy.address}" onClick="addressAction"/>
+	   		  <Label left="100"  color="black" top="135" text="{dummy.citystate}" onClick="addressAction" />
 		  </TableViewRow>
 	  </TableViewSection>
 	  <TableViewSection  headerTitle="Status summary" >
 		  <TableViewRow id="status_row" height="Ti.UI.Size"/>
 	  </TableViewSection>
 	  <TableViewSection headerTitle="Dates" >
-		  <TableViewRow id="nextapptdetail_row" Title="nextapptDetail" height="54">
-		  	  <Button id="nextapptdate_button" top="10" left="20" title="Next appointment date: " onClick="nextapptdateAction" />
-		  	  <Label id="nextapptdate_label" top="10" left="200" color="black" textAlign="Ti.UI.TEXT_ALIGNMENT_LEFT"/>
-	   		  <Button top="30" id="duedate_button" left="20" title="Due Date: "  onClick="duedateAction" />
-	   		  <Label id="datedue_label" top="30" left="200" color="black" textAlign="Ti.UI.TEXT_ALIGNMENT_LEFT"/>
+		  <TableViewRow id="nextapptdetail_row" Title="nextapptDetail" height="60">
+		  	  <Button id="nextapptdate_button" top="5" left="20" title="Next appointment date: " onClick="nextapptdateAction" />
+		  	  <Label id="nextapptdate_label" top="8" left="200" color="black" textAlign="Ti.UI.TEXT_ALIGNMENT_LEFT"/>
+	   		  <Button top="35" id="duedate_button" left="20" title="Due Date: "  onClick="duedateAction" />
+	   		  <Label id="datedue_label" top="38" left="200" color="black" textAlign="Ti.UI.TEXT_ALIGNMENT_LEFT"/>
 		  </TableViewRow>
-		  <TableViewRow id="datepicker_row" height="1"/>
+		  <TableViewRow id="datepicker_row" height="1">
+		  </TableViewRow>
 	  </TableViewSection>
 	  <TableViewSection headerTitle="Job Logs" >
 		  <TableViewRow id="joblog_row"  color="blue">

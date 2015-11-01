@@ -80,8 +80,8 @@ if (balance == 0){
 someDummy.set({'invoicenumber': 'Invoice#: '+invoicenumber,
 	'firstname': firstname,
 	'lastname': lastname,
-	'phone': '    phone: '+phone,
-	'email': '    email: '+email,
+	'phone': phone,
+	'email': email,
 	'total': 'Total: '+total,
 	'balance': balance,
 	'paid': 'Paid: '+paid,
@@ -90,7 +90,7 @@ someDummy.set({'invoicenumber': 'Invoice#: '+invoicenumber,
 	'duedate':'Due date: ' +duedate,
 	'notes': 'Notes: '+notes,
 	'status': 'Status: '+status,
-	'currency': currency
+	'currency': (currency=="NA")?"USD":currency
 });
 
 console.log("invoicedetail.js:: firstname and lastname is: "+firstname+" "+lastname);
