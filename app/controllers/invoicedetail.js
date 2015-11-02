@@ -93,6 +93,9 @@ someDummy.set({'invoicenumber': 'Invoice#: '+invoicenumber,
 	'currency': (currency=="NA")?"USD":currency
 });
 
+//Feed in button with data info
+$.email_button.data = data;
+
 console.log("invoicedetail.js:: firstname and lastname is: "+firstname+" "+lastname);
 
 //Locate customer id.
@@ -1097,17 +1100,17 @@ function dummyRefresh(paid,balance,lastpaiddate){
 
 function actionPhone(e){
 	console.log("invoicedetail.js:actionPhone:JSON.stringify(e): "+JSON.stringify(e));
-	var phonenumber = e.source.title.split(':')[1].trim();
+	var phonenumber = e.source.title.trim();
 	//var phonenumber = "2623526221";
 	//Ti.Platform.openURL('telprompt://' + phonenumber);; 
 	Ti.Platform.openURL('tel:'+phonenumber+'');; 
 }
 function actioneMail(e){
 	console.log("invoicedetail.js:actioneMail:JSON.stringify(e): "+JSON.stringify(e));
-	var email = e.source.title.split(':')[1].trim();
+	var email = e.source.title.trim();
 	var emailDialog = Ti.UI.createEmailDialog();
-	emailDialog.subject = "Invoice #";
+	emailDialog.subject = "Invoice #"+ e.source.data[0];
 	emailDialog.toRecipients = [email];
-	emailDialog.messageBody = '<b>Follow up on Invoice#: </b>';
+	emailDialog.messageBody = '<b>Follow up on Invoice#:  '+e.source.data[0]+' </b>';
 	emailDialog.open();
 }

@@ -5,8 +5,9 @@
   	<RightNavButton platform="ios">
 	   <Button id="edit_rightnavbutton" systemButton="Ti.UI.iPhone.SystemButton.EDIT" onClick="editAction" /> 
 	</RightNavButton>
-	  <TableView id="clientdetail_table"  backgroundColor="white" >
-	  	<TableViewSection id="contactdetail_section" headerTitle="ContactDetails">
+	  <TableView id="clientdetail_table"  backgroundColor="white" separatorStyle="Titanium.UI.iPhone.TableViewSeparatorStyle.NONE" >
+	  	<TableViewSection id="contactdetail_section" headerTitle="ContactDetails" >
+	  	  <TableViewRow/>
 		  <TableViewRow id="clientdetail_row" backgroundColor="white" height="Ti.UI.SIZE" color="#333">
 		  	  <Label id="Firstname" text="Firstname:" left="20" top="10"/>
 		  	  <Label id="Firstname" text="{dummy.firstname}" left="120" top="10"/>
@@ -22,21 +23,6 @@
 	   		  <Label id="citystate" text="{dummy.citystate}" left="120" top="160" />
 	   		  <Label id="company" text="Company:" left="20" top="190"/>
 	   		  <Label id="company" text="{dummy.company}" left="120" top="190"/>
-		  </TableViewRow>
-	  </TableViewSection>
-	  <TableViewSection id="pendinginvoice_section" headerTitle="Pending invoice">
-		  <TableViewRow id="invoiceclientdetail_row" Title="invoiceClientDetail">
-	   		  <Label id="invoice" text="{dummy.invoice}" />
-		  </TableViewRow>
-	  </TableViewSection>
-	  <TableViewSection id="pendingproject_section" headerTitle="Pending Project">
-		  <TableViewRow id="projectclientdetail_row" Title="projectClientDetail">
-	   		  <Label id="project" text="{dummy.project}" />
-		  </TableViewRow>
-	  </TableViewSection>
-	  <TableViewSection id="pendingproposal_section" headerTitle="Pending Proposal">
-		  <TableViewRow id="proposalclientdetail_row" Title="proposalClientDetail">
-	   		  <Label id="proposal" text="{dummy.proposal}" />
 		  </TableViewRow>
 	  </TableViewSection>
 	  </TableView>

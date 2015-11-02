@@ -420,15 +420,15 @@ $.ptr.refresh();
 	
 	// build custom tableView data/layout
 	var array = [];
-	var titleRow = Titanium.UI.createTableViewRow({height:40, className:'titleRow'}); 
-	var valueRow = Titanium.UI.createTableViewRow({height:40, className:'valueRow'}); 
-	var dateRow = Titanium.UI.createTableViewRow({height:40, className:'dateRow'});
-	var enddateRow = Titanium.UI.createTableViewRow({height:40, className:'enddateRow'});
-	var submitRow = Titanium.UI.createTableViewRow({height:40, className:'submitRow'});
+	var titleRow = Titanium.UI.createTableViewRow({height:50, className:'titleRow'}); 
+	var valueRow = Titanium.UI.createTableViewRow({height:50, className:'valueRow'}); 
+	var dateRow = Titanium.UI.createTableViewRow({height:50, className:'dateRow'});
+	var enddateRow = Titanium.UI.createTableViewRow({height:50, className:'enddateRow'});
+	var submitRow = Titanium.UI.createTableViewRow({height:50, className:'submitRow'});
 	var dummyRow = Titanium.UI.createTableViewRow({height:5, backgroundColor:'gray', className:'dummyRow'}); 
 	//var titleLabel = Ti.UI.createLabel({color:'gray', text:"Title", font:{fontSize:20, fontWeight:'normal'}, top:8, left:12, height:24, width:99});
 	//var titleText = Titanium.UI.createTextField({value:"  ", color:'#336699', borderColor:'#888', borderWidth:0.1, borderStyle:Titanium.UI.INPUT_BORDERSTYLE_ROUNDED, font:{fontSize:16, fontWeight:'normal'},top:8, left:100, height:32, width:184});
-	var titleText = Titanium.UI.createTextField({color:'#336699', borderColor:'white', borderWidth:0, hintText:'\t\t\t\t\tTITLE', font:{fontSize:18, fontWeight:'normal'},top:0, left:20, height:40, width:320});
+	var titleText = Titanium.UI.createTextField({color:'#336699', borderColor:'white', borderWidth:0, hintText:'Client: John Stan - Lawn Mowing', left:12, font:{fontSize:18, fontWeight:'normal'},top:0, left:20, height:40, width:320});
 	var valueLabel = Ti.UI.createLabel({color:'gray', text:"Labor", font:{fontSize:16, color:"gray", fontWeight:'normal'}, top:8, left:12, height:24, width:170});
 	var dateLabel = Ti.UI.createLabel({color:'gray', text:"Start Date", font:{fontSize:16,  color: "gray", fontWeight:'normal'}, top:8, left:12, height:24, width:170});
 	var valueData = Ti.UI.createLabel({color:'#3D4460', text:"", font:{fontSize:16, fontWeight:'normal'}, top:11, left:112, height:20, width:180, textAlign:'right'});	
@@ -601,15 +601,15 @@ $.ptr.refresh();
 		console.log("schedule:submitLabel: summary, organizerdisplayName, startdateTime, enddateTime, description :" +summary+", "+organizerdisplayName+", "+startdateTime+", "+enddateTime+" , "+description);
 		alert("event created");
 		//Alloy.Globals.postCreateEvent(startdateTime,enddateTime,location,summary,description,organizerdisplayName,organizeremail,colorid,attendeeslist)
-		googleAuthCalendar.isAuthorized(function() {
-				console.log('Access Token: ' + googleAuthCalendar.getAccessToken());				
+		Alloy.Globals.googleAuthSheet.isAuthorized(function() {
+				console.log('Access Token: ' + Alloy.Globals.googleAuthSheet.getAccessToken());				
 		}, function() {
 				console.log('Schedule submit: Authorized first, see next window: ');
 		});
 		//var calid="idevice.net@gmail.com";
 		var kraniemailid = Titanium.App.Properties.getString('kraniemailid');console.log("schedule.js::kraniemailid:: "+kraniemailid);
 		var calid = kraniemailid;
-		//var calid="2elugripfnsd2hblojnu4t72u0@group.calendar.google.com";
+		console.log("postCreateEvent(calid:"+calid+",startdateTime,enddateTime,\"\",summary:"+summary+",description:"+description+",organizerdisplayName:"+organizerdisplayName+")");
 		postCreateEvent(calid,startdateTime,enddateTime,"",summary,description,organizerdisplayName);
 		
 	});
@@ -643,10 +643,10 @@ function createEventFuture() {
 }
 
 function sharedCalendar() {
-	googleAuthCalendar;
-	console.log('schedule::getSharedCalendar:Access Token for Calendar is: ' + googleAuthCalendar.getAccessToken());
-	googleAuthCalendar.isAuthorized(function() {
-		console.log('schedule::getSharedCalendar:Access Token: ' + googleAuthCalendar.getAccessToken());
+	//googleAuthCalendar;
+	console.log('schedule::getSharedCalendar:Access Token for Calendar is: ' + Alloy.Globals.googleAuthSheet.getAccessToken());
+	Alloy.Globals.googleAuthSheet.isAuthorized(function() {
+		console.log('schedule::getSharedCalendar:Access Token: ' + Alloy.Globals.googleAuthSheet.getAccessToken());
 	}, function() {
 		console.log('schedule::getSharedCalendar::Sch shared cal Authorized first, see next window: ');
 		});
@@ -812,7 +812,7 @@ function refreshCalendar() {
 	//var calid = '2elugripfnsd2hblojnu4t72u0@group.calendar.google.com';
 	var kraniemailid = Titanium.App.Properties.getString('kraniemailid');console.log("schedule.js::kraniemailid:: "+kraniemailid);
 	var calid = kraniemailid;
-	var url = 'https://www.googleapis.com/calendar/v3/calendars/'+calid+'/events'+"?access_token="+googleAuthCalendar.getAccessToken();;
+	var url = 'https://www.googleapis.com/calendar/v3/calendars/'+calid+'/events'+"?access_token="+Alloy.Globals.googleAuthSheet.getAccessToken();;
 	getSharedCalendarData(url);
 }
 
@@ -824,9 +824,9 @@ var getSharedCalendarData = function(url) {
 	//Alloy.Globals.checkGoogleisAuthorized();
 	//Alloy.Globals.checkNetworkAndGoogleAuthorized('1gnkP116nsTVxtrw6d_mXVdOiesQEPH7LVUIyHUfx9EE');
 	//googleAuthCalendar;
-	console.log('schedule::getSharedCalendarData:Access Token for Calendar is: ' + googleAuthCalendar.getAccessToken());
-	googleAuthCalendar.isAuthorized(function() {
-		console.log('schedule::getSharedCalendarData:Access Token: ' + googleAuthCalendar.getAccessToken());
+	console.log('schedule::getSharedCalendarData:Access Token for Calendar is: ' + Alloy.Globals.googleAuthSheet.getAccessToken());
+	Alloy.Globals.googleAuthSheet.isAuthorized(function() {
+		console.log('schedule::getSharedCalendarData:Access Token: ' + Alloy.Globals.googleAuthSheet.getAccessToken());
 		
 		var xhr = Ti.Network.createHTTPClient({
 		    onload: function(e) {
@@ -880,7 +880,7 @@ var getSharedCalendarData = function(url) {
 		
 	}, function() {
 		console.log('schedule::getSharedCalendarData:Sch get shrd cal Authorized first, see next window: ');
-		googleAuthCalendar.authorize();
+		Alloy.Globals.googleAuthSheet.authorize();
 		///Alloy.Globals.LaunchWindowGoogleAuth();
 	});
 	var url = " ";
@@ -968,7 +968,7 @@ function postCreateEvent(calid,startdateTime,enddateTime,location,summary,descri
 });
 	xhr.open("POST", url);
 	xhr.setRequestHeader("Content-type", "application/json");
-	xhr.setRequestHeader("Authorization", 'Bearer '+googleAuthCalendar.getAccessToken());
+	xhr.setRequestHeader("Authorization", 'Bearer '+Alloy.Globals.googleAuthSheet.getAccessToken());
 	xhr.send(event);
 	Ti.API.info('schedule.js::postCreateEvent: done POSTed , url:: '+url);
 	refreshCalendar();

@@ -2792,3 +2792,88 @@ Alloy.Globals.checkFileExistThenUpdateTitaniumProperties = function(filename){
     xhr.setRequestHeader("Authorization", 'Bearer '+Alloy.Globals.googleAuthSheet.getAccessToken());
 	xhr.send();
 };
+
+Alloy.Globals.refreshActivity = function() {
+	console.log("alloy.js::refresh(e): executing  refreshActivity()  ");
+	console.log("alloy.js::refresh(e): before executing  Alloy.Globals.getPrivateMaster()  ");
+	//Alloy.Globals.getPrivateMaster();
+	//Alloy.Globals.getMaster();
+	Alloy.Globals.googleAuthSheet.isAuthorized(function() {
+			Ti.API.info('Access Token: ' + Alloy.Globals.googleAuthSheet.getAccessToken());
+		}, function() {
+			Ti.API.info('alloy::Alloy.Globals.refreshActivity:Authorized first');
+			Alloy.Globals.googleAuthSheet.authorize();
+		});
+	Alloy.Globals.getJSONOnline();
+	console.log("alloy.js::refresh(e): before executing  Alloy.Globals.initialUserSetup()  ");
+	Alloy.Globals.initialUserSetup(); 
+	function getEmail(e){
+			var xhr = Ti.Network.createHTTPClient({
+		    onload: function(e) {
+		    try {
+		    		var json = JSON.parse(this.responseText);
+		    		Ti.API.info("response is: "+JSON.stringify(json));
+		    		var emailid = json.email;
+		    		Titanium.App.Properties.setString('emailid',emailid);
+		    		//Set the company emailid. Set to oneself if this is not a shared account.
+		    		if (Titanium.App.Properties.getString('kraniemailid')){
+		    			var kraniemailid = Titanium.App.Properties.getString('kraniemailid');
+		    		} else {Titanium.App.Properties.setString('kraniemailid',emailid);var kraniemailid=emaild;};
+		    		console.log("alloy.js::args inside getEmail: emailid "+emailid+" :: "+JSON.stringify(e));
+		    		
+		    	} catch(e){
+					Ti.API.info("cathing e: "+JSON.stringify(e));
+				}
+				return emailid;
+				Titanium.App.Properties.setString('emailid',emailid);
+			}
+			});
+		xhr.onerror = function(e){
+			//alert("alloy::getEmail::Unable to get info.");
+			console.log('alloy::getEmail:: unable to get info for '+e);
+		};
+		console.log('alloy::getEmail:: URL:: https://www.googleapis.com/oauth2/v1/userinfo?alt=json');
+		xhr.open("GET", 'https://www.googleapis.com/oauth2/v1/userinfo?alt=json');
+		xhr.setRequestHeader("Content-type", "application/json");
+	    xhr.setRequestHeader("Authorization", 'Bearer '+ Alloy.Globals.googleAuthSheet.getAccessToken());
+		xhr.send();
+	}
+		
+	function getParentID(email){
+		console.log("alloy.js::getParentID: with email: " +email);
+		var themastersid = Alloy.Collections.instance('master');
+		themastersid.fetch();
+		Ti.API.info(" themastersid : "+JSON.stringify(themastersid));
+		if (themastersid.length > 0) {
+			var mastersidjson = themastersid.toJSON();
+			console.log("alloy.js::JSON.stringify(mastersidjson): " +JSON.stringify(mastersidjson));
+			for( var i=0; i < mastersidjson.length; i++){
+				var mastercol1 = mastersidjson[i].col1.trim();
+				if ( mastercol1 == email.trim()) { 
+					Ti.API.info(" alloy::getParentID: found mastercol1: "+mastercol1+" vs. "+email.trim());
+					var parentid = mastersidjson[i].col2.trim(); 
+					Titanium.App.Properties.setString('parentid',parentid);
+				};
+			}	
+			if (parentid) {
+				console.log("alloy.js::getParentID: parentid is: "+parentid);
+				//$.email_label.text=email;
+				//$.email_label.font={fontSize:"5dp"};
+
+				//alert(email+" is registered user. Please proceed. Thanks");
+			} else {
+				alert(email+" is NOT registered user. Using demo access. Please proceed. Thanks");
+			}	
+		} 
+	}
+		
+	(Alloy.Globals.googleAuthSheet.getAccessToken()) && getEmail();
+	var email= Titanium.App.Properties.getString('emailid');
+	if (email) {
+	//var mastersid = Titanium.App.Properties.getString('master');
+	//Alloy.Globals.getPrivateData(mastersid,"master");
+	//getParentID(email);
+	//TODO:steps to get parentid.
+		
+	} else {(Alloy.Globals.googleAuthSheet.getAccessToken()) && getEmail(); }
+};

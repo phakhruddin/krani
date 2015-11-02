@@ -551,11 +551,18 @@ if (notesraw != "none") {
 				fontSize:10
 			},
 			text : 'Price : '+notes[i].price
-		});		
+		});
+		var blanklabel = Ti.UI.createLabel ({
+			top : topvalue+12+4+6,
+			text : ''
+		});
+		
 		$.jobitem_row.add(itembodylabel);
 		$.jobitem_row.add(itemqtylabel);
 		$.jobitem_row.add(itempricelabel);
-		var topvalue = topvalue + 34;
+		$.jobitem_row.add(itempricelabel);
+		$.jobitem_row.add(blanklabel);
+		var topvalue = topvalue + 40;
 	}
 }
 
@@ -644,16 +651,16 @@ var toolbar =  Titanium.UI.createToolbar({
 	items:[cancel,spacer,done]
 });
 
-var status = [ {'text':'Completed','color':'green'}, {'text':'In Progress','color':'orange'}, {'text':'Awaiting Customer','color':'yellow'}, {'text':'Not Started','color':'red'}, {'text':'Invoiced','color':"black"} ];
+var statusarray = [ {'text':'Completed','color':'green'}, {'text':'In Progress','color':'orange'}, {'text':'Awaiting Customer','color':'yellow'}, {'text':'Not Started','color':'red'}, {'text':'Invoiced','color':"black"} ];
 
 var pickerColumn = Ti.UI.createPickerColumn();
-for (i=0;i<status.length;i++){
-	if(my_combo.value == status[i].text){my_combo.color=status[i].color;};//process the color on initial view
+for (i=0;i<statusarray.length;i++){
+	if(my_combo.value == statusarray[i].text){my_combo.color=statusarray[i].color;};//process the color on initial view
 	var pickerRow = Titanium.UI.createPickerRow();
-	var pickerLabel = Titanium.UI.createLabel({text:status[i].text,color:status[i].color,font:{fontSize:14}});	
+	var pickerLabel = Titanium.UI.createLabel({text:statusarray[i].text,color:statusarray[i].color,font:{fontSize:14}});	
 	pickerRow.add(pickerLabel);
-	pickerRow.id=status[i].text;
-	pickerRow.colorid=status[i].color;
+	pickerRow.id=statusarray[i].text;
+	pickerRow.colorid=statusarray[i].color;
 	pickerColumn.addRow(pickerRow);
 }
 
@@ -1053,6 +1060,7 @@ function duedateAction(e){
 		dateduePicker.hide(); $.duedate_button.textid="pickerhide";
 		$.datepicker_row.height="1";
 		$.datepicker_row.remove(dateduePicker);
+		$.datepicker_row.remove(nextapptdatePicker);
 	} else {
 		$.datepicker_row.height="170";
 		$.datepicker_row.add(dateduePicker);
@@ -1083,10 +1091,12 @@ nextapptdatePicker.addEventListener("change",function(e) {
 
 function nextapptdateAction(e){
 	console.log("projectdetail.js::nextapptdate:: JSON.stringify(e): "+JSON.stringify(e));
+	nextapptdatePicker.show();
 	if (e.source.textid=="pickershow") {
 		dateduePicker.hide(); $.nextapptdate_button.textid="pickerhide";
 		$.datepicker_row.height="1";
 		$.datepicker_row.remove(nextapptdatePicker);
+		$.datepicker_row.remove(dateduePicker);
 	} else {
 		$.datepicker_row.height="170";
 		$.datepicker_row.add(nextapptdatePicker);
