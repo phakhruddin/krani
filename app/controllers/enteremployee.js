@@ -23,9 +23,9 @@ if (args.title) {
 	var notes = data[14];
 	console.log("enteremployee.js::JSON.stringify($.employeefirstname_tf):: :" +JSON.stringify($.employeefirstname_tf));
 	//var idtag = data[13].replace("xCoLoNx",",").split(',')[0].replace("yCoLoNy",":");
-	var idtag = data[13].replace(/xCoLoNx/g,',').split(',')[0].replace('yCoLoNy',':');
-	var selfhref = data[13].replace(/xCoLoNx/g,',').split(',')[1].replace('yCoLoNy',':');
-	var edithref = data[13].replace(/xCoLoNx/g,',').split(',')[2].replace('yCoLoNy',':');
+	var idtag = (data[13])?data[13].replace(/xCoLoNx/g,',').split(',')[0].replace('yCoLoNy',':'):"none";
+	var selfhref = (data[13])?data[13].replace(/xCoLoNx/g,',').split(',')[1].replace('yCoLoNy',':'):"none";
+	var edithref = (data[13])?data[13].replace(/xCoLoNx/g,',').split(',')[2].replace('yCoLoNy',':'):"none";
 
 	console.log("enteremployee.js::idtag :"+idtag+" edithref: "+edithref+" selfhref: "+selfhref);
 	//var employeeid = args.employeeid;
@@ -162,7 +162,7 @@ Titanium.App.Properties.setInt('count',count);
 	    },
 	    onerror: function(e) {
 	    	console.log("enteremployee::error e: "+JSON.stringify(e));
-	        alert("enteremployee::error:"+e.code+":"+e.error+" Please try again"); 
+	        alert("error:"+e.code+": Please connect to the network.");
 	    }
 	});
 	var employees = Alloy.Collections.instance('labor');

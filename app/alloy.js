@@ -587,7 +587,7 @@ Alloy.Globals.getPrivateData = function(sid,type) {
 	xhr.onerror = function(e){
 		//alert(e);
 		console.log("alloy.js::Alloy.Globals.getPrivateData::Unable to connect to the network. The "+type+" info displayed here is NOT the latest. error is: "+JSON.stringify(e));
-		alert("alloy.js::Alloy.Globals.getPrivateData::The "+type+" info displayed here is NOT the latest.");
+		alert("Please connect to the network.");
 	};
 	xhr.open("GET", url);
 	xhr.send();
@@ -776,7 +776,7 @@ Alloy.Globals.checkNetworkAndGoogleAuthorized = function(sid){
 		}
 	});
 	xhr.onerror = function(e){
-		alert(new Date()+"No network connection. Checking SID "+sid+" Information update will NOT be immediately synchronized to central location. Please take note.");
+		alert("Please connect to the network.");
 		console.log(new Date()+"::Alloy.Globals.checkNetworkAndGoogleAuthorized::No network connection. Checking SID "+sid);
 	};
 	xhr.open("GET", url);
@@ -837,7 +837,7 @@ Alloy.Globals.postCreateEvent = function(startdateTime,enddateTime,location,summ
     },
     onerror: function(e) {
     	Ti.API.info("Alloy.Globals.postCreateEvent::error e: "+JSON.stringify(e));
-        alert("alloy.js::postCreateEvent: Unable to communicate to the cloud. Please try again"); 
+        alert("Please connect to the network."); 
     }
 });
 	xhr.open("POST", url);
@@ -889,8 +889,8 @@ Alloy.Globals.uploadFile = function(file,filename,parentid) {
 		    	}     
 		    },
 		    onerror: function(e) {
-		    	Ti.API.info("Alloy.Globals.uploadFile::error e: "+JSON.stringify(e));
-		        alert("alloy.js::Alloy.Globals.uploadFile:: unable to talk to the cloud, will try later"); 
+		    	console.log("Alloy.Globals.uploadFile::error e: "+JSON.stringify(e));
+		        alert("Please connect to the network."); 
 		    }
 		});
 		xhr.open("POST", url);
@@ -939,7 +939,7 @@ Alloy.Globals.checkFileExistThenCreateSS = function(filename){
 		}
 		});
 	xhr.onerror = function(e){
-		alert("alloy.js::checkFileExistThenCreateSS:: Unable to connect to the cloud.");
+		alert("Please connect to the network.");
 	};
 	var rawquerystring = '?q=title+%3D+\''+filename+'\'+and+mimeType+%3D+\'application%2Fvnd.google-apps.spreadsheet\'+and+trashed+%3D+false&fields=items(id%2CmimeType%2Clabels%2Ctitle)';
 	console.log("alloy.js::Alloy.Globals.checkFileExistThenCreateSS:: URL:: https://www.googleapis.com/drive/v2/files"+rawquerystring);
@@ -979,7 +979,7 @@ Alloy.Globals.checkFileExistThenUpdateSID = function(filename){
 		}
 		});
 	xhr.onerror = function(e){
-		alert("alloy.js::checkFileExistThenUpdateSID:File Does Not exist.");
+		alert("Please connect to the network.");
 		console.log("alloy.js::checkFileExistThenUpdateSID:File "+filename+" Does Not exist.");
 		Alloy.Globals.Status ="failed";
 		Titanium.App.Properties.setString("status","failed");	
@@ -1024,7 +1024,8 @@ Alloy.Globals.createSpreadsheet = function(filename) {
 		}
 		});
 	xhr.onerror = function(e){
-		alert("alloy.js::createSpreadsheet::Unable to connect to the cloud.");
+		alert("Please connect to the network.");
+		console.log("alloy.js::createSpreadsheet:: error is: "+JSON.stringify(e));
 	};
 	xhr.open("POST", 'https://www.googleapis.com/drive/v2/files');	
 	xhr.setRequestHeader("Content-type", "application/json");
@@ -1059,7 +1060,8 @@ Alloy.Globals.editTheCell = function(sid,rowno,colno,value) {
 		}
 		});
 	xhr.onerror = function(e){
-		alert("alloy.js::editTheCell:: Unable to connect to the cloud. "+e);
+		alert("Please connect to the network.");
+		console.log("alloy.js::editTheCell:: error is: "+JSON.stringify(e));
 	};
 	xhr.open("GET", 'https://spreadsheets.google.com/feeds/cells/'+sid+'/od6/private/full/'+pos);
 	xhr.setRequestHeader("Content-type", "application/atom+xml");
@@ -1086,15 +1088,15 @@ Alloy.Globals.editCell = function(sid,rowno,colno,edithref,selfhref,value){
         }     
     },
     onerror: function(e) {
-        Ti.API.info("Alloy.Globals.editCell::error e: "+JSON.stringify(e));
-        alert("alloy.js::editCell::Unable to communicate to the cloud. Please try again"); 
+        alert("error:"+e.code+"::Please connect to the network.");
+        console.log("alloy.js::editCell::error is: "+JSON.stringify(e)); 
     }
 });
         xhr.open("PUT", ''+edithref+'');
         xhr.setRequestHeader("Content-type", "application/atom+xml");
         xhr.setRequestHeader("Authorization", 'Bearer '+Alloy.Globals.googleAuthSheet.getAccessToken());
         xhr.send(xmldatastring);
-        Ti.API.info('Alloy.Globals.editCell::done POSTed');
+        console.log('Alloy.Globals.editCell::done POSTed');
 };
 
 Alloy.Globals.updateSpreadsheet = function(sid,col1,col2,col3,col4,col5,col6,col7,col8,col9,col10,col11,col12,col13,col14,col15,col16){
@@ -1114,7 +1116,7 @@ Alloy.Globals.updateSpreadsheet = function(sid,col1,col2,col3,col4,col5,col6,col
     },
     onerror: function(e) {
     	Ti.API.info("Alloy.Globals.updateSpreadsheet::error e: "+JSON.stringify(e));
-        alert("alloy.js::updateSpreadsheet::Unable to communicate to the cloud. Please try again, sid: "+sid); 
+        alert("error:"+e.code+": Please connect to the network."); 
         console.log("alloy.js::updateSpreadsheet::Unable to communicate to the cloud. Please try again, sid: "+sid); 
     }
 });
@@ -1142,7 +1144,7 @@ Alloy.Globals.updateSpreadsheet2 = function(sid,col1,col2,col3,col4,col5,col6,co
     },
     onerror: function(e) {
     	Ti.API.info("Alloy.Globals.updateSpreadsheet2::error e: "+JSON.stringify(e));
-        alert("alloy.js::updateSpreadsheet::Unable to communicate to the cloud. Please try again, sid: "+sid); 
+        alert("error:"+e.code+": Please connect to the network."); 
         console.log("alloy.js::updateSpreadsheet::Unable to communicate to the cloud. Please try again, sid: "+sid); 
     }
 });
@@ -1221,8 +1223,8 @@ Alloy.Globals.submit = function(type,clientfirstname,clientlastname,clientcompan
 	    	}     
 	    },
 	    onerror: function(e) {
-	    	Ti.API.info("Alloy.Globals.submit ::error e: "+JSON.stringify(e));
-	        alert("alloy.js::submit::Unable to communicate to the cloud. Please try again."); 
+	    	console.log("Alloy.Globals.submit ::error e: "+JSON.stringify(e));
+	        alert("error:"+e.code+": Please connect to the network."); 
 	    }
 	});
 	eval("var "+type+" = Alloy.Collections.instance('"+type+"')");
@@ -1579,7 +1581,8 @@ Alloy.Globals.submit = function(type,clientfirstname,clientlastname,clientcompan
 		}
 		});
 	xhr.onerror = function(e){
-		alert("alloy.js::shareAnyonePermission::Unable to connect to the cloud.");
+		alert("error:"+e.code+": Please connect to the network."); 
+		console.log("alloy.js:Alloy.Globals.shareAnyonePermission:: error is: "+JSON.stringify(e));
 	};
 	xhr.open("POST", 'https://www.googleapis.com/drive/v2/files/'+sid+'/permissions');	
 	xhr.setRequestHeader("Content-type", "application/json");
@@ -1633,8 +1636,8 @@ Alloy.Globals.submit = function(type,clientfirstname,clientlastname,clientcompan
 			    	return id;    
 			    },
 			    onerror: function(e) {
-			    	Ti.API.info("Alloy.Globals.uploadPictoGoogle::uploadPictoGoogle::error e: "+JSON.stringify(e));
-			        alert("alloy.js::uploadPictoGoogle::unable to talk to the cloud, will try later"); 
+			    	console.log("Alloy.Globals.uploadPictoGoogle::uploadPictoGoogle::error e: "+JSON.stringify(e));
+			        alert("error:"+e.code+": Please connect to the network.");  
 			    }
 			});
 			xhr.open("POST", url);
@@ -1667,8 +1670,8 @@ Alloy.Globals.populateSpreadsheetHeader = function(sid,rowno,colno,edithref,self
         }     
     },
     onerror: function(e) {
-        Ti.API.info("Alloy.Globals.populateSpreadsheetHeader::error e: "+JSON.stringify(e));
-        alert("alloy::Alloy.Globals.populateSpreadsheetHeader::"+edithref+"  :Unable to communicate to the cloud. Please try again: "+JSON.stringify(e)); 
+        console.log("Alloy.Globals.populateSpreadsheetHeader::edithref: "+edithref+":: error e: "+JSON.stringify(e));
+        alert("error:"+e.code+": Please connect to the network."); 
     }
 });
         xhr.open("PUT", ''+edithref+'');
@@ -1705,7 +1708,7 @@ Alloy.Globals.getSSCell = function(sid,rowno,colno,value) {
 		}
 		});
 	xhr.onerror = function(e){
-		alert("projectdetail::Alloy.Globals.getSSCell::Unable to connect to the cloud. "+JSON.stringify(e));
+		alert("error:"+e.code+": Please connect to the network."); 
 		console.log("projectdetail::Alloy.Globals.getSSCell::Unable to connect to the cloud. "+JSON.stringify(e));
 	};
 	xhr.open("GET", 'https://spreadsheets.google.com/feeds/cells/'+sid+'/od6/private/full/'+pos);
@@ -1757,7 +1760,7 @@ Alloy.Globals.createSpreadsheet2 = function(filename,parentid,isinit){
 		}
 		});
 	xhr.onerror = function(e){
-		alert("projectdetail::createSpreadsheet::Unable to create spreadsheet.");
+		alert("error:"+e.code+": Please connect to the network."); 
 		console.log("projectdetail::createSpreadsheet::Unable to createSpreadsheet with "+filename+".");
 	};
 	xhr.open("POST", 'https://www.googleapis.com/drive/v2/files');	
@@ -1902,7 +1905,7 @@ Alloy.Globals.createCoreSS = function (filename,parentid,indexsid) {
 					}
 				});
 			xhr2.onerror = function(e){
-				alert("projectdetail::createSpreadsheet::Unable to create spreadsheet.");
+				alert("error:"+e.code+": Please connect to the network."); 
 				console.log("projectdetail::createSpreadsheet::Unable to createSpreadsheet with "+filename+".");
 			};
 			xhr2.open("POST", 'https://www.googleapis.com/drive/v2/files');	
@@ -2022,7 +2025,8 @@ Alloy.Globals.locateIndexCreateSpreadsheet = function(name){
 		}
 		});
 	xhr.onerror = function(e){
-		alert("alloy.js::locateIndexCreateSpreadsheet:Unable to connect to the cloud.");
+		alert("error:"+e.code+": Please connect to the network."); 
+		console.log("alloy.js::locateIndexCreateSpreadsheet:: error is: "+JSON.stringify(e));
 		Alloy.Globals.Status ="failed";
 		Titanium.App.Properties.setString("status","failed");	
 	};
@@ -2080,8 +2084,8 @@ Alloy.Globals.checkInitialFolderExistAfterLogin = function(name,parentid){
 					}
 				});
 				xhr.onerror = function(e){
-					alert("alloy::checkInitialFolderExistAfterLogin::Unable to create Folder.");
-					console.log("alloy::checkInitialFolderExistAfterLogin::Unable to checkInitialFolderExistAfterLogin with "+foldername+".");
+					alert("error:"+e.code+": Please connect to the network."); 
+					console.log("alloy::checkInitialFolderExistAfterLogin::Unable to checkInitialFolderExistAfterLogin with "+foldername+". error is: "+JSON.stringify(e));
 				};
 				xhr.open("POST", 'https://www.googleapis.com/drive/v2/files');	
 				xhr.setRequestHeader("Content-type", "application/json");
@@ -2096,8 +2100,8 @@ Alloy.Globals.checkInitialFolderExistAfterLogin = function(name,parentid){
 			}
 		});
 		xhr0.onerror = function(e){
-			alert("alloy::checkFolderexist::Unable to create Folder.");
-			console.log("alloy::checkFolderexist::Unable to checkInitialFolderExistAfterLogin with "+foldername+".");
+			alert("error:"+e.code+": Please connect to the network."); 
+			console.log("alloy::checkFolderexist::Unable to checkInitialFolderExistAfterLogin with "+foldername+" error code is: "+JSON.stringify(e));
 		};	
 	var rawquerystring = '?q=title+%3D+\''+foldername+'\'+and+mimeType+%3D+\'application%2Fvnd.google-apps.folder\'+and+trashed+%3D+false&fields=items(id%2CmimeType%2Clabels%2Cparents%2Ctitle)';
 	xhr0.open("GET", 'https://www.googleapis.com/drive/v2/files'+rawquerystring);
@@ -2152,8 +2156,8 @@ Alloy.Globals.createInitialFolder = function(name,parentid){
 					}
 				});
 				xhr.onerror = function(e){
-					alert("alloy::createInitialFolder::Unable to create Folder.");
-					console.log("alloy::createInitialFolder::Unable to createInitialFolder with "+foldername+".");
+					alert("error:"+e.code+": Please connect to the network."); 
+					console.log("alloy::createInitialFolder::Unable to createInitialFolder with "+foldername+" error is: "+JSON.stringify(e));
 				};
 				xhr.open("POST", 'https://www.googleapis.com/drive/v2/files');	
 				xhr.setRequestHeader("Content-type", "application/json");
@@ -2168,8 +2172,8 @@ Alloy.Globals.createInitialFolder = function(name,parentid){
 			}
 		});
 		xhr0.onerror = function(e){
-			alert("alloy::checkFolderexist::Unable to create Folder.");
-			console.log("alloy::checkFolderexist::Unable to createInitialFolder with "+foldername+".");
+			alert("error:"+e.code+": Please connect to the network."); 
+			console.log("alloy::checkFolderexist::Unable to createInitialFolder with "+foldername+" error is: "+JSON.stringify(e));
 		};	
 	var rawquerystring = '?q=title+%3D+\''+foldername+'\'+and+mimeType+%3D+\'application%2Fvnd.google-apps.folder\'+and+trashed+%3D+false&fields=items(id%2CmimeType%2Clabels%2Cparents%2Ctitle)';
 	xhr0.open("GET", 'https://www.googleapis.com/drive/v2/files'+rawquerystring);
@@ -2185,26 +2189,25 @@ Alloy.Globals.initialUserSetup = function(e){
 		    try {
 		    		var json = JSON.parse(this.responseText);
 		    		Ti.API.info("Alloy.Globals.initialUserSetup::response is: "+JSON.stringify(json));
-		    		var emailid = json.email;	
-		    		if (Titanium.App.Properties.getString('kraniemailid')){
-						    			var kraniemailid = Titanium.App.Properties.getString('kraniemailid');
-		    		} else {Titanium.App.Properties.setString('kraniemailid',emailid);var kraniemailid=emaild;};	    		
-					//create datastore START
-					var name = kraniemailid.split('@')[0].trim(); //use kraniemailid for uniqueness
-					console.log("advance::checkInfo: name: "+name);
-					if(Alloy.Globals.license == "freeuser"){
-						var kraniparentid=Titanium.App.Properties.getString("freeuser");
-						} else var kraniparentid=Titanium.App.Properties.getString("paidbasic") ;
-					//console.log("alloy.js:createDir::  createInitialFolder("+name+","+kraniparentid+"): ");
-					//Alloy.Globals.createInitialFolder(name,kraniparentid); 
-					console.log("alloy.js:createDir::  Alloy.Globals.getPrivateMasterCreateInitialFolder("+name+",yes): ");
-					///Alloy.Globals.getPrivateMasterCreateInitialFolder(name,"yes"); //get parent folder then create initial folder.
-					//Alloy.Globals.getMasterCreateInitialFolder(name,"yes");
-					Alloy.Globals.getJSONOnlineCreateInitialFolder(name);
-					///Alloy.Globals.locateIndexCreateSpreadsheet(name); 
-					//create datastore END		    		
-		    		Titanium.App.Properties.setString('kraniemailid',kraniemailid);
-		    		console.log("main.js::args inside getEmail: kraniemailid "+kraniemailid+" :: "+JSON.stringify(e));
+		    		var emailid = json.email;
+		    		if ( Titanium.App.Properties.getString('kraniemailid') && Titanium.App.Properties.getString('kraniemailid') != emailid ){
+						   var kraniemailid = Titanium.App.Properties.getString('kraniemailid'); //this is shared account. dont create dir.
+						   console.log("alloy:Alloy.Globals.initialUserSetup: kraniemailid exists: "+kraniemailid);
+		    		} else {
+		    			console.log("alloy:Alloy.Globals.initialUserSetup: kraniemailid DOES NOT EXIST: ");
+		    			Titanium.App.Properties.setString('kraniemailid',emailid);var kraniemailid=emailid; //this is personal account and first time. create dir.
+						//create datastore START
+						var name = kraniemailid.split('@')[0].trim(); //use kraniemailid for uniqueness
+						console.log("advance::checkInfo: name: "+name);
+						if(Alloy.Globals.license == "freeuser"){
+							var kraniparentid=Titanium.App.Properties.getString("freeuser");
+							} else var kraniparentid=Titanium.App.Properties.getString("paidbasic") ;
+						console.log("alloy.js:createDir::  Alloy.Globals.getPrivateMasterCreateInitialFolder("+name+",yes): ");
+						Alloy.Globals.getJSONOnlineCreateInitialFolder(name);
+			    		Titanium.App.Properties.setString('kraniemailid',kraniemailid);
+			    		console.log("main.js::args inside getEmail: kraniemailid "+kraniemailid+" :: "+JSON.stringify(e));
+	    			};	    		
+
 		    	} catch(e){
 					Ti.API.info("cathing e: "+JSON.stringify(e));
 				}
@@ -2496,7 +2499,8 @@ Alloy.Globals.stampSIDFromCoreFilename = function(filename){
 		}
 		});
 	xhr.onerror = function(e){
-		alert("alloy.js::checkFileExistThenCreateSS:: Unable to connect to the cloud.");
+		alert("error:"+e.code+": Please connect to the network."); 
+		console.log("alloy.js::checkFileExistThenCreateSS:: Unable to connect to the cloud.");
 	};
 	var rawquerystring = '?q=title+%3D+\''+filename+'\'+and+mimeType+%3D+\'application%2Fvnd.google-apps.spreadsheet\'+and+trashed+%3D+false&fields=items(id%2CmimeType%2Clabels%2Ctitle)';
 	console.log("alloy.js::Alloy.Globals.stampSIDFromCoreFilename:: URL:: https://www.googleapis.com/drive/v2/files"+rawquerystring);
@@ -2532,7 +2536,8 @@ Alloy.Globals.stampSIDFromCoreDirname = function(dirname){
 		}
 		});
 	xhr.onerror = function(e){
-		alert("alloy.js::checkFileExistThenCreateSS:: Unable to connect to the cloud.");
+		alert("error:"+e.code+": Please connect to the network."); 
+		console.log("alloy.js::checkFileExistThenCreateSS:: Unable to connect to the cloud.");
 	};
 	var rawquerystring = '?q=title+%3D+\''+dirname+'\'+and+mimeType+%3D+\'application%2Fvnd.google-apps.folder\'+and+trashed+%3D+false&fields=items(id%2CmimeType%2Clabels%2Ctitle)';
 	console.log("alloy.js::Alloy.Globals.stampSIDFromCoreDirname:: URL:: https://www.googleapis.com/drive/v2/files"+rawquerystring);
@@ -2567,10 +2572,10 @@ Alloy.Globals.loginActivity = function(e){
 	    		var emailid = json.email;
 	    		Titanium.App.Properties.setString('emailid',emailid);
 	    		if (Titanium.App.Properties.getString('kraniemailid')){
-						    			var kraniemailid = Titanium.App.Properties.getString('kraniemailid');
+		    			var kraniemailid = Titanium.App.Properties.getString('kraniemailid');
 		    		} else {Titanium.App.Properties.setString('kraniemailid',emailid);var kraniemailid=emaild;};
 	    		console.log("tabViewOne.js::args inside getEmail: emailid "+emailid+" :: "+JSON.stringify(e));
-	    		Alloy.Globals.getJSONOnline();
+	    		Alloy.Globals.getJSONOnline(); //Initial initiation information. P
 				for (i=0;i<Alloy.Globals.corefilenamearray.length;i++){
 					var kraniemailid = Titanium.App.Properties.getString('kraniemailid');
 					var name = kraniemailid.split('@')[0].trim();
@@ -2633,7 +2638,7 @@ Alloy.Globals.updateExistingSpreadsheetAndDB = function(type,col1,col2,col3,col4
 	    },
 	    onerror: function(e) {
 	    	console.log("alloy.js::Alloy.Globals.updateExistingSpreadsheetAndDB:error e: "+JSON.stringify(e));
-	         alert("alloy.js::Alloy.Globals.updateExistingSpreadsheetAndDB:update error. Please try again. "+JSON.stringify(e)); 
+	         alert("error:"+e.code+": Please connect to the network."); 
 	    }
 	});				
 	xhr.open("PUT", existingedithref);

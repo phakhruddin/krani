@@ -350,8 +350,8 @@ $.itemlist_tf.addEventListener('blur', function(_e) {
     	}     
     },
     onerror: function(e) {
-    	Ti.API.info("error e: "+JSON.stringify(e));
-        alert("enterinvoice::submit::Unable to communicate to the cloud. Please try again."); 
+    	console.log("enterinvoice::submit:: error e: "+JSON.stringify(e));
+       alert("error:"+e.code+": Please connect to the network.");
     }
 });
     //var spreadsheet_id = '1-Wz7Apn4AvVpfqcNyMgfqyKA8OAoLNy5Bl0d_jQ9IZk';
@@ -397,8 +397,8 @@ $.itemlist_tf.addEventListener('blur', function(_e) {
     	}     
     },
     onerror: function(e) {
-    	Ti.API.info("error e: "+JSON.stringify(e));
-        alert("enterinvoice::submitproject::Unable to communicate to the cloud. Please try again."); 
+    	console.log("enterinvoice::submitproject::error e: "+JSON.stringify(e));
+        alert("error:"+e.code+": Please connect to the network.");
     }
 });
 

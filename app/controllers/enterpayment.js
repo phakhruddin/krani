@@ -23,9 +23,9 @@ var notes = data[11];
 var status = data[12];
 var currency = data[14];
 var filename = 'payment_'+invoicenumber+'_'+firstname+'_'+lastname;
-var idtag = data[13].replace(/xCoLoNx/g,',').split(',')[0].replace('yCoLoNy',':');
-var selfhref = data[13].replace(/xCoLoNx/g,',').split(',')[1].replace('yCoLoNy',':');
-var edithref = data[13].replace(/xCoLoNx/g,',').split(',')[2].replace('yCoLoNy',':');
+var idtag = (data[13])?data[13].replace(/xCoLoNx/g,',').split(',')[0].replace('yCoLoNy',':'):"none";
+var selfhref = (data[13])?data[13].replace(/xCoLoNx/g,',').split(',')[1].replace('yCoLoNy',':'):"none";
+var edithref = (data[13])?data[13].replace(/xCoLoNx/g,',').split(',')[2].replace('yCoLoNy',':'):"none";
 // Extraction END
 
 callbackFunction = args.callbackFunction;
@@ -309,9 +309,11 @@ function takePic(e){
                         }
                         
                 }, error:function(e){
-                        alert("enterpayment::takePic::error:unable to load the camera");
+                        console.log("enterpayment::takePic::error:unable to load the camera");
+                        alert("error:"+e.code+": Unable to load camera.");
                 }, cancel:function(e){
-                        alert("enterpayment::takePic::cancel:unable to load the camera");
+                		alert("error:"+e.code+": Unable to load camera.");
+                        console.log("enterpayment::takePic::cancel:unable to load the camera");
                 },
                 allowEditing:true,
                 saveToPhotoGallery:true,
@@ -363,6 +365,7 @@ $.notes_textarea.addEventListener("blur",function(e){
         console.log("enterpayment.js::JSON.stringify(e)  :" +JSON.stringify(e));
         e.source.keyboardToolbar.items = null;
         var datepaid = e.source.datepaid;
+        $.paymentdonebutton.datepaid = datepaid;
         if (datepaid) {
         	console.log("enterpayment.js::before enterNotes(e): JSON.stringify(e): "+JSON.stringify(e));
         	enterNotes(e);
@@ -372,6 +375,11 @@ $.notes_textarea.addEventListener("blur",function(e){
         }
         
         //$.ktb_textarea.hide();
+});
+
+$.paymentdonebutton.addEventListener("click",function(e){
+    console.log("enterpayment.js::paymentdone:JSON.stringify(e)  :" +JSON.stringify(e));
+ 	$.notes_textarea.blur();
 });
         
 function enterNotes(e,imgurl) {
@@ -462,8 +470,8 @@ function enterNotes(e,imgurl) {
         }     
     },
     onerror: function(e) {
-        Ti.API.info("enterpayment.js::submit::error e: "+JSON.stringify(e));
-        alert("enterpayment::submit::Unable to communicate to the cloud. Please try again"); 
+        console.log("enterpayment.js::submit::error e: "+JSON.stringify(e));
+       alert("error:"+e.code+": Please connect to the network.");
     }
 });
         //var sid = Titanium.App.Properties.getString('payment'); 
@@ -513,7 +521,8 @@ function getParentFolder(args) {
 		}
 		});
 	xhr.onerror = function(e){
-		alert("enterpayment::getParentFolder::Unable to connect to the cloud.");
+		alert("error:"+e.code+": Please connect to the network.");
+		console.log("enterpayment::getParentFolder::Unable to connect to the cloud. error is: "+JSON.stringify(e));
 	};
 	xhr.open("GET", 'https://www.googleapis.com/drive/v2/files/'+sid+'/parents');
 	xhr.setRequestHeader("Content-type", "application/json");
@@ -548,7 +557,8 @@ function createSpreadsheet(filename,parentid) {
 		}
 		});
 	xhr.onerror = function(e){
-		alert("enterpayment::createSpreadsheet::Unable to connect to the cloud.");
+		alert("error:"+e.code+": Please connect to the network.");
+		console.log("enterpayment::createSpreadsheet::Unable to connect to the cloud. error is: "+JSON.stringify(e));
 	};
 	xhr.open("POST", 'https://www.googleapis.com/drive/v2/files');	
 	xhr.setRequestHeader("Content-type", "application/json");
@@ -584,7 +594,8 @@ function fileExist(){
 		}
 		});
 	xhr.onerror = function(e){
-		alert("enterpayment::fileExist::Unable to connect to the cloud.");
+		alert("error:"+e.code+": Please connect to the network.");
+		console.log("enterpayment::fileExist::Unable to connect to the cloud. error is : "+JSON.stringify(e));
 	};
 	//xhr.open("GET", 'https://www.googleapis.com/drive/v2/files');
 	var rawquerystring = '?q=title+%3D+\''+filename+'\'+and+mimeType+%3D+\'application%2Fvnd.google-apps.spreadsheet\'+and+trashed+%3D+false&fields=items(id%2CmimeType%2Clabels%2Ctitle)';
@@ -667,7 +678,7 @@ function uploadPictoGoogle(image,filename){
 			    },
 			    onerror: function(e) {
 			    	Ti.API.info("enterpayment.js::uploadPictoGoogle::error e: "+JSON.stringify(e));
-			        alert("enterpayment::uploadPictoGoogle::unable to talk to the cloud, will try later"); 
+			       alert("error:"+e.code+": Please connect to the network.");
 			    }
 			});
 			xhr.open("POST", url);
@@ -695,7 +706,8 @@ function shareAnyonePermission(sid){
 		}
 		});
 	xhr.onerror = function(e){
-		alert("enterpayment::shareAnyonePermission::Unable to connect to the cloud.");
+		console.log("enterpayment::shareAnyonePermission::Unable to connect to the cloud. error is :"+JSON.stringify(e));
+		alert("error:"+e.code+": Please connect to the network.");
 	};
 	xhr.open("POST", 'https://www.googleapis.com/drive/v2/files/'+sid+'/permissions');	
 	xhr.setRequestHeader("Content-type", "application/json");
@@ -771,8 +783,8 @@ function updateInvoice(paidamount,datepaid,balance){
         }     
     },
     onerror: function(e) {
-        Ti.API.info("enterpayment.js::updateInvoice::error e: "+JSON.stringify(e));
-        alert("enterpayment::updateInvoice::Unable to communicate to the cloud. Please try again"); 
+        console.log("enterpayment.js::updateInvoice::error e: "+JSON.stringify(e));
+        alert("error:"+e.code+": Please connect to the network.");
     }
 });
         xhr.open("PUT", ''+edithref+'');

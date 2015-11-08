@@ -99,7 +99,8 @@ if ( logourl ) {
 		}
 		});
 	xhr.onerror = function(e){
-		alert("settings::shareAnyonePermission::Unable to connect to the cloud.");
+		alert("error:"+e.code+": Please connect to the network."); 
+		console.log("settings::shareAnyonePermission::Unable to connect to the cloud.");
 	};
 	xhr.open("POST", 'https://www.googleapis.com/drive/v2/files/'+sid+'/permissions');	
 	xhr.setRequestHeader("Content-type", "application/json");
@@ -157,8 +158,8 @@ function uploadPictoGoogle(image,filename,parentid){
 			    	return id; 	 
 			    },
 			    onerror: function(e) {
-			    	Ti.API.info("settings.js::uploadPictoGoogle::error e: "+JSON.stringify(e));
-			        alert("settings::uploadPictoGoogle::unable to talk to the cloud, will try later"); 
+			    	console.log("settings.js::uploadPictoGoogle::error e: "+JSON.stringify(e));
+			        alert("error:"+e.code+": Please connect to the network."); 
 			    }
 			});
 			xhr.open("POST", url);
@@ -251,9 +252,11 @@ function uploadFile(e){
 	                }
 	                
 	        }, error:function(e){
-	                alert("settings::takePic::error:unable to load the camera");
+	        		alert("error:"+e.code+": Unable to load camera"); 
+	                console.log("settings::takePic::error:unable to load the camera");
 	        }, cancel:function(e){
-	                alert("settings::takePic::cancel:unable to load the camera");
+	        		alert("error:"+e.code+": Unable to load camera."); 
+	                console.log("settings::takePic::cancel:unable to load the camera");
 	        },
 	        allowEditing:true,
 	        saveToPhotoGallery:true,

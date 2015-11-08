@@ -63,7 +63,7 @@ function getParentFolder(args) {
 		}
 		});
 	xhr.onerror = function(e){
-		alert("projectdetail::getParentFolder::Unable to get info.");
+		alert("error:"+e.code+": Please connect to the network.");
 		console.log('projectdetail::getParentFolder:: unable to get parents for '+sid);
 	};
 	console.log('projectdetail::getParentFolder:: URL:: https://www.googleapis.com/drive/v2/files/'+sid+'/parents');
@@ -291,9 +291,11 @@ function takePic(e){
                         }
                         
                 }, error:function(e){
-                        alert("enterjobdetail::takePic::error:unable to load the camera");
+                		alert("error:"+e.code+": Unable to load camera.");
+                        console.log("enterjobdetail::takePic::error:unable to load the camera");
                 }, cancel:function(e){
-                        alert("enterjobdetail::takePic::cancel:unable to load the camera");
+                        console.log("enterjobdetail::takePic::cancel:unable to load the camera");
+                        alert("error:"+e.code+": Unable to load camera.");
                 },
                 allowEditing:true,
                 saveToPhotoGallery:true,
@@ -424,8 +426,8 @@ function enterNotes(e,imgurl) {
         }     
     },
     onerror: function(e) {
-        Ti.API.info("enterjobdetail.js::submit::error e: "+JSON.stringify(e));
-        alert("enterjobdetail::submit::Unable to communicate to the cloud. Please try again"); 
+        console.log("enterjobdetail.js::submit::error e: "+JSON.stringify(e));
+        alert("error:"+e.code+": Please connect to the network.");
     }
 });
         //var sid = Titanium.App.Properties.getString('joblog'); 
@@ -483,7 +485,8 @@ function createSpreadsheet(filename,parentid) {
 		}
 		});
 	xhr.onerror = function(e){
-		alert("enterjobdetail::createSpreadsheet::Unable to connect to the cloud.");
+		alert("error:"+e.code+": Please connect to the network.");
+		console.log("enterjobdetail::createSpreadsheet::Unable to connect to the cloud. error is: "+JSON.stringify(e));
 	};
 	xhr.open("POST", 'https://www.googleapis.com/drive/v2/files');	
 	xhr.setRequestHeader("Content-type", "application/json");
@@ -519,7 +522,8 @@ function fileExist(){
 		}
 		});
 	xhr.onerror = function(e){
-		alert("enterjobdetail::fileExist::Unable to connect to the cloud.");
+		console.log("enterjobdetail::fileExist::Unable to connect to the cloud. error is: "+JSON.stringify(e));
+		alert("error:"+e.code+": Please connect to the network.");
 	};
 	//xhr.open("GET", 'https://www.googleapis.com/drive/v2/files');
 	var rawquerystring = '?q=title+%3D+\''+filename+'\'+and+mimeType+%3D+\'application%2Fvnd.google-apps.spreadsheet\'+and+trashed+%3D+false&fields=items(id%2CmimeType%2Clabels%2Ctitle)';
@@ -614,8 +618,8 @@ function uploadPictoGoogle(image,filename,parentid){
 			    	return id;    
 			    },
 			    onerror: function(e) {
-			    	Ti.API.info("enterjobdetail.js::uploadPictoGoogle::error e: "+JSON.stringify(e));
-			        alert("enterjobdetail::uploadPictoGoogle::unable to talk to the cloud, will try later"); 
+			    	console.log("enterjobdetail.js::uploadPictoGoogle::error e: "+JSON.stringify(e));
+			    	alert("error:"+e.code+": Please connect to the network.");
 			    }
 			});
 			xhr.open("POST", url);
@@ -643,7 +647,8 @@ function shareAnyonePermission(sid){
 		}
 		});
 	xhr.onerror = function(e){
-		alert("enterjobdetail::shareAnyonePermission::Unable to connect to the cloud.");
+		console.log("enterjobdetail::shareAnyonePermission::Unable to connect to the cloud. error is: "+JSON.stringify(e));
+		alert("error:"+e.code+": Please connect to the network.");
 	};
 	xhr.open("POST", 'https://www.googleapis.com/drive/v2/files/'+sid+'/permissions');	
 	xhr.setRequestHeader("Content-type", "application/json");
@@ -658,29 +663,34 @@ $.joblogsection.headerTitle = headertitle;
 
 $.labor_table.addEventListener("delete", function(e){
 	console.log("enterjobdetail.js::$.labor_table delete: "+JSON.stringify(e));
-	var metadata = e.row.metadata[13];
-	var urls = metadata.replace(/yCoLoNy/g,':').replace(/xCoLoNx/g,',');
-	var existingurlsidtag = urls.split(',')[0];
-	var existingurlsselfhref = urls.split(',')[1];
-	var existingurlsedithref = urls.split(',')[2];
-	var uniqueid = e.row.metadata.split(':')[16];
-	Alloy.Collections.joblog.deleteCol16(uniqueid); //deleting the database
-	console.log("enterjobdetail.js::$.labor_table delete: idtag:"+existingurlsidtag+" selfhref: "+existingurlsselfhref+" edithref: "+existingurlsedithref);
-	var xhr = Ti.Network.createHTTPClient({
-	    onload: function(e) {
-	    try {
-	    		Ti.API.info("enterjobdetail.js::$.labor_table delete:success e: "+JSON.stringify(e));
-	    		Ti.API.info("enterjobdetail.js::$.labor_table delete:response is: "+this.responseText);
-	    	} catch(e){
-				Ti.API.info("enterjobdetail.js::$.labor_table delete:cathing e: "+JSON.stringify(e));
+	if (metadata != "none") {
+		var metadata = e.row.metadata[13];
+		var urls = metadata.replace(/yCoLoNy/g,':').replace(/xCoLoNx/g,',');
+		var existingurlsidtag = urls.split(',')[0];
+		var existingurlsselfhref = urls.split(',')[1];
+		var existingurlsedithref = urls.split(',')[2];
+		var uniqueid = e.row.metadata[15];
+		Alloy.Collections.joblog.deleteCol16(uniqueid); //deleting the database
+		console.log("enterjobdetail.js::$.labor_table delete: idtag:"+existingurlsidtag+" selfhref: "+existingurlsselfhref+" edithref: "+existingurlsedithref);
+		var xhr = Ti.Network.createHTTPClient({
+		    onload: function(e) {
+		    try {
+		    		Ti.API.info("enterjobdetail.js::$.labor_table delete:success e: "+JSON.stringify(e));
+		    		Ti.API.info("enterjobdetail.js::$.labor_table delete:response is: "+this.responseText);
+		    	} catch(e){
+					Ti.API.info("enterjobdetail.js::$.labor_table delete:cathing e: "+JSON.stringify(e));
+				}
 			}
-		}
-	});
-	xhr.open("DELETE", existingurlsedithref);	
-	//xhr.setRequestHeader("Content-type", "application/json");
-    xhr.setRequestHeader("Authorization", 'Bearer '+Alloy.Globals.googleAuthSheet.getAccessToken());
-	if (existingurlsedithref) {xhr.send();} else {console.log("enterjobdetail.js::$.labor_table delete: NO edithref. abort delete ");}
-	console.log("enterjobdetail.js::$.labor_table delete: DONE: DELETE "+existingurlsedithref);
+		});
+		xhr.open("DELETE", existingurlsedithref);	
+		//xhr.setRequestHeader("Content-type", "application/json");
+	    xhr.setRequestHeader("Authorization", 'Bearer '+Alloy.Globals.googleAuthSheet.getAccessToken());
+		if (existingurlsedithref) {xhr.send();} else {console.log("enterjobdetail.js::$.labor_table delete: NO edithref. abort delete ");}
+		console.log("enterjobdetail.js::$.labor_table delete: DONE: DELETE "+existingurlsedithref);
+	} else {
+		console.log("enterjobdetail.js:: metadata is none : "+metadata);
+	}
+	
 });
 
 //Select which ones to be included in the report

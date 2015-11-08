@@ -135,7 +135,7 @@ exports.openMainWindow = function(_tab) {
  	var clientstate = Titanium.App.Properties.getString('clientstate',"none");
  	var clientproject = Titanium.App.Properties.getString('clientproject',"none");
  	var clientcompany = Titanium.App.Properties.getString('clientcompany',"none");
- 	alert("On "+now+" : Info on: "+clientfirstname+" "+clientlastname+" with "+clientphone+" and email "+clientemail+" at "+clientstreetaddress+", "+clientcity+", "+clientstate+". submitted");
+ 	console.log("enterclient:js::On "+now+" : Info on: "+clientfirstname+" "+clientlastname+" with "+clientphone+" and email "+clientemail+" at "+clientstreetaddress+", "+clientcity+", "+clientstate+". submitted");
  	var fcsv = Ti.Filesystem.getFile(Ti.Filesystem.tempDirectory,'enterclient.csv');
  	var ftxt = Ti.Filesystem.getFile(Ti.Filesystem.tempDirectory,'enterclient.txt');
 	fcsv.write(now+", "+clientfirstname+", "+clientlastname+", "+clientphone+", "+clientemail+", "+clientstreetaddress+", "+clientcity+", "+clientstate+'\n', true); // write to the file
@@ -155,8 +155,8 @@ exports.openMainWindow = function(_tab) {
     	}     
     },
     onerror: function(e) {
-    	Ti.API.info("error e: "+JSON.stringify(e));
-        alert("enterclient.js::$.submit_button::Unable to communicate to the cloud. Please try again"); 
+        console.log("enterclient.js::$.submit_button::error is: " +JSON.stringify(e)); 
+        alert("error:"+e.code+": Please connect to the network."); 
     }
 });
 	xhr.open("POST", 'https://spreadsheets.google.com/feeds/list/1ECkNoyzgeSu8WkVs3kBnlY8MjJRIAc787nVs6IJsA9w/od6/private/full');

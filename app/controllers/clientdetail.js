@@ -27,9 +27,9 @@ var invoice = data[10];
 var project = data[11];
 var proposal = data[12];
 //var idtag = data[13].replace("xCoLoNx",",").split(',')[0].replace("yCoLoNy",":");
-var idtag = data[13].replace(/xCoLoNx/g,',').split(',')[0].replace('yCoLoNy',':');
-var selfhref = data[13].replace(/xCoLoNx/g,',').split(',')[1].replace('yCoLoNy',':');
-var edithref = data[13].replace(/xCoLoNx/g,',').split(',')[2].replace('yCoLoNy',':');
+var idtag = (data[13])?data[13].replace(/xCoLoNx/g,',').split(',')[0].replace('yCoLoNy',':'):"none";
+var selfhref = (data[13])?data[13].replace(/xCoLoNx/g,',').split(',')[1].replace('yCoLoNy',':'):"none";
+var edithref = (data[13])?data[13].replace(/xCoLoNx/g,',').split(',')[2].replace('yCoLoNy',':'):"none";
 
 console.log("clientdetail.js::idtag :"+idtag+" edithref: "+edithref+" selfhref: "+selfhref);
 

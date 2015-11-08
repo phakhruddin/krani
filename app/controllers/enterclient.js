@@ -131,8 +131,8 @@ Titanium.App.Properties.setInt('count',count);
 	    	}     
 	    },
 	    onerror: function(e) {
-	    	Ti.API.info("error e: "+JSON.stringify(e));
-	        alert("Unable to communicate to the cloud. Please try again."); 
+	    	console.log("enterclient.js:: error e: "+JSON.stringify(e));
+	        alert("error:"+e.code+": Please connect to the network.");
 	    }
 	});
 
