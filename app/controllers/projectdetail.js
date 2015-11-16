@@ -46,6 +46,9 @@ var idtag = (data[13])?data[13].replace(/xCoLoNx/g,',').split(',')[0].replace('y
 var selfhref = (data[13])?data[13].replace(/xCoLoNx/g,',').split(',')[1].replace('yCoLoNy',':'):"none";
 var edithref = (data[13])?data[13].replace(/xCoLoNx/g,',').split(',')[2].replace('yCoLoNy',':'):"none";
 //var datedue = 0;
+$.nextapptdate_done.summary = firstname+" "+lastname+" - "+projectname;
+$.nextapptdate_done.descr = projectname;
+$.nextapptdate_done.organizerdisplayName = "krani";
 console.log("projectdetail.js::projectdetail:: dates" +dates+" datesdata :" +datesdata+" datedue : "+datedue);
 var projectid = data[15];
 var filename = 'project_'+projectid+'_'+firstname+'_'+lastname;
@@ -1034,6 +1037,8 @@ $.jobreport_button.addEventListener("click",function(e){
 });
 
 //Date action
+$.nextapptdate_done.hide();
+$.duedate_done.hide();
 var dateduePicker = Titanium.UI.createPicker({top:0, type:Titanium.UI.PICKER_TYPE_DATE});
 dateduePicker.selectionIndicator=true;
 dateduePicker.addEventListener("change",function(e) {
@@ -1046,13 +1051,26 @@ dateduePicker.addEventListener("change",function(e) {
 	$.datedue_label.text = datedue;
 	//update ss
 	dates.push({"nextapptdate":nextapptdate,"duedate":datedue,"lastpaiddate":lastpaiddate});
+	$.duedate_done.dates = dates;
+});
+
+function duedateActionDone(e){
+	console.log("projectdetail.js::duedateActionDone on Done: "+JSON.stringify(e));
+	var dates = e.source.dates;
 	var dates = JSON.stringify(dates).replace(/:/g,"cOlOn");
-	console.log("projectdetail.js::nextapptdatepicker before SS update: "+dates);
+	console.log("projectdetail.js::duedatepicker before SS update: "+dates);
 	Alloy.Globals.updateExistingSpreadsheetAndDB("project",projectname,firstname,lastname,company,phone,email,address,city,state,country,status,notesraw,customerid,"none",dates,projectid,edithref,selfhref,idtag);
 	var projectsid = Titanium.App.Properties.getString('project');
 	Alloy.Globals.getPrivateData(projectsid,"project");
 	callbackFunction();
-});
+	//hide
+			dateduePicker.hide(); $.duedate_button.textid="pickerhide";
+		$.datepicker_row.height="1";
+		$.datepicker_row.remove(dateduePicker);
+		$.datepicker_row.remove(nextapptdatePicker);
+		$.duedate_done.hide();
+		
+}
 
 function duedateAction(e){
 	console.log("projectdetail.js::duedate:: JSON.stringify(e): "+JSON.stringify(e));
@@ -1065,33 +1083,68 @@ function duedateAction(e){
 		$.datepicker_row.height="170";
 		$.datepicker_row.add(dateduePicker);
 		dateduePicker.show(); $.duedate_button.textid="pickershow";
+		$.duedate_done.show();
 
 	}	
 }
 //dateduePicker.hide();
 
-var nextapptdatePicker = Titanium.UI.createPicker({top:0, type:Titanium.UI.PICKER_TYPE_DATE});
+var nextapptdatePicker = Titanium.UI.createPicker({top:0, type:Titanium.UI.PICKER_TYPE_DATE_AND_TIME});
 nextapptdatePicker.selectionIndicator=true;
 nextapptdatePicker.addEventListener("change",function(e) {
 	var dates = [];
+	var datesinUTC = [];
 	console.log("projectdetail.js::nextapptdatepicker on change: "+JSON.stringify(e));
+	var nextapptdateISO = e.value.toString();
 	var utcdate = Date.parse(e.value.toString());
 	var regdate = new Date(utcdate);
 	nextapptdate = ( (new Date(utcdate)).getMonth() + 1 )+"/"+(new Date(utcdate)).getDate()+"/"+(new Date(utcdate)).getFullYear();
 	$.nextapptdate_label.text = nextapptdate;
 	//update ss
 	dates.push({"nextapptdate":nextapptdate,"duedate":datedue,"lastpaiddate":lastpaiddate});
+	datesinUTC.push({"nextapptdate":utcdate,"duedate":datedue,"lastpaiddate":lastpaiddate});
+	$.nextapptdate_done.dates = dates;
+	$.nextapptdate_done.datesinUTC = datesinUTC;
+
+});
+
+function nextapptdateActionDone(e) {
+	console.log("projectdetail.js::nextapptdateActionDone on Done: "+JSON.stringify(e));
+	var dates = e.source.dates;
+	var datesinUTC = e.source.datesinUTC;
+	var startdateTimeUTC = datesinUTC[0].nextapptdate;
+	var startdateTimeLocale = new Date(startdateTimeUTC);
+	var startdateTimeISO = startdateTimeLocale.toISOString();
+	var enddateTimeUTC = parseFloat(60*60*1000+parseFloat(startdateTimeUTC));
+	var enddateTimeLocale = new Date(enddateTimeUTC);
+	var enddateTimeISO = enddateTimeLocale.toISOString();
+	console.log("projectdetail.js::nextapptdateActionDone: startdateTimeUTC "+startdateTimeUTC + " datesinUTC " +JSON.stringify(datesinUTC));
+	var summary = e.source.summary;
+	var description = e.source.descr;
+	var organizerdisplayName = e.source.organizerdisplayName;
 	var dates = JSON.stringify(dates).replace(/:/g,"cOlOn");
 	console.log("projectdetail.js::nextapptdatepicker before SS update: "+dates);
 	Alloy.Globals.updateExistingSpreadsheetAndDB("project",projectname,firstname,lastname,company,phone,email,address,city,state,country,status,notesraw,customerid,"none",dates,projectid,edithref,selfhref,idtag);
 	var projectsid = Titanium.App.Properties.getString('project');
 	Alloy.Globals.getPrivateData(projectsid,"project");
 	callbackFunction();
-});
+	//Hide next appt date
+	$.nextapptdate_button.textid="pickerhide";
+	$.datepicker_row.height="1";
+	$.datepicker_row.remove(nextapptdatePicker);
+	$.datepicker_row.remove(dateduePicker);
+	$.nextapptdate_done.hide();
+	//create reminder
+	var kraniemailid = Titanium.App.Properties.getString('kraniemailid');console.log("schedule.js::kraniemailid:: "+kraniemailid);
+	var calid = kraniemailid;
+	updatecalendardialog.data = [{"calid":calid,"startdateTimeISO":startdateTimeISO,"enddateTimeISO":enddateTimeISO,"summary":summary,"description":description,"organizerdisplayName":organizerdisplayName}];
+	updatecalendardialog.show();
+}
 
 function nextapptdateAction(e){
 	console.log("projectdetail.js::nextapptdate:: JSON.stringify(e): "+JSON.stringify(e));
 	nextapptdatePicker.show();
+	$.nextapptdate_done.show();
 	if (e.source.textid=="pickershow") {
 		dateduePicker.hide(); $.nextapptdate_button.textid="pickerhide";
 		$.datepicker_row.height="1";
@@ -1101,6 +1154,33 @@ function nextapptdateAction(e){
 		$.datepicker_row.height="170";
 		$.datepicker_row.add(nextapptdatePicker);
 		nextapptdatePicker.show(); $.nextapptdate_button.textid="pickershow";
+		$.nextapptdate_done.show();
 	}
 }
 //nextapptdatePicker.hide();
+
+var updatecalendardialog = Ti.UI.createAlertDialog({
+	cancel: 1,
+	buttonNames: ['NO', 'YES'],
+	message: 'Would you like to update the calendar?',
+	title: 'UpdateCalendar'
+});
+updatecalendardialog.addEventListener('click', function(e){
+	console.log("projectdetail.js:: updatecalendardialog: JSON.stringify(e) :"+JSON.stringify(e));
+	console.log("projectdetail.js:: updatecalendardialog: e.source.data :"+e.source.data);
+	var data = e.source.data;
+	var startdateTimeISO = data[0].startdateTimeISO;
+	var enddateTimeISO = data[0].enddateTimeISO;
+	var organizerdisplayName = data[0].organizerdisplayName;
+	var calid = data[0].calid;
+	var description = data[0].description;
+	var summary = data[0].summary;
+	if (e.index == 1 ) {
+		console.log("projectdetail.js:: updatecalendardialog: startdateTimeISO :"+startdateTimeISO);
+		console.log("Alloy.Globals.postCreateEvent(calid:"+calid+","+startdateTimeISO+","+enddateTimeISO+",\"\",summary:"+summary+",description:"+description+",organizerdisplayName:"+organizerdisplayName+")");
+		Alloy.Globals.postCreateEvent(calid,startdateTimeISO,enddateTimeISO,"",summary,description,organizerdisplayName);
+	} else {
+		console.log("projectdetail.js:: updatecalendardialog: Cancelled :");
+	}
+});
+ 

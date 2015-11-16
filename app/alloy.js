@@ -783,7 +783,7 @@ Alloy.Globals.checkNetworkAndGoogleAuthorized = function(sid){
 	xhr.send();
 };
 
-Alloy.Globals.postCreateEvent = function(startdateTime,enddateTime,location,summary,description,organizerdisplayName,organizeremail,colorid,attendeeslist) {
+Alloy.Globals.postCreateEvent = function(calid,startdateTime,enddateTime,location,summary,description,organizerdisplayName,organizeremail,colorid,attendeeslist) {
 	var startdateTime = startdateTime || "2015-03-05T15:30:00-06:00";
 	var enddateTime = enddateTime || "2015-03-05T15:40:00-06:00";
 	var location = location || "2258 S Sanctuary Dr., New Berlin, WI 53151";
@@ -794,7 +794,9 @@ Alloy.Globals.postCreateEvent = function(startdateTime,enddateTime,location,summ
 	var colorid = colorid || "3";
 	var organizerself ="true";
 	//var url = 'https://www.googleapis.com/calendar/v3/calendars/idevice.net%40gmail.com/events?access_token='+googleAuthCalendar.getAccessToken();
-	var url = 'https://www.googleapis.com/calendar/v3/calendars/idevice.net@gmail.com/events';
+	console.log("alloy.js::Alloy.Globals.postCreateEvent: emailid:  "+calid);
+	//var url = 'https://www.googleapis.com/calendar/v3/calendars/'+calid+'/events';
+	var url = 'https://www.googleapis.com/calendar/v3/calendars/'+calid+'/events?sendNotifications=true';
 	var recurrences ="";
 	var attendeesstrbody = [];
 	var attendeesstrstart = '\"attendees\": \[';

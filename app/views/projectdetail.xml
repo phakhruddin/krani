@@ -30,8 +30,10 @@
 	  <TableViewSection headerTitle="Dates" >
 		  <TableViewRow id="nextapptdetail_row" Title="nextapptDetail" height="60">
 		  	  <Button id="nextapptdate_button" textid="pickerhide" top="5" left="20" title="Next appointment date: " onClick="nextapptdateAction" />
+		  	   <Button id="nextapptdate_done" right="40" top="5" title="DONE" onClick="nextapptdateActionDone" />
 		  	  <Label id="nextapptdate_label" top="8" left="200" color="black" textAlign="Ti.UI.TEXT_ALIGNMENT_LEFT"/>
 	   		  <Button top="35" id="duedate_button" textid="pickerhide" left="20" title="Due Date: "  onClick="duedateAction" />
+	   		  <Button id="duedate_done" right="40" top="35" title="DONE" onClick="duedateActionDone" />
 	   		  <Label id="datedue_label" top="38" left="200" color="black" textAlign="Ti.UI.TEXT_ALIGNMENT_LEFT"/>
 		  </TableViewRow>
 		  <TableViewRow id="datepicker_row" height="1">

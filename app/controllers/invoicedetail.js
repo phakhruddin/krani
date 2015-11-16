@@ -63,7 +63,6 @@ if (balance == 0){
 	$.phone_button.hide();
 	$.email_button.hide();
 	$.noaction_button.show();
-	$.followupdate.hide();
 	$.duedate.hide();
 	$.balance1.hide();
 	$.balance2.show();
@@ -71,7 +70,6 @@ if (balance == 0){
 	$.phone_button.show();
 	$.email_button.show();
 	$.noaction_button.hide();
-	$.followupdate.show();
 	$.duedate.show();
 	$.balance1.show();
 	$.balance2.hide();
@@ -87,7 +85,7 @@ someDummy.set({'invoicenumber': 'Invoice#: '+invoicenumber,
 	'paid': 'Paid: '+paid,
 	'lastpaiddate': 'Last paid date: ' +lastpaiddate,
 	'followupdate': 'Follow-up date: '+followupdate,
-	'duedate':'Due date: ' +duedate,
+	'duedate':duedate,
 	'notes': 'Notes: '+notes,
 	'status': 'Status: '+status,
 	'currency': (currency=="NA")?"USD":currency
@@ -1114,3 +1112,7 @@ function actioneMail(e){
 	emailDialog.messageBody = '<b>Follow up on Invoice#:  '+e.source.data[0]+' </b>';
 	emailDialog.open();
 }
+
+$.duedate_button.addEventListener("click",function(e){
+	console.log("invoicedetail.js:: duedate_button:: JSON.stringify(e): "+JSON.stringify(e));
+});

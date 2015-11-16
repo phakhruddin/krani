@@ -12,18 +12,23 @@
 	   	  </TableViewRow>
 	  </TableViewSection>
 	  <TableViewSection  headerTitle="Details">
-	  	<TableViewRow id="totalbalance_row" height="200">
+	  	<TableViewRow id="totalbalance_row" height="160">
 	  		<Label id="bal_title" color="gray" textAlign="Ti.UI.TEXT_ALIGNMENT_CENTER" top="10" text="balance"/>
 	  		  <Label id="balance1" color="red" textAlign="Ti.UI.TEXT_ALIGNMENT_CENTER" top="20" text="{dummy.balance}" />
 	  		  <Label id="balance2" color="green" textAlign="Ti.UI.TEXT_ALIGNMENT_CENTER" top="20" text="{dummy.balance}" />
 	  		  <Label id="currency" color="gray" textAlign="Ti.UI.TEXT_ALIGNMENT_CENTER" top="90" text="{dummy.currency}" />
-	   		  <Label id="total" color="gray"  left="20" top="110" text="{dummy.total}" />
-	   		  <Label id="paid" color="gray"  left="20" top="130" text="{dummy.paid}" />
-	   		  <Label id="duedate" color="red" right="20" top="110"  text="{dummy.duedate}" />
-	   		  <Label id="lastpaiddate" color="gray" right="20" top="130" text="{dummy.lastpaiddate}" />
-	   		   <Label id="followupdate" color="gray" right="20" top="150" text="{dummy.followupdate}" />
-	   		   <Button id="invoice_button" left="30%" top="170" title="Click to update payment" textAlign="Ti.UI.TEXT_ALIGNMENT_CENTER"/>
-		  </TableViewRow>
+  	   		  <Label id="total" color="gray"  left="15%" top="110" text="{dummy.total}" />
+	   		  <Label id="paid" color="gray"  left="65%" top="110" text="{dummy.paid}" />
+	  		  <Button id="invoice_button" left="30%" top="130" title="Click to update payment" textAlign="Ti.UI.TEXT_ALIGNMENT_CENTER"/>
+	   </TableViewRow>
+	   </TableViewSection>
+	  <TableViewSection  headerTitle="Dates">
+	  	<TableViewRow id="dates_row" height="80">
+	   		  <Button id="duedate_button" left="20%" top="5" title="due date: " />
+	   		  <Label id="duedate" color="red" left="45%" top="10"  text="{dummy.duedate}" />
+	   		  <TextField id="duedate_tf" ></TextField>
+	   		  <Label id="lastpaiddate" color="gray" left="20%" top="30" text="{dummy.lastpaiddate}" />   
+	    </TableViewRow>
 	  </TableViewSection>
 	  <TableViewSection  headerTitle="Action">
 	  	  <TableViewRow id="action_row" Title="duedate" height="Ti.UI.Size">
