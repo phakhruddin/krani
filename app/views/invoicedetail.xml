@@ -24,11 +24,12 @@
 	   </TableViewSection>
 	  <TableViewSection  headerTitle="Dates">
 	  	<TableViewRow id="dates_row" height="80">
-	   		  <Button id="duedate_button" left="20%" top="5" title="due date: " />
-	   		  <Label id="duedate" color="red" left="45%" top="10"  text="{dummy.duedate}" />
-	   		  <TextField id="duedate_tf" ></TextField>
+	   		  <Button id="duedate_button" left="20%" top="5" title="due date: " onClick="duedateAction" />
+	   		  <Label id="duedate_label" color="red" left="45%" top="10"  text="{dummy.duedate}" /> 
+	   		  <Button id="duedate_done" right="40" top="10" title="DONE" onClick="duedateActionDone" />
 	   		  <Label id="lastpaiddate" color="gray" left="20%" top="30" text="{dummy.lastpaiddate}" />   
 	    </TableViewRow>
+		  	  <TableViewRow id="datepicker_row" height="1"/>
 	  </TableViewSection>
 	  <TableViewSection  headerTitle="Action">
 	  	  <TableViewRow id="action_row" Title="duedate" height="Ti.UI.Size">

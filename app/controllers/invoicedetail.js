@@ -39,7 +39,7 @@ var prevbal = newtotal = 0;
 
 console.log("invoicedetail.js::checking JSON.stringify(args) prior to eval : " +JSON.stringify(args));
 var data = args.title.split(':');
-var invoicenumber = col1 = data[0]; $.totalbalance_row.invoicenumber = invoicenumber;
+var invoicenumber = col1 = data[0]; $.totalbalance_row.invoicenumber = invoicenumber; 
 var firstname = col2 = data[1]; $.totalbalance_row.firstname = firstname;
 var lastname = col3 = data[2]; $.totalbalance_row.lastname = lastname;
 var total = col4 = data[3];
@@ -58,19 +58,22 @@ var filename = 'payment_'+invoicenumber+'_'+firstname+'_'+lastname; $.totalbalan
 var idtag = (data[13])?data[13].replace(/xCoLoNx/g,',').split(',')[0].replace('yCoLoNy',':'):"none";
 var selfhref = (data[13])?data[13].replace(/xCoLoNx/g,',').split(',')[1].replace('yCoLoNy',':'):"none";
 var edithref = (data[13])?data[13].replace(/xCoLoNx/g,',').split(',')[2].replace('yCoLoNy',':'):"none";
+$.duedate_done.idtag = idtag;
+$.duedate_done.selfhref = selfhref;
+$.duedate_done.edithref = edithref;
 
 if (balance == 0){
 	$.phone_button.hide();
 	$.email_button.hide();
 	$.noaction_button.show();
-	$.duedate.hide();
+	$.duedate_label.hide();
 	$.balance1.hide();
 	$.balance2.show();
 } else {
 	$.phone_button.show();
 	$.email_button.show();
 	$.noaction_button.hide();
-	$.duedate.show();
+	$.duedate_label.show();
 	$.balance1.show();
 	$.balance2.hide();
 }
@@ -428,8 +431,7 @@ function emailpdf(firstname,lastname,address,city,state,phone,email,invoicenumbe
 					+", "+Titanium.App.Properties.getString("coState")+" "+Titanium.App.Properties.getString("coZip");
 	var tmpphone = Titanium.App.Properties.getString("coPhone");
 	if(tmpphone) {var coPhone = "("+tmpphone.substr(0,3)+")"+tmpphone.substr(3,3)+"-"+tmpphone.substr(6,4);} else var tmpphone="";
-	var coFax = coPhone;
-	var coEmail = Titanium.App.Properties.getString("coEmail");
+	var coEmail = Titanium.App.Properties.getString('kraniemailid');
 	var invoiceno = invoicenumber;
 	
 	if (phone) { var custphone = "("+phone.substr(0,3)+")"+phone.substr(3,3)+"-"+phone.substr(6,4);} else var custphone = "";
@@ -599,7 +601,6 @@ function emailpdf(firstname,lastname,address,city,state,phone,email,invoicenumbe
 	strVar += "				<p>"+coName+"<\/p>";
 	strVar += "				<p>"+coAddress+"<\/p>";
 	strVar += "				<p>"+coPhone+"<\/p>";
-	strVar += "				<p>"+coFax+"<\/p>";
 	strVar += "				<p>"+coEmail+"<\/p>";
 	strVar += "			<\/address>";
 	strVar += "			<span><img alt=\"\" src=\""+logourl+"\"><input type=\"file\" accept=\"image\/*\"><\/span>";
@@ -1093,7 +1094,6 @@ function dummyRefresh(paid,balance,lastpaiddate){
 	someDummy.fetch();
 	console.log("invoicedetail.js:dummyRefresh: JSON.stringify(someDummy):: "+JSON.stringify(someDummy));
 	//Alloy.Globals.updateExistingSpreadsheetAndDB("invoice",col1,col2,lastname,newtotal,newbal,paid,col7,col8,col9,col10,col11,col12,col13,col14,col15,col16,edithref,selfhref);
-
 }	
 
 function actionPhone(e){
@@ -1113,6 +1113,104 @@ function actioneMail(e){
 	emailDialog.open();
 }
 
-$.duedate_button.addEventListener("click",function(e){
-	console.log("invoicedetail.js:: duedate_button:: JSON.stringify(e): "+JSON.stringify(e));
+// set date due
+
+var duedatePicker = Titanium.UI.createPicker({top:0, type:Titanium.UI.PICKER_TYPE_DATE_AND_TIME});
+duedatePicker.selectionIndicator=true;
+duedatePicker.addEventListener("change",function(e) {
+	var dates = [];
+	var datesinUTC = [];
+	console.log("projectdetail.js::duedatepicker on change: "+JSON.stringify(e));
+	var duedateISO = e.value.toString();
+	var utcdate = Date.parse(e.value.toString());
+	var regdate = new Date(utcdate);
+	duedate = ( (new Date(utcdate)).getMonth() + 1 )+"/"+(new Date(utcdate)).getDate()+"/"+(new Date(utcdate)).getFullYear();
+	$.duedate_label.text = duedate;
+	//update ss
+	dates.push({"duedate":duedate,"lastpaiddate":lastpaiddate});
+	datesinUTC.push({"duedate":utcdate,"lastpaiddate":lastpaiddate});
+	$.duedate_done.dates = dates;
+	$.duedate_done.datesinUTC = datesinUTC;
+
 });
+
+$.duedate_done.hide();
+function duedateAction(e){
+	console.log("invoicedetail.js:: duedate_button:: JSON.stringify(e): "+JSON.stringify(e));
+		duedatePicker.show();
+	$.duedate_done.show();
+	if (e.source.textid=="pickershow") {
+		duedatePicker.hide(); $.duedate_button.textid="pickerhide";
+		$.datepicker_row.height="1";
+		$.datepicker_row.remove(duedatePicker);
+		$.duedate_done.hide();
+	} else {
+		$.datepicker_row.height="170";
+		$.datepicker_row.add(duedatePicker);
+		duedatePicker.show(); $.duedate_button.textid="pickershow";
+		$.duedate_done.show();
+	}
+}
+
+function duedateActionDone(e){
+	console.log("invoicedetail.js:: duedateActionDone:: JSON.stringify(e): "+JSON.stringify(e));
+	var dates = e.source.dates;
+	var duedate = dates[0].duedate;
+	var datesinUTC = e.source.datesinUTC;
+	var startdateTimeUTC = datesinUTC[0].duedate;
+	var startdateTimeLocale = new Date(startdateTimeUTC);
+	var startdateTimeISO = startdateTimeLocale.toISOString();
+	var enddateTimeUTC = parseFloat(5*60*1000+parseFloat(startdateTimeUTC));
+	var enddateTimeLocale = new Date(enddateTimeUTC);
+	var enddateTimeISO = enddateTimeLocale.toISOString();
+	console.log("invoicedetail.js:: duedateActionDone:: startdateTimeUTC "+startdateTimeUTC + " datesinUTC " +JSON.stringify(datesinUTC));
+	var summary = e.source.summary;
+	var description = e.source.descr;
+	var organizerdisplayName = e.source.organizerdisplayName;
+	var dates = JSON.stringify(dates).replace(/:/g,"cOlOn");
+	console.log("invoicedetail.js:: duedatepicker before SS update: "+dates);
+	Alloy.Globals.updateExistingSpreadsheetAndDB("invoice",col1,col2,lastname,newtotal,newbal,paid,col7,col8,col9,col10,duedate,col12,col13,col14,col15,col16,edithref,selfhref);
+	///var projectsid = Titanium.App.Properties.getString('project');
+	///Alloy.Globals.getPrivateData(projectsid,"project");
+	///callbackFunction();
+	//Hide next appt date
+	$.duedate_button.textid="pickerhide";
+	$.datepicker_row.height="1";
+	$.datepicker_row.remove(duedatePicker);
+	$.duedate_done.hide();
+	//create reminder
+	var kraniemailid = Titanium.App.Properties.getString('kraniemailid');console.log("schedule.js::kraniemailid:: "+kraniemailid);
+	var calid = kraniemailid;
+	var organizerdisplayName = kraniemailid;
+	var summary = "Invoice Follow-up: "+col2+" "+col3;
+	var description = "Balance Amount: "+newbal+" ,email: "+col10+" ,Phone: "+col12;
+	updatecalendardialog.data = [{"calid":calid,"startdateTimeISO":startdateTimeISO,"enddateTimeISO":enddateTimeISO,"summary":summary,"description":description,"organizerdisplayName":organizerdisplayName}];
+	updatecalendardialog.show();
+}
+
+var updatecalendardialog = Ti.UI.createAlertDialog({
+	cancel: 1,
+	buttonNames: ['NO', 'YES'],
+	message: 'Would you like to update the calendar?',
+	title: 'UpdateCalendar'
+});
+updatecalendardialog.addEventListener('click', function(e){
+	console.log("invoicedetail.js:: updatecalendardialog: JSON.stringify(e) :"+JSON.stringify(e));
+	console.log("invoicedetail.js:: updatecalendardialog: e.source.data :"+e.source.data);
+	var data = e.source.data;
+	var startdateTimeISO = data[0].startdateTimeISO;
+	var enddateTimeISO = data[0].enddateTimeISO;
+	var organizerdisplayName = data[0].organizerdisplayName;
+	var calid = data[0].calid;
+	var description = data[0].description;
+	var summary = data[0].summary;
+	if (e.index == 1 ) {
+		console.log("invoicedetail.js:: updatecalendardialog: startdateTimeISO :"+startdateTimeISO);
+		console.log("Alloy.Globals.postCreateEvent(calid:"+calid+","+startdateTimeISO+","+enddateTimeISO+",\"\",summary:"+summary+",description:"+description+",organizerdisplayName:"+organizerdisplayName+")");
+		Alloy.Globals.postCreateEvent(calid,startdateTimeISO,enddateTimeISO,"",summary,description,organizerdisplayName);
+	} else {
+		console.log("invoicedetail.js:: updatecalendardialog: Cancelled :");
+	}
+});
+ 
+ 

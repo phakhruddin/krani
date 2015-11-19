@@ -814,7 +814,7 @@ function emailpdf(firstname,lastname,address,city,state,phone,email,projectid,co
 	var tmpphone = Titanium.App.Properties.getString("coPhone");
 	if(tmpphone) {var coPhone = "("+tmpphone.substr(0,3)+")"+tmpphone.substr(3,3)+"-"+tmpphone.substr(6,4);} else var tmpphone="";
 	var coFax = coPhone;
-	var coEmail = Titanium.App.Properties.getString("coEmail");
+	var coEmail = Titanium.App.Properties.getString('kraniemailid');
 	var invoiceno = projectid;
 	var logourl = Titanium.App.Properties.getString('logourl');
 	
@@ -980,7 +980,6 @@ function emailpdf(firstname,lastname,address,city,state,phone,email,projectid,co
 	strVar += "				<p>"+coName+"<\/p>";
 	strVar += "				<p>"+coAddress+"<\/p>";
 	strVar += "				<p>"+coPhone+"<\/p>";
-	strVar += "				<p>"+coFax+"<\/p>";
 	strVar += "				<p>"+coEmail+"<\/p>";
 	strVar += "			<\/address>";
 	strVar += "			<span><img alt=\"\" src=\""+logourl+"\"><input type=\"file\" accept=\"image\/*\"><\/span>";

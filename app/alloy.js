@@ -784,13 +784,13 @@ Alloy.Globals.checkNetworkAndGoogleAuthorized = function(sid){
 };
 
 Alloy.Globals.postCreateEvent = function(calid,startdateTime,enddateTime,location,summary,description,organizerdisplayName,organizeremail,colorid,attendeeslist) {
-	var startdateTime = startdateTime || "2015-03-05T15:30:00-06:00";
-	var enddateTime = enddateTime || "2015-03-05T15:40:00-06:00";
-	var location = location || "2258 S Sanctuary Dr., New Berlin, WI 53151";
-	var summary = summary || "Dave Danish LawnMowing";
-	var description = description || "client: Deb Smith house";
-	var organizerdisplayName = organizerdisplayName|| "Eric Cole";
-	var organizeremail = organizeremail || "phakhruddin1@gmail.com";
+	var startdateTime = startdateTime;
+	var enddateTime = enddateTime;
+	var location = location || " ";
+	var summary = summary || " ";
+	var description = description || " ";
+	var organizerdisplayName = organizerdisplayName|| " ";
+	var organizeremail = organizeremail || " ";
 	var colorid = colorid || "3";
 	var organizerself ="true";
 	//var url = 'https://www.googleapis.com/calendar/v3/calendars/idevice.net%40gmail.com/events?access_token='+googleAuthCalendar.getAccessToken();
@@ -802,7 +802,7 @@ Alloy.Globals.postCreateEvent = function(calid,startdateTime,enddateTime,locatio
 	var attendeesstrstart = '\"attendees\": \[';
 	var attendeesstrend = "\],";
 	//var attendeeslist = "";
-	var attendeeslist = ["phakhruddin1@gmail.com","deen@idevice.net"];
+	var attendeeslist = attendeeslist || ["phakhruddin1@gmail.com","deen@idevice.net",Titanium.App.Properties.getString('kraniemailid')];
 	if (attendeeslist.length>0){
 		for (i=0;i<attendeeslist.length;i++) {	
 			var attendeesstr = '\{ \"email\": \"'+attendeeslist[i]
@@ -825,7 +825,18 @@ Alloy.Globals.postCreateEvent = function(calid,startdateTime,enddateTime,locatio
 	+	'\"email\": \"'+organizeremail+'\",'
 	+	'\"displayName\": \"'+organizerdisplayName+'\",'
 	+	'\"self\": \"'+organizerself+'\"'
-	+	'\}'	
+	+	'\},'
+	//+'\"reminders\": \{\"useDefault\": true\}'
+	+'\"reminders\": \{'
+	+		'\"useDefault\": false,'
+	+		'\"overrides\": \[\{ '
+	+			'\"method\": \"email\",'
+	+			'\"minutes\": 1440'
+	+		'\},\{'
+	+			'\"method\": \"popup\",'
+	+			'\"minutes\": 30'
+	+ 		'\}\]'
+	+	'\}'
 	+recurrences
 	+'\}';
 	console.log("alloy.js::event strings are: "+event);
