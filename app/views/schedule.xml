@@ -28,7 +28,7 @@
 				<Label id="label_sub3" color="#333"  left="80" top="84" bindId="address"/>
 				<ImageView bindId="img" id="icon" height="10" width="60" left="80" top="103"/>
 				<ImageView bindId="imgday" id="iconday" height="80" width="80" left="5" top="1"/>
-				<Button id="next_button" bindId="all" image="light_info.png" right="30" top="55" width="20" height="20" onClick="doClick"/>
+				<Button id="next_button" bindId="all" image="light_info.png" right="30" top="45" width="20" height="20" onClick="doClick"/>
 			</ItemTemplate>
 		</Templates>
 		<ListSection id="schedule_section" headerTitle="{dummy.HeaderTitle}" dataCollection="schedule" dataTransform="transformFunction">

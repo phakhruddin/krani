@@ -1137,7 +1137,7 @@ duedatePicker.addEventListener("change",function(e) {
 $.duedate_done.hide();
 function duedateAction(e){
 	console.log("invoicedetail.js:: duedate_button:: JSON.stringify(e): "+JSON.stringify(e));
-		duedatePicker.show();
+	duedatePicker.show();
 	$.duedate_done.show();
 	if (e.source.textid=="pickershow") {
 		duedatePicker.hide(); $.duedate_button.textid="pickerhide";
@@ -1176,7 +1176,8 @@ function duedateActionDone(e){
 	//Hide next appt date
 	$.duedate_button.textid="pickerhide";
 	$.datepicker_row.height="1";
-	$.datepicker_row.remove(duedatePicker);
+	//$.datepicker_row.remove(duedatePicker);
+	duedatePicker.hide();
 	$.duedate_done.hide();
 	//create reminder
 	var kraniemailid = Titanium.App.Properties.getString('kraniemailid');console.log("schedule.js::kraniemailid:: "+kraniemailid);
@@ -1191,8 +1192,8 @@ function duedateActionDone(e){
 var updatecalendardialog = Ti.UI.createAlertDialog({
 	cancel: 1,
 	buttonNames: ['NO', 'YES'],
-	message: 'Would you like to update the calendar?',
-	title: 'UpdateCalendar'
+	message: 'Would you like to set a reminder?',
+	title: 'Follow-up Reminder'
 });
 updatecalendardialog.addEventListener('click', function(e){
 	console.log("invoicedetail.js:: updatecalendardialog: JSON.stringify(e) :"+JSON.stringify(e));

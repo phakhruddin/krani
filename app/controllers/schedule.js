@@ -706,7 +706,7 @@ function transformFunction(model) {
 	transform.end = (enddatetimeUTC)?'End: '+enddatetime:'End: Date&Time not provided';
 	transform.email = (transform.col9 == "none")?"":'email : '+transform.col9;
 	transform.client = (transform.col2 == "none")?"No client information":newclient;
-	transform.address = (transform.col3 == "none")?"":'Address : '+transform.col3;
+	transform.address = (transform.col3 == "none" || transform.col3 == " " )?"":'Address : '+transform.col3;
 	transform.daymonthyear = (startdatetimeUTC)?daymonthyear:' ';
 	transform.startday = (startdatetimeUTC)?startday:' ';
 	transform.startmonth = (startdatetimeUTC)?startmonth+' '+startdaydate:' ';
@@ -801,6 +801,7 @@ function buttonAction(e){
 	if (thesort == "All") { 
 		someDummy.set('HeaderTitle','ALL Calendar Entries');
 		Alloy.Collections.schedule.fetch(); 
+		Alloy.Collections.schedule.sort();
 		someDummy.fetch();
 		};
 	Ti.App.Properties.setString("sorttype",sorttype);

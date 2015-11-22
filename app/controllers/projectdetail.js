@@ -1065,8 +1065,10 @@ function duedateActionDone(e){
 	//hide
 			dateduePicker.hide(); $.duedate_button.textid="pickerhide";
 		$.datepicker_row.height="1";
-		$.datepicker_row.remove(dateduePicker);
-		$.datepicker_row.remove(nextapptdatePicker);
+		///$.datepicker_row.remove(dateduePicker);
+		dateduePicker.hide();
+		///$.datepicker_row.remove(nextapptdatePicker);
+		nextapptdatePicker.hide();
 		$.duedate_done.hide();
 		
 }

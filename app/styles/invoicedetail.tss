@@ -64,4 +64,15 @@
 	font: {
 		fontSize: '18',
 	}
+},
+"#duedate_button" : {
+	font: {
+		fontSize: '18',
+	}
+},
+"#duedate_label" : {
+	font: {
+		fontSize: '18',
+	}
 }
+
