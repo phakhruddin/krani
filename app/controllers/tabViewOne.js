@@ -65,11 +65,25 @@ $.inventory.addEventListener ("click", function(e){
 	openNextTab(item);
 });
 
+$.proposallistlist.addEventListener ("click", function(e){
+	Alloy.Globals.openDetail(e);
+
+ 		var item = 'proposal';
+ 			var sid = Titanium.App.Properties.getString(item,"none");
+	Ti.API.info("sid for "+ item +" : "+sid);
+	Alloy.Globals.getPrivateData(sid,item);
+		var scheduleController = Alloy.createController("proposallistlist");
+ 	scheduleController.openMainWindow($.tab_one);
+	//openNextTab(item);
+});
+
+
+/*
 $.proposal.addEventListener ("click", function(e){
 	Alloy.Globals.openDetail(e);
 	var item = e.row.id;
 	openNextTab(item);
-});
+});*/
 
 $.settings.addEventListener ("click", function(e){
 	Alloy.Globals.openDetail(e);

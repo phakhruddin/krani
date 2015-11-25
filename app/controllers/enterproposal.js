@@ -1,11 +1,92 @@
 var args = arguments[0] || {};
 Titanium.App.Properties.setString('selectclient',"false");
+var total = 0;
 exports.openMainWindow = function(_tab) {
   _tab.open($.enterproposal_window);
-  Ti.API.info("This is child widow schedule.js" +JSON.stringify(_tab));
-    Alloy.Globals.checkNetworkAndGoogleAuthorized('1gnkP116nsTVxtrw6d_mXVdOiesQEPH7LVUIyHUfx9EE');
-	//Alloy.Globals.checkGoogleisAuthorized();
+  Ti.API.info("This is child widow enterproposal.js" +JSON.stringify(_tab));
+    //Alloy.Globals.checkNetworkAndGoogleAuthorized('1gnkP116nsTVxtrw6d_mXVdOiesQEPH7LVUIyHUfx9EE');
+	(Alloy.Globals.googleAuthSheet.getAccessToken()) || Alloy.Globals.googleAuthSheet.Authorized();
+	//googleAuth.authorize();
+	
+	console.log("enterproposal.js::openMainWindow:: $.enterproposal_table.data[0] count "+$.enterproposal_table.data[0].rowCount+" contents: "+JSON.stringify($.enterproposal_table.data[0].rows));
+ 	if (args.clienttitle) {  //when user select existing client
+		selectClient(args);
+		//console.log("enterproposal.js::after selectClient:: selectclientrow "+JSON.stringify(selectclientrow));
+		console.log("enterproposal.js::after selectClient::openMainWindow:: b4 exe $.enterproposal_table.data[0].rowCount : "+$.enterproposal_table.data[0].rowCount);
+		console.log("enterproposal.js::after selectClient::openMainWindow:: b4 exe $.enterproposal_table.data[0] "+JSON.stringify($.enterproposal_table.data[0].rows));
+		$.coverview.hide();
+		$.selectclient_button.hide();	
+		//$.enterproposal_table.deleteRow()
+		/*
+		var tohide = [$.itemdetail_row, $.addrow_row, $.itemlineend_row,$.totalrow];
+		for (x=0;x<tohide.length;x++){
+			$.enterproposal_table.deleteRow(tohide[x]);
+		}; //hide first*/
+		console.log("enterproposal.js::after selectClient::openMainWindow:: after exe $.enterproposal_table.data[0].rowCount : "+$.enterproposal_table.data[0].rowCount);
+		console.log("enterproposal.js::after selectClient::openMainWindow:: after exe $.enterproposal_table.data[0] "+JSON.stringify($.enterproposal_table.data[0].rows));
+		addJobItemFromClientSelection();		
+		$.enterproposal_window.setRightNavButton($.savebutton);		
+		console.log("enterproposal.js::after selectClient::openMainWindow:: checking $.jobitem_row "+JSON.stringify($.jobitem_row));	
+	} else {
+		//$.enterproposal_table.setData(addnewclientrow)	;
+		Titanium.App.Properties.setString('selectclient',"false");
+		var toshow = [$.itemdetail_row, $.addrow_row, $.itemlineend_row,$.totalrow];
+		for (x=0;x<toshow.length;x++){
+			$.enterproposal_table.appendRow(toshow[x]);
+		};
+		// required entry
+	}
+	
+	console.log("enterproposal.js::after selectClient::openMainWindow:: END $.enterproposal_table.data[0].rows "+JSON.stringify($.enterproposal_table.data[0].rows));
+	for (i=0;i<$.enterproposal_table.data[0].rowCount;i++) {		
+ 		console.log("children count : "	+$.enterproposal_table.data[0].rows[i].children.length);
+ 		for (j=0;j<+$.enterproposal_table.data[0].rows[i].children.length;j++) { 			
+			console.log("enterproposal.js::after selectClient::openMainWindow::END:JSON stringify table 0 row "+i+' : ' +JSON.stringify($.enterproposal_table.data[0].rows[i]));
+			console.log("nterproposal.js::after selectClient::openMainWindow::END:JSON stringify table 0 row "+i+'w/children '+j+' : ' +JSON.stringify($.enterproposal_table.data[0].rows[i].children[j]));		
+		};
+	};
+	
+	if(_tab.from == "clientlist_window"){
+		var toshow = [$.itemdetail_row, $.addrow_row, $.itemlineend_row,$.totalrow];
+		for (x=0;x<toshow.length;x++){
+			$.enterproposal_table.appendRow(toshow[x]);
+		};
+	}
 };
+
+	var maxdebug = Titanium.App.Properties.getInt('maxdebug');
+	var mindebug = Titanium.App.Properties.getInt('mindebug');
+
+console.log("enterproposal.js::outside openMainWindow:: $.enterproposal_table.data[0] count "+$.enterproposal_table.data[0].rowCount+" contents: "+JSON.stringify($.enterproposal_table.data[0].rows));
+
+console.log("enterproposal.js::JSON.stringify(args) : "+JSON.stringify(args));
+
+
+if(args.clienttitle){
+	var data = args.clienttitle.split(':');
+	var name = data[0];
+	var firstname = data[1];$.savebutton.clientfirstname = firstname || "none";
+	var lastname = data[2];$.savebutton.clientlastname = lastname || "none";
+	var name = firstname+" "+lastname;
+	var company = data[3];$.savebutton.clientcompany = company || "none";
+	var phone = data[4];$.savebutton.clientphone = phone || "none";
+	var email = data[5];$.savebutton.clientemail = email || "none";
+	var address = data[6];$.savebutton.clientaddress = address || "none";
+	var city = data[7];$.savebutton.clientcity = city || "none";
+	var state = data[8];$.savebutton.clientstate = state || "none";
+	var country = data[9];$.savebutton.clientcountry = state || "none";
+	var customerid = data[15];$.savebutton.customerid = customerid || "none";
+	var uniqueid = customerid;
+	(firstname)?$.proposalclientfirstname_tf.value=firstname:$.proposalclientfirstname_tf.value=" ";
+	(lastname)?$.proposalclientlastname_tf.value=lastname:$.proposalclientlastname_tf.value=" ";
+	(company)?$.proposalclientcompany_tf.value=company:$.proposalclientcompany_tf.value=" ";
+	(phone)?$.proposalclientphone_tf.value=phone:$.proposalclientphone_tf.value=" ";
+	(email)?$.proposalclientemail_tf.value=email:$.proposalclientemail_tf.value=" ";
+	(address)?$.proposalclientstreetaddress_tf.value=address:$.proposalclientstreetaddress_tf.value=" ";
+	(city)?$.proposalclientcity_tf.value=city:$.proposalclientcity_tf.value=" ";
+	(state)?$.proposalclientstate_tf.value=state:$.proposalclientstate_tf.value=" ";
+}
+
 
 function addRows(){
  console.log("JSON stringify e : " +JSON.stringify(e));
@@ -15,12 +96,9 @@ title : 'Row ' + ($.enterproposal_table.data[0].rowCount + 1)
 });
  
 // Adding row to the table view
-$.enterproposal_table.appendRow(newRow);
+///$.enterproposal_table.appendRow(newRow);
 }
 
-$.enterproposal_table.addEventListener('click', function(e){
-	console.log("JSON stringify after table row is clicked : " +JSON.stringify(e));
-});
 
 var count = 3; //row where line item is entered
 Titanium.App.Properties.setInt('count',count);
@@ -34,8 +112,11 @@ function addItem(e,itemTextField){
 	Ti.API.info("table data 0 "+$.enterproposal_table.data[0]);
 	Ti.API.info("table row count : "+$.enterproposal_table.data[0].rowCount);
 	console.log("JSON stringify table data 0 : " +JSON.stringify($.enterproposal_table.data[0]));
-
-
+	/*
+	for (i=0;i<$.enterproposal_table.data[0].rowCount;i++) {			
+		Ti.API.info($.enterproposal_table.data[0].rows[i]);		
+		console.log("JSON stringify table 0 row "+i+' : ' +JSON.stringify($.enterproposal_table.data[0].rows[i]));
+	}*/
 	var itemval = count - 1;
 	// Defining new test field
 	var itemLabellist = Ti.UI.createLabel({
@@ -136,31 +217,15 @@ function addItem(e,itemTextField){
  	console.log("e JSON of textfield: "+JSON.stringify(_e));
  });
  
- //blur all text field when touching window 
- 	function allBlur(){
- 		$.itemlist_tf.blur();
-	 	$.itemqty_tf.blur();
-	 	$.itemprice_tf.blur();
-	 	itemTextFieldqty.blur();
-	 	itemTextField.blur();
-	 	itemTextFieldprice.blur();
- 	};
-	 $.itemline_row.addEventListener('click',function(e){
-	 	allBlur();
-	 });
-	 
-	 newRow.addEventListener('click',function(e){
-	 	allBlur();
-	 });
-	 
-	 $.clientdetail_row.addEventListener('click',function(e){
-	 	allBlur();
-	 });
-	 
-	 $.addrow_button.addEventListener('click',function(e){
-	 	allBlur();
-	 });
-	
+ 	itemTextFieldprice.addEventListener("blur",function(e){
+		console.log("enterproposal.js::itempricelabel eventListener:" +JSON.stringify(e));
+		/* NOT NEEDED
+		console.log("enterproposal.js::itemTextFieldprice: isNaN("+e.source.value+")?total = "+total+":total = "+total+" + "+parseFloat(e.source.value)+";");
+		isNaN(e.source.value)?total = total:total = total + parseFloat(e.source.value);
+		console.log("enterproposal.js::itemTextFieldprice: total :" + total);*/
+		$.totalvalue.text = total;
+	});
+ 
 	//var textfield = Ti.UI.createTextField({keyboardType: Ti.UI.KEYBOARD_NUMBER_PAD, returnKeyType: Ti.UI.RETURNKEY_DONE, backgroundColor: '#262626', border: 1, width: 100});
 
 }
@@ -175,80 +240,110 @@ $.itemlist_tf.addEventListener('blur', function(_e) {
  
  var itemvalue =[];
 
- function saveHandler(){
+ function saveHandler(e){
+ 	console.log("enterproposal.js::saveHandler::JSON.stringify(e): "+JSON.stringify(e));
+ 	console.log("enterproposal.js::saveHandler::JSON.stringify(args): "+JSON.stringify(args));
+ 	var clientfirstname = e.source.clientfirstname.trim();
+ 	var clientlastname = e.source.clientlastname.trim();
+ 	var customerid = e.source.customerid.trim();
+ 	var clientemail = e.source.clientemail.trim();
+ 	var clientcompany = e.source.clientcompany.trim();
+ 	var clientphone = e.source.clientphone.trim();
+ 	var clientaddress = e.source.clientaddress.trim();
+ 	var clientcity = e.source.clientcity.trim();
+ 	var clientstate = e.source.clientstate.trim();
+ 	var country = e.source.clientcountry.trim();
+ 	console.log("enterproposal.js::saveHandler::customerid: clientfirstname: clientlastname "+customerid+" : "+clientfirstname+" : "+clientlastname);
  	var isSelectClientTrue = Titanium.App.Properties.getString('selectclient');
  	console.log("saving all data ");
  	console.log("isSelectClientTrue is:"+isSelectClientTrue);
- 	var tabledata = [];	
+ 	tabledata = [];	
+ 	projectdata = [];
+ 	//suck in all the table value
  	for (i=0;i<$.enterproposal_table.data[0].rowCount;i++) {		
  		console.log("children count : "	+$.enterproposal_table.data[0].rows[i].children.length);
  		for (j=0;j<+$.enterproposal_table.data[0].rows[i].children.length;j++) { 			
-			//Ti.API.info($.enterproposal_table.data[0].rows[i].children[0]);		
 			console.log("JSON stringify table 0 row "+i+' : ' +JSON.stringify($.enterproposal_table.data[0].rows[i]));
 			console.log("JSON stringify table 0 row "+i+'w/children '+j+' : ' +JSON.stringify($.enterproposal_table.data[0].rows[i].children[j]));
-			tabledata.push({data1:$.enterproposal_table.data[0].rows[i].children[j].id || "none",data2:$.enterproposal_table.data[0].rows[i].children[j].value || "none"});
-			console.log("tabledata are: "+JSON.stringify(tabledata));
+			tabledata.push({data1:$.enterproposal_table.data[0].rows[i].children[j].id || "none",data2:$.enterproposal_table.data[0].rows[i].children[j].value || "none"});		
 		};
 	};
-	//once tabledata is populated, find submission value
-	var item = [];
-	var itemqty = [];
-	var itemprice = [];
+	console.log("tabledata are: "+JSON.stringify(tabledata));
+	var projectname = [];
+	var projectdescr = [];
+	var lineitem = [];
+	var lineitemqty = [];
+	var lineitemprice = [];
 	for (i=0;i<tabledata.length;i++){
-		if (tabledata[i].data1 == "clientfirstname_tf") { var clientfirstname = tabledata[i].data2; };
-		if (tabledata[i].data1 == "clientlastname_tf") { var clientlastname = tabledata[i].data2; };
-		if (tabledata[i].data1 == "clientphone_tf") { var clientphone = tabledata[i].data2; };
-		if (tabledata[i].data1 == "clientemail_tf") { var clientemail = tabledata[i].data2; };
-		if (tabledata[i].data1 == "clientstreetaddress_tf") { var clientstreetaddress = tabledata[i].data2; };
-		if (tabledata[i].data1 == "clientcity_tf") { var clientcity = tabledata[i].data2; };
-		if (tabledata[i].data1 == "clientstate_tf") { var clientstate = tabledata[i].data2; };
-		if (tabledata[i].data1 == "clientcompany_tf") { var clientcompany = tabledata[i].data2; };
-		if (tabledata[i].data1 == "itemlist_tf") {  item.push({ descr:tabledata[i].data2 }); };
-		if (tabledata[i].data1 == "itemqty_tf") {  itemqty.push({ qty:tabledata[i].data2 }); };
-		if (tabledata[i].data1 == "itemprice_tf") {  itemprice.push({ price:tabledata[i].data2 }); };
-	}	
-	//console.log("checking clientfirstname ::: "+clientfirstname);
-	if (!clientfirstname) { //no entry done. Get from existing.
-		var someDummy = Alloy.Models.dummy;
-		var fullname = someDummy.get('fullname');
-		var clientfirstname = someDummy.get('firstname');
-		var clientlastname = someDummy.get('lastname');
-		var clientcompany = someDummy.get('company');
-		var clientphone = someDummy.get('phone');
-		var clientemail = someDummy.get('email');
-		var clientstreetaddress = someDummy.get('address');
-		var fulladdress = someDummy.get('fulladdress');
-		var clientcity = someDummy.get('city');
-		var clientstate = someDummy.get('state');
-		var country = someDummy.get('country');
-		console.log("after dummy  get, fullname is: "+fullname+" lastname is : "+clientlastname);	
+		if (tabledata[i].data1 == "projectname_tf") {  projectname.push({ name:tabledata[i].data2.trim() }); };
+		if (tabledata[i].data1 == "projectdescr_tf") {  projectdescr.push({ descr:tabledata[i].data2.trim() }); };
+		if (tabledata[i].data1 == "itemlist_tf") {  lineitem.push({ item:tabledata[i].data2.trim()}); };
+		if (tabledata[i].data1 == "itemqty_tf") {  lineitemqty.push({ itemqty:tabledata[i].data2.trim() }); };
+		if (tabledata[i].data1 == "itemprice_tf") {  lineitemprice.push({ itemprice:tabledata[i].data2.trim() }); };
 	}
-	console.log("item: "+JSON.stringify(item));
-	console.log("itemqty: "+JSON.stringify(itemqty));
-	console.log("itemprice: "+JSON.stringify(itemprice));
+	console.log("lineitem: "+JSON.stringify(lineitem));
+	console.log("lineitemqty: "+JSON.stringify(lineitemqty));
+	console.log("lineitemprice: "+JSON.stringify(lineitemprice));
+	var item = [];
+	item.push({'name':projectname[0].name,'descr':projectdescr[0].descr});
+	for (i=0;i<lineitem.length;i++){
+		var price = lineitemprice[i].itemprice;
+		console.log("enterproposal.js:: BEFORE push:: lineitem[i].item: "+lineitem[i].item);
+		if (lineitem[i].item != "none"){
+			console.log("enterproposal.js:: item.push:: lineitem[i].item: "+lineitem[i].item);
+			item.push({
+				'lineitem':lineitem[i].item,
+				'qty':lineitemqty[i].itemqty,
+				'price':lineitemprice[i].itemprice
+			});
+		}
+		console.log("enterproposal.js:: itemprice_tf: in a Loop line#293:: isNaN("+price+")?total = "+total+":total = "+total+" + "+parseFloat(price)+";");
+		isNaN(price)?total=total:total = total + parseFloat(price);
+		console.log("enterproposal.js::itemprice_tf: in a Loop line#293::: total :" + total);
+	}
+	$.totalvalue.text = total;
+	console.log("enterproject::saveHandler:total price and JSON.stringify(item): "+total+" AND "+JSON.stringify(item));
+	var projectdata = item;
+	console.log("enterproposal.js::saveHandler:projectdata: "+JSON.stringify(projectdata));
+	var proposalnumber = Date.now();
+	var projectid = proposalnumber;
+	var name = clientfirstname+' '+clientlastname;
+	var customerno = "2";
+	var bal = "0";
+	var paid = "0";
+	var lastpaiddate = "Please update";
+	var followupdate = "Please update";
+	var duedate = "Please update";
+	var currency = "USD";
+	var status = "pending";
+	var clientproject = projectdata[0].name.trim();
+ 	var notes = JSON.stringify(projectdata).toString().replace(/:/g,'cOlOn');
+ 	var dates = "[{\"nextapptdate\"cOlOn\"Please update\",\"duedate\"cOlOn\"Please update\",\"lastpaiddate\"cOlOn\"Please update\"}]";
+	console.log("clientfirstname: "+clientfirstname+" clientlastname "+clientlastname);	
+	if (name.match(/[A-Za-z].+/)) {		
+		console.log('submit('+proposalnumber+','+clientfirstname+','+clientlastname+','+total+','+bal+','+paid+','+lastpaiddate+','+followupdate+','+customerid+','+clientemail+','+duedate+','
+	+currency+','+status+','+clientphone+')');
+		submit(proposalnumber,clientfirstname,clientlastname,total,bal,paid,lastpaiddate,followupdate,customerid,clientemail,duedate,currency,status,clientphone);
+		console.log('submitproject('+clientproject+','+clientfirstname+','+clientlastname+','+clientcompany+','+clientphone+','+clientemail+','+clientaddress+','+clientcity+','+clientstate+','+country+','+notes+','
+	+customerid+','+dates+','+projectid+')');
+		submitproject(clientproject,clientfirstname,clientlastname,clientcompany,clientphone,clientemail,clientaddress,clientcity,clientstate,country,"Proposal",notes,customerid,"none",dates,projectid);
+	}
+	$.enterproposal_window.setRightNavButton($.genproposal);
+	$.genproposal.proposalnumber = proposalnumber;
+	var subject = ["proposalnumber", "clientfirstname","clientlastname","clientcompany","clientphone","clientemail",
+	"clientaddress","clientcity","clientstate","country","status","notes","customerid","dates","projectid"];
+	for (i=0;i<subject.length;i++){
+		eval("$.genproposal."+subject[i]+" = "+subject[i]);
+	}
  }; 
  
- function submit() {		
+ function submit(proposalnumber,clientfirstname,clientlastname,total,bal,paid,lastpaiddate,followupdate,customerid,clientemail,duedate,currency,status,clientphone) {	
  	var now = new Date();
- 	var clientlastname = Titanium.App.Properties.getString('clientlastname',"none");
- 	var clientfirstname = Titanium.App.Properties.getString('clientfirstname',"none");
- 	var clientphone = Titanium.App.Properties.getString('clientphone',"none");
- 	var clientemail = Titanium.App.Properties.getString('clientemail',"none");
- 	var clientstreetaddress = Titanium.App.Properties.getString('clientstreetaddress',"none");
- 	var clientcity = Titanium.App.Properties.getString('clientcity',"none");
- 	var clientstate = Titanium.App.Properties.getString('clientstate',"none");
- 	var clientproject = Titanium.App.Properties.getString('clientproject',"none");
- 	var clientcompany = Titanium.App.Properties.getString('clientcompany',"none");
- 	alert("On "+now+" : Info on: "+clientfirstname+" "+clientlastname+" with "+clientphone+" and email "+clientemail+" at "+clientstreetaddress+", "+clientcity+", "+clientstate+". submitted");
- 	var fcsv = Ti.Filesystem.getFile(Ti.Filesystem.tempDirectory,'enterclient.csv');
- 	var ftxt = Ti.Filesystem.getFile(Ti.Filesystem.tempDirectory,'enterclient.txt');
-	fcsv.write(now+", "+clientfirstname+", "+clientlastname+", "+clientphone+", "+clientemail+", "+clientstreetaddress+", "+clientcity+", "+clientstate+'\n', true); // write to the file
-	ftxt.write(now+", "+clientfirstname+", "+clientlastname+", "+clientphone+", "+clientemail+", "+clientstreetaddress+", "+clientcity+", "+clientstate+'\n', true); // write to the file
 	var xmldatastring = '<entry xmlns=\'http://www.w3.org/2005/Atom\' xmlns:gsx=\'http://schemas.google.com/spreadsheets/2006/extended\'>'
-	+'<gsx:col1>'+clientfirstname+'</gsx:col1><gsx:col2>'+clientfirstname+'</gsx:col2><gsx:col3>'
-	+clientlastname+'</gsx:col3><gsx:col4>'+clientcompany+'</gsx:col4><gsx:col5>'
-	+clientphone+'</gsx:col5><gsx:col6>'+clientemail+'</gsx:col6><gsx:col7>'+clientstreetaddress+'</gsx:col7><gsx:col8>'+clientcity+'</gsx:col8><gsx:col9>'+clientstate
-	+'</gsx:col9><gsx:col10>'+'USA'+'</gsx:col10><gsx:col11>'+'NA'+'</gsx:col11><gsx:col12>NA</gsx:col12><gsx:col13>NA</gsx:col13><gsx:col14>NA</gsx:col14><gsx:col15>NA</gsx:col15><gsx:col16>NA</gsx:col16></entry>';
+	+'<gsx:col1>'+proposalnumber+'</gsx:col1><gsx:col2>'+clientfirstname+'</gsx:col2><gsx:col3>'
+	+clientlastname+'</gsx:col3><gsx:col4>'+total+'</gsx:col4><gsx:col5>'
+	+bal+'</gsx:col5><gsx:col6>'+paid+'</gsx:col6><gsx:col7>'+lastpaiddate+'</gsx:col7><gsx:col8>'+followupdate+'</gsx:col8><gsx:col9>'+customerid
+	+'</gsx:col9><gsx:col10>'+clientemail+'</gsx:col10><gsx:col11>'+duedate+'</gsx:col11><gsx:col12>'+clientphone+'</gsx:col12><gsx:col13>'+status+'</gsx:col13><gsx:col14>NA</gsx:col14><gsx:col15>NA</gsx:col15><gsx:col16>NA</gsx:col16></entry>';
 	Ti.API.info('xmldatastring to POST: '+xmldatastring);
 	var xhr =  Titanium.Network.createHTTPClient({
     onload: function() {
@@ -259,17 +354,82 @@ $.itemlist_tf.addEventListener('blur', function(_e) {
     	}     
     },
     onerror: function(e) {
-    	Ti.API.info("error e: "+JSON.stringify(e));
-        alert("Unable to communicate to the cloud. Please try again"); 
+    	console.log("enterproposal::submit:: error e: "+JSON.stringify(e));
+       alert("error:"+e.code+": Please connect to the network.");
     }
 });
-	var clientsid = Titanium.App.Properties.getString('client');
-	xhr.open("POST", 'https://spreadsheets.google.com/feeds/qty/'+clientsid+'/od6/private/full');
+    //var spreadsheet_id = '1-Wz7Apn4AvVpfqcNyMgfqyKA8OAoLNy5Bl0d_jQ9IZk';
+    var spreadsheet_id = Titanium.App.Properties.getString('proposal');
+	xhr.open("POST", 'https://spreadsheets.google.com/feeds/list/'+spreadsheet_id+'/od6/private/full');
 	xhr.setRequestHeader("Content-type", "application/atom+xml");
-	xhr.setRequestHeader("Authorization", 'Bearer '+ Alloy.Globals.googleAuthSheet.getAccessToken());
+	xhr.setRequestHeader("Authorization", 'Bearer '+ googleAuth.getAccessToken());
 	xhr.send(xmldatastring);
 	Ti.API.info('done POSTed');
+
  }
+ 
+ function submitproject(clientproject,clientfirstname,clientlastname,clientcompany,clientphone,clientemail,clientstreetaddress,clientcity,clientstate,country,status,notes,percentcompletion,nextappt,datedue,projectid) {	
+    //var existingedithref = Titanium.App.Properties.getString('edithref');
+    //var edithref = Titanium.App.Properties.getString('edithref');
+   // var idtag = Titanium.App.Properties.getString('idtag');
+   // var selfhref = Titanium.App.Properties.getString('selfhref');
+ 
+ 	var now = Date.now();
+
+	var xhr =  Titanium.Network.createHTTPClient({
+    onload: function() {
+    	try {
+    		Ti.API.info(this.responseText); 
+			var xml = Titanium.XML.parseString(this.responseText);
+    		var entry = xml.documentElement.getElementsByTagName("entry");
+    		var link = xml.documentElement.getElementsByTagName("link");
+    		var idtag = xml.documentElement.getElementsByTagName("id").item(0).text;
+    		console.log("enterclient.js::submit: number of link found: " +link+ " length: "+link.length);
+    		for (i=0;i<link.length;i++){			
+    			var listitem = link.item(i);
+    			if (listitem.getAttribute("rel") == "edit"){ var edithref = listitem.getAttribute("href");}
+    			if (listitem.getAttribute("rel") == "self"){ var selfhref = listitem.getAttribute("href");}
+    		}
+    		Titanium.App.Properties.setString('edithref',edithref);
+    		Titanium.App.Properties.setString('idtag',idtag);
+    		Titanium.App.Properties.setString('selfhref',selfhref);
+    		Ti.API.info("enterproject.js::submit: self href is : "+selfhref+" edit href is: "+edithref);
+    		Ti.API.info("enterproject.js::submit: idtag is : "+idtag);
+    		// Once success, feed data to DB
+    	} catch(e){
+    		Ti.API.info("cathing e: "+JSON.stringify(e));
+    	}     
+    },
+    onerror: function(e) {
+    	console.log("enterproposal::submitproject::error e: "+JSON.stringify(e));
+        alert("error:"+e.code+": Please connect to the network.");
+    }
+});
+
+	var clients = Alloy.Collections.instance('client');
+	var projects = Alloy.Collections.instance('project');
+	var projectid = now;
+	$.savebutton.projectid = projectid;
+	var xmldatastring = '<entry xmlns=\'http://www.w3.org/2005/Atom\' xmlns:gsx=\'http://schemas.google.com/spreadsheets/2006/extended\'>'
+	+'<gsx:col1>'+clientproject+'</gsx:col1><gsx:col2>'+clientfirstname+'</gsx:col2><gsx:col3>'
+	+clientlastname+'</gsx:col3><gsx:col4>'+clientcompany+'</gsx:col4><gsx:col5>'
+	+clientphone+'</gsx:col5><gsx:col6>'+clientemail+'</gsx:col6><gsx:col7>'+clientstreetaddress+'</gsx:col7><gsx:col8>'+clientcity+'</gsx:col8><gsx:col9>'+clientstate
+	+'</gsx:col9><gsx:col10>'+country+'</gsx:col10><gsx:col11>'+status+'</gsx:col11><gsx:col12>'+notes+'</gsx:col12><gsx:col13>'+percentcompletion+'</gsx:col13><gsx:col14>'+nextappt+'</gsx:col14><gsx:col15>'+datedue
+	+'</gsx:col15><gsx:col16>'+projectid+'</gsx:col16></entry>';
+	Ti.API.info('xmldatastring to POST: '+xmldatastring);
+    //var spreadsheet_id = '1-Wz7Apn4AvVpfqcNyMgfqyKA8OAoLNy5Bl0d_jQ9IZk';
+    var spreadsheet_id = Titanium.App.Properties.getString('project');
+	xhr.open("POST", 'https://spreadsheets.google.com/feeds/list/'+spreadsheet_id+'/od6/private/full');
+	alert('Saved Successfully!');
+	xhr.setRequestHeader("Content-type", "application/atom+xml");
+	xhr.setRequestHeader("Authorization", 'Bearer '+ googleAuth.getAccessToken());
+	xhr.send(xmldatastring);
+	Ti.API.info('done POSTed');
+	//update the DB
+	var item = "project"; var sid = Titanium.App.Properties.getString(item,"none"); Alloy.Globals.getPrivateData(sid,item);
+
+ }
+ 
  
  $.enterproposal_window.addEventListener('click',function(e){
 	 	$.itemlist_tf.blur();
@@ -287,16 +447,37 @@ $.itemlist_tf.addEventListener('blur', function(_e) {
 	 	$.itemprice_tf.blur();
  };
  
- var addnewclientrow = [ $.existing, $.clientdetail_row, $.itemline_row, $.itemdetail_row, $.addrow_row, $.itemlineend_row,$.totalrow ];
- var selectclientrow = [ $.existing, $.clientselect_row, $.itemline_row, $.itemdetail_row, $.addrow_row, $.itemlineend_row,$.totalrow ];
+ $.itemprice_tf.addEventListener("blur",function(e){
+ 	    /* NOT NEEDED
+ 		console.log("enterproposal.js:: itemprice_tf::singleton #443: isNaN("+e.source.value+")?total = "+total+":total = "+total+" + "+parseFloat(e.source.value)+";");
+		isNaN(e.source.value)?total = total:total = total + parseFloat(e.source.value);
+		console.log("enterproposal.js::itemprice_tf::singleton #443: total :" + total);*/
+		$.totalvalue.text = total;
+ });
 
-if (args.title) {
+ 
+ 	
+ 
+// next phase not needed now start
+ var selectprojectrow = [ $.existing, $.clientselect_row ];
+ var addnewprojecttrow = [ $.existing, $.clientdetail_row, $.itemline_row, $.itemdetail_row, $.addrow_row, $.itemlineend_row,$.totalrow ];
+ // end
+
+
+// next phase not needed now start
+// for project seletction
+if (args.projecttitle) {
 	selectClient(args);
-	$.enterproposal_table.setData(selectclientrow)	;
+	$.enterproposal_table.setData(selectprojectrow)	;
+	$.coverviewproject.hide();
+	$.selectproject_button.hide();
 } else {
-	$.enterproposal_table.setData(addnewclientrow)	;
-	Titanium.App.Properties.setString('selectclient',"false");
+	$.enterproposal_table.setData(addnewprojecttrow)	;
+	Titanium.App.Properties.setString('selectproject',"false");
+	// required entry
 }
+ // end
+
 
 function setClientExisting(args) {
 
@@ -304,12 +485,7 @@ function setClientExisting(args) {
 
 function selectClient(args) {
 	Titanium.App.Properties.setString('selectclient',"true");
-	var someDummy = Alloy.Models.dummy;
-	console.log("stringify dummy after selectClient :"+JSON.stringify(someDummy));
-	someDummy.set('id', '1234');
-	someDummy.fetch();
-	
-			var data = args.title.split(':');
+			var data = args.clienttitle.split(':');
 	var name = data[0];
 	var firstname = data[1];
 	var lastname = data[2];
@@ -322,42 +498,308 @@ function selectClient(args) {
 	var state = data[8];
 	var country = data[9];
 	var fulladdress = address+", "+city+". "+state+", "+country;
-	var invoice = data[10];
+	var proposal = data[10];
 	var project = data[11];
 	var proposal = data[12];
-	
-	console.log("dummy output is: "+fullname);
-	
-	someDummy.set('fullname', fullname);
-	someDummy.set('firstname', firstname);
-	someDummy.set('lastname', lastname);
-	someDummy.set('company', company);
-	someDummy.set('phone', phone);
-	someDummy.set('email', email);
-	someDummy.set('address', address);
-	someDummy.set('fulladdress', fulladdress);
-	someDummy.set('city', city);
-	someDummy.set('state', state);
-	someDummy.set('country', country);
-	someDummy.set('firstname', firstname);
-	someDummy.set('lastname', lastname);
-	someDummy.set('name', name);
-	someDummy.set('invoice', invoice);
-	someDummy.set('project', project);
-	someDummy.set('proposal', proposal);
+	var customerid = data[15];
 }
 
-$.check_client.addEventListener('click', function(e){
+function matchClient() {
 	var clientController = Alloy.createController('client',{
 			sourcecall: 'enterproposal'
 		});
 	clientController.openMainWindow($.enterproposal_tab);
+	console.log("enterproposal.js:: examine clientController: "+JSON.stringify(clientController));
+	$.selectclient_button.hide();
+	$.coverview.hide();
 	
+	var someDummy = Alloy.Models.dummy;
+	console.log("stringify dummy after selectClient :"+JSON.stringify(someDummy));
+	someDummy.set('id', '1234');
+	someDummy.fetch();
+	someDummy.set('searchagain', 'Click here to search again.');
+	someDummy.set('searchprojectagain', 'Click here to search again.');
+}
+
+function matchProject(){
+	var projectController = Alloy.createController('project',{
+			sourcecall: 'enterproposal'
+		});
+	console.log("enterproposal.js:: examine projectController: "+JSON.stringify(projectController));
+	projectController.openMainWindow($.enterproposal_tab);
+}
+
+$.proposalclientfirstname_tf.addEventListener("focus",function(e){
+	e.source.borderColor = "red";
+	$.itemlist_tf.borderColor = "red";
+	$.enterproposal_window.setRightNavButton($.savebutton);
+});
+
+$.itemlist_tf.addEventListener("focus",function(e){
+	e.source.borderColor = "red";
+	$.proposalclientfirstname_tf.borderColor = "red";
+	$.enterproposal_window.setRightNavButton($.savebutton);
+});
+
+$.enterproposal_window.setRightNavButton();
+
+var scope = ['https://spreadsheets.google.com/feeds', 'https://docs.google.com/feeds','https://www.googleapis.com/auth/calendar','https://www.googleapis.com/auth/calendar.readonly','https://www.googleapis.com/auth/drive'];
+scope.push ("https://www.googleapis.com/auth/drive.appdata");
+scope.push ("https://www.googleapis.com/auth/drive.apps.readonly");
+scope.push ("https://www.googleapis.com/auth/drive.file");
+var GoogleAuth = require('googleAuth');
+var googleAuth = new GoogleAuth({
+	clientId : Alloy.Globals.clientId,
+	clientSecret : 'fjrsVudiK3ClrOKWxO5QvXYL',
+	propertyName : 'googleToken',
+	scope : scope,
+	quiet: false
+	//scope : ['https://spreadsheets.google.com/feeds', 'https://docs.google.com/feeds'],
 });
 
 
+
+$.enterproposal_table.addEventListener('click', function(e){
+	console.log("JSON stringify after table row is clicked : " +JSON.stringify(e));
+		 	$.itemlist_tf.blur();
+	 	$.itemqty_tf.blur();
+	 	$.itemprice_tf.blur();
+});
  
-
-
-
+ function addJobItemFromClientSelection() {
+ 	
  
+ 
+ if(args.clienttitle){  //Locate existing jobs.
+ 
+if (uniqueid.match(/[0-9]/g)){
+	projectitemsarray = [];
+	projectnamesarray = [];
+	var projects = Alloy.Collections.instance('project');
+	projects.fetch();
+	var theproject = projects.where({
+		col13:uniqueid
+		}); //FILTER
+	if(theproject.length > 0){
+		console.log("enterproposal.js:: JSON.stringify(theproject): "+JSON.stringify(theproject));
+		for (i=0;i<theproject.length;i++){
+			var projectnames = theproject[i].toJSON().col1;
+			var projectitems = theproject[i].toJSON().col12;
+			projectitemsarray.push(projectitems);
+			projectnamesarray.push(projectnames);
+		}
+		console.log("enterproposal.js:: JSON.stringify(projectitemsarray): "+JSON.stringify(projectitemsarray));
+	}
+}
+
+if(projectitemsarray.length>0){
+	
+for (i=0;i<projectitemsarray.length;i++) {
+	console.log("enterproposal.js:: JSON.stringify(projectnamesarray): "+JSON.stringify(projectnamesarray));	
+	var projectitems = JSON.parse(projectitemsarray[i].replace(/cOlOn/g,":").toString());
+	console.log("enterproposal.js:: JSON.stringify(projectitems): "+JSON.stringify(projectitems));
+	for (j=0;j<projectitems.length;j++){
+		if (j==0){console.log("enterproposal.js:: projectitems[0].descr: "+projectitems[j].descr);};	
+		if (j>0){console.log("enterproposal.js:: projectitems["+j+"].lineitem: "+projectitems[j].lineitem);};			
+		}	
+	}	
+}
+
+/// processing array in notes
+if (projectitemsarray.length>0) {
+	$.itemline_row.title = "Enter new project. Existing projects are added by default.";
+	var topvalue = 10;
+	// title start
+	topvalue = topvalue + 10;
+   	var blueline = Ti.UI.createImageView ({
+        left  : "20",
+        textAlign : "Ti.UI.TEXT_ALIGNMENT_LEFT",
+        top : topvalue,
+        width : "85%",
+        height : "3",
+        image : "blueline.png"
+    });
+	topvalue = topvalue + 10;
+	var currentTitle = Ti.UI.createLabel ({
+		color : "#333",
+		textAlign : "Ti.UI.TEXT_ALIGNMENT_LEFT",
+		left : "20",
+		top : topvalue,
+		font:{
+			fontSize:18,
+			fontWeight: "bold"
+		},
+		text : "Current projects:"
+	});
+	$.jobitem_row.add(blueline);
+	$.jobitem_row.add(currentTitle);
+	// title END
+	for (x=0;x<projectitemsarray.length;x++) {
+		var projectitems = JSON.parse(projectitemsarray[x].replace(/cOlOn/g,":").toString());   // replacing all cOlOn to ':'
+		var projectname = projectnamesarray[x];
+		if(maxdebug==1){
+			console.log("enterproposal.js:: createRow: projectnamesarray["+x+"]: "+projectnamesarray[x]);
+			console.log("enterproposal.js:: createRow: JSON.stringify(projectitems): "+JSON.stringify(projectitems));
+			console.log("enterproposal.js::topvalue at START : "+topvalue);
+		};
+		topvalue = topvalue + 30;
+		var projectidentification=projectnamesarray[x].trim().replace(/\s/g,'_'); //
+		var projectinfoarray=[];
+
+
+		var unchecked = Ti.UI.createButton({
+			id: projectidentification,
+			top: topvalue,
+			left: "85%",
+			height : 30,
+			width : 30,
+			image : "square82.png"
+		});
+		var checked = Ti.UI.createButton({
+			top: topvalue,
+			left: "85%",
+			height : 30,
+			width : 30,
+			image : "check70.png"
+		});
+		var projectnamelabel = Ti.UI.createLabel ({
+			color : "#333",
+			textAlign : "Ti.UI.TEXT_ALIGNMENT_LEFT",
+			left : "20",
+			top : topvalue,
+			font:{
+				fontSize:16,
+				fontWeight: "bold"
+			},
+			text : projectnamesarray[x].trim()
+		});
+		var descr = projectitems[0].descr;
+		topvalue = topvalue + 20;
+		var descrtitlelabel = Ti.UI.createLabel ({
+			left  : "20",
+			textAlign : "Ti.UI.TEXT_ALIGNMENT_LEFT",
+			top : topvalue,
+			font:{
+				fontSize:14
+			},
+			text : 'Description: '
+		});
+		var descrbodylabel = Ti.UI.createLabel ({
+			color : "#333",
+			left  : "120",
+			textAlign : "Ti.UI.TEXT_ALIGNMENT_LEFT",
+			top : topvalue,
+			font:{
+				fontSize:12
+			},
+			text : descr
+		});
+		var innerview = Ti.UI.createView({
+	        width:"90%",
+	        height:"85%",
+	        backgroundColor:"white",
+	        borderRadius:"10",
+	        borderWidth:"0.1",
+	        borderColor:"white"
+		});	
+		$.jobitem_row.add(projectnamelabel);
+		//$.jobitem_row.add(unchecked);
+		$.jobitem_row.add(descrtitlelabel);
+		$.jobitem_row.add(descrbodylabel);
+		if(maxdebug==1){
+			console.log("enterproposal.js:: addRow: projectnamelabel: "+x+" : " +projectnamesarray[x].trim());		
+			//console.log("enterproposal.js:: addRow: unchecked:  "+x+" : " +JSON.stringify(unchecked));		
+			console.log("enterproposal.js:: addRow: descrtitlelabel:   "+x+" :" +JSON.stringify(descrtitlelabel));		
+			console.log("enterproposal.js:: addRow: descrbodylabel:  "+x+" : " +descr);
+		}
+		topvalue=topvalue+18;
+		var itemtitlelabel = Ti.UI.createLabel ({
+			left  : "20",
+			textAlign : "Ti.UI.TEXT_ALIGNMENT_LEFT",
+			top : topvalue,
+			font:{
+				fontSize:14
+			},
+			text : 'List Item :'
+		});
+		if ( projectitems.length > 1) {$.jobitem_row.add(itemtitlelabel); }
+		for (i=1;i<projectitems.length;i++){
+			topvalue=topvalue+14;
+			var itembodylabel = Ti.UI.createLabel ({
+				color : "#333",
+				left  : "20",
+				textAlign : "Ti.UI.TEXT_ALIGNMENT_LEFT",
+				top : topvalue,
+				font:{
+					fontSize:12
+				},
+				text : i+' :    '+projectitems[i].lineitem
+			});	
+			topvalue=topvalue+14;
+			var itemqtylabel = Ti.UI.createLabel ({
+				color : "#333",
+				left  : "50%",
+				textAlign : "Ti.UI.TEXT_ALIGNMENT_LEFT",
+				top : topvalue,
+				font:{
+					fontSize:10
+				},
+				text : 'Qty :'+projectitems[i].qty
+			});
+			var itempricelabel = Ti.UI.createLabel ({
+				color : "#333",
+				left  : "75%",
+				textAlign : "Ti.UI.TEXT_ALIGNMENT_LEFT",
+				top : topvalue,
+				font:{
+					fontSize:10
+				},
+				text : 'Price : '+projectitems[i].price
+			});	
+			$.jobitem_row.add(itembodylabel);
+			$.jobitem_row.add(itemqtylabel);
+			$.jobitem_row.add(itempricelabel);
+			if(maxdebug==1){
+				console.log("enterproposal.js:: addRow: itembodylabel: "+i+" : " +projectitems[i].lineitem);			
+				console.log("enterproposal.js:: addRow: itemqtylabel: "+i+" : " +projectitems[i].qty);			
+				console.log("enterproposal.js:: addRow: itempricelabel: "+i+" : " +projectitems[i].price);
+			}			
+			$.jobitem_row.iteminfo=[projectitems[i].lineitem,projectitems[i].qty,projectitems[i].price];
+			var info={"names":projectnamesarray[x].trim(),"descr":projectitems[0].descr,"lineitem":projectitems[i].lineitem,"qty":projectitems[i].qty,"price":projectitems[i].price};
+			projectinfoarray.push(info);
+			//add total price	
+			console.log("enterproposal.js::itempricelabel:itempricelabel:existing project: isNaN("+projectitems[i].price+")?total = "+total+":total = "+total+" + "+parseFloat(projectitems[i].price)+";");
+			isNaN(projectitems[i].price)?total = total:total = total + parseFloat(projectitems[i].price);
+			console.log("enterproposal.js::itempricelabel::(projectitems["+i+"].price)?total : "+projectitems[i].price+" : total: "+total);		
+			//unchecked.titleid=projectinfoarray;
+			//checked.titleid=projectinfoarray;
+			if(maxdebug==1){console.log("enterproposal.js::topvalue at Sub END : "+topvalue);};
+		}
+		topvalue=topvalue+20;
+		var grayline = Ti.UI.createImageView({
+			image: "grayline.png",
+			height: "2",
+			width: "90%",
+			left: "20",
+			top: topvalue
+		});	
+		$.jobitem_row.add(grayline);
+		projectinfoarray=[];
+		topvalue = topvalue + 4;
+		if(maxdebug==1){
+			console.log("enterproposal.js:: addRow: grayline ");	
+			console.log("enterproposal.js:: table appendRow: " +JSON.stringify($.jobitem_row));		
+			console.log("enterproposal.js::topvalue at END : "+topvalue);
+		}
+	}
+	$.enterproposal_table.appendRow($.jobitem_row); // append row once.
+	};
+}
+}
+
+function genproposal(e){
+	console.log("enterproposal.js::genproposal: JSON.stringify(e): "+JSON.stringify(e));
+}
+
+
+

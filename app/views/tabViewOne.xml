@@ -54,7 +54,7 @@
 		   		  <Label id="label_inventory" color="orange"  left="80" text="Inventory"/>
 		   		  <ImageView image="global35.png" left="20" height="40" width="40"/>
 		   </TableViewRow>
-		   <TableViewRow id="proposal" backgroundColor="transparent" Title="Proposal">
+		   <TableViewRow id="proposallistlist" backgroundColor="transparent" Title="Proposal">
 		   		  <Label id="label_proposal" color="#008080"  left="80" text="Proposal"/>
 		   		  <ImageView image="silhouette61.png" left="20" height="30" width="30"/>
 		   </TableViewRow>

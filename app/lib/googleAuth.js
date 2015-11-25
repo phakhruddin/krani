@@ -24,7 +24,7 @@ var GoogleAuth = function(o) {
 		url : 'https://accounts.google.com/o/oauth2/auth',
 		scope : (o.scope) ? o.scope : ['https://www.googleapis.com/auth/tasks'],
 		closeTitle : (o.closeTitle) ? o.closeTitle : 'Close',
-		winTitle : (o.winTitle) ? o.winTitle : 'Authentication',
+		winTitle : (o.winTitle) ? o.winTitle : 'Authentication. Please wait.',
 		errorText : (o.errorText) ? o.errorText : 'Can not authorize user!',
 		winColor : (o.winColor) ? o.winColor : '#000',
 		quiet : ( typeof (o.quiet) === 'undefined') ? true : o.quiet
@@ -97,7 +97,7 @@ var GoogleAuth = function(o) {
 			title : _opt.winTitle
 		});
 		win1 = Titanium.UI.iOS.createNavigationWindow({
-			Title: "Authentication",
+			Title: "Authentication. Please wait.",
 			backgroundColor: "transparent",
 	   	  	window: win,
 	   	  	height: "85%"
@@ -115,7 +115,8 @@ var GoogleAuth = function(o) {
 		});
 
 		win.add(spinner);
-		win.rightNavButton = close;
+		//win.rightNavButton = close;
+		win.leftNavButton = close;
 
 		close.addEventListener('click', function() {
 			win1.close({transition:Titanium.UI.iPhone.AnimationStyle.CURL_DOWN});

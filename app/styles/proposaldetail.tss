@@ -2,7 +2,7 @@
 	width: Ti.UI.SIZE,
 	height: Ti.UI.SIZE,
 	textAlign: Ti.UI.TEXT_ALIGNMENT_CENTER,
-	color: "#D8D8BF",
+	color: "white",
 	font: {
         fontFamily:'Helvetica',
         fontWeight: 'normal'	}
@@ -26,7 +26,53 @@
 	color: "green",
 	backgroundColor: "transparent",
 	font: {
+		fontSize: '28',
+		fontStyle: 'bold'
+	}
+},
+"#header": {
+	color: 'blue',
+	font: {
 		fontSize: '30',
 		fontStyle: 'bold'
 	}
+},
+"#balance1": {
+	font: {
+		fontSize: '65',
+		fontStyle: 'bold'
+	}
+},
+"#balance2": {
+	font: {
+		fontSize: '65',
+		fontStyle: 'bold'
+	}
+},
+"#noaction_button": {
+	font: {
+		fontSize: '30',
+		fontStyle: 'bold'
+	}
+},
+"#customernumber" : {
+	font: {
+		fontSize: '12',
+	}
+},
+"#proposal_button" : {
+	font: {
+		fontSize: '18',
+	}
+},
+"#duedate_button" : {
+	font: {
+		fontSize: '18',
+	}
+},
+"#duedate_label" : {
+	font: {
+		fontSize: '18',
+	}
 }
+

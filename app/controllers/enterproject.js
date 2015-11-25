@@ -246,11 +246,11 @@ $.lineitem_tf.addEventListener('blur', function(_e) {
 	var lineitemqty = [];
 	var lineitemprice = [];
 	for (i=0;i<tabledata.length;i++){
-		if (tabledata[i].data1 == "projectname_tf") {  projectname.push({ name:tabledata[i].data2 }); };
-		if (tabledata[i].data1 == "projectdescr_tf") {  projectdescr.push({ descr:tabledata[i].data2 }); };
-		if (tabledata[i].data1 == "lineitem_tf") {  lineitem.push({ item:tabledata[i].data2}); };
-		if (tabledata[i].data1 == "lineitemqty_tf") {  lineitemqty.push({ itemqty:tabledata[i].data2 }); };
-		if (tabledata[i].data1 == "lineitemprice_tf") {  lineitemprice.push({ itemprice:tabledata[i].data2 }); };
+		if (tabledata[i].data1 == "projectname_tf") {  projectname.push({ name:tabledata[i].data2.trim() }); };
+		if (tabledata[i].data1 == "projectdescr_tf") {  projectdescr.push({ descr:tabledata[i].data2.trim() }); };
+		if (tabledata[i].data1 == "lineitem_tf") {  lineitem.push({ item:tabledata[i].data2.trim()}); };
+		if (tabledata[i].data1 == "lineitemqty_tf") {  lineitemqty.push({ itemqty:tabledata[i].data2.trim() }); };
+		if (tabledata[i].data1 == "lineitemprice_tf") {  lineitemprice.push({ itemprice:tabledata[i].data2.trim() }); };
 	}
 	console.log("lineitem: "+JSON.stringify(lineitem));
 	console.log("lineitemqty: "+JSON.stringify(lineitemqty));
@@ -258,11 +258,13 @@ $.lineitem_tf.addEventListener('blur', function(_e) {
 	var item = [];
 	item.push({'descr':projectdescr[0].descr});
 	for (i=0;i<lineitem.length;i++){
-		item.push({
-			'lineitem':lineitem[i].item,
-			'qty':lineitemqty[i].itemqty,
-			'price':lineitemprice[i].itemprice
-		});
+		if (lineitem[i].item != "none"){
+			item.push({
+				'lineitem':lineitem[i].item,
+				'qty':lineitemqty[i].itemqty,
+				'price':lineitemprice[i].itemprice
+			});
+		}
 	}
 	console.log("enterproject::saveHandler:JSON.stringify(item): "+JSON.stringify(item));
 	var projectnumber = "10";

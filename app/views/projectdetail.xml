@@ -51,8 +51,8 @@
 		  </TableViewRow-->
 	  </TableViewSection>
 	 <TableViewSection headerTitle="Job Items">
-		  <TableViewRow id="jobdescr_row"/>
-		  <TableViewRow id="jobitem_row" height="Ti.UI.Size" />
+		  <TableViewRow id="jobdescr_row" editable="true" moveable="true"/>
+		  <TableViewRow id="jobitem_row" height="Ti.UI.Size" editable="true" moveable="true" />
 	  </TableViewSection>
 	  </TableView>
   </Window>

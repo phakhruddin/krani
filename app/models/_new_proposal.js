@@ -20,8 +20,7 @@ exports.definition = {
 		},
 		adapter: {
 			type: "sql",
-			collection_name: "proposal",
-			idAttribute: "col1"
+			collection_name: "proposal"
 		}
 	},
 	extendModel: function(Model) {

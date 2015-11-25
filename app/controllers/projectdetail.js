@@ -654,7 +654,7 @@ var toolbar =  Titanium.UI.createToolbar({
 	items:[cancel,spacer,done]
 });
 
-var statusarray = [ {'text':'Completed','color':'green'}, {'text':'In Progress','color':'orange'}, {'text':'Awaiting Customer','color':'yellow'}, {'text':'Not Started','color':'red'}, {'text':'Invoiced','color':"black"} ];
+var statusarray = [ {'text':'Completed','color':'green'}, {'text':'In Progress','color':'orange'}, {'text':'Awaiting Customer','color':'yellow'}, {'text':'Not Started','color':'red'}, {'text':'Invoiced','color':'black'}, {'text':'Proposal','color':'blue'} ];
 
 var pickerColumn = Ti.UI.createPickerColumn();
 for (i=0;i<statusarray.length;i++){

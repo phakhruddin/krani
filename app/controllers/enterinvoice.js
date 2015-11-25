@@ -275,11 +275,11 @@ $.itemlist_tf.addEventListener('blur', function(_e) {
 	var lineitemqty = [];
 	var lineitemprice = [];
 	for (i=0;i<tabledata.length;i++){
-		if (tabledata[i].data1 == "projectname_tf") {  projectname.push({ name:tabledata[i].data2 }); };
-		if (tabledata[i].data1 == "projectdescr_tf") {  projectdescr.push({ descr:tabledata[i].data2 }); };
-		if (tabledata[i].data1 == "itemlist_tf") {  lineitem.push({ item:tabledata[i].data2}); };
-		if (tabledata[i].data1 == "itemqty_tf") {  lineitemqty.push({ itemqty:tabledata[i].data2 }); };
-		if (tabledata[i].data1 == "itemprice_tf") {  lineitemprice.push({ itemprice:tabledata[i].data2 }); };
+		if (tabledata[i].data1 == "projectname_tf") {  projectname.push({ name:tabledata[i].data2.trim() }); };
+		if (tabledata[i].data1 == "projectdescr_tf") {  projectdescr.push({ descr:tabledata[i].data2.trim() }); };
+		if (tabledata[i].data1 == "itemlist_tf") {  lineitem.push({ item:tabledata[i].data2.trim()}); };
+		if (tabledata[i].data1 == "itemqty_tf") {  lineitemqty.push({ itemqty:tabledata[i].data2.trim() }); };
+		if (tabledata[i].data1 == "itemprice_tf") {  lineitemprice.push({ itemprice:tabledata[i].data2.trim() }); };
 	}
 	console.log("lineitem: "+JSON.stringify(lineitem));
 	console.log("lineitemqty: "+JSON.stringify(lineitemqty));
@@ -288,11 +288,13 @@ $.itemlist_tf.addEventListener('blur', function(_e) {
 	item.push({'name':projectname[0].name,'descr':projectdescr[0].descr});
 	for (i=0;i<lineitem.length;i++){
 		var price = lineitemprice[i].itemprice;
-		item.push({
-			'lineitem':lineitem[i].item,
-			'qty':lineitemqty[i].itemqty,
-			'price':price
-		});
+		if (lineitem[i].item != "none"){
+			item.push({
+				'lineitem':lineitem[i].item,
+				'qty':lineitemqty[i].itemqty,
+				'price':lineitemprice[i].itemprice
+			});
+		}
 		console.log("enterinvoice.js:: itemprice_tf: in a Loop line#293:: isNaN("+price+")?total = "+total+":total = "+total+" + "+parseFloat(price)+";");
 		isNaN(price)?total=total:total = total + parseFloat(price);
 		console.log("enterinvoice.js::itemprice_tf: in a Loop line#293::: total :" + total);
@@ -322,7 +324,7 @@ $.itemlist_tf.addEventListener('blur', function(_e) {
 		submit(invoicenumber,clientfirstname,clientlastname,total,bal,paid,lastpaiddate,followupdate,customerid,clientemail,duedate,currency,status,clientphone);
 		console.log('submitproject('+clientproject+','+clientfirstname+','+clientlastname+','+clientcompany+','+clientphone+','+clientemail+','+clientaddress+','+clientcity+','+clientstate+','+country+','+notes+','
 	+customerid+','+dates+','+projectid+')');
-		submitproject(clientproject,clientfirstname,clientlastname,clientcompany,clientphone,clientemail,clientaddress,clientcity,clientstate,country,"0",notes,customerid,"none",dates,projectid);
+		submitproject(clientproject,clientfirstname,clientlastname,clientcompany,clientphone,clientemail,clientaddress,clientcity,clientstate,country,"Not Started",notes,customerid,"none",dates,projectid);
 	}
 	$.enterinvoice_window.setRightNavButton($.geninvoice);
 	$.geninvoice.invoicenumber = invoicenumber;
