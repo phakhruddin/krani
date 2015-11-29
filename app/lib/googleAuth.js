@@ -99,8 +99,8 @@ var GoogleAuth = function(o) {
 		win1 = Titanium.UI.iOS.createNavigationWindow({
 			Title: "Authentication. Please wait.",
 			backgroundColor: "transparent",
-	   	  	window: win,
-	   	  	height: "85%"
+			//height: "85%",
+	   	  	window: win	   	  	
     	});
 		var spinner = Ti.UI.createActivityIndicator({
 			zIndex : 1,

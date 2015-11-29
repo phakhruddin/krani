@@ -4,6 +4,7 @@ exports.openMainWindow = function(_tab) {
   Ti.API.info("proposaldetail.js::This is child widow checking _tab on : " +JSON.stringify(_tab));
   Ti.API.info("proposaldetail.js:: input details : "+JSON.stringify(args));
   prefetchPayment(); //prefetch payment to get existing sid or to create new
+  /*
   $.totalbalance_row.addEventListener("click", function(e){
   	    var firstname = e.row.firstname;
   	    var lastname = e.row.lastname;
@@ -11,7 +12,7 @@ exports.openMainWindow = function(_tab) {
 	  	var sid = e.row.sid;
 	  	console.log("proposaldetail.js::detailAction:: JSON.stringify(e) "+JSON.stringify(e)+" with : "+firstname+" "+lastname+" : "+proposalnumber+" : "+sid);
 		if (sid){	
-			var tabViewOneController = Alloy.createController("enterpayment",{
+			var tabViewOneController = Alloy.createController("quotehistory",{
 				title: args,
 				firstname : firstname,
 				lastname : lastname,
@@ -24,6 +25,9 @@ exports.openMainWindow = function(_tab) {
 			alert("Loading data from the cloud. Please click OK and try again.");
 		}
   });
+  */
+
+  
   //find deafult logo if need to generate proposal
   var kraniemailid = Titanium.App.Properties.getString('kraniemailid');
   var name = kraniemailid.split('@')[0].trim();
@@ -52,8 +56,11 @@ var email = col10 = data[9];
 var duedate = col11 = data[10];
 var phone = col12 = data[11];
 var status = col13 = data[12];
-var currency = col15 = data[14];
+pdfurl = col15 = data[14];
+var currency = Titanium.App.Properties.getString('currency','USD');
 var notes = col14 = col16 = data[15];
+(col15)?pdfquote = col15.replace(/XCoLoNX/g,':').replace(/XQuestionX/g,'?').replace(/XequalsX/g,'=').replace(/XDashX/g,'-').replace(/XAmpersandX/g,'&'):"NA" ;
+console.log("proposaldetail.js:: pdfquote" +pdfquote);   	 	
 var filename = 'payment_'+proposalnumber+'_'+firstname+'_'+lastname; $.totalbalance_row.filename = filename;
 var idtag = (data[13])?data[13].replace(/xCoLoNx/g,',').split(',')[0].replace('yCoLoNy',':'):"none";
 var selfhref = (data[13])?data[13].replace(/xCoLoNx/g,',').split(',')[1].replace('yCoLoNy',':'):"none";
@@ -61,6 +68,11 @@ var edithref = (data[13])?data[13].replace(/xCoLoNx/g,',').split(',')[2].replace
 $.duedate_done.idtag = idtag;
 $.duedate_done.selfhref = selfhref;
 $.duedate_done.edithref = edithref;
+if ( duedate.toString().match(/\//g) ) { 
+	$.viewproposal_button.show(); 
+	$.projitem_section.hide();
+	
+	} else { $.viewproposal_button.hide(); } 
 
 if (balance == 0){
 	$.phone_button.hide();
@@ -122,6 +134,45 @@ console.log("proposaldetail.js:: firstname and lastname is: "+firstname+" "+last
 		alert("could not locate "+firstname+" "+lastname+" . Please try again.");
 	}
 	someDummy.set('customernumber', 'Customer#: '+(uniqueid)?uniqueid:"0000000000000");
+
+  $.totalbalance_row.addEventListener("click", function(e){
+  		var firstname = e.row.firstname;
+  	    var lastname = e.row.lastname;
+  	    var proposalnumber = e.row.proposalnumber;
+	  	var sid = e.row.sid;
+	  	console.log("proposaldetail.js::detailAction:: JSON.stringify(e) "+JSON.stringify(e)+" with : "+firstname+" "+lastname+" : "+proposalnumber+" : "+pdfquote);
+	  	Titanium.UI.setBackgroundColor('#fff'); 
+	  	
+	  	var win= Ti.UI.createWindow({
+	  		modal : true,
+		    title: "Proposal #: "+proposalnumber
+		});
+		var close = Ti.UI.createButton({
+			title : "close"
+		});
+		close.addEventListener("click", function() {
+    		win1.close();
+		});
+	  	var win1 = Titanium.UI.iOS.createNavigationWindow({
+  		 	window: win,
+  		 	Title:firstname+" "+lastname
+		});		
+		var webView= Ti.UI.createWebView({
+		    url:pdfquote
+		});
+		var view= Ti.UI.createView({
+		    height:'auto',
+		    width:'auto',
+		});	
+		 webView.addEventListener('load',function(){
+		     view.show();
+		 });
+		 view.add(webView);
+		 win.add(view);		
+		 win.rightNavButton = close;
+		 win1.open();
+
+  });
 	
 //Locate jobs.
 console.log("invocedetail.js:: locate jobs with uniqueid: "+uniqueid);
@@ -314,6 +365,7 @@ if (projectitemsarray.length>0) {
 	//Delay 1 secs. Too much conflict for concurrent edit. error code 409
 	if (edithref) {		
 		console.log("proposaldetail.js: update spreadsheet and database with new balance: "+prevbal);
+		//var col14 = 'https://docs.google.com/uc?id=0B22E-wz0NGrrdlBabzJFT25ZV1E&export=download';
 		Alloy.Globals.updateExistingSpreadsheetAndDB("proposal",col1,col2,lastname,newtotal,newbal,paid,col7,col8,col9,col10,col11,col12,"submitted",col14,col15,col16,edithref,selfhref,idtag);
 	}		
 	
@@ -414,7 +466,13 @@ function emailpdf(firstname,lastname,address,city,state,phone,email,proposalnumb
      	 var parentid = Titanium.App.Properties.getString(name+"_proposal");
      	 console.log(new Date()+"::proposaldetail.js::html2pdf::Alloy.Globals.uploadFile("+file+","+pdffilename+","+parentid+")");
      	 Alloy.Globals.uploadFile(file,pdffilename,parentid) ;
-     	 //Alloy.Globals.uploadFile(imagefile,jpgfilename) ;
+     	 // delay to get the webcontentlink to write to spreadsheet.
+     	 setTimeout( function(){ 
+     	 	var col15 = Titanium.App.Properties.getString('webcontentlink').replace(/:/g,'XCoLoNX').replace(/\?/g,'XQuestionX').replace(/=/g,'XequalsX').replace(/-/g,'XDashX').replace(/&/g,'XAmpersandX');    	 	
+     	 	console.log(new Date()+"::proposaldetail.js::html2pdf::webcontentlink: col15: "+col15); 	
+     	 	Alloy.Globals.updateExistingSpreadsheetAndDB("proposal",col1,col2,lastname,newtotal,newbal,paid,col7,col8,col9,col10,col11,col12,"submitted",col14,col15,col16,edithref,selfhref,idtag);
+     	 	}, 5000 );
+     	
  	});  
  	
  	//var html = '<html><body><p>dBayCo Inc. limited </p></body></html>'; 
@@ -622,7 +680,7 @@ function emailpdf(firstname,lastname,address,city,state,phone,email,proposalnumb
 	strVar += "					<td><span contenteditable>"+(new Date()).toString().slice(4,16)+"<\/span><\/td>";
 	strVar += "				<\/tr>";
 	strVar += "				<tr>";
-	strVar += "					<th><span contenteditable>Amount Due<\/span><\/th>";
+	strVar += "					<th><span contenteditable>Cost<\/span><\/th>";
 	strVar += "					<td><span id=\"prefix\" contenteditable>$<\/span><span>"+balance+"<\/span><\/td>";
 	strVar += "				<\/tr>";
 	strVar += "			<\/table>";
@@ -638,25 +696,11 @@ function emailpdf(firstname,lastname,address,city,state,phone,email,proposalnumb
 	strVar += "				<\/thead>";
 	strVar += strVarItems;
 	strVar += "			<\/table>";
-	strVar += "			<table class=\"balance\">";
-	strVar += "				<tr>";
-	strVar += "					<th><span contenteditable>Total<\/span><\/th>";
-	strVar += "					<td><span data-prefix>$<\/span><span>"+subtotal+"<\/span><\/td>";
-	strVar += "				<\/tr>";
-	strVar += "				<tr>";
-	strVar += "					<th><span contenteditable>Amount Paid<\/span><\/th>";
-	strVar += "					<td><span data-prefix>$<\/span><span contenteditable>"+paid+"<\/span><\/td>";
-	strVar += "				<\/tr>";
-	strVar += "				<tr>";
-	strVar += "					<th><span contenteditable>Balance Due<\/span><\/th>";
-	strVar += "					<td><span data-prefix>$<\/span><span>"+balance+"<\/span><\/td>";
-	strVar += "				<\/tr>";
-	strVar += "			<\/table>";
 	//strVar += "		<\/article>";
 	strVar += "		<aside>";
 	strVar += "			<h1><span contenteditable>Additional Notes<\/span><\/h1>";
 	strVar += "			<div contenteditable>";
-	strVar += "				<p>A finance charge of 1.5% will be made on unpaid balances after 30 days.<\/p>";
+	strVar += "				<p>Please let us know if modification is needed. Thanks.<\/p>";
 	strVar += "			<\/div>";
 	strVar += "		<\/aside>";
 	strVar += "	<\/body>";
@@ -778,7 +822,7 @@ function detailAction(e){
 	var sid = e.source.sid;
 	if (sid){
 		console.log("proposaldetail.js::detailAction:: JSON.stringify(e) "+JSON.stringify(e)+" with : "+firstname+" "+lastname+" : "+proposalnumber);
-		var tabViewOneController = Alloy.createController("enterpayment",{
+		var tabViewOneController = Alloy.createController("quotehistory",{
 			title: args,
 			firstname : firstname,
 			lastname : lastname,
@@ -1171,6 +1215,7 @@ function duedateActionDone(e){
 	var organizerdisplayName = e.source.organizerdisplayName;
 	var dates = JSON.stringify(dates).replace(/:/g,"cOlOn");
 	console.log("proposaldetail.js:: duedatepicker before SS update: "+dates);
+	//var col14 = 'https://docs.google.com/uc?id=0B22E-wz0NGrrdlBabzJFT25ZV1E&export=download';
 	Alloy.Globals.updateExistingSpreadsheetAndDB("proposal",col1,col2,lastname,newtotal,newbal,paid,col7,col8,col9,col10,duedate,col12,col13,col14,col15,col16,edithref,selfhref);
 	///var projectsid = Titanium.App.Properties.getString('project');
 	///Alloy.Globals.getPrivateData(projectsid,"project");
@@ -1215,5 +1260,6 @@ updatecalendardialog.addEventListener('click', function(e){
 		console.log("proposaldetail.js:: updatecalendardialog: Cancelled :");
 	}
 });
+ 
  
  

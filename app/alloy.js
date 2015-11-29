@@ -895,6 +895,7 @@ Alloy.Globals.uploadFile = function(file,filename,parentid) {
 		    		var json = JSON.parse(this.responseText);
 		    		var id = json.id;
 		    		var webcontentlink = json.webContentLink;
+		    		Titanium.App.Properties.setString('webcontentlink',webcontentlink);
 	    			Ti.API.info("alloy.js::Alloy.Globals.uploadFile::id is: "+id+" webcontentlink: "+webcontentlink);
 		    		Alloy.Globals.shareAnyonePermission(id);
 		    	} catch(e){

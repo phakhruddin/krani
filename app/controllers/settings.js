@@ -274,3 +274,8 @@ function zipBlur(){
 	$.zipcode_tf.blur();
 }
    
+function currencyAction(e){ 
+	var currency = e.value;
+	Titanium.App.Properties.setString("currency", currency); 
+	console.log("settings::currencyAction::currency: "+Titanium.App.Properties.getString("currency"));
+};
