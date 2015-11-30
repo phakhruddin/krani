@@ -35,7 +35,6 @@
 	   		  <Button id="email_button" left="30%" top="50" height="30" width="Ti.UI.SIZE" color="gray" textAlign="Ti.UI.TEXT_ALIGNMENT_CENTER" 
 	   		  	image="email.png" title="  {dummy.email}" onClick="actioneMail"  />
 	   		  <Button id="proposal_button" image="pdf.png" left="30%" top="80" title=" Generate proposal" textAlign="Ti.UI.TEXT_ALIGNMENT_CENTER" onClick="genproposal"/>
-	   		  <Label id="noaction_button" color="blue" textAlign="Ti.UI.TEXT_ALIGNMENT_CENTER" top="20" text="NO ACTION" />
 		  </TableViewRow>  		 
 	  </TableViewSection>
 	  <TableViewSection id="projitem_section" headerTitle="Project Items">

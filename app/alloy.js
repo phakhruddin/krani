@@ -266,6 +266,15 @@ Alloy.Globals.writeFileinJSON = function(content, filename){
 };
 
 Alloy.Globals.writeFile("","joblogsid.txt");
+Alloy.Globals.writeFile("","kranilog.txt");
+Alloy.Globals.Log = function(contents) {
+	var maxdebug = Titanium.App.Properties.getInt('maxdebug');
+	var mindebug = Titanium.App.Properties.getInt('mindebug');
+	if (maxdebug == 1) {
+		Alloy.Globals.appendFile((new Date())+"::"+contents,"kranilog.txt");
+	}
+	console.log(maxdebug+":"+(new Date())+"::"+contents);	
+};
 
 Alloy.Globals.GoogleAuth_module = require('googleAuth');
 
@@ -429,9 +438,9 @@ Alloy.Globals.CheckLoc = function(){
 };
 
 Alloy.Globals.openDetail = function(e){
-	Ti.API.info('Alloy.Globals.openDetail::all info = ' + JSON.stringify(e));
-	Ti.API.info('Alloy.Globals.openDetail::index = ' + JSON.stringify(e.index));
-	Ti.API.info("Alloy.Globals.openDetail::in open_button click event title :"+e.row.title);
+	Alloy.Globals.Log('Alloy.Globals.openDetail::all info = ' + JSON.stringify(e));
+	Alloy.Globals.Log('Alloy.Globals.openDetail::index = ' + JSON.stringify(e.index));
+	Alloy.Globals.Log("Alloy.Globals.openDetail::in open_button click event title :"+e.row.title);
 };
 
 Alloy.Globals.getData = function(sid,type) {	
@@ -2896,3 +2905,4 @@ Alloy.Globals.refreshActivity = function() {
 		
 	} else {(Alloy.Globals.googleAuthSheet.getAccessToken()) && getEmail(); }
 };
+

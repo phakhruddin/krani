@@ -48,13 +48,13 @@ function buttonAction(e){
 	if (thesort == "All") { 
 		Alloy.Collections.proposal.fetch();
 		};
-	if (thesort == "Paid") { 
-		var sql = "SELECT * FROM " + Alloy.Collections.proposal.config.adapter.collection_name +" WHERE col13=\"paid\";";
+	if (thesort == "Submitted") { 
+		var sql = "SELECT * FROM " + Alloy.Collections.proposal.config.adapter.collection_name +" WHERE col13=\"submitted\";";
         console.log("sql string:" +sql);
 	    Alloy.Collections.proposal.fetch({query:sql});
 		};
-	if (thesort == "Owed") { 
-		var sql = "SELECT * FROM " + Alloy.Collections.proposal.config.adapter.collection_name +" WHERE col13=\"owed\";";
+	if (thesort == "Pending") { 
+		var sql = "SELECT * FROM " + Alloy.Collections.proposal.config.adapter.collection_name +" WHERE col13=\"pending\";";
         console.log("sql string:" +sql);
 	    Alloy.Collections.proposal.fetch({query:sql});
 		};

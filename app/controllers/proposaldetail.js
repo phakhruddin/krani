@@ -68,23 +68,17 @@ var edithref = (data[13])?data[13].replace(/xCoLoNx/g,',').split(',')[2].replace
 $.duedate_done.idtag = idtag;
 $.duedate_done.selfhref = selfhref;
 $.duedate_done.edithref = edithref;
-if ( duedate.toString().match(/\//g) ) { 
-	$.viewproposal_button.show(); 
-	$.projitem_section.hide();
-	
-	} else { $.viewproposal_button.hide(); } 
+
 
 if (balance == 0){
 	$.phone_button.hide();
 	$.email_button.hide();
-	$.noaction_button.show();
 	$.duedate_label.hide();
 	$.balance1.hide();
 	$.balance2.show();
 } else {
 	$.phone_button.show();
 	$.email_button.show();
-	$.noaction_button.hide();
 	$.duedate_label.show();
 	$.balance1.show();
 	$.balance2.hide();
@@ -214,8 +208,24 @@ for (i=0;i<projectitemsarray.length;i++) {
 	}	
 }
 
+//if proposal submitted. dont list items.
+if ( duedate.toString().match(/\//g) ) { 
+	console.log("proposaldetail.js:: duedate.toString().match() : "+duedate.toString().match(/\//g));
+	$.viewproposal_button.show(); 
+	$.proposal_button.hide();
+	$.action_row.height = "100";
+	$.projitem_section.headerTitle = "";
+	$.proposaldetail_table.separatorStyle="Titanium.UI.iPhone.TableViewSeparatorStyle.NONE";
+	//$.jobitem_row.height = "500";
+} else { 
+	console.log("proposaldetail.js:: NOT MATCH duedate.toString().match() : ");
+	$.viewproposal_button.hide();
+	$.proposal_button.top="10";
+	$.action_row.height="40";
+	$.phone_button.hide();
+	$.email_button.hide(); 
 /// processing array in notes
-if (projectitemsarray.length>0) {
+	if (projectitemsarray.length>0) {
 	var topvalue = 10;
 	for (x=0;x<projectitemsarray.length;x++) {
 		var projectitems = JSON.parse(projectitemsarray[x].replace(/cOlOn/g,":").toString());   // replacing all cOlOn to ':'
@@ -369,6 +379,7 @@ if (projectitemsarray.length>0) {
 		Alloy.Globals.updateExistingSpreadsheetAndDB("proposal",col1,col2,lastname,newtotal,newbal,paid,col7,col8,col9,col10,col11,col12,"submitted",col14,col15,col16,edithref,selfhref,idtag);
 	}		
 	
+	};
 };
 
 //prep adhoc tables.

@@ -22,7 +22,7 @@
 },
 "#label_sub1": {
 	font: {
-		fontSize: "10"
+		fontSize: "14"
 	}
 },
 "#label_sub2": {

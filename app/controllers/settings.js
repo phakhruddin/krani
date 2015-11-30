@@ -279,3 +279,15 @@ function currencyAction(e){
 	Titanium.App.Properties.setString("currency", currency); 
 	console.log("settings::currencyAction::currency: "+Titanium.App.Properties.getString("currency"));
 };
+
+
+function sendSupportEmail() {   
+        var emailDialog = Ti.UI.createEmailDialog();
+        emailDialog.subject = "krani support needed from "+kraniemailid;
+        emailDialog.toRecipients = ['deen@idevice.net'];
+        emailDialog.messageBody = 'Debug data on: '+new Date()+'\n Please write your message below. Thanks:- \n';
+        var ftxt1 = Ti.Filesystem.getFile(Ti.Filesystem.tempDirectory,'kranilog.txt');
+        emailDialog.addAttachment(ftxt1);
+        emailDialog.open();
+};
+
