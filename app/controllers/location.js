@@ -29,10 +29,10 @@ exports.openMainWindow = function(_tab) {
 		});
 		
 		if (args.source == "settings"){
-			console.log("location.js: source is : "+args.source);
-			console.log("location.js: JSON.stringify(e) : "+ JSON.stringify(e));
+			Alloy.Globals.Log("location.js: source is : "+args.source);
+			Alloy.Globals.Log("location.js: JSON.stringify(e) : "+ JSON.stringify(e));
 			e.row.titleid = "rowidimage";
-			console.log("location.js: JSON.stringify(e) : "+ JSON.stringify(e));
+			Alloy.Globals.Log("location.js: JSON.stringify(e) : "+ JSON.stringify(e));
 		}
 
 });
@@ -41,7 +41,7 @@ exports.openMainWindow = function(_tab) {
 };
 
 function rowAction(e){
-		console.log("location.js::rowAction:: JSON.stringify(e): "+JSON.stringify(e));
+		Alloy.Globals.Log("location.js::rowAction:: JSON.stringify(e): "+JSON.stringify(e));
 		
 			Alloy.Globals.openDetail(e);
 		var title = e.row.title;
@@ -76,10 +76,10 @@ function rowAction(e){
 			});
 			
 			if (args.source == "settings"){
-				console.log("location.js: source is : "+args.source);
-				console.log("location.js: JSON.stringify(e) : "+ JSON.stringify(e));
+				Alloy.Globals.Log("location.js: source is : "+args.source);
+				Alloy.Globals.Log("location.js: JSON.stringify(e) : "+ JSON.stringify(e));
 				e.row.titleid = "rowidimage";
-				console.log("location.js: JSON.stringify(e) : "+ JSON.stringify(e));
+				Alloy.Globals.Log("location.js: JSON.stringify(e) : "+ JSON.stringify(e));
 			}
 		} 
 		/*
@@ -96,17 +96,17 @@ function rowAction(e){
 		});
 		
 		if (args.source == "settings"){
-			console.log("location.js: source is : "+args.source);
-			console.log("location.js: JSON.stringify(e) : "+ JSON.stringify(e));
+			Alloy.Globals.Log("location.js: source is : "+args.source);
+			Alloy.Globals.Log("location.js: JSON.stringify(e) : "+ JSON.stringify(e));
 			e.row.titleid = "rowidimage";
-			console.log("location.js: JSON.stringify(e) : "+ JSON.stringify(e));
+			Alloy.Globals.Log("location.js: JSON.stringify(e) : "+ JSON.stringify(e));
 		}*/
 }
 
 function transformFunction(model) {
 	var currentaddr;
 	var transform = model.toJSON();
-	///console.log("transform is ::" +JSON.stringify(transform));
+	///Alloy.Globals.Log("transform is ::" +JSON.stringify(transform));
 	transform.title = transform.col1+":"+transform.col2+":"+transform.col3+":"+transform.col4+":"+transform.col5+":"+transform.col6+":"+transform.col7+":"+transform.col8+":"+transform.col9+":"+transform.col10+":"+transform.col11+":"+transform.col12+":"+transform.col13+":"+transform.col14+":"+transform.col15+":"+transform.col16;
 	transform.custom = transform.col2+"  "+transform.col3;
 	transform.phone = "Phone: "+transform.col5;
@@ -126,10 +126,10 @@ function transformFunction(model) {
 	};
 	myCallback = function(e) {
     	//myComonent.setTitle(e.places.address);
-    	///console.log("JSON stringify e after callback : " +JSON.stringify(e));
+    	///Alloy.Globals.Log("JSON stringify e after callback : " +JSON.stringify(e));
     	          places = e.places;
             if (places && places.length) {
-						////console.log("JSON stringify : "+JSON.stringify(places));
+						////Alloy.Globals.Log("JSON stringify : "+JSON.stringify(places));
 						//currentaddr = places[0].address;
 							currentaddr = places.address;				
 					} else {
@@ -152,12 +152,12 @@ function updateLoc() {
 }
 
 function addLabor(e){
-	console.log("location.js::addLabor:JSON.stringify(e): "+JSON.stringify(e));
+	Alloy.Globals.Log("location.js::addLabor:JSON.stringify(e): "+JSON.stringify(e));
 	var item = "labor";
 	var sid = Titanium.App.Properties.getString(item,"none");
 	Alloy.Globals.getPrivateData(sid,item);
 	if (e.row) {
-		console.log("location.js::addLabor:e.row.title: "+e.row.title);
+		Alloy.Globals.Log("location.js::addLabor:e.row.title: "+e.row.title);
 		var tabViewOneChildController = Alloy.createController("enteremployee",{
   		title:e.row.title
   	});
@@ -173,11 +173,11 @@ var editbutton = Titanium.UI.createButton({
 });
 
 function editAction(e){
-	console.log("location.js::editAction:JSON.stringify(e): "+JSON.stringify(e));
+	Alloy.Globals.Log("location.js::editAction:JSON.stringify(e): "+JSON.stringify(e));
 }
 
 function editEmployee(e){
-	console.log("location.js::editEmployee:JSON.stringify(e): "+JSON.stringify(e));	
+	Alloy.Globals.Log("location.js::editEmployee:JSON.stringify(e): "+JSON.stringify(e));	
 }
 
 $.sortview.hide();

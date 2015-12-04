@@ -52,7 +52,7 @@ $.invoicelistlist.addEventListener ("click", function(e){
 $.supplier.addEventListener ("click", function(e){
 	checkNetworkAndGoogleAuthorized('1gnkP116nsTVxtrw6d_mXVdOiesQEPH7LVUIyHUfx9EE');
 			var needAuth = Titanium.App.Properties.getString('needAuth');
-				console.log("needAuth is :  " +needAuth);
+				Alloy.Globals.Log("needAuth is :  " +needAuth);
 	if (needAuth == "true") {googleAuth.authorize();};
 	Alloy.Globals.openDetail(e);
 	var scheduleController = Alloy.createController("supplier");
@@ -148,12 +148,12 @@ checkNetworkAndGoogleAuthorized = function(sid){
 	    onload: function(e) {
 	    try {
 	    		Ti.API.info("network is good. Replies are: "+this.responseText);
-	    		console.log("googleAuth.isAuthorized:  " +googleAuth.isAuthorized);
+	    		Alloy.Globals.Log("googleAuth.isAuthorized:  " +googleAuth.isAuthorized);
 	    		Titanium.App.Properties.setString('needAuth',"false");
 	    		googleAuth.isAuthorized(function() {
-						console.log('Access Token: ' + googleAuth.getAccessToken());
+						Alloy.Globals.Log('Access Token: ' + googleAuth.getAccessToken());
 					}, function() {
-						console.log('TV1 Authorized first, see next window: '+(new  Date()));
+						Alloy.Globals.Log('TV1 Authorized first, see next window: '+(new  Date()));
 						Titanium.App.Properties.setString('needAuth',"true");
 					});
 			
@@ -165,7 +165,7 @@ checkNetworkAndGoogleAuthorized = function(sid){
 	});
 	xhr.onerror = function(e){
 		alert("No network connection. Information update will NOT be immediately synchronized to central location. Please take note.");
-		console.log("tabViewOne::checkNetworkAndGoogleAuthorized:failed to get to: "+url);
+		Alloy.Globals.Log("tabViewOne::checkNetworkAndGoogleAuthorized:failed to get to: "+url);
 	};
 	xhr.open("GET", url);
 	xhr.send();
@@ -173,12 +173,12 @@ checkNetworkAndGoogleAuthorized = function(sid){
 
 function prefetchJoblogSID(){
 	var sid = Titanium.App.Properties.getString('joblogssid',"none");
-	console.log("prefetchJoblogSID:: checking sid :" +sid);
+	Alloy.Globals.Log("prefetchJoblogSID:: checking sid :" +sid);
 	if ( sid != "none"){
-		console.log('prefetchJoblogSID:: populate Alloy.Globals.getPrivateData('+sid+','+joblogsid+'); ');
+		Alloy.Globals.Log('prefetchJoblogSID:: populate Alloy.Globals.getPrivateData('+sid+','+joblogsid+'); ');
 		Alloy.Globals.getPrivateData(sid,"joblogsid");
 	} else {
-		console.log("prefetchJoblogSID:: joblogsid sid does not exists !");
+		Alloy.Globals.Log("prefetchJoblogSID:: joblogsid sid does not exists !");
 	}
 	
 }
@@ -201,12 +201,12 @@ function getParentFolder(args) {
 	var xhr = Ti.Network.createHTTPClient({
 	    onload: function(e) {
 	    try {
-	    		console.log("tabViewOne:getParentFolder : this.responseText: "+this.responseText);
+	    		Alloy.Globals.Log("tabViewOne:getParentFolder : this.responseText: "+this.responseText);
 	    		var json = JSON.parse(this.responseText);
 	    		Ti.API.info("response is: "+JSON.stringify(json));
 	    		var parentid = json.items[0].id;
 	    		Titanium.App.Properties.setString('parentid',parentid);
-	    		//console.log("tabViewOne.js::args inside getParentFolder: "+JSON.stringify(args));
+	    		//Alloy.Globals.Log("tabViewOne.js::args inside getParentFolder: "+JSON.stringify(args));
 	    	} catch(e){
 				Ti.API.info("tabViewOne:getParentFolder::cathing e: "+JSON.stringify(e));
 				Ti.API.info('tabViewOne:getParentFolder::Authorized first, see next window: ');
@@ -221,9 +221,9 @@ function getParentFolder(args) {
 		});
 	xhr.onerror = function(e){
 		//alert("tabViewOne::getParentFolder::Unable to get info.");
-		console.log('tabViewOne::getParentFolder:: unable to get parents for '+sid);
+		Alloy.Globals.Log('tabViewOne::getParentFolder:: unable to get parents for '+sid);
 	};
-	console.log('tabViewOne::getParentFolder:: URL:: https://www.googleapis.com/drive/v2/files/'+sid+'/parents');
+	Alloy.Globals.Log('tabViewOne::getParentFolder:: URL:: https://www.googleapis.com/drive/v2/files/'+sid+'/parents');
 	xhr.open("GET", 'https://www.googleapis.com/drive/v2/files/'+sid+'/parents');
 	xhr.setRequestHeader("Content-type", "application/json");
     xhr.setRequestHeader("Authorization", 'Bearer '+ Alloy.Globals.googleAuthSheet.getAccessToken());
@@ -235,17 +235,17 @@ function getParentFolder(args) {
 var parentid = Titanium.App.Properties.getString("freeuser");
 
 function logout(e){
-	console.log("tabviewone:: logout: "+JSON.stringify(e));
+	Alloy.Globals.Log("tabviewone:: logout: "+JSON.stringify(e));
 	Alloy.Globals.googleAuthSheet.deAuthorize();
 	$.logout_button.title = "Please click login ->";
 }
 
 function login(e) {
-	console.log("tabViewOne.js::login(e): " +JSON.stringify(e));
+	Alloy.Globals.Log("tabViewOne.js::login(e): " +JSON.stringify(e));
 	var buttonstate = e.source.title;
-	console.log("tabViewOne.js::login(e): buttonstate: " +buttonstate);
+	Alloy.Globals.Log("tabViewOne.js::login(e): buttonstate: " +buttonstate);
 	function logout(e){
-		console.log("tabviewone:: logout: "+JSON.stringify(e));
+		Alloy.Globals.Log("tabviewone:: logout: "+JSON.stringify(e));
 		Alloy.Globals.googleAuthSheet.deAuthorize();
 		$.logout_button.title = "Please click login ->";
 		$.login_button.title="LOGIN";
@@ -253,7 +253,7 @@ function login(e) {
 	switch(buttonstate) {
     case "LOGIN":
         
-    	console.log("tabViewOne.js::login(e): buttonstate: execute CASE " +buttonstate);
+    	Alloy.Globals.Log("tabViewOne.js::login(e): buttonstate: execute CASE " +buttonstate);
 		Alloy.Globals.googleAuthSheet.isAuthorized(function() {
 			$.login_button.title="";
 			$.tabviewone_window.add(loadingView);
@@ -261,7 +261,7 @@ function login(e) {
 			Titanium.App.Properties.setString('needAuth',"false");
 			//login activity
 			setTimeout(function(){
-				console.log(new Date()+"::tabviewone.js::login:before loginActivity()");
+				Alloy.Globals.Log(new Date()+"::tabviewone.js::login:before loginActivity()");
 				$.status_view.backgroundColor="green";
 				$.status_view.height="1%";
 				$.status_label.text="";
@@ -279,7 +279,7 @@ function login(e) {
 			Titanium.App.Properties.setString('needAuth',"true");
 			Alloy.Globals.googleAuthSheet.authorize();
 			setTimeout(function(){
-				console.log((new Date())+"tabViewOne::show back window");
+				Alloy.Globals.Log((new Date())+"tabViewOne::show back window");
 				//$.tabviewone_window.show();
 				$.login_button.title="REFRESH";	
 				$.status_view.backgroundColor="orange";
@@ -293,7 +293,7 @@ function login(e) {
 
 			function dosettimeout (i,timeoutms) {
 				setTimeout(function(){
-					console.log((new Date())+"tabViewOne::loop no: "+i+" after "+timeoutms*i+" secs");		
+					Alloy.Globals.Log((new Date())+"tabViewOne::loop no: "+i+" after "+timeoutms*i+" secs");		
 				},timeoutms*i);
 			}
 			
@@ -302,11 +302,11 @@ function login(e) {
 			var i=0;
 			
 			for (i=0;i<count;i++){
-				console.log((new Date())+"tabViewOne::i is: "+i);
+				Alloy.Globals.Log((new Date())+"tabViewOne::i is: "+i);
 				if(Alloy.Globals.googleAuthSheet.getAccessToken()){ 
-					console.log((new Date())+"tabViewOne::break it after "+i+" times w/token: "+ Alloy.Globals.googleAuthSheet.getAccessToken());				
+					Alloy.Globals.Log((new Date())+"tabViewOne::break it after "+i+" times w/token: "+ Alloy.Globals.googleAuthSheet.getAccessToken());				
 				} else {
-					console.log((new Date())+"tabViewOne::dosettimeout("+i+","+timeoutms+" w/token: "+ Alloy.Globals.googleAuthSheet.getAccessToken());
+					Alloy.Globals.Log((new Date())+"tabViewOne::dosettimeout("+i+","+timeoutms+" w/token: "+ Alloy.Globals.googleAuthSheet.getAccessToken());
 					dosettimeout(i,timeoutms);
 				}	
 			}
@@ -314,16 +314,16 @@ function login(e) {
 		});
         break;
     case "REFRESH":
-    	console.log("tabViewOne.js::login(e): buttonstate: execute CASE " +buttonstate);
+    	Alloy.Globals.Log("tabViewOne.js::login(e): buttonstate: execute CASE " +buttonstate);
 		var themastersid=[];
 		//wait for 30secs upon OAUTH2 screen
 		function refreshActivity() {
-			console.log("tabViewOne.js::refresh(e): executing  refreshActivity()  ");
-			console.log("tabViewOne.js::refresh(e): before executing  Alloy.Globals.getPrivateMaster()  ");
+			Alloy.Globals.Log("tabViewOne.js::refresh(e): executing  refreshActivity()  ");
+			Alloy.Globals.Log("tabViewOne.js::refresh(e): before executing  Alloy.Globals.getPrivateMaster()  ");
 				//Alloy.Globals.getPrivateMaster();
 				//Alloy.Globals.getMaster();
 				Alloy.Globals.getJSONOnline();
-				console.log("tabViewOne.js::refresh(e): before executing  Alloy.Globals.initialUserSetup()  ");
+				Alloy.Globals.Log("tabViewOne.js::refresh(e): before executing  Alloy.Globals.initialUserSetup()  ");
 				Alloy.Globals.initialUserSetup(); 
 				function getEmail(e){
 							var xhr = Ti.Network.createHTTPClient({
@@ -337,7 +337,7 @@ function login(e) {
 						    		if (Titanium.App.Properties.getString('kraniemailid')){
 						    			var kraniemailid = Titanium.App.Properties.getString('kraniemailid');
 						    		} else {Titanium.App.Properties.setString('kraniemailid',emailid);var kraniemailid=emaild;};
-						    		console.log("tabViewOne.js::args inside getEmail: emailid "+emailid+" :: "+JSON.stringify(e));
+						    		Alloy.Globals.Log("tabViewOne.js::args inside getEmail: emailid "+emailid+" :: "+JSON.stringify(e));
 						    		
 						    	} catch(e){
 									Ti.API.info("cathing e: "+JSON.stringify(e));
@@ -348,9 +348,9 @@ function login(e) {
 							});
 						xhr.onerror = function(e){
 							//alert("tabViewOne::getEmail::Unable to get info.");
-							console.log('tabViewOne::getEmail:: unable to get info for '+e);
+							Alloy.Globals.Log('tabViewOne::getEmail:: unable to get info for '+e);
 						};
-						console.log('tabViewOne::getEmail:: URL:: https://www.googleapis.com/oauth2/v1/userinfo?alt=json');
+						Alloy.Globals.Log('tabViewOne::getEmail:: URL:: https://www.googleapis.com/oauth2/v1/userinfo?alt=json');
 						xhr.open("GET", 'https://www.googleapis.com/oauth2/v1/userinfo?alt=json');
 						xhr.setRequestHeader("Content-type", "application/json");
 					    xhr.setRequestHeader("Authorization", 'Bearer '+ Alloy.Globals.googleAuthSheet.getAccessToken());
@@ -358,13 +358,13 @@ function login(e) {
 					}
 					
 					function getParentID(email){
-						console.log("tabViewOne.js::getParentID: with email: " +email);
+						Alloy.Globals.Log("tabViewOne.js::getParentID: with email: " +email);
 						var themastersid = Alloy.Collections.instance('master');
 						themastersid.fetch();
 						Ti.API.info(" themastersid : "+JSON.stringify(themastersid));
 						if (themastersid.length > 0) {
 							var mastersidjson = themastersid.toJSON();
-							console.log("tabViewOne.js::JSON.stringify(mastersidjson): " +JSON.stringify(mastersidjson));
+							Alloy.Globals.Log("tabViewOne.js::JSON.stringify(mastersidjson): " +JSON.stringify(mastersidjson));
 							for( var i=0; i < mastersidjson.length; i++){
 								var mastercol1 = mastersidjson[i].col1.trim();
 								if ( mastercol1 == email.trim()) { 
@@ -374,7 +374,7 @@ function login(e) {
 								};
 							}	
 							if (parentid) {
-								console.log("tabViewOne.js::getParentID: parentid is: "+parentid);
+								Alloy.Globals.Log("tabViewOne.js::getParentID: parentid is: "+parentid);
 								//$.email_label.text=email;
 								//$.email_label.font={fontSize:"5dp"};
 				
@@ -398,12 +398,12 @@ function login(e) {
 
 	
 			}
-		console.log("check Alloy.Globals.googleAuthSheet.getAccessToken() "+Alloy.Globals.googleAuthSheet.getAccessToken()+" before execute refreshActivity() ");
+		Alloy.Globals.Log("check Alloy.Globals.googleAuthSheet.getAccessToken() "+Alloy.Globals.googleAuthSheet.getAccessToken()+" before execute refreshActivity() ");
 		if(Alloy.Globals.googleAuthSheet.getAccessToken()){
-			console.log("tabViewOne.js::refresh(e): executing refreshActivity ");
+			Alloy.Globals.Log("tabViewOne.js::refresh(e): executing refreshActivity ");
 			refreshActivity();
 		} else {
-			console.log("tabViewOne.js::refresh(e): 30 secs timeout before executing refreshActivity ");
+			Alloy.Globals.Log("tabViewOne.js::refresh(e): 30 secs timeout before executing refreshActivity ");
 			setTimeout(function(){ 
 				refreshActivity();
 			}, 30000);
@@ -418,11 +418,11 @@ function login(e) {
 		},2000);
         break;
     case "RefreshAgain":
-    	console.log("tabViewOne.js::login(e): buttonstate: execute CASE " +buttonstate);
+    	Alloy.Globals.Log("tabViewOne.js::login(e): buttonstate: execute CASE " +buttonstate);
     	logout();
     break;
     case "Logout":
-    console.log("tabViewOne.js::login(e): buttonstate: execute CASE " +buttonstate);
+    Alloy.Globals.Log("tabViewOne.js::login(e): buttonstate: execute CASE " +buttonstate);
     	logout();
     break;
 	} 
@@ -437,7 +437,7 @@ $.table.refreshControl=refresh;
 
 refresh.addEventListener('refreshstart',function(e){
 	setTimeout(function(){
-        console.log('tabviewone::refresh:: JSON.stringify(e): '+JSON.stringify(e));
+        Alloy.Globals.Log('tabviewone::refresh:: JSON.stringify(e): '+JSON.stringify(e));
         Alloy.Globals.refreshActivity();
         refresh.endRefreshing();
     }, 2000);

@@ -32,7 +32,7 @@ callbackFunction = args.callbackFunction;
 	
 
 function checkClick(e){
-	console.log("enterpayment.js::transform is JSON.stringify(e) ::" +JSON.stringify(e));
+	Alloy.Globals.Log("enterpayment.js::transform is JSON.stringify(e) ::" +JSON.stringify(e));
 }
 
 
@@ -49,7 +49,7 @@ function transformFunction(model) {
         var currentaddr;
 
         var transform = model.toJSON();
-        ///console.log("enterpayment.js::transform is ::" +JSON.stringify(transform));
+        ///Alloy.Globals.Log("enterpayment.js::transform is ::" +JSON.stringify(transform));
         transform.title = transform.col1+":"+transform.col2+":"+transform.col5+":"+transform.col6+":"+transform.col7+":"
                                                 +transform.col8+":"+transform.col9+":"+transform.col10+":"+transform.col11+":"+transform.col12+":"+transform.col13
                                                 +":"+transform.col14+":"+transform.col15+":"+transform.col16;
@@ -73,22 +73,22 @@ function transformFunction(model) {
 
 var payment = Alloy.Collections.instance('payment');
 var content = payment.toJSON();
-console.log("enterpayment.js::JSON stringify content: "+JSON.stringify(content));
+Alloy.Globals.Log("enterpayment.js::JSON stringify content: "+JSON.stringify(content));
 
 function setDate(e){
-	console.log("enterpayment.js::JSON stringify content: "+JSON.stringify(e));
+	Alloy.Globals.Log("enterpayment.js::JSON stringify content: "+JSON.stringify(e));
 	var date = e.value;
     var datesplit = date.toDateString().split(' ');
     //var datepaid = datesplit[1]+" "+datesplit[2]+" "+datesplit[3];
     var datepaid = (date.getMonth()+1)+"/"+date.getDate()+"/"+date.getFullYear();
-    console.log("enterpayment.js::setDate: date: "+date+" datesplit: "+datesplit+" datepaid: "+datepaid);
+    Alloy.Globals.Log("enterpayment.js::setDate: date: "+date+" datesplit: "+datesplit+" datepaid: "+datepaid);
 	$.dateLabel.text = datepaid;
 	$.notes_textarea.datepaid = datepaid;
 }
 //Date Picker
 
 function jobDetailAddRow (date,notesbody,imageurl,dateadded,employee) {
-		console.log("enterpayment.js::jobDetailAddRow: date: "+date+"  dateadded: "+dateadded+" new Date(+dateadded): "+new Date(+dateadded));
+		Alloy.Globals.Log("enterpayment.js::jobDetailAddRow: date: "+date+"  dateadded: "+dateadded+" new Date(+dateadded): "+new Date(+dateadded));
 	    var jobrow = Ti.UI.createTableViewRow ({
                 backgroundColor: "white",
                 opacity:"0",
@@ -211,8 +211,8 @@ function jobDetailAddRow (date,notesbody,imageurl,dateadded,employee) {
 
 //Add row here.
 var sid = args.sid;
-console.log("enterpayment.js::sid right before key in contents value: "+sid);
-console.log("enterpayment.js::content.length: "+content.length);
+Alloy.Globals.Log("enterpayment.js::sid right before key in contents value: "+sid);
+Alloy.Globals.Log("enterpayment.js::content.length: "+content.length);
 var paidamount = 0;
 for (i=0;i<content.length;i++){
 		var notesbody = content[i].col2;
@@ -224,32 +224,32 @@ for (i=0;i<content.length;i++){
         // calculate total
         var paidamount = parseFloat(notesbody) + paidamount   ;
         }
-console.log("enterpayment.js::paidamount : "+paidamount);
+Alloy.Globals.Log("enterpayment.js::paidamount : "+paidamount);
 //$.labor_table.appendRow(jobrowentry);
 
 function closeWin(e) {
-        console.log("enterpayment.js::e is: "+JSON.stringify(e));
+        Alloy.Globals.Log("enterpayment.js::e is: "+JSON.stringify(e));
 }
 
 function UploadPhotoToServer(imagemedia){
-        console.log("enterpayment.js::UploadPhotoToServer:: Upload photo to the server.");
+        Alloy.Globals.Log("enterpayment.js::UploadPhotoToServer:: Upload photo to the server.");
         var imageView = Titanium.UI.createImageView({
             image:imagemedia,
             width:300,
             height:300
         });
         var image = imageView.toImage();
-        console.log("enterpayment.js::beginning to upload to the cloud.");
+        Alloy.Globals.Log("enterpayment.js::beginning to upload to the cloud.");
         var imagedatabase64 =  Ti.Utils.base64encode(image);
         var date = new Date();
         var imagefilename = filename+"_"+date.toString().replace(/ /g,'_');;
        // uploadPictoGoogle(image,"uploadphoto3.jpeg");
         uploadPictoGoogle(image,imagefilename);
-        //console.log("enterpayment.js::UploadPhotoToServer::image sid is : " +imagesid);
+        //Alloy.Globals.Log("enterpayment.js::UploadPhotoToServer::image sid is : " +imagesid);
 }
 
 function uploadFile(e){
-        console.log("enterpayment.js::JSON stringify e uploadFile : " +JSON.stringify(e));
+        Alloy.Globals.Log("enterpayment.js::JSON stringify e uploadFile : " +JSON.stringify(e));
        Titanium.Media.openPhotoGallery({
            success:function(event)
            {             
@@ -276,7 +276,7 @@ function uploadFile(e){
                                 });
 
 function takePic(e){ 
-        console.log("enterpayment.js::JSON stringify e takePic:" +JSON.stringify(e));
+        Alloy.Globals.Log("enterpayment.js::JSON stringify e takePic:" +JSON.stringify(e));
         Titanium.Media.showCamera({
                 success:function(e){
                         if(e.mediaType === Titanium.Media.MEDIA_TYPE_PHOTO){
@@ -286,7 +286,7 @@ function takePic(e){
                                         height:300
                                 });
                                 var image = imageView.toImage();
-                                console.log("enterpayment.js::beginning to upload to the cloud.");
+                                Alloy.Globals.Log("enterpayment.js::beginning to upload to the cloud.");
                                 var date = new Date();
         						var imagefilename = filename+"_"+date.toString().replace(/ /g,'_');;
 						        uploadPictoGoogle(image,imagefilename);
@@ -309,11 +309,11 @@ function takePic(e){
                         }
                         
                 }, error:function(e){
-                        console.log("enterpayment::takePic::error:unable to load the camera");
+                        Alloy.Globals.Log("enterpayment::takePic::error:unable to load the camera");
                         alert("error:"+e.code+": Unable to load camera.");
                 }, cancel:function(e){
                 		alert("error:"+e.code+": Unable to load camera.");
-                        console.log("enterpayment::takePic::cancel:unable to load the camera");
+                        Alloy.Globals.Log("enterpayment::takePic::cancel:unable to load the camera");
                 },
                 allowEditing:true,
                 saveToPhotoGallery:true,
@@ -359,15 +359,15 @@ function takePic(e){
 
 
 var sid = args.sid;
-console.log("enterpayment.js::before notes_textarea hintText: JSON.stringify(args): "+JSON.stringify(args)+" sid:"+sid);
+Alloy.Globals.Log("enterpayment.js::before notes_textarea hintText: JSON.stringify(args): "+JSON.stringify(args)+" sid:"+sid);
 $.notes_textarea._hintText = "100";           
 $.notes_textarea.addEventListener("blur",function(e){
-        console.log("enterpayment.js::JSON.stringify(e)  :" +JSON.stringify(e));
+        Alloy.Globals.Log("enterpayment.js::JSON.stringify(e)  :" +JSON.stringify(e));
         e.source.keyboardToolbar.items = null;
         var datepaid = e.source.datepaid;
         $.paymentdonebutton.datepaid = datepaid;
         if (datepaid) {
-        	console.log("enterpayment.js::before enterNotes(e): JSON.stringify(e): "+JSON.stringify(e));
+        	Alloy.Globals.Log("enterpayment.js::before enterNotes(e): JSON.stringify(e): "+JSON.stringify(e));
         	enterNotes(e);
         	e.source.value = "";
         } else {
@@ -378,18 +378,18 @@ $.notes_textarea.addEventListener("blur",function(e){
 });
 
 $.paymentdonebutton.addEventListener("click",function(e){
-    console.log("enterpayment.js::paymentdone:JSON.stringify(e)  :" +JSON.stringify(e));
+    Alloy.Globals.Log("enterpayment.js::paymentdone:JSON.stringify(e)  :" +JSON.stringify(e));
  	$.notes_textarea.blur();
 });
         
 function enterNotes(e,imgurl) {
-        console.log("enterpayment.js::JSON.stringify(e) enterNotes  :" +JSON.stringify(e));
+        Alloy.Globals.Log("enterpayment.js::JSON.stringify(e) enterNotes  :" +JSON.stringify(e));
         //$.enterpayment_window.show($.notes_textarea);
         //$.enterpayment_window.add(textfield);
         var date = new Date();
         var now = Date.now().toString();
         var jobitemid = now;
-        console.log("enterpayment.js:: jobitemid is:"+jobitemid);
+        Alloy.Globals.Log("enterpayment.js:: jobitemid is:"+jobitemid);
         var employee = Titanium.App.Properties.getString('employee');
         var payment = parseFloat(e.value);
         var notesbody = payment.toFixed(2);
@@ -413,16 +413,16 @@ function enterNotes(e,imgurl) {
         var payment  = Alloy.Collections.instance('payment');
         payment.fetch();
         var content = payment.toJSON();
-        console.log("enterpayment.js::JSON stringify payment after write: "+JSON.stringify(content));
+        Alloy.Globals.Log("enterpayment.js::JSON stringify payment after write: "+JSON.stringify(content));
         var thedate = date.toString().replace(".","").split(' ',4).toString().replace(/,/g,' ')+' '+Alloy.Globals.formatAMPM(date);
-        //console.log("enterpayment.js::thedate is: " +thedate);
+        //Alloy.Globals.Log("enterpayment.js::thedate is: " +thedate);
         var dateadded = jobitemid;
         jobDetailAddRow (datepaid,notesbody,imageurl,dateadded,employee); //add to the local db
         submit(datepaid,notesbody,imageurl,jobitemid,payment,employee); //submit to the cloud
         var paidamount = paidamount + parseFloat(notesbody);
         var total = e.source.total;
         var balance = parseFloat(total)-parseFloat(paidamount);
-        console.log("enterpayment.js::enterNotes: paidamount , parseFloat(notesbody) : "+paidamount+" + "+parseFloat(notesbody));
+        Alloy.Globals.Log("enterpayment.js::enterNotes: paidamount , parseFloat(notesbody) : "+paidamount+" + "+parseFloat(notesbody));
         $.paymentsection.headerTitle = firstname+" "+lastname+"    PAID: "+paidamount;
         updateInvoice(paidamount,datepaid,balance); //update invoice spreadsheet
         callbackFunction(paidamount,balance,datepaid); //update the dummy
@@ -449,7 +449,7 @@ function enterNotes(e,imgurl) {
 	    		var entry = xml.documentElement.getElementsByTagName("entry");
 	    		var link = xml.documentElement.getElementsByTagName("link");
 	    		var idtag = xml.documentElement.getElementsByTagName("id").item(0).text;
-	    		console.log("enterpayment.js::submit: number of link found: " +link+ " length: "+link.length);
+	    		Alloy.Globals.Log("enterpayment.js::submit: number of link found: " +link+ " length: "+link.length);
 	    		for (i=0;i<link.length;i++){			
 	    			var listitem = link.item(i);
 	    			if (listitem.getAttribute("rel") == "edit"){ var edithref = listitem.getAttribute("href");}
@@ -460,7 +460,7 @@ function enterNotes(e,imgurl) {
 	    		Titanium.App.Properties.setString('selfhref',selfhref);
 	    		Ti.API.info("enterpayment.js::submit: self href is : "+selfhref+" edit href is: "+edithref);
 	    		Ti.API.info("enterpayment.js::submit: idtag is : "+idtag);
-	    		console.log("enterpayment.js::submit:: update DB with jobitemid :" +jobitemid);
+	    		Alloy.Globals.Log("enterpayment.js::submit:: update DB with jobitemid :" +jobitemid);
 				payment.get(jobitemid).set({
 					col16:	idtag+"xCoLoNx"+selfhref+"xCoLoNx"+edithref+"xCoLoNx"+selfhref || "none",
 				}).save();
@@ -470,7 +470,7 @@ function enterNotes(e,imgurl) {
         }     
     },
     onerror: function(e) {
-        console.log("enterpayment.js::submit::error e: "+JSON.stringify(e));
+        Alloy.Globals.Log("enterpayment.js::submit::error e: "+JSON.stringify(e));
        alert("error:"+e.code+": Please connect to the network.");
     }
 });
@@ -492,7 +492,7 @@ scope.push ("https://www.googleapis.com/auth/drive.file");
 
 
 //var jsonargs = JSON.stringify(args);
-console.log("enterpayment.js::jsonargs : "+JSON.stringify(args));
+Alloy.Globals.Log("enterpayment.js::jsonargs : "+JSON.stringify(args));
 var firstname = args.firstname;
 var lastname = args.lastname;
 var invoicenumber = args.invoicenumber;
@@ -500,7 +500,7 @@ var filename = 'project_'+invoicenumber+'_'+firstname+'_'+lastname;
 Titanium.App.Properties.setString('filename',filename);
 $.paymentsection.headerTitle = firstname+" "+lastname+"    PAID: "+paidamount;
 $.notes_textarea.paidamount = paidamount;
-console.log("enterpayment.js::value derived from args: invoicenumber: "+invoicenumber+" firstname: "+firstname+" lastname: "+lastname);
+Alloy.Globals.Log("enterpayment.js::value derived from args: invoicenumber: "+invoicenumber+" firstname: "+firstname+" lastname: "+lastname);
 //var filename = "project"+jsonargs.title.split(':')[15];
 function getParentFolder(args) {
 	var sid = Titanium.App.Properties.getString('payment');
@@ -511,7 +511,7 @@ function getParentFolder(args) {
 	    		Ti.API.info("response is: "+JSON.stringify(json));
 	    		var parentid = json.items[0].id;
 	    		Titanium.App.Properties.setString('parentid',parentid);
-	    		console.log("enterpayment.js::args inside getParentFolder: "+JSON.stringify(args));
+	    		Alloy.Globals.Log("enterpayment.js::args inside getParentFolder: "+JSON.stringify(args));
 	    		//var filename = 'test03';
 	    		//createSpreadsheet(filename,parentid);    		
 	    	} catch(e){
@@ -522,7 +522,7 @@ function getParentFolder(args) {
 		});
 	xhr.onerror = function(e){
 		alert("error:"+e.code+": Please connect to the network.");
-		console.log("enterpayment::getParentFolder::Unable to connect to the cloud. error is: "+JSON.stringify(e));
+		Alloy.Globals.Log("enterpayment::getParentFolder::Unable to connect to the cloud. error is: "+JSON.stringify(e));
 	};
 	xhr.open("GET", 'https://www.googleapis.com/drive/v2/files/'+sid+'/parents');
 	xhr.setRequestHeader("Content-type", "application/json");
@@ -532,7 +532,7 @@ function getParentFolder(args) {
 
 
 function createSpreadsheet(filename,parentid) {
-	console.log("enterpayment.js::create ss with filename: "+filename+" and parentid: "+parentid);
+	Alloy.Globals.Log("enterpayment.js::create ss with filename: "+filename+" and parentid: "+parentid);
 	var jsonpost = '{'
 		 +'\"title\": \"'+filename+'\",'
 		 +'\"shared\": \"true\",'
@@ -549,7 +549,7 @@ function createSpreadsheet(filename,parentid) {
 	    		Ti.API.info("response is: "+this.responseText);
 	    		var json = JSON.parse(this.responseText);
 	    		var sid = json.id;
-	    		console.log("enterpayment.js::sid : "+sid);
+	    		Alloy.Globals.Log("enterpayment.js::sid : "+sid);
 	    		populatepaymentSIDtoDB(filename,sid);
 	    	} catch(e){
 				Ti.API.info("cathing e: "+JSON.stringify(e));
@@ -558,12 +558,12 @@ function createSpreadsheet(filename,parentid) {
 		});
 	xhr.onerror = function(e){
 		alert("error:"+e.code+": Please connect to the network.");
-		console.log("enterpayment::createSpreadsheet::Unable to connect to the cloud. error is: "+JSON.stringify(e));
+		Alloy.Globals.Log("enterpayment::createSpreadsheet::Unable to connect to the cloud. error is: "+JSON.stringify(e));
 	};
 	xhr.open("POST", 'https://www.googleapis.com/drive/v2/files');	
 	xhr.setRequestHeader("Content-type", "application/json");
     xhr.setRequestHeader("Authorization", 'Bearer '+Alloy.Globals.googleAuthSheet.getAccessToken());
-    console.log("enterpayment.js::json post: "+jsonpost);
+    Alloy.Globals.Log("enterpayment.js::json post: "+jsonpost);
 	xhr.send(jsonpost);
 }
 
@@ -579,23 +579,23 @@ function fileExist(){
 	    	} catch(e){
 				Ti.API.info("cathing e: "+JSON.stringify(e));
 			}
-			console.log("enterpayment.js::jsonlist.items.length: "+jsonlist.items.length);
+			Alloy.Globals.Log("enterpayment.js::jsonlist.items.length: "+jsonlist.items.length);
 			var filename = Titanium.App.Properties.getString('filename');
 			filelist = [];
 			if (jsonlist.items.length == "0" ){
-				console.log("enterpayment.js::File DOES NOT EXIST");
+				Alloy.Globals.Log("enterpayment.js::File DOES NOT EXIST");
 				var fileexist = "false";
 				createSpreadsheet(filename,parentid);  // create file when does not exists
 			} else {
 				var fileexist = "true";
-				console.log("enterpayment.js::enterpayment.js::fileExist:: File exist. sid is: "+jsonlist.items[0].id+" Skipped.");
+				Alloy.Globals.Log("enterpayment.js::enterpayment.js::fileExist:: File exist. sid is: "+jsonlist.items[0].id+" Skipped.");
 				populatepaymentSIDtoDB(filename,sid);
 			};
 		}
 		});
 	xhr.onerror = function(e){
 		alert("error:"+e.code+": Please connect to the network.");
-		console.log("enterpayment::fileExist::Unable to connect to the cloud. error is : "+JSON.stringify(e));
+		Alloy.Globals.Log("enterpayment::fileExist::Unable to connect to the cloud. error is : "+JSON.stringify(e));
 	};
 	//xhr.open("GET", 'https://www.googleapis.com/drive/v2/files');
 	var rawquerystring = '?q=title+%3D+\''+filename+'\'+and+mimeType+%3D+\'application%2Fvnd.google-apps.spreadsheet\'+and+trashed+%3D+false&fields=items(id%2CmimeType%2Clabels%2Ctitle)';
@@ -608,7 +608,7 @@ function fileExist(){
 
 //fileExist();
 var parentid = Titanium.App.Properties.getString('parentid');
-//console.log("enterpayment.js::create spreadsheet with filename: "+filename+" and parentid: "+parentid); 
+//Alloy.Globals.Log("enterpayment.js::create spreadsheet with filename: "+filename+" and parentid: "+parentid); 
 //createSpreadsheet(filename,parentid); 
 
 /*
@@ -617,8 +617,8 @@ var file = Ti.Filesystem.getFile(
 			);
 		var paymentsidfile =	file.read().text;
 		//var paymentsidfilejson =	JSON.parse(paymentsidfile);
-console.log("enterpayment.js::paymentsidfile" +paymentsidfile);
-//console.log("enterpayment.js::JSON.stringify(paymentsidfilejson)" +paymentsidfilejson);*/
+Alloy.Globals.Log("enterpayment.js::paymentsidfile" +paymentsidfile);
+//Alloy.Globals.Log("enterpayment.js::JSON.stringify(paymentsidfilejson)" +paymentsidfilejson);*/
 
 function populatepaymentSIDtoDB(filename,sid) {
 	       var dataModel = Alloy.createModel("paymentsid",{
@@ -640,7 +640,7 @@ Ti.API.info("sid for payment in enterpayment.js : "+sid);
 Alloy.Globals.getPrivateData(sid,"payment");
 
 function uploadPictoGoogle(image,filename){
-	console.log("enterpayment.js::uploadPictoGoogle::create ss with filename: "+filename);
+	Alloy.Globals.Log("enterpayment.js::uploadPictoGoogle::create ss with filename: "+filename);
 	var base64Data = Ti.Utils.base64encode(image);
 	 		var parts = [];
 	 		var bound = 287032396531387;
@@ -669,7 +669,7 @@ function uploadPictoGoogle(image,filename){
 	    				Ti.API.info("enterpayment.js::uploadPictoGoogle::id is: "+id+" webcontentlink: "+webcontentlink);
 	    				shareAnyonePermission(id);
 	    				var e = {"value":"none","source":{"_hintText":id}};
-	    				console.log("enterpayment.js::uploadPictoGoogle::entering urlimage with info below e: "+JSON.stringify(e));
+	    				Alloy.Globals.Log("enterpayment.js::uploadPictoGoogle::entering urlimage with info below e: "+JSON.stringify(e));
 	    				enterNotes(e,webcontentlink);
 			    	} catch(e){
 			    		Ti.API.info("enterpayment.js::uploadPictoGoogle::cathing e: "+JSON.stringify(e));
@@ -691,7 +691,7 @@ function uploadPictoGoogle(image,filename){
 }
 
 function shareAnyonePermission(sid){
-	console.log("enterpayment.js::shareAnyonePermission::sid: "+sid);
+	Alloy.Globals.Log("enterpayment.js::shareAnyonePermission::sid: "+sid);
 	var jsonpost = '{'
 		 +'\"role\": \"reader\",'
 		 +'\"type\": \"anyone\"'
@@ -706,28 +706,28 @@ function shareAnyonePermission(sid){
 		}
 		});
 	xhr.onerror = function(e){
-		console.log("enterpayment::shareAnyonePermission::Unable to connect to the cloud. error is :"+JSON.stringify(e));
+		Alloy.Globals.Log("enterpayment::shareAnyonePermission::Unable to connect to the cloud. error is :"+JSON.stringify(e));
 		alert("error:"+e.code+": Please connect to the network.");
 	};
 	xhr.open("POST", 'https://www.googleapis.com/drive/v2/files/'+sid+'/permissions');	
 	xhr.setRequestHeader("Content-type", "application/json");
     xhr.setRequestHeader("Authorization", 'Bearer '+Alloy.Globals.googleAuthSheet.getAccessToken());
-    console.log("enterpayment.js::shareAnyonePermission::json post: "+jsonpost);
+    Alloy.Globals.Log("enterpayment.js::shareAnyonePermission::json post: "+jsonpost);
 	xhr.send(jsonpost);
 }
 
 var headertitle = args.title.title.split(':')[0];
-console.log("enterpayments:headerTitle:: " +headertitle);
+Alloy.Globals.Log("enterpayments:headerTitle:: " +headertitle);
 //$.paymentsection.headerTitle = headertitle;
 
 $.labor_table.addEventListener("delete", function(e){
-	console.log("enterpayment.js::$.labor_table delete: "+JSON.stringify(e));
+	Alloy.Globals.Log("enterpayment.js::$.labor_table delete: "+JSON.stringify(e));
 	var metadata = e.row.metadata;
 	var urls = metadata.replace(/yCoLoNy/g,':').replace(/xCoLoNx/g,',');
 	var existingurlsidtag = urls.split(',')[0];
 	var existingurlsselfhref = urls.split(',')[1];
 	var existingurlsedithref = urls.split(',')[2];
-	console.log("enterpayment.js::$.labor_table delete: idtag:"+existingurlsidtag+" selfhref: "+existingurlsselfhref+" edithref: "+existingurlsedithref);
+	Alloy.Globals.Log("enterpayment.js::$.labor_table delete: idtag:"+existingurlsidtag+" selfhref: "+existingurlsselfhref+" edithref: "+existingurlsedithref);
 	var xhr = Ti.Network.createHTTPClient({
 	    onload: function(e) {
 	    try {
@@ -741,12 +741,12 @@ $.labor_table.addEventListener("delete", function(e){
 	xhr.open("DELETE", existingurlsedithref);	
 	//xhr.setRequestHeader("Content-type", "application/json");
     xhr.setRequestHeader("Authorization", 'Bearer '+Alloy.Globals.googleAuthSheet.getAccessToken());
-	if (existingurlsedithref) {xhr.send();} else {console.log("enterpayment.js::$.labor_table delete: NO edithref. abort delete ");}
-	console.log("enterpayment.js::$.labor_table delete: DONE: DELETE "+existingurlsedithref);
+	if (existingurlsedithref) {xhr.send();} else {Alloy.Globals.Log("enterpayment.js::$.labor_table delete: NO edithref. abort delete ");}
+	Alloy.Globals.Log("enterpayment.js::$.labor_table delete: DONE: DELETE "+existingurlsedithref);
 });
 
 function blurIT(e) {
-	console.log("enterpayment.js::blurIT::JSON.stringify(e): "+JSON.stringify(e));
+	Alloy.Globals.Log("enterpayment.js::blurIT::JSON.stringify(e): "+JSON.stringify(e));
 	$.notes_textarea.blur();
 }
 
@@ -773,7 +773,7 @@ function updateInvoice(paidamount,datepaid,balance){
 						+'</gsx:col8><gsx:col9>'+phone+'</gsx:col9><gsx:col10>'+email+'</gsx:col10><gsx:col11>'+duedate
 						+'</gsx:col11><gsx:col12>'+currency+'</gsx:col12><gsx:col13>'+status
 						+'</gsx:col13><gsx:col14>NA</gsx:col14><gsx:col15>NA</gsx:col15><gsx:col16>NA</gsx:col16></entry>';
- 		console.log("projectdetail.js::xmldatastring: "+xmldatastring);
+ 		Alloy.Globals.Log("projectdetail.js::xmldatastring: "+xmldatastring);
        var xhr =  Titanium.Network.createHTTPClient({
    	   onload: function() {
         try {
@@ -783,7 +783,7 @@ function updateInvoice(paidamount,datepaid,balance){
         }     
     },
     onerror: function(e) {
-        console.log("enterpayment.js::updateInvoice::error e: "+JSON.stringify(e));
+        Alloy.Globals.Log("enterpayment.js::updateInvoice::error e: "+JSON.stringify(e));
         alert("error:"+e.code+": Please connect to the network.");
     }
 });

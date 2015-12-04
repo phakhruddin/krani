@@ -70,9 +70,9 @@ var logoview = Ti.UI.createImageView ({
 
 if ( logourl ) {
  	var logourl = Titanium.App.Properties.getString('logourl') ; 
- 	console.log("settings.js::logo url is: "+logourl); 
+ 	Alloy.Globals.Log("settings.js::logo url is: "+logourl); 
  	$.logo_row.add(logoview);
- } else { console.log("settings.js::logo does not exists.");};
+ } else { Alloy.Globals.Log("settings.js::logo does not exists.");};
 
  
 
@@ -84,7 +84,7 @@ if ( logourl ) {
  
  
  function shareAnyonePermission(sid){
-	console.log("settings.js::shareAnyonePermission::sid: "+sid);
+	Alloy.Globals.Log("settings.js::shareAnyonePermission::sid: "+sid);
 	var jsonpost = '{'
 		 +'\"role\": \"reader\",'
 		 +'\"type\": \"anyone\"'
@@ -100,18 +100,18 @@ if ( logourl ) {
 		});
 	xhr.onerror = function(e){
 		alert("error:"+e.code+": Please connect to the network."); 
-		console.log("settings::shareAnyonePermission::Unable to connect to the cloud.");
+		Alloy.Globals.Log("settings::shareAnyonePermission::Unable to connect to the cloud.");
 	};
 	xhr.open("POST", 'https://www.googleapis.com/drive/v2/files/'+sid+'/permissions');	
 	xhr.setRequestHeader("Content-type", "application/json");
     xhr.setRequestHeader("Authorization", 'Bearer '+Alloy.Globals.googleAuthSheet.getAccessToken());
-    console.log("settings.js::shareAnyonePermission::json post: "+jsonpost);
+    Alloy.Globals.Log("settings.js::shareAnyonePermission::json post: "+jsonpost);
 	xhr.send(jsonpost);
 }
  
  
 function uploadPictoGoogle(image,filename,parentid){
-	console.log("settings.js::uploadPictoGoogle::create ss with filename: "+filename);
+	Alloy.Globals.Log("settings.js::uploadPictoGoogle::create ss with filename: "+filename);
 	var base64Data = Ti.Utils.base64encode(image);
 	 		var parts = [];
 	 		var bound = 287032396531387;
@@ -139,7 +139,7 @@ function uploadPictoGoogle(image,filename,parentid){
 	        parts.push(base64Data);
 	        parts.push('--' + bound + '--');
 	 		var url = "https://www.googleapis.com/upload/drive/v2/files?uploadType=multipart";
-	 		console.log("settings.js::uploadPictoGoogle:: URL: "+url+" "+meta);
+	 		Alloy.Globals.Log("settings.js::uploadPictoGoogle:: URL: "+url+" "+meta);
 	 		var xhr =  Titanium.Network.createHTTPClient({
 			    onload: function() {
 			    	try {
@@ -151,14 +151,14 @@ function uploadPictoGoogle(image,filename,parentid){
 	    				Ti.API.info("settings.js::uploadPictoGoogle::id is: "+id+" webcontentlink: "+webcontentlink);
 	    				shareAnyonePermission(id);
 	    				var e = {"value":"none","source":{"_hintText":id}};
-	    				console.log("settings.js::uploadPictoGoogle::entering urlimage with info below e: "+JSON.stringify(e));
+	    				Alloy.Globals.Log("settings.js::uploadPictoGoogle::entering urlimage with info below e: "+JSON.stringify(e));
 			    	} catch(e){
 			    		Ti.API.info("settings.js::uploadPictoGoogle::cathing e: "+JSON.stringify(e));
 			    	} 
 			    	return id; 	 
 			    },
 			    onerror: function(e) {
-			    	console.log("settings.js::uploadPictoGoogle::error e: "+JSON.stringify(e));
+			    	Alloy.Globals.Log("settings.js::uploadPictoGoogle::error e: "+JSON.stringify(e));
 			        alert("error:"+e.code+": Please connect to the network."); 
 			    }
 			});
@@ -173,29 +173,29 @@ function uploadPictoGoogle(image,filename,parentid){
 
 
 function UploadPhotoToServer(imagemedia,parentid){
-        console.log("settings.js::UploadPhotoToServer:: Upload photo to the server.");
+        Alloy.Globals.Log("settings.js::UploadPhotoToServer:: Upload photo to the server.");
         var imageView = Titanium.UI.createImageView({
             image:imagemedia,
             width:100,
             height:100
         });
         var image = imageView.toImage();
-        console.log("settings.js::beginning to upload to the cloud.");
+        Alloy.Globals.Log("settings.js::beginning to upload to the cloud.");
         var imagedatabase64 =  Ti.Utils.base64encode(image);
         var date = new Date();
         var imagefilename = filename.replace(/ /g,'_');;
        // uploadPictoGoogle(image,"uploadphoto3.jpeg");
-       console.log(new Date()+"::settings.js::UploadPhotoToServer:: Delete existing logo. Alloy.Globals.checkFileExistThenDelete("+imagefilename+")");
+       Alloy.Globals.Log(new Date()+"::settings.js::UploadPhotoToServer:: Delete existing logo. Alloy.Globals.checkFileExistThenDelete("+imagefilename+")");
        	Alloy.Globals.checkFileExistThenDelete(imagefilename);
        	setTimeout(function(){
-       		console.log(new Date()+"settings.js::UploadPhotoToServer:: uploadPictoGoogle(image,"+imagefilename+","+parentid+")");
+       		Alloy.Globals.Log(new Date()+"settings.js::UploadPhotoToServer:: uploadPictoGoogle(image,"+imagefilename+","+parentid+")");
        		uploadPictoGoogle(image,imagefilename,parentid);
        		},2000); //delay 2 secs. finish deleting first       
-        //console.log("settings.js::UploadPhotoToServer::image sid is : " +imagesid);
+        //Alloy.Globals.Log("settings.js::UploadPhotoToServer::image sid is : " +imagesid);
 }     	 
      	 
 function uploadFile(e){
-   console.log("settings.js::JSON stringify e uploadFile on parentid "+parentid+" : " +JSON.stringify(e));
+   Alloy.Globals.Log("settings.js::JSON stringify e uploadFile on parentid "+parentid+" : " +JSON.stringify(e));
    Titanium.Media.openPhotoGallery({
        success:function(event)
        {             
@@ -217,7 +217,7 @@ function uploadFile(e){
   	}
    
    function takePic(e){ 
-    console.log("settings.js::JSON stringify e takePic:" +JSON.stringify(e));
+    Alloy.Globals.Log("settings.js::JSON stringify e takePic:" +JSON.stringify(e));
 	Titanium.Media.showCamera({
 	        success:function(e){
 	                if(e.mediaType === Titanium.Media.MEDIA_TYPE_PHOTO){
@@ -227,10 +227,10 @@ function uploadFile(e){
 	                                height:100
 	                        });
 	                        var image = imageView.toImage();
-	                        console.log("settings.js::beginning to upload to the cloud.");
+	                        Alloy.Globals.Log("settings.js::beginning to upload to the cloud.");
 	                        var date = new Date();
 							var imagefilename = filename;
-							console.log("settings.js::JSON stringify e takePic: Alloy.Globals.uploadPictoGoogle(image,"+imagefilename+","+parentid+")");
+							Alloy.Globals.Log("settings.js::JSON stringify e takePic: Alloy.Globals.uploadPictoGoogle(image,"+imagefilename+","+parentid+")");
 							UploadPhotoToServer(image,parentid);
 					        //Alloy.Globals.uploadPictoGoogle(image,imagefilename,parentid);
 	                } else if (e.mediaType === Titanium.Media.MEDIA_TYPE_VIDEO){
@@ -253,10 +253,10 @@ function uploadFile(e){
 	                
 	        }, error:function(e){
 	        		alert("error:"+e.code+": Unable to load camera"); 
-	                console.log("settings::takePic::error:unable to load the camera");
+	                Alloy.Globals.Log("settings::takePic::error:unable to load the camera");
 	        }, cancel:function(e){
 	        		alert("error:"+e.code+": Unable to load camera."); 
-	                console.log("settings::takePic::cancel:unable to load the camera");
+	                Alloy.Globals.Log("settings::takePic::cancel:unable to load the camera");
 	        },
 	        allowEditing:true,
 	        saveToPhotoGallery:true,
@@ -277,7 +277,7 @@ function zipBlur(){
 function currencyAction(e){ 
 	var currency = e.value;
 	Titanium.App.Properties.setString("currency", currency); 
-	console.log("settings::currencyAction::currency: "+Titanium.App.Properties.getString("currency"));
+	Alloy.Globals.Log("settings::currencyAction::currency: "+Titanium.App.Properties.getString("currency"));
 };
 
 

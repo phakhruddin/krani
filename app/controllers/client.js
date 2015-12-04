@@ -12,16 +12,16 @@ exports.openMainWindow = function(_tab) {
     }, 10);
    
     $.clientlist_window.addEventListener("close", function(e){
-    	console.log("client.js::openMainWindow:: closing clientlist_window JSON.stringify(e) : "+JSON.stringify(e));
+    	Alloy.Globals.Log("client.js::openMainWindow:: closing clientlist_window JSON.stringify(e) : "+JSON.stringify(e));
     	_tab.from=e.source.id;
-    	console.log("client.js::openMainWindow:: closing clientlist_window info on _tab : "+JSON.stringify(_tab));
+    	Alloy.Globals.Log("client.js::openMainWindow:: closing clientlist_window info on _tab : "+JSON.stringify(_tab));
     });
 };
 
 //action taken when window is closed.
 
 
-console.log("client.js::JSON.stringify(args): " +JSON.stringify(args));
+Alloy.Globals.Log("client.js::JSON.stringify(args): " +JSON.stringify(args));
 
 function showIndicator(e){
     $.activityIndicator.show();
@@ -35,7 +35,7 @@ function showIndicator(e){
 
 $.ptr.refresh();
 
-console.log("args sourcecall detected is: " +args.sourcecall);
+Alloy.Globals.Log("args sourcecall detected is: " +args.sourcecall);
 if (args.sourcecall) {
 	$.clientlist_window.addEventListener("click", function(e){
 		Alloy.Globals.openDetail(e);
@@ -61,7 +61,7 @@ if (args.sourcecall) {
 
 function transformFunction(model) {
 	var transform = model.toJSON();
-	///console.log("transform is ::" +JSON.stringify(transform));
+	///Alloy.Globals.Log("transform is ::" +JSON.stringify(transform));
 	transform.title = transform.col1+":"+transform.col2+":"+transform.col3+":"+transform.col4+":"+transform.col5+":"+transform.col6+":"+transform.col7+":"+transform.col8+":"+transform.col9+":"+transform.col10+":"+transform.col11+":"+transform.col12+":"+transform.col13+":"+transform.col14+":"+transform.col15+":"+transform.col16;
 	transform.custom = transform.col2+"  "+transform.col3;
 	transform.phone = "Phone: "+transform.col5;
@@ -142,7 +142,7 @@ function menuItemSync_click() {
 }
 
 function addHandler(e) {
-	console.log("clientlist addHandler e : "+JSON.stringify(e));
+	Alloy.Globals.Log("clientlist addHandler e : "+JSON.stringify(e));
 		//Alloy.Globals.openDetail(e);
 		//var title = e.row.title;
 		var clientController = Alloy.createController('enterclient');
@@ -150,7 +150,7 @@ function addHandler(e) {
 }
 
 function myRefresher(e) {
-	console.log("refreshing after pull : " +JSON.stringify(e));
+	Alloy.Globals.Log("refreshing after pull : " +JSON.stringify(e));
     Alloy.Collections.client.fetch({
         success: e.hide,
         error: e.hide
@@ -158,10 +158,10 @@ function myRefresher(e) {
 }
 
 exports.logfromSource = function(e){
-	console.log("logfromSource::source is client.js JSON.stringify(e):"+JSON.stringify(e));
+	Alloy.Globals.Log("logfromSource::source is client.js JSON.stringify(e):"+JSON.stringify(e));
 };
 
 function logfromSource0(e) {
-	console.log("logfromSource0::source is client.js (e) :"+e);
+	Alloy.Globals.Log("logfromSource0::source is client.js (e) :"+e);
 }
 	

@@ -4,7 +4,7 @@ exports.openMainWindow = function(_tab) {
   Ti.API.info("This is child widow checking _tab on : " +JSON.stringify(_tab));
   Ti.API.info(" input details : "+JSON.stringify(args));
   Alloy.Globals.checkFileExistThenUpdateSID(filename);
-  console.log("projectdetail.js::JSON.stringify(Alloy.Globals.Status) :"+JSON.stringify(Alloy.Globals.Status)+" Titanium.App.Properties.getString(\"status\"): " +Titanium.App.Properties.getString("status"));
+  Alloy.Globals.Log("projectdetail.js::JSON.stringify(Alloy.Globals.Status) :"+JSON.stringify(Alloy.Globals.Status)+" Titanium.App.Properties.getString(\"status\"): " +Titanium.App.Properties.getString("status"));
   Alloy.Collections.joblog.fetch();
   //Titanium.App.Properties.setString('sid',"none"); // reset the job log sid.
   prefetchJoblog();
@@ -12,10 +12,10 @@ exports.openMainWindow = function(_tab) {
 
 callbackFunction = args.callbackFunction;
 
-console.log("projectdetail.js::JSON.stringify(args) :"+JSON.stringify(args));
+Alloy.Globals.Log("projectdetail.js::JSON.stringify(args) :"+JSON.stringify(args));
 
 var someDummy = Alloy.Models.dummy;
-console.log("projectdetail.js::stringify dummy :"+JSON.stringify(someDummy));
+Alloy.Globals.Log("projectdetail.js::stringify dummy :"+JSON.stringify(someDummy));
 someDummy.set('id', '1234');
 someDummy.fetch();
 
@@ -25,8 +25,8 @@ var firstname = data[1];
 var lastname = data[2];
 var fullname = firstname+" "+lastname;
 var company = data[3];
-var phone = data[4];console.log("projectdetail.js::phone: "+phone);
-var email = data[5];console.log("projectdetail.js::email: "+email);
+var phone = data[4];Alloy.Globals.Log("projectdetail.js::phone: "+phone);
+var email = data[5];Alloy.Globals.Log("projectdetail.js::email: "+email);
 var address = data[6];
 var city = data[7];
 var state = data[8];
@@ -37,8 +37,8 @@ var fulladdress = ( address == "none" || city == "none" || state == "none" ) && 
 var status = data[10];
 var customerid = data[12];
 var notesraw = data[11];
-var dates = data[14];console.log("projectdetail.js::dates: "+dates);
-var datesdata = dates.replace(/cOlOn/g,":");console.log("projectdetail.js::datesdata: "+datesdata);
+var dates = data[14];Alloy.Globals.Log("projectdetail.js::dates: "+dates);
+var datesdata = dates.replace(/cOlOn/g,":");Alloy.Globals.Log("projectdetail.js::datesdata: "+datesdata);
 var datedue = JSON.parse(datesdata)[0].duedate;
 var nextapptdate = JSON.parse(datesdata)[0].nextapptdate;
 var lastpaiddate = JSON.parse(datesdata)[0].lastpaiddate;
@@ -49,10 +49,10 @@ var edithref = (data[13])?data[13].replace(/xCoLoNx/g,',').split(',')[2].replace
 $.nextapptdate_done.summary = firstname+" "+lastname+" - "+projectname;
 $.nextapptdate_done.descr = projectname;
 $.nextapptdate_done.organizerdisplayName = "krani";
-console.log("projectdetail.js::projectdetail:: dates" +dates+" datesdata :" +datesdata+" datedue : "+datedue);
+Alloy.Globals.Log("projectdetail.js::projectdetail:: dates" +dates+" datesdata :" +datesdata+" datedue : "+datedue);
 var projectid = data[15];
 var filename = 'project_'+projectid+'_'+firstname+'_'+lastname;
-console.log("projectdetail.js::projectdetail:: filename : "+filename);
+Alloy.Globals.Log("projectdetail.js::projectdetail:: filename : "+filename);
 
 someDummy.set('projectname', projectname);
 someDummy.set('fullname', fullname);
@@ -78,23 +78,23 @@ $.nextapptdate_label.text = nextapptdate;
 
 
 function nameAction(e) {
-	console.log("projectdetail.js::JSON stringify e: "+JSON.stringify(e));
+	Alloy.Globals.Log("projectdetail.js::JSON stringify e: "+JSON.stringify(e));
 };
 
 function phoneAction(e) {
-	console.log("projectdetail.js::JSON stringify e: "+JSON.stringify(e));
+	Alloy.Globals.Log("projectdetail.js::JSON stringify e: "+JSON.stringify(e));
 };
 
 function emailAction(e) {
-	console.log("projectdetail.js::JSON stringify e: "+JSON.stringify(e));
+	Alloy.Globals.Log("projectdetail.js::JSON stringify e: "+JSON.stringify(e));
 };
 
 function addressAction(e) {
-	console.log("projectdetail.js::JSON stringify e: "+JSON.stringify(e));
+	Alloy.Globals.Log("projectdetail.js::JSON stringify e: "+JSON.stringify(e));
 };
 
 function JobDetail(e){
-	console.log("projectdetail.js::JobDetail: JSON stringify e: "+JSON.stringify(e));
+	Alloy.Globals.Log("projectdetail.js::JobDetail: JSON stringify e: "+JSON.stringify(e));
 	var tabViewOneController = Alloy.createController("jobdetail",{
 		functionfromSource:genJoblog
 	});
@@ -111,28 +111,28 @@ function prefetchJoblog(){
 	var kraniemailid=Titanium.App.Properties.getString('kraniemailid');
 	var name = kraniemailid.split('@')[0].trim();
 	var projectparentid = Titanium.App.Properties.getString(name+"_project");
-	console.log("projectdetail.js::prefetchJoblog:: Titanium.App.Properties.getString("+name+"_project); " +projectparentid);
-	console.log("projectdetail.js::prefetchJoblog::need to check if parent/filename exist: "+projectparentid+'/'+filename);
+	Alloy.Globals.Log("projectdetail.js::prefetchJoblog:: Titanium.App.Properties.getString("+name+"_project); " +projectparentid);
+	Alloy.Globals.Log("projectdetail.js::prefetchJoblog::need to check if parent/filename exist: "+projectparentid+'/'+filename);
 	fileExist(filename,projectparentid);
 	var item = "joblog";
 	var sidmatch = matchjoblogsidfromDB(filename);
 	var sid = sidmatch;
-	console.log("projectdetail.js::prefetchJoblog::sidmatch: sid "+sidmatch+' : '+sid);
+	Alloy.Globals.Log("projectdetail.js::prefetchJoblog::sidmatch: sid "+sidmatch+' : '+sid);
 	if(sid){Alloy.Globals.getPrivateData(sid,item);} else {
-		console.log("projectdetail.js::prefetchJoblog: creating sid. very first new project");
+		Alloy.Globals.Log("projectdetail.js::prefetchJoblog: creating sid. very first new project");
 	};  // a very first new project would not have sid. suppress error.
-	console.log("projectdetail.js::prefetchJoblog:: Alloy.Collections.joblog.fetch()");
+	Alloy.Globals.Log("projectdetail.js::prefetchJoblog:: Alloy.Collections.joblog.fetch()");
 	//Alloy.Collections.joblog.fetch();	
 	var joblog  = Alloy.Collections.instance('joblog');
         joblog.fetch();
-        console.log("projectdetail.js::JSON stringify joblog data on prefetch: "+JSON.stringify(joblog));
+        Alloy.Globals.Log("projectdetail.js::JSON stringify joblog data on prefetch: "+JSON.stringify(joblog));
 }
 /*
 $.addbutton.setTitleid(args);
 
 $.addbutton.addEventListener("click", function(e){
-	console.log("projectdetail.js::JSON stringify e on addHandler: "+JSON.stringify(e));
-	console.log("projectdetail.js::JSON stringify e on addHandler args: "+JSON.stringify(args));
+	Alloy.Globals.Log("projectdetail.js::JSON stringify e on addHandler: "+JSON.stringify(e));
+	Alloy.Globals.Log("projectdetail.js::JSON stringify e on addHandler args: "+JSON.stringify(args));
 	var sid = matchjoblogsidfromDB(filename);
 	var tabViewOneController = Alloy.createController("enterjobdetail",{
 			title: args,
@@ -142,11 +142,11 @@ $.addbutton.addEventListener("click", function(e){
 });*/
 
 $.joblog_button.addEventListener("click", function(e){
-	console.log("projectdetail.js::JSON stringify e on jobLog: "+JSON.stringify(e));
-	console.log("projectdetail.js::JSON stringify e on jobLog args: "+JSON.stringify(args));
+	Alloy.Globals.Log("projectdetail.js::JSON stringify e on jobLog: "+JSON.stringify(e));
+	Alloy.Globals.Log("projectdetail.js::JSON stringify e on jobLog args: "+JSON.stringify(args));
 	var sid = matchjoblogsidfromDB(filename);
 	var parentid = Titanium.App.Properties.getString('parentid');
-	console.log("projectdetail.js::matched sid is: "+sid);
+	Alloy.Globals.Log("projectdetail.js::matched sid is: "+sid);
 	var tabViewOneController = Alloy.createController("enterjobdetail",{
 			title: args,
 			sid: sid,
@@ -156,8 +156,8 @@ $.joblog_button.addEventListener("click", function(e){
 });
 
 function addHandler(e,args){
-	console.log("projectdetail.js::JSON stringify e on addHandler: "+JSON.stringify(e));
-	console.log("projectdetail.js::JSON stringify e on addHandler args: "+JSON.stringify(args));
+	Alloy.Globals.Log("projectdetail.js::JSON stringify e on addHandler: "+JSON.stringify(e));
+	Alloy.Globals.Log("projectdetail.js::JSON stringify e on addHandler args: "+JSON.stringify(args));
 	Alloy.Globals.getPrivateData(sid,item);
 	var tabViewOneController = Alloy.createController("enterjobdetail",{
 			title: args
@@ -167,7 +167,7 @@ function addHandler(e,args){
 
 //MAIN if spreadsheet exist ignore, NOT create the spreadsheet
 function fileExist(filename,parentid){
-		console.log("projectdetail.js::executing fileExist("+filename+","+parentid+") ");
+		Alloy.Globals.Log("projectdetail.js::executing fileExist("+filename+","+parentid+") ");
 		var jsonlist = " ";
 		var xhr = Ti.Network.createHTTPClient({
 	    onload: function(e) {
@@ -177,18 +177,18 @@ function fileExist(filename,parentid){
 	    	} catch(e){
 				Ti.API.info("cathing e: "+JSON.stringify(e));
 			}
-			console.log("projectdetail.js::jsonlist.items.length: "+jsonlist.items.length);
+			Alloy.Globals.Log("projectdetail.js::jsonlist.items.length: "+jsonlist.items.length);
 			filelist = [];
 			if (jsonlist.items.length == "0" ){
-				console.log("projectdetail.js::File DOES NOT EXIST");
+				Alloy.Globals.Log("projectdetail.js::File DOES NOT EXIST");
 				var fileexist = "false";
-				console.log("projectdetail.js::fileExist: createSpreadsheet("+filename+","+parentid+")");
+				Alloy.Globals.Log("projectdetail.js::fileExist: createSpreadsheet("+filename+","+parentid+")");
 				createSpreadsheet(filename,parentid);  // create file when does not exists
 				//PopulateHeader
 			} else {
 				var fileexist = "true";
 				var sid = jsonlist.items[0].id;
-				console.log("projectdetail.js::fileExist:: File exist. sid is: "+jsonlist.items[0].id+" Skipped.");
+				Alloy.Globals.Log("projectdetail.js::fileExist:: File exist. sid is: "+jsonlist.items[0].id+" Skipped.");
 				Titanium.App.Properties.setString('sid',sid);
 				populatejoblogSIDtoDB(filename,sid);
 				//populateSpreadsheetHeader();
@@ -214,7 +214,7 @@ function getParentFolder(args) {
 	    		Ti.API.info("response is: "+JSON.stringify(json));
 	    		var parentid = json.items[0].id;
 	    		Titanium.App.Properties.setString('parentid',parentid);
-	    		console.log("projectdetail.js::args inside getParentFolder: "+JSON.stringify(args));
+	    		Alloy.Globals.Log("projectdetail.js::args inside getParentFolder: "+JSON.stringify(args));
 	    	} catch(e){
 				Ti.API.info("cathing e: "+JSON.stringify(e));
 			}
@@ -224,9 +224,9 @@ function getParentFolder(args) {
 		});
 	xhr.onerror = function(e){
 		alert("projectdetail::getParentFolder::Unable to get info.");
-		console.log('projectdetail::getParentFolder:: unable to get parents for '+sid);
+		Alloy.Globals.Log('projectdetail::getParentFolder:: unable to get parents for '+sid);
 	};
-	console.log('projectdetail::getParentFolder:: URL:: https://www.googleapis.com/drive/v2/files/'+sid+'/parents');
+	Alloy.Globals.Log('projectdetail::getParentFolder:: URL:: https://www.googleapis.com/drive/v2/files/'+sid+'/parents');
 	xhr.open("GET", 'https://www.googleapis.com/drive/v2/files/'+sid+'/parents');
 	xhr.setRequestHeader("Content-type", "application/json");
     xhr.setRequestHeader("Authorization", 'Bearer '+Alloy.Globals.googleAuthSheet.getAccessToken());
@@ -274,7 +274,7 @@ function xmlToJson(xml) {
 
 function getSSCell(sid,rowno,colno,value) {
 	var pos = "R"+rowno+"C"+colno;
-	console.log("projectdetail.js::get SS Cell on :  https://spreadsheets.google.com/feeds/cells/"+sid+"/od6/private/full/"+pos);
+	Alloy.Globals.Log("projectdetail.js::get SS Cell on :  https://spreadsheets.google.com/feeds/cells/"+sid+"/od6/private/full/"+pos);
 	var xhr = Ti.Network.createHTTPClient({
 	    onload: function(e) {
 	    try {
@@ -283,7 +283,7 @@ function getSSCell(sid,rowno,colno,value) {
 	    		Ti.API.info("getSSCell:: xml response is: "+xml);
 	    		var entry = xml.documentElement.getElementsByTagName("entry");
 	    		var link = xml.documentElement.getElementsByTagName("link");
-	    		console.log("projectdetail.js:: number of link found: " +link+ " length: "+link.length);
+	    		Alloy.Globals.Log("projectdetail.js:: number of link found: " +link+ " length: "+link.length);
 	    		for (i=0;i<link.length;i++){			
 	    			var listitem = link.item(i);
 	    			if (listitem.getAttribute("rel") == "edit"){ var edithref = listitem.getAttribute("href");}
@@ -307,12 +307,12 @@ function getSSCell(sid,rowno,colno,value) {
 };
 
 (Alloy.Globals.googleAuthSheet.getAccessToken()) && function() {var parentid=getParentFolder();} || function(){
-	console.log(new Date()+"::projectdetail.js:: token expired: reAuthorize");
+	Alloy.Globals.Log(new Date()+"::projectdetail.js:: token expired: reAuthorize");
 	Alloy.Globals.googleAuthSheet.authorize();
 };
 
 function createSpreadsheet(filename,parentid) {
-	console.log("projectdetail.js::create ss with filename: "+filename+" and parentid: "+parentid);
+	Alloy.Globals.Log("projectdetail.js::create ss with filename: "+filename+" and parentid: "+parentid);
 	var jsonpost = '{'
 		 +'\"title\": \"'+filename+'\",'
 		 +'\"parents\": ['
@@ -343,7 +343,7 @@ function createSpreadsheet(filename,parentid) {
 						getSSCell(sid,r,16,Date.now()); //jobitemid
 					};
 					
-	    		console.log("projectdetail.js::sid : "+sid);
+	    		Alloy.Globals.Log("projectdetail.js::sid : "+sid);
 	    	} catch(e){
 				Ti.API.info("cathing e: "+JSON.stringify(e));
 			}
@@ -351,12 +351,12 @@ function createSpreadsheet(filename,parentid) {
 		});
 	xhr.onerror = function(e){
 		alert("projectdetail::createSpreadsheet::Unable to create spreadsheet.");
-		console.log("projectdetail::createSpreadsheet::Unable to createSpreadsheet with "+filename+".");
+		Alloy.Globals.Log("projectdetail::createSpreadsheet::Unable to createSpreadsheet with "+filename+".");
 	};
 	xhr.open("POST", 'https://www.googleapis.com/drive/v2/files');	
 	xhr.setRequestHeader("Content-type", "application/json");
     xhr.setRequestHeader("Authorization", 'Bearer '+Alloy.Globals.googleAuthSheet.getAccessToken());
-    console.log("projectdetail.js::json post: "+jsonpost);
+    Alloy.Globals.Log("projectdetail.js::json post: "+jsonpost);
 	xhr.send(jsonpost);
 }
 
@@ -369,7 +369,7 @@ function populateSpreadsheetHeader(sid,rowno,colno,edithref,selfhref,value){
  		+'<gs:cell row=\''+rowno+'\' col=\''+colno+'\' inputValue=\''+value+'\'>'
  		+'</gs:cell>'
  		+'</entry>'].join('');
- 		console.log("projectdetail.js::xmldatastring: "+xmldatastring);
+ 		Alloy.Globals.Log("projectdetail.js::xmldatastring: "+xmldatastring);
        var xhr =  Titanium.Network.createHTTPClient({
     onload: function() {
         try {
@@ -398,7 +398,7 @@ function checkjoblogsidfromDB(){
 	Ti.API.info(" thejoblogsid : "+JSON.stringify(thejoblogsid));
 	if (thejoblogsid.length > 0) {
 		var joblogsidjson = thejoblogsid.toJSON();
-		console.log("projectdetail.js::JSON.stringify(joblogsidjson): " +JSON.stringify(joblogsidjson));
+		Alloy.Globals.Log("projectdetail.js::JSON.stringify(joblogsidjson): " +JSON.stringify(joblogsidjson));
 		for( var i=0; i < joblogsidjson.length; i++){
 			var projectid  = joblogsidjson[i].col1;
 			var projectname = joblogsidjson[i].col2;
@@ -408,9 +408,9 @@ function checkjoblogsidfromDB(){
 			Alloy.Globals.appendFile(content,"joblogsid.txt");
 		}
 		
-		console.log("projectdetail.js::thejoblogsidarray.length : "+thejoblogsidarray.length);
+		Alloy.Globals.Log("projectdetail.js::thejoblogsidarray.length : "+thejoblogsidarray.length);
 		if ( thejoblogsidarray.length > 0 ){
-			console.log("projectdetail.js::thejoblogsidarray : "+JSON.stringify(thejoblogsidarray));
+			Alloy.Globals.Log("projectdetail.js::thejoblogsidarray : "+JSON.stringify(thejoblogsidarray));
 		}
 	} 
 
@@ -423,7 +423,7 @@ function matchjoblogsidfromDB(filename){
 	Ti.API.info(" matchjoblogsidfromDB::thejoblogsid : "+JSON.stringify(thejoblogsid));
 	if (thejoblogsid.length > 0) {
 		var joblogsidjson = thejoblogsid.toJSON();
-		console.log("projectdetail.js::matchjoblogsidfromDB::JSON.stringify(joblogsidjson): " +JSON.stringify(joblogsidjson));
+		Alloy.Globals.Log("projectdetail.js::matchjoblogsidfromDB::JSON.stringify(joblogsidjson): " +JSON.stringify(joblogsidjson));
 		for( var i=0; i < joblogsidjson.length; i++){
 			var projectname = joblogsidjson[i].col1;
 			var sid = joblogsidjson[i].col2.trim();
@@ -432,9 +432,9 @@ function matchjoblogsidfromDB(filename){
 			}
 		}
 		/*	
-		console.log("projectdetail.js::matchjoblogsidfromDB::thejoblogsidarray.length : "+thejoblogsidarray.length);
+		Alloy.Globals.Log("projectdetail.js::matchjoblogsidfromDB::thejoblogsidarray.length : "+thejoblogsidarray.length);
 		if ( thejoblogsidarray.length > 0 ){
-			console.log("projectdetail.js::matchjoblogsidfromDB::thejoblogsidarray : "+JSON.stringify(thejoblogsidarray));
+			Alloy.Globals.Log("projectdetail.js::matchjoblogsidfromDB::thejoblogsidarray : "+JSON.stringify(thejoblogsidarray));
 		}*/
 	} 
 
@@ -449,10 +449,10 @@ function populatejoblogSIDtoDB(filename,sid) {
     	var joblogsidjson = thejoblogsid.toJSON();
     	for( var i=0; i < joblogsidjson.length; i++ ){
     		var oldsid = joblogsidjson[i].col2.trim();
-    		console.log("projectdetail.js::populatejoblogSIDtoDB::compare sid : "+oldsid+" vs. "+sid);
+    		Alloy.Globals.Log("projectdetail.js::populatejoblogSIDtoDB::compare sid : "+oldsid+" vs. "+sid);
     		if ( sid == oldsid ){
     			var needupdate = "no";
-    			console.log("projectdetail.js::populatejoblogSIDtoDB::needupdate: "+needupdate+" , abort!");
+    			Alloy.Globals.Log("projectdetail.js::populatejoblogSIDtoDB::needupdate: "+needupdate+" , abort!");
     			return;
     		} 
     	}
@@ -479,7 +479,7 @@ function getjoblogSID(thefilename){
     		var filename = joblogsidjson[i].col1.trim().replace(/\s+/g, '');;
     		var sid = joblogsidjson[i].col2.trim();
     		if ( thefilename == filename ){
-    			console.log("projectdetail.js::getjoblogSID::needupdate: "+filename+" match "+thefilename+" with sid: "+sid);
+    			Alloy.Globals.Log("projectdetail.js::getjoblogSID::needupdate: "+filename+" match "+thefilename+" with sid: "+sid);
     			return sid;
     		} 
     	}
@@ -489,7 +489,7 @@ function getjoblogSID(thefilename){
 /// processing array in notes
 if (notesraw != "none") {
 	var notesstring = notesraw.replace(/cOlOn/g,':');   // replacing all cOlOn to ':'
-	console.log("projectdetail.js::notesstring: "+notesstring);
+	Alloy.Globals.Log("projectdetail.js::notesstring: "+notesstring);
 	var notes = JSON.parse(notesstring);
 	var descr = notes[0].descr;
 	var descrtitlelabel = Ti.UI.createLabel ({
@@ -571,7 +571,7 @@ if (notesraw != "none") {
 
 function editAction(e){
 		function alertExecute() {alert("Execute return");};
-		console.log("projectdetail.js:: editAction e : "+JSON.stringify(e));
+		Alloy.Globals.Log("projectdetail.js:: editAction e : "+JSON.stringify(e));
 		var projectController = Alloy.createController('enterproject',{
 			projectname : projectname,
 			projectid : projectid,
@@ -684,7 +684,7 @@ my_combo.addEventListener('focus', function() {
 });
  
 drop_button.addEventListener('click',function(e) {
-	console.log("projectdetail.js::drop_button:: JSON.stringify(e): "+JSON.stringify(e));
+	Alloy.Globals.Log("projectdetail.js::drop_button:: JSON.stringify(e): "+JSON.stringify(e));
 	$.status_row.height=Ti.UI.Size;
 	$.status_row.add(picker_view);
 	my_combo.blur();
@@ -703,7 +703,7 @@ picker.addEventListener('change',function(e) {
 });
 
 done.addEventListener('click',function(e) {
-	console.log("projectdetail.js::done:picker: JSON.stringify(e)" + JSON.stringify(e)+ " JSON.stringify() " +JSON.stringify(picker.getSelectedRow(0)));
+	Alloy.Globals.Log("projectdetail.js::done:picker: JSON.stringify(e)" + JSON.stringify(e)+ " JSON.stringify() " +JSON.stringify(picker.getSelectedRow(0)));
 	my_combo.value =  picker.getSelectedRow(0).id;
 	my_combo.color = picker.getSelectedRow(0).colorid;
 	//picker_view.animate(slide_out);
@@ -759,7 +759,7 @@ function viewpdf(url){
 	winButton.addEventListener('click', function(){
 		docViewer.show();
 		var theimage = docViewer.toImage;
-		console.log("invoicedetail.js::viewpdf: JSON.stringify(docViewer) + JSON.stringify(theimage) : "+JSON.stringify(docViewer) +" : theimage: "+ JSON.stringify(theimage));
+		Alloy.Globals.Log("invoicedetail.js::viewpdf: JSON.stringify(docViewer) + JSON.stringify(theimage) : "+JSON.stringify(docViewer) +" : theimage: "+ JSON.stringify(theimage));
     	 var kraniemailid = Titanium.App.Properties.getString('kraniemailid');
 		 var name = kraniemailid.split('@')[0].trim();
      	 var parentid = Titanium.App.Properties.getString(name+"_invoice");
@@ -773,7 +773,7 @@ function viewpdf(url){
 
 function emailpdf(firstname,lastname,address,city,state,phone,email,projectid,company,projectname){
 	
-	console.log("projectdetail.js::emailpdf::  firstname " + firstname 	+" lastname " + lastname 	+" address " + address 	+" city " + city 	
+	Alloy.Globals.Log("projectdetail.js::emailpdf::  firstname " + firstname 	+" lastname " + lastname 	+" address " + address 	+" city " + city 	
 	+" state " + state 	+" phone " + phone 	+" email " + email 	+" projectid " + projectid 	+" company " + company);
 	
 	var html2pdf = require('com.factisresearch.html2pdf');  
@@ -783,16 +783,16 @@ function emailpdf(firstname,lastname,address,city,state,phone,email,projectid,co
    
  	html2pdf.addEventListener('pdfready', function(e) {  
 	     var file = Ti.Filesystem.getFile(e.pdf);   
-	    console.log("projectdetail.js::html2pdf.addEventListener:: Ti.Filesystem.applicationDataDirectory "+Ti.Filesystem.applicationDataDirectory);
+	    Alloy.Globals.Log("projectdetail.js::html2pdf.addEventListener:: Ti.Filesystem.applicationDataDirectory "+Ti.Filesystem.applicationDataDirectory);
 		var oldfile = Ti.Filesystem.getFile(Ti.Filesystem.applicationDataDirectory,'projectreport.pdf');
 		if (oldfile.exists()) { oldfile.deleteFile(); }
 		var orgfile =  Ti.Filesystem.getFile(Ti.Filesystem.applicationDataDirectory,'Expose.pdf');
         var renamesuccess = orgfile.rename('projectreport.pdf');
-        console.log("projectdetail.js::html2pdf.addEventListener:: renamesuccess "+renamesuccess);
+        Alloy.Globals.Log("projectdetail.js::html2pdf.addEventListener:: renamesuccess "+renamesuccess);
 	     var url = '../Documents/projectreport.pdf';
 	     var newurl = Ti.Filesystem.getFile(url);
 	     var file = 'projectreport.pdf';
-	     console.log("opening viewpdf(url) on "+file);
+	     Alloy.Globals.Log("opening viewpdf(url) on "+file);
      	 viewpdf(file);
      	 (Alloy.Globals.googleAuthSheet.getAccessToken()) || Alloy.Globals.googleAuthSheet.Authorized();
      	 //Set filename for uploaded file
@@ -804,7 +804,7 @@ function emailpdf(firstname,lastname,address,city,state,phone,email,projectid,co
      	 var kraniemailid = Titanium.App.Properties.getString('kraniemailid');
 		 var name = kraniemailid.split('@')[0].trim();
      	 var parentid = Titanium.App.Properties.getString(name+"_project");
-     	 console.log(new Date()+"::projectdetail.js::html2pdf::Alloy.Globals.uploadFile("+file+","+pdffilename+","+parentid+")");
+     	 Alloy.Globals.Log(new Date()+"::projectdetail.js::html2pdf::Alloy.Globals.uploadFile("+file+","+pdffilename+","+parentid+")");
      	 Alloy.Globals.uploadFile(file,pdffilename,parentid) ;
  	});  
 	
@@ -824,12 +824,12 @@ function emailpdf(firstname,lastname,address,city,state,phone,email,projectid,co
 	
 	var joblog  = Alloy.Collections.instance('joblog');
     joblog.fetch();
-    console.log("projectdetail.js::JSON stringify joblog data on emailpdf: "+JSON.stringify(joblog));
+    Alloy.Globals.Log("projectdetail.js::JSON stringify joblog data on emailpdf: "+JSON.stringify(joblog));
     var jobitemjson = joblog.toJSON();
-    console.log("projectdetail.js::jobitemjson.length: "+jobitemjson.length);
+    Alloy.Globals.Log("projectdetail.js::jobitemjson.length: "+jobitemjson.length);
     for (j=0;j<jobitemjson.length;j++){
     	if (jobitemjson[j].col6 == "report"){
-			console.log("projectdetail.js::emailpdf:: adhocs jobitemjson:  col1 : "+jobitemjson[j].col1+" : "+jobitemjson[j].col2+" : "+jobitemjson[j].col5);
+			Alloy.Globals.Log("projectdetail.js::emailpdf:: adhocs jobitemjson:  col1 : "+jobitemjson[j].col1+" : "+jobitemjson[j].col2+" : "+jobitemjson[j].col5);
 			var picurl = jobitemjson[j].col4;
 			if (jobitemjson[j].col2 != "none"){strVarItems += "						<td><span contenteditable>"+jobitemjson[j].col1+"<\/span><\/td>";};
 			if (picurl != "none"){
@@ -1023,16 +1023,16 @@ function emailpdf(firstname,lastname,address,city,state,phone,email,projectid,co
 
 
 function genJoblog(e){
-	console.log("invoicedetail.js::genInvoice:: JSON.stringify(e) "+JSON.stringify(e)+" with : "+firstname+" "+lastname+" : "+projectid+" projectname: "+projectname);
+	Alloy.Globals.Log("invoicedetail.js::genInvoice:: JSON.stringify(e) "+JSON.stringify(e)+" with : "+firstname+" "+lastname+" : "+projectid+" projectname: "+projectname);
 		var logourl = Titanium.App.Properties.getString('logourl');
-		console.log("invoicedetail.js::genInvoice:: logourl is: "+logourl);
+		Alloy.Globals.Log("invoicedetail.js::genInvoice:: logourl is: "+logourl);
 
 		emailpdf(firstname,lastname,address,city,state,phone,email,projectid,company,projectname);
 };
 
 
 $.jobreport_button.addEventListener("click",function(e){
-	console.log("projectdetail.js::jobreport_button:JSON.stringify(e)" + JSON.stringify(e));
+	Alloy.Globals.Log("projectdetail.js::jobreport_button:JSON.stringify(e)" + JSON.stringify(e));
 });
 
 //Date action
@@ -1041,7 +1041,7 @@ $.duedate_done.hide();
 var dateduePicker = Titanium.UI.createPicker({top:0, type:Titanium.UI.PICKER_TYPE_DATE});
 dateduePicker.selectionIndicator=true;
 dateduePicker.addEventListener("change",function(e) {
-	console.log("projectdetail.js::dateduepicker on change: "+JSON.stringify(e));
+	Alloy.Globals.Log("projectdetail.js::dateduepicker on change: "+JSON.stringify(e));
 	var dates = [];
 	//$.datedue_label.text = e.value.toString().split('T')[0].replace(/(\d+)-(\d+)-(\d+)/,'$3/$2/$2');
 	var utcdate = Date.parse(e.value.toString());
@@ -1054,10 +1054,10 @@ dateduePicker.addEventListener("change",function(e) {
 });
 
 function duedateActionDone(e){
-	console.log("projectdetail.js::duedateActionDone on Done: "+JSON.stringify(e));
+	Alloy.Globals.Log("projectdetail.js::duedateActionDone on Done: "+JSON.stringify(e));
 	var dates = e.source.dates;
 	var dates = JSON.stringify(dates).replace(/:/g,"cOlOn");
-	console.log("projectdetail.js::duedatepicker before SS update: "+dates);
+	Alloy.Globals.Log("projectdetail.js::duedatepicker before SS update: "+dates);
 	Alloy.Globals.updateExistingSpreadsheetAndDB("project",projectname,firstname,lastname,company,phone,email,address,city,state,country,status,notesraw,customerid,"none",dates,projectid,edithref,selfhref,idtag);
 	var projectsid = Titanium.App.Properties.getString('project');
 	Alloy.Globals.getPrivateData(projectsid,"project");
@@ -1074,7 +1074,7 @@ function duedateActionDone(e){
 }
 
 function duedateAction(e){
-	console.log("projectdetail.js::duedate:: JSON.stringify(e): "+JSON.stringify(e));
+	Alloy.Globals.Log("projectdetail.js::duedate:: JSON.stringify(e): "+JSON.stringify(e));
 	if (e.source.textid=="pickershow") {
 		dateduePicker.hide(); $.duedate_button.textid="pickerhide";
 		$.datepicker_row.height="1";
@@ -1095,7 +1095,7 @@ nextapptdatePicker.selectionIndicator=true;
 nextapptdatePicker.addEventListener("change",function(e) {
 	var dates = [];
 	var datesinUTC = [];
-	console.log("projectdetail.js::nextapptdatepicker on change: "+JSON.stringify(e));
+	Alloy.Globals.Log("projectdetail.js::nextapptdatepicker on change: "+JSON.stringify(e));
 	var nextapptdateISO = e.value.toString();
 	var utcdate = Date.parse(e.value.toString());
 	var regdate = new Date(utcdate);
@@ -1110,7 +1110,7 @@ nextapptdatePicker.addEventListener("change",function(e) {
 });
 
 function nextapptdateActionDone(e) {
-	console.log("projectdetail.js::nextapptdateActionDone on Done: "+JSON.stringify(e));
+	Alloy.Globals.Log("projectdetail.js::nextapptdateActionDone on Done: "+JSON.stringify(e));
 	var dates = e.source.dates;
 	var datesinUTC = e.source.datesinUTC;
 	var startdateTimeUTC = datesinUTC[0].nextapptdate;
@@ -1119,12 +1119,12 @@ function nextapptdateActionDone(e) {
 	var enddateTimeUTC = parseFloat(60*60*1000+parseFloat(startdateTimeUTC));
 	var enddateTimeLocale = new Date(enddateTimeUTC);
 	var enddateTimeISO = enddateTimeLocale.toISOString();
-	console.log("projectdetail.js::nextapptdateActionDone: startdateTimeUTC "+startdateTimeUTC + " datesinUTC " +JSON.stringify(datesinUTC));
+	Alloy.Globals.Log("projectdetail.js::nextapptdateActionDone: startdateTimeUTC "+startdateTimeUTC + " datesinUTC " +JSON.stringify(datesinUTC));
 	var summary = e.source.summary;
 	var description = e.source.descr;
 	var organizerdisplayName = e.source.organizerdisplayName;
 	var dates = JSON.stringify(dates).replace(/:/g,"cOlOn");
-	console.log("projectdetail.js::nextapptdatepicker before SS update: "+dates);
+	Alloy.Globals.Log("projectdetail.js::nextapptdatepicker before SS update: "+dates);
 	Alloy.Globals.updateExistingSpreadsheetAndDB("project",projectname,firstname,lastname,company,phone,email,address,city,state,country,status,notesraw,customerid,"none",dates,projectid,edithref,selfhref,idtag);
 	var projectsid = Titanium.App.Properties.getString('project');
 	Alloy.Globals.getPrivateData(projectsid,"project");
@@ -1136,14 +1136,14 @@ function nextapptdateActionDone(e) {
 	$.datepicker_row.remove(dateduePicker);
 	$.nextapptdate_done.hide();
 	//create reminder
-	var kraniemailid = Titanium.App.Properties.getString('kraniemailid');console.log("schedule.js::kraniemailid:: "+kraniemailid);
+	var kraniemailid = Titanium.App.Properties.getString('kraniemailid');Alloy.Globals.Log("schedule.js::kraniemailid:: "+kraniemailid);
 	var calid = kraniemailid;
 	updatecalendardialog.data = [{"calid":calid,"startdateTimeISO":startdateTimeISO,"enddateTimeISO":enddateTimeISO,"summary":summary,"description":description,"organizerdisplayName":organizerdisplayName}];
 	updatecalendardialog.show();
 }
 
 function nextapptdateAction(e){
-	console.log("projectdetail.js::nextapptdate:: JSON.stringify(e): "+JSON.stringify(e));
+	Alloy.Globals.Log("projectdetail.js::nextapptdate:: JSON.stringify(e): "+JSON.stringify(e));
 	nextapptdatePicker.show();
 	$.nextapptdate_done.show();
 	if (e.source.textid=="pickershow") {
@@ -1167,8 +1167,8 @@ var updatecalendardialog = Ti.UI.createAlertDialog({
 	title: 'UpdateCalendar'
 });
 updatecalendardialog.addEventListener('click', function(e){
-	console.log("projectdetail.js:: updatecalendardialog: JSON.stringify(e) :"+JSON.stringify(e));
-	console.log("projectdetail.js:: updatecalendardialog: e.source.data :"+e.source.data);
+	Alloy.Globals.Log("projectdetail.js:: updatecalendardialog: JSON.stringify(e) :"+JSON.stringify(e));
+	Alloy.Globals.Log("projectdetail.js:: updatecalendardialog: e.source.data :"+e.source.data);
 	var data = e.source.data;
 	var startdateTimeISO = data[0].startdateTimeISO;
 	var enddateTimeISO = data[0].enddateTimeISO;
@@ -1177,11 +1177,11 @@ updatecalendardialog.addEventListener('click', function(e){
 	var description = data[0].description;
 	var summary = data[0].summary;
 	if (e.index == 1 ) {
-		console.log("projectdetail.js:: updatecalendardialog: startdateTimeISO :"+startdateTimeISO);
-		console.log("Alloy.Globals.postCreateEvent(calid:"+calid+","+startdateTimeISO+","+enddateTimeISO+",\"\",summary:"+summary+",description:"+description+",organizerdisplayName:"+organizerdisplayName+")");
+		Alloy.Globals.Log("projectdetail.js:: updatecalendardialog: startdateTimeISO :"+startdateTimeISO);
+		Alloy.Globals.Log("Alloy.Globals.postCreateEvent(calid:"+calid+","+startdateTimeISO+","+enddateTimeISO+",\"\",summary:"+summary+",description:"+description+",organizerdisplayName:"+organizerdisplayName+")");
 		Alloy.Globals.postCreateEvent(calid,startdateTimeISO,enddateTimeISO,"",summary,description,organizerdisplayName);
 	} else {
-		console.log("projectdetail.js:: updatecalendardialog: Cancelled :");
+		Alloy.Globals.Log("projectdetail.js:: updatecalendardialog: Cancelled :");
 	}
 });
  

@@ -6,7 +6,7 @@ exports.openMainWindow = function(_tab) {
 };
 
 var someDummy = Alloy.Models.dummy;
-console.log("stringify dummy :"+JSON.stringify(someDummy));
+Alloy.Globals.Log("stringify dummy :"+JSON.stringify(someDummy));
 someDummy.set('id', '1234');
 someDummy.fetch();
 

@@ -6,7 +6,7 @@ exports.openMainWindow = function(_tab) {
 };
 
 var someDummy = Alloy.Models.dummy;
-console.log("clientdetail.js::stringify dummy :"+JSON.stringify(someDummy));
+Alloy.Globals.Log("clientdetail.js::stringify dummy :"+JSON.stringify(someDummy));
 someDummy.set('id', '1234');
 someDummy.fetch();
 
@@ -31,7 +31,7 @@ var idtag = (data[13])?data[13].replace(/xCoLoNx/g,',').split(',')[0].replace('y
 var selfhref = (data[13])?data[13].replace(/xCoLoNx/g,',').split(',')[1].replace('yCoLoNy',':'):"none";
 var edithref = (data[13])?data[13].replace(/xCoLoNx/g,',').split(',')[2].replace('yCoLoNy',':'):"none";
 
-console.log("clientdetail.js::idtag :"+idtag+" edithref: "+edithref+" selfhref: "+selfhref);
+Alloy.Globals.Log("clientdetail.js::idtag :"+idtag+" edithref: "+edithref+" selfhref: "+selfhref);
 
 if (customerid) {
 	var clients = Alloy.Collections.instance('client');
@@ -40,7 +40,7 @@ if (customerid) {
 	if (theclient.length > 0 ){
 		for (j=0;j<theclient.length;j++){
 			   var theclientjson = theclient[j].toJSON(); // EXTRACT ONE ROW. IF MANY. FOR LOOP.
-    		   console.log("clientdetail.js::theclientjson.col1 :"+theclientjson.col1+" col2: "+theclientjson.col2);
+    		   Alloy.Globals.Log("clientdetail.js::theclientjson.col1 :"+theclientjson.col1+" col2: "+theclientjson.col2);
 		}
 	}
  
@@ -65,7 +65,7 @@ someDummy.set('project', project);
 someDummy.set('proposal', proposal);
 
 function editAction(e){
-		console.log("clientdetail.js:: editAction e : "+JSON.stringify(e));
+		Alloy.Globals.Log("clientdetail.js:: editAction e : "+JSON.stringify(e));
 		var clientController = Alloy.createController('enterclient',{
 			customerid : customerid,
 			firstname : firstname,

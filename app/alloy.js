@@ -292,7 +292,7 @@ Alloy.Globals.UpdateMap = function(latitude,longitude,title) {
 	var latitude = latitude;
 	var longitude = longitude;
 	var subtitle = "None";
-	console.log("alloy.js::map obtained with latitude: "+latitude+" longitude: "+longitude);
+	Alloy.Globals.Log("alloy.js::map obtained with latitude: "+latitude+" longitude: "+longitude);
 	
   if(Ti.Platform.osname == 'android'){
   		var Map = Titanium.Map;
@@ -338,7 +338,7 @@ Alloy.Globals.UpdateMap = function(latitude,longitude,title) {
   				var longitude = laborjson[i].col9.trim();
   				addrdata.push({latitude: latitude,longitude:  longitude,title: title});
   			}
-  			console.log("alloy.js::addrdata after push: "+JSON.stringify(addrdata));
+  			Alloy.Globals.Log("alloy.js::addrdata after push: "+JSON.stringify(addrdata));
 		} else {
 			var addrdata = [ {latitude: latitude,longitude:  longitude,title: title} ];
 		}
@@ -354,7 +354,7 @@ Alloy.Globals.UpdateMap = function(latitude,longitude,title) {
 			});
 		};
 		
-		console.log("alloy.js::addrdata are: "+JSON.stringify(addrdata));
+		Alloy.Globals.Log("alloy.js::addrdata are: "+JSON.stringify(addrdata));
 	    
 	    var addrAnnotations = [];
 		_.each(addr, function (addr) {
@@ -367,7 +367,7 @@ Alloy.Globals.UpdateMap = function(latitude,longitude,title) {
 		  }));  
 		});
 		
-			console.log("alloy.js::addrAnnotations are: "+JSON.stringify(addrAnnotations));
+			Alloy.Globals.Log("alloy.js::addrAnnotations are: "+JSON.stringify(addrAnnotations));
 
 		var mapview = Map.createView({
 	    mapType: Map.NORMAL_TYPE,
@@ -511,7 +511,7 @@ Alloy.Globals.createController = function(controller,sourcetab){
 Alloy.Globals.getPrivateData = function(sid,type) {	
 	var data = [];
 	var maxdebug = mindebug = 1;
-	console.log("alloy.js::Alloy.Globals.getPrivateData: type: min max debug: "+type+" :"+mindebug+" : "+maxdebug+" sid: "+sid);
+	Alloy.Globals.Log("alloy.js::Alloy.Globals.getPrivateData: type: min max debug: "+type+" :"+mindebug+" : "+maxdebug+" sid: "+sid);
 	//Alloy.Globals.checkGoogleisAuthorized();
 	//Alloy.Globals.checkNetworkAndGoogleAuthorized('1gnkP116nsTVxtrw6d_mXVdOiesQEPH7LVUIyHUfx9EE');
 	//Google Auth check.
@@ -522,11 +522,11 @@ Alloy.Globals.getPrivateData = function(sid,type) {
 	    onload: function(e) {
 	    try {
 			var xml = Titanium.XML.parseString(this.responseText);
-			console.log("alloy.js::Alloy.Globals.getPrivateData:: response txt is: "+this.responseText);
-			console.log("alloy.js::Alloy.Globals.getPrivateData:: this xml is: " +xml);
+			Alloy.Globals.Log("alloy.js::Alloy.Globals.getPrivateData:: response txt is: "+this.responseText);
+			Alloy.Globals.Log("alloy.js::Alloy.Globals.getPrivateData:: this xml is: " +xml);
 			var feed = xml.documentElement.getElementsByTagName("feed");
 			var entry = xml.documentElement.getElementsByTagName("entry"); 
-			console.log("alloy.js::this entry length is: " +entry.length);
+			Alloy.Globals.Log("alloy.js::this entry length is: " +entry.length);
 			// deleting existing entry in database start
 			(type == 'client') && Alloy.Collections.client.deleteAll();
 			(type == 'project') && Alloy.Collections.project.deleteAll();
@@ -554,8 +554,8 @@ Alloy.Globals.getPrivateData = function(sid,type) {
     			}
 				//data.push({"identification":col1,"next column":col2,"col4":col4});
 				data.push({"col1":col1,"col2":col2,"col4":col4});
-				(maxdebug==1) && console.log("alloy.js::updating database with data :"+JSON.stringify(data));
-				(maxdebug==1) && console.log("alloy.js::updating database with data :"+col1+" url:"+idtag+" "+edithref);
+				Alloy.Globals.Log("alloy.js::updating database with data :"+JSON.stringify(data));
+				Alloy.Globals.Log("alloy.js::updating database with data :"+col1+" url:"+idtag+" "+edithref);
 				var dataModel = Alloy.createModel(type,{
 					col1 :  entry.item(i).getElementsByTagName("gsx:col1").item(0).text.trim() || "none",
 					col2 : entry.item(i).getElementsByTagName("gsx:col2").item(0).text.trim() || "none",
@@ -585,7 +585,7 @@ Alloy.Globals.getPrivateData = function(sid,type) {
 			    Ti.API.info((success==true) ? 'success' : 'fail'); // outputs 'success'
 			}
 			file.write(this.responseText);
-			console.log("alloy.js::checking data " +JSON.stringify(data));
+			Alloy.Globals.Log("alloy.js::checking data " +JSON.stringify(data));
 			//
 			Ti.API.info(" Alloy.Globals.getPrivateData::Data were successfuly downloaded from "+url+". Please proceed.");
 			} catch(e){
@@ -595,7 +595,7 @@ Alloy.Globals.getPrivateData = function(sid,type) {
 	});
 	xhr.onerror = function(e){
 		//alert(e);
-		console.log("alloy.js::Alloy.Globals.getPrivateData::Unable to connect to the network. The "+type+" info displayed here is NOT the latest. error is: "+JSON.stringify(e));
+		Alloy.Globals.Log("alloy.js::Alloy.Globals.getPrivateData::Unable to connect to the network. The "+type+" info displayed here is NOT the latest. error is: "+JSON.stringify(e));
 		alert("Please connect to the network.");
 	};
 	xhr.open("GET", url);
@@ -720,10 +720,10 @@ Alloy.Globals.LaunchWindowGoogleAuth = function() {
 Alloy.Globals.checkGoogleisAuthorized = function () {
 	Titanium.App.Properties.setString('needAuth',"true");
 	googleAuthSheet.isAuthorized(function() {
-		console.log('Access Token: ' +Alloy.Globals.googleAuthSheet.getAccessToken());
+		Alloy.Globals.Log('Access Token: ' +Alloy.Globals.googleAuthSheet.getAccessToken());
 		Titanium.App.Properties.setString('needAuth',"false");
 	}, function() {
-		console.log('Fr AlloyGlobal Authorized first, see next window: '+(new  Date()));
+		Alloy.Globals.Log('Fr AlloyGlobal Authorized first, see next window: '+(new  Date()));
 		Titanium.App.Properties.setString('needAuth',"true");
 		//Alloy.Globals.LaunchWindowGoogleAuth();
 	});
@@ -786,7 +786,7 @@ Alloy.Globals.checkNetworkAndGoogleAuthorized = function(sid){
 	});
 	xhr.onerror = function(e){
 		alert("Please connect to the network.");
-		console.log(new Date()+"::Alloy.Globals.checkNetworkAndGoogleAuthorized::No network connection. Checking SID "+sid);
+		Alloy.Globals.Log(new Date()+"::Alloy.Globals.checkNetworkAndGoogleAuthorized::No network connection. Checking SID "+sid);
 	};
 	xhr.open("GET", url);
 	xhr.send();
@@ -803,7 +803,7 @@ Alloy.Globals.postCreateEvent = function(calid,startdateTime,enddateTime,locatio
 	var colorid = colorid || "3";
 	var organizerself ="true";
 	//var url = 'https://www.googleapis.com/calendar/v3/calendars/idevice.net%40gmail.com/events?access_token='+googleAuthCalendar.getAccessToken();
-	console.log("alloy.js::Alloy.Globals.postCreateEvent: emailid:  "+calid);
+	Alloy.Globals.Log("alloy.js::Alloy.Globals.postCreateEvent: emailid:  "+calid);
 	//var url = 'https://www.googleapis.com/calendar/v3/calendars/'+calid+'/events';
 	var url = 'https://www.googleapis.com/calendar/v3/calendars/'+calid+'/events?sendNotifications=true';
 	var recurrences ="";
@@ -848,7 +848,7 @@ Alloy.Globals.postCreateEvent = function(calid,startdateTime,enddateTime,locatio
 	+	'\}'
 	+recurrences
 	+'\}';
-	console.log("alloy.js::event strings are: "+event);
+	Alloy.Globals.Log("alloy.js::event strings are: "+event);
 	var xhr =  Titanium.Network.createHTTPClient({
     onload: function() {
     	try {
@@ -874,7 +874,7 @@ Alloy.Globals.uploadFile = function(file,filename,parentid) {
     	//var fileget = Ti.Filesystem.getFile(file);
 		var fileread = fileget.read();
 		var filebase64 = Ti.Utils.base64encode(fileread);
- 		console.log('Access Token for File upload is: ' +Alloy.Globals.googleAuthSheet.getAccessToken());
+ 		Alloy.Globals.Log('Access Token for File upload is: ' +Alloy.Globals.googleAuthSheet.getAccessToken());
  		var parts = [];
  		var bound = 287032396531387;
 	 		var meta = '\{'
@@ -912,7 +912,7 @@ Alloy.Globals.uploadFile = function(file,filename,parentid) {
 		    	}     
 		    },
 		    onerror: function(e) {
-		    	console.log("Alloy.Globals.uploadFile::error e: "+JSON.stringify(e));
+		    	Alloy.Globals.Log("Alloy.Globals.uploadFile::error e: "+JSON.stringify(e));
 		        alert("Please connect to the network."); 
 		    }
 		});
@@ -945,9 +945,9 @@ Alloy.Globals.checkFileExistThenCreateSS = function(filename){
 	    	} catch(e){
 				Ti.API.info("cathing e: "+JSON.stringify(e));
 			}
-			console.log("alloy.js::Alloy.Globals.checkFileExistThenCreateSS::jsonlist.items.length: "+jsonlist.items.length);
+			Alloy.Globals.Log("alloy.js::Alloy.Globals.checkFileExistThenCreateSS::jsonlist.items.length: "+jsonlist.items.length);
 			if (jsonlist.items.length == "0" ){
-				console.log("alloy.js::File DOES NOT EXIST");
+				Alloy.Globals.Log("alloy.js::File DOES NOT EXIST");
 				var fileexist = "false";
 				Alloy.Globals.createSpreadsheet(filename);  // create file when does not exists
 				Titanium.App.Properties.setString(filename,sid); // stamp the ssid.
@@ -955,9 +955,9 @@ Alloy.Globals.checkFileExistThenCreateSS = function(filename){
 				var fileexist = "true";
 				var sid = jsonlist.items[0].id;
 				var item=filename.replace(/list$/g,"").replace(/^.*_/g,"");
-				console.log("alloy.js::Alloy.Globals.checkFileExistThenCreateSS::File exist. sid is: "+jsonlist.items[0].id+" Skipped.");
+				Alloy.Globals.Log("alloy.js::Alloy.Globals.checkFileExistThenCreateSS::File exist. sid is: "+jsonlist.items[0].id+" Skipped.");
 				Titanium.App.Properties.setString(item,sid);
-				console.log("alloy.js::Alloy.Globals.checkFileExistThenCreateSS::File exist: sid from Titanium.App.Properties.getString("+item+"); "+eval("Titanium.App.Properties.getString(item)"));
+				Alloy.Globals.Log("alloy.js::Alloy.Globals.checkFileExistThenCreateSS::File exist: sid from Titanium.App.Properties.getString("+item+"); "+eval("Titanium.App.Properties.getString(item)"));
 			};
 		}
 		});
@@ -965,7 +965,7 @@ Alloy.Globals.checkFileExistThenCreateSS = function(filename){
 		alert("Please connect to the network.");
 	};
 	var rawquerystring = '?q=title+%3D+\''+filename+'\'+and+mimeType+%3D+\'application%2Fvnd.google-apps.spreadsheet\'+and+trashed+%3D+false&fields=items(id%2CmimeType%2Clabels%2Ctitle)';
-	console.log("alloy.js::Alloy.Globals.checkFileExistThenCreateSS:: URL:: https://www.googleapis.com/drive/v2/files"+rawquerystring);
+	Alloy.Globals.Log("alloy.js::Alloy.Globals.checkFileExistThenCreateSS:: URL:: https://www.googleapis.com/drive/v2/files"+rawquerystring);
 	xhr.open("GET", 'https://www.googleapis.com/drive/v2/files'+rawquerystring);
 	xhr.setRequestHeader("Content-type", "application/json");
     xhr.setRequestHeader("Authorization", 'Bearer '+Alloy.Globals.googleAuthSheet.getAccessToken());
@@ -984,15 +984,15 @@ Alloy.Globals.checkFileExistThenUpdateSID = function(filename){
 				Ti.API.info("Alloy.Globals.checkFileExistThenUpdateSID::cathing e: "+JSON.stringify(e));
 				Titanium.App.Properties.setString("status","failed"); 	; 	
 			}
-			console.log("alloy.js::Alloy.Globals.checkFileExistThenUpdateSID::jsonlist.items.length: "+jsonlist.items.length);
+			Alloy.Globals.Log("alloy.js::Alloy.Globals.checkFileExistThenUpdateSID::jsonlist.items.length: "+jsonlist.items.length);
 			if (jsonlist.items.length == "0" ){
-				console.log("alloy.js::Alloy.Globals.checkFileExistThenUpdateSID::File DOES NOT EXIST");
+				Alloy.Globals.Log("alloy.js::Alloy.Globals.checkFileExistThenUpdateSID::File DOES NOT EXIST");
 				var fileexist = "false";
 				Titanium.App.Properties.setString("status","failed"); 	
 			} else {
 				var fileexist = "true";
 				var sid = jsonlist.items[0].id;
-				console.log("alloy.js::Alloy.Globals.checkFileExistThenUpdateSID::File exist. sid is: "+jsonlist.items[0].id+" Skipped.");
+				Alloy.Globals.Log("alloy.js::Alloy.Globals.checkFileExistThenUpdateSID::File exist. sid is: "+jsonlist.items[0].id+" Skipped.");
 				Titanium.App.Properties.setString(filename,sid);
 				// Write contents.
 				var content = filename+','+sid;
@@ -1003,23 +1003,23 @@ Alloy.Globals.checkFileExistThenUpdateSID = function(filename){
 		});
 	xhr.onerror = function(e){
 		alert("Please connect to the network.");
-		console.log("alloy.js::checkFileExistThenUpdateSID:File "+filename+" Does Not exist.");
+		Alloy.Globals.Log("alloy.js::checkFileExistThenUpdateSID:File "+filename+" Does Not exist.");
 		Alloy.Globals.Status ="failed";
 		Titanium.App.Properties.setString("status","failed");	
 	};
 	var rawquerystring = '?q=title+%3D+\''+filename+'\'+and+mimeType+%3D+\'application%2Fvnd.google-apps.spreadsheet\'+and+trashed+%3D+false&fields=items(id%2CmimeType%2Clabels%2Ctitle)';
-	console.log("alloy.js::Alloy.Globals.checkFileExistThenUpdateSID:: URL:: https://www.googleapis.com/drive/v2/files"+rawquerystring);
+	Alloy.Globals.Log("alloy.js::Alloy.Globals.checkFileExistThenUpdateSID:: URL:: https://www.googleapis.com/drive/v2/files"+rawquerystring);
 	xhr.open("GET", 'https://www.googleapis.com/drive/v2/files'+rawquerystring);
 	xhr.setRequestHeader("Content-type", "application/json");
     xhr.setRequestHeader("Authorization", 'Bearer '+Alloy.Globals.googleAuthSheet.getAccessToken());
 	xhr.send();
-	console.log("alloy.js::::JSON.stringify(Alloy.Globals.Status) :"+JSON.stringify(Alloy.Globals.Status)+" Titanium.App.Properties.getString(\"status\"): " +Titanium.App.Properties.getString("status"));
+	Alloy.Globals.Log("alloy.js::::JSON.stringify(Alloy.Globals.Status) :"+JSON.stringify(Alloy.Globals.Status)+" Titanium.App.Properties.getString(\"status\"): " +Titanium.App.Properties.getString("status"));
 	
 };
 
 
 Alloy.Globals.createSpreadsheet = function(filename) {
-	console.log("alloy.js::create ss with filename: "+filename);
+	Alloy.Globals.Log("alloy.js::create ss with filename: "+filename);
 	var jsonpost = '{'
 		 +'\"title\": \"'+filename+'\",'
 		 +'\"mimeType\": \"application/vnd.google-apps.spreadsheet\"'
@@ -1040,7 +1040,7 @@ Alloy.Globals.createSpreadsheet = function(filename) {
 				Alloy.Globals.editTheCell(sid,2,4,"Date Created");
 				Alloy.Globals.editTheCell(sid,2,5,"Date Modified");
 	    		Titanium.App.Properties.setString('sid',sid); // 1st sid created.
-	    		console.log("alloy.js::sid : "+sid);
+	    		Alloy.Globals.Log("alloy.js::sid : "+sid);
 	    	} catch(e){
 				Ti.API.info("cathing e: "+JSON.stringify(e));
 			}
@@ -1048,18 +1048,18 @@ Alloy.Globals.createSpreadsheet = function(filename) {
 		});
 	xhr.onerror = function(e){
 		alert("Please connect to the network.");
-		console.log("alloy.js::createSpreadsheet:: error is: "+JSON.stringify(e));
+		Alloy.Globals.Log("alloy.js::createSpreadsheet:: error is: "+JSON.stringify(e));
 	};
 	xhr.open("POST", 'https://www.googleapis.com/drive/v2/files');	
 	xhr.setRequestHeader("Content-type", "application/json");
     xhr.setRequestHeader("Authorization", 'Bearer '+Alloy.Globals.googleAuthSheet.getAccessToken());
-    console.log("alloy.js::json post: "+jsonpost);
+    Alloy.Globals.Log("alloy.js::json post: "+jsonpost);
 	xhr.send(jsonpost);
 };
 
 Alloy.Globals.editTheCell = function(sid,rowno,colno,value) {
 	var pos = "R"+rowno+"C"+colno;
-	console.log("alloy.js::get SS Cell on :  https://spreadsheets.google.com/feeds/cells/"+sid+"/od6/private/full/"+pos);
+	Alloy.Globals.Log("alloy.js::get SS Cell on :  https://spreadsheets.google.com/feeds/cells/"+sid+"/od6/private/full/"+pos);
 	var xhr = Ti.Network.createHTTPClient({
 	    onload: function(e) {
 	    try {
@@ -1068,7 +1068,7 @@ Alloy.Globals.editTheCell = function(sid,rowno,colno,value) {
 	    		Ti.API.info("Alloy.Globals.editTheCell:: xml response is: "+xml);
 	    		var entry = xml.documentElement.getElementsByTagName("entry");
 	    		var link = xml.documentElement.getElementsByTagName("link");
-	    		console.log("alloy.js:: number of link found: " +link+ " length: "+link.length);
+	    		Alloy.Globals.Log("alloy.js:: number of link found: " +link+ " length: "+link.length);
 	    		for (i=0;i<link.length;i++){			
 	    			var listitem = link.item(i);
 	    			if (listitem.getAttribute("rel") == "edit"){ var edithref = listitem.getAttribute("href");}
@@ -1084,7 +1084,7 @@ Alloy.Globals.editTheCell = function(sid,rowno,colno,value) {
 		});
 	xhr.onerror = function(e){
 		alert("Please connect to the network.");
-		console.log("alloy.js::editTheCell:: error is: "+JSON.stringify(e));
+		Alloy.Globals.Log("alloy.js::editTheCell:: error is: "+JSON.stringify(e));
 	};
 	xhr.open("GET", 'https://spreadsheets.google.com/feeds/cells/'+sid+'/od6/private/full/'+pos);
 	xhr.setRequestHeader("Content-type", "application/atom+xml");
@@ -1101,7 +1101,7 @@ Alloy.Globals.editCell = function(sid,rowno,colno,edithref,selfhref,value){
  		+'<gs:cell row=\''+rowno+'\' col=\''+colno+'\' inputValue=\''+value+'\'>'
  		+'</gs:cell>'
  		+'</entry>'].join('');
- 		console.log("alloy.js::xmldatastring: "+xmldatastring);
+ 		Alloy.Globals.Log("alloy.js::xmldatastring: "+xmldatastring);
        var xhr =  Titanium.Network.createHTTPClient({
     onload: function() {
         try {
@@ -1112,14 +1112,14 @@ Alloy.Globals.editCell = function(sid,rowno,colno,edithref,selfhref,value){
     },
     onerror: function(e) {
         alert("error:"+e.code+"::Please connect to the network.");
-        console.log("alloy.js::editCell::error is: "+JSON.stringify(e)); 
+        Alloy.Globals.Log("alloy.js::editCell::error is: "+JSON.stringify(e)); 
     }
 });
         xhr.open("PUT", ''+edithref+'');
         xhr.setRequestHeader("Content-type", "application/atom+xml");
         xhr.setRequestHeader("Authorization", 'Bearer '+Alloy.Globals.googleAuthSheet.getAccessToken());
         xhr.send(xmldatastring);
-        console.log('Alloy.Globals.editCell::done POSTed');
+        Alloy.Globals.Log('Alloy.Globals.editCell::done POSTed');
 };
 
 Alloy.Globals.updateSpreadsheet = function(sid,col1,col2,col3,col4,col5,col6,col7,col8,col9,col10,col11,col12,col13,col14,col15,col16){
@@ -1140,7 +1140,7 @@ Alloy.Globals.updateSpreadsheet = function(sid,col1,col2,col3,col4,col5,col6,col
     onerror: function(e) {
     	Ti.API.info("Alloy.Globals.updateSpreadsheet::error e: "+JSON.stringify(e));
         alert("error:"+e.code+": Please connect to the network."); 
-        console.log("alloy.js::updateSpreadsheet::Unable to communicate to the cloud. Please try again, sid: "+sid); 
+        Alloy.Globals.Log("alloy.js::updateSpreadsheet::Unable to communicate to the cloud. Please try again, sid: "+sid); 
     }
 });
 	xhr.open("POST", 'https://spreadsheets.google.com/feeds/list/'+sid+'/od6/private/full');
@@ -1168,7 +1168,7 @@ Alloy.Globals.updateSpreadsheet2 = function(sid,col1,col2,col3,col4,col5,col6,co
     onerror: function(e) {
     	Ti.API.info("Alloy.Globals.updateSpreadsheet2::error e: "+JSON.stringify(e));
         alert("error:"+e.code+": Please connect to the network."); 
-        console.log("alloy.js::updateSpreadsheet::Unable to communicate to the cloud. Please try again, sid: "+sid); 
+        Alloy.Globals.Log("alloy.js::updateSpreadsheet::Unable to communicate to the cloud. Please try again, sid: "+sid); 
     }
 });
 	xhr.open("POST", 'https://spreadsheets.google.com/feeds/list/'+sid+'/od6/private/full');
@@ -1179,15 +1179,15 @@ Alloy.Globals.updateSpreadsheet2 = function(sid,col1,col2,col3,col4,col5,col6,co
 };
 
 Alloy.Globals.saveHandler = function(type){
- 	console.log("alloy.js::Alloy.Globals.saveHandler::saving all data JSON e: "+JSON.stringify(e));
+ 	Alloy.Globals.Log("alloy.js::Alloy.Globals.saveHandler::saving all data JSON e: "+JSON.stringify(e));
  	var tabledata = [];	
  	var noentry = "none";
  	var getvalue = ["clientfirstname","clientlastname","clientphone","clientemail","clientstreetaddress","clientcity","clientstate","clientcompany","notes"];
  	for (i=0;i<$.enterclient_table.data[0].rowCount;i++) {		
- 		console.log("children count : "	+$.enterclient_table.data[0].rows[i].children.length);
+ 		Alloy.Globals.Log("children count : "	+$.enterclient_table.data[0].rows[i].children.length);
  		for (j=0;j<+$.enterclient_table.data[0].rows[i].children.length;j++) { 			
-			console.log("JSON stringify table 0 row "+i+' : ' +JSON.stringify($.enterclient_table.data[0].rows[i]));
-			console.log("JSON stringify table 0 row "+i+'w/children '+j+' : ' +JSON.stringify($.enterclient_table.data[0].rows[i].children[j]));
+			Alloy.Globals.Log("JSON stringify table 0 row "+i+' : ' +JSON.stringify($.enterclient_table.data[0].rows[i]));
+			Alloy.Globals.Log("JSON stringify table 0 row "+i+'w/children '+j+' : ' +JSON.stringify($.enterclient_table.data[0].rows[i].children[j]));
 			tabledata.push({data1:$.enterclient_table.data[0].rows[i].children[j].id || "none",data2:$.enterclient_table.data[0].rows[i].children[j].value || "none"});
 			for (z=0;z<getvalue.length;z++){
 				var subject = getvalue[z];
@@ -1197,15 +1197,15 @@ Alloy.Globals.saveHandler = function(type){
 			}		
 		};
 	};
-	console.log("tabledata are: "+JSON.stringify(tabledata));
-	console.log("alloy.js::Alloy.Globals.saveHandler:: detect array dyn variable: "+clientfirstname+","+clientlastname+","+clientphone+","+clientemail+","+clientstreetaddress
+	Alloy.Globals.Log("tabledata are: "+JSON.stringify(tabledata));
+	Alloy.Globals.Log("alloy.js::Alloy.Globals.saveHandler:: detect array dyn variable: "+clientfirstname+","+clientlastname+","+clientphone+","+clientemail+","+clientstreetaddress
 	+","+clientcity+","+clientstate+","+clientcompany);
 	//once tabledata is populated, find submission value
 	var name = clientfirstname+' '+clientlastname;
 	var customerid = e.source.titleid;
-	console.log("alloy.js::Alloy.Globals.saveHandler::clientfirstname: "+clientfirstname+" clientlastname "+clientlastname);	
+	Alloy.Globals.Log("alloy.js::Alloy.Globals.saveHandler::clientfirstname: "+clientfirstname+" clientlastname "+clientlastname);	
 	Alloy.Globals.submit(type,clientfirstname,clientlastname,clientcompany,clientphone,clientemail,clientstreetaddress,clientcity,clientstate,"USA","pending",notes,"0","6/1/2015","7/1/2015",customerid);
-	///console.log('submit('+clientnumber+','+name+','+customerno+','+total+','+bal+','+paid+','+lastpaiddate+','+followupdate+','+clientphone+','+clientemail+','+duedate+','
+	///Alloy.Globals.Log('submit('+clientnumber+','+name+','+customerno+','+total+','+bal+','+paid+','+lastpaiddate+','+followupdate+','+clientphone+','+clientemail+','+duedate+','
 	///+currency+','+status+')');
  }; 
 
@@ -1221,7 +1221,7 @@ Alloy.Globals.submit = function(type,clientfirstname,clientlastname,clientcompan
     var selfhref = Titanium.App.Properties.getString('selfhref');
     var now = Date.now();
  	var captimestamp = now;
-    console.log("alloy.js::Alloy.Globals.submit::existing edit href is: "+existingedithref+' idtag :'+idtag);
+    Alloy.Globals.Log("alloy.js::Alloy.Globals.submit::existing edit href is: "+existingedithref+' idtag :'+idtag);
 	var xhr =  Titanium.Network.createHTTPClient({
 	    onload: function() {
 	    	try {
@@ -1230,7 +1230,7 @@ Alloy.Globals.submit = function(type,clientfirstname,clientlastname,clientcompan
 	    		var entry = xml.documentElement.getElementsByTagName("entry");
 	    		var link = xml.documentElement.getElementsByTagName("link");
 	    		var idtag = xml.documentElement.getElementsByTagName("id").item(0).text;
-	    		console.log("alloy.js::submit: number of link found: " +link+ " length: "+link.length);
+	    		Alloy.Globals.Log("alloy.js::submit: number of link found: " +link+ " length: "+link.length);
 	    		for (i=0;i<link.length;i++){			
 	    			var listitem = link.item(i);
 	    			if (listitem.getAttribute("rel") == "edit"){ var edithref = listitem.getAttribute("href");}
@@ -1246,14 +1246,14 @@ Alloy.Globals.submit = function(type,clientfirstname,clientlastname,clientcompan
 	    	}     
 	    },
 	    onerror: function(e) {
-	    	console.log("Alloy.Globals.submit ::error e: "+JSON.stringify(e));
+	    	Alloy.Globals.Log("Alloy.Globals.submit ::error e: "+JSON.stringify(e));
 	        alert("error:"+e.code+": Please connect to the network."); 
 	    }
 	});
 	eval("var "+type+" = Alloy.Collections.instance('"+type+"')");
 	//var clients = Alloy.Collections.instance('client');
 	if (existingedithref) {
-			console.log("alloy.js::Alloy.Globals.submit::PUT on existing edit href is: "+existingedithref);
+			Alloy.Globals.Log("alloy.js::Alloy.Globals.submit::PUT on existing edit href is: "+existingedithref);
 			xhr.open("PUT", existingedithref);
 			var xmldatastring = '<entry xmlns=\'http://www.w3.org/2005/Atom\' xmlns:gsx=\'http://schemas.google.com/spreadsheets/2006/extended\'>'
 				+'<id>'+idtag+'</id>'
@@ -1272,7 +1272,7 @@ Alloy.Globals.submit = function(type,clientfirstname,clientlastname,clientcompan
 			Ti.API.info('xmldatastring existing to PUT: '+xmldatastring);
 			eval("type.fetch()");
 			//clients.fetch();
-			console.log("alloy.js::Alloy.Globals.submit:: update DB with customerid :" +customerid);
+			Alloy.Globals.Log("alloy.js::Alloy.Globals.submit:: update DB with customerid :" +customerid);
 				clients.get(customerid).set({
 					col1: 	customerid.toString().trim(),
 					col2:	clientfirstname.trim(),
@@ -1297,7 +1297,7 @@ Alloy.Globals.submit = function(type,clientfirstname,clientlastname,clientcompan
 				+'<gsx:col15>'+notes+'</gsx:col15><gsx:col16>'+customerid+'</gsx:col16></entry>';
 				Ti.API.info('xmldatastring to POST: '+xmldatastring);
 			xhr.open("POST", 'https://spreadsheets.google.com/feeds/list/'+spreadsheet_id+'/od6/private/full');
-			console.log("alloy.js::Alloy.Globals.submit:: add DB with customerid :" +customerid);
+			Alloy.Globals.Log("alloy.js::Alloy.Globals.submit:: add DB with customerid :" +customerid);
 			var dataModel = Alloy.createModel('client',{
 					col1: 	customerid.toString().trim(),
 					col2:	(clientfirstname == " ")?'none':clientfirstname.trim(),
@@ -1325,7 +1325,7 @@ Alloy.Globals.submit = function(type,clientfirstname,clientlastname,clientcompan
  };
  
  Alloy.Globals.emailpdf = function(firstname,lastname,address,city,state,phone,email,invoicenumber,company,total,balance,paid,lastpaiddate,duedate,price){
-	console.log("invoicedetail.js::emailpdf::  firstname " + firstname 	+" lastname " + lastname 	+" address " + address 	+" city " + city 	
+	Alloy.Globals.Log("invoicedetail.js::emailpdf::  firstname " + firstname 	+" lastname " + lastname 	+" address " + address 	+" city " + city 	
 	+" state " + state 	+" phone " + phone 	+" email " + email 	+" invoicenumber " + invoicenumber 	+" company " + company 	+" total " + total 	
 	+" balance " + balance 	+" paid " + paid 	+" lastpaiddate " + lastpaiddate 	+" duedate " + duedate 	+" price " + price);
 	
@@ -1335,14 +1335,14 @@ Alloy.Globals.submit = function(type,clientfirstname,clientlastname,clientcompan
    
  	html2pdf.addEventListener('pdfready', function(e) {  
 	     var file = Ti.Filesystem.getFile(e.pdf);   
-	    console.log("invoicedetail.js::html2pdf.addEventListener:: Ti.Filesystem.applicationDataDirectory "+Ti.Filesystem.applicationDataDirectory);
+	    Alloy.Globals.Log("invoicedetail.js::html2pdf.addEventListener:: Ti.Filesystem.applicationDataDirectory "+Ti.Filesystem.applicationDataDirectory);
 		var oldfile = Ti.Filesystem.getFile(Ti.Filesystem.applicationDataDirectory,'invoice.pdf');
 		if (oldfile.exists()) { oldfile.deleteFile(); }
 		var orgfile =  Ti.Filesystem.getFile(Ti.Filesystem.applicationDataDirectory,'Expose.pdf');
         var renamesuccess = orgfile.rename('invoice.pdf');
-        console.log("invoicedetail.js::html2pdf.addEventListener:: renamesuccess "+renamesuccess);
+        Alloy.Globals.Log("invoicedetail.js::html2pdf.addEventListener:: renamesuccess "+renamesuccess);
 	     var file = 'invoice.pdf';
-	     console.log("opening viewpdf(url) on "+file);
+	     Alloy.Globals.Log("opening viewpdf(url) on "+file);
      	 viewpdf(file);
      	 Alloy.Globals.checkGoogleisAuthorized();
      	 Alloy.Globals.uploadFile(file,"invdeen1.pdf") ;
@@ -1361,21 +1361,21 @@ Alloy.Globals.submit = function(type,clientfirstname,clientlastname,clientcompan
 	var invoiceno = "002345";
 	
 	adhocs.fetch();
-	console.log("invoicedetail.js::emailpdf:: adhocs contents "+JSON.stringify(adhocs)); 
-	console.log("invoicedetail.js::emailpdf:: adhocs.length: "+adhocs.length); 
+	Alloy.Globals.Log("invoicedetail.js::emailpdf:: adhocs contents "+JSON.stringify(adhocs)); 
+	Alloy.Globals.Log("invoicedetail.js::emailpdf:: adhocs.length: "+adhocs.length); 
 	var strVarItems="";
 	for (i=0;i<adhocs.length;i++){
-		console.log("invoicedetail.js::emailpdf:: adhocs.models["+i+"].toJSON().col3: "+adhocs.models[i].toJSON().col3);
+		Alloy.Globals.Log("invoicedetail.js::emailpdf:: adhocs.models["+i+"].toJSON().col3: "+adhocs.models[i].toJSON().col3);
 		var jobitemstring=adhocs.models[i].toJSON().col3.replace(/xSqBracketOpen/,'[').replace(/xSqBracketClose/,']');
-		console.log("invoicedetail.js::emailpdf:: adhocs extraction: jobitemstring.length "+jobitemstring.length+ "jobitemstring : "+jobitemstring);
+		Alloy.Globals.Log("invoicedetail.js::emailpdf:: adhocs extraction: jobitemstring.length "+jobitemstring.length+ "jobitemstring : "+jobitemstring);
 		var jobitemjson = JSON.parse(jobitemstring);
 		for (j=0;j<jobitemjson.length;j++){
 			var names=jobitemjson[0].names;
-			console.log("invoicedetail.js::emailpdf:: adhocs extraction:  names : "+jobitemjson[j].names+" : "+jobitemjson[j].descr+" : "+jobitemjson[j].lineitem+" : "+jobitemjson[j].price+" : "+jobitemjson[j].qty);
+			Alloy.Globals.Log("invoicedetail.js::emailpdf:: adhocs extraction:  names : "+jobitemjson[j].names+" : "+jobitemjson[j].descr+" : "+jobitemjson[j].lineitem+" : "+jobitemjson[j].price+" : "+jobitemjson[j].qty);
 			strVarItems += "				<tbody>";
 			strVarItems += "					<tr>";
 			if(j>0){
-				console.log("invoicedetail.js::emailpdf:: names comparison:  "+jobitemjson[j].names+" vs. "+jobitemjson[j-1].names);
+				Alloy.Globals.Log("invoicedetail.js::emailpdf:: names comparison:  "+jobitemjson[j].names+" vs. "+jobitemjson[j-1].names);
 				if(jobitemjson[j].names==jobitemjson[j-1].names){
 					strVarItems += "						<td><a class=\"cut\">-<\/a><span contenteditable> <\/span><\/td>";
 				} else {
@@ -1589,7 +1589,7 @@ Alloy.Globals.submit = function(type,clientfirstname,clientlastname,clientcompan
  };
  
  Alloy.Globals.shareAnyonePermission = function(sid){
-	console.log("alloy.js::Alloy.Globals.shareAnyonePermission::sid: "+sid);
+	Alloy.Globals.Log("alloy.js::Alloy.Globals.shareAnyonePermission::sid: "+sid);
 	var jsonpost = '{'
 		 +'\"role\": \"reader\",'
 		 +'\"type\": \"anyone\"'
@@ -1605,18 +1605,18 @@ Alloy.Globals.submit = function(type,clientfirstname,clientlastname,clientcompan
 		});
 	xhr.onerror = function(e){
 		alert("error:"+e.code+": Please connect to the network."); 
-		console.log("alloy.js:Alloy.Globals.shareAnyonePermission:: error is: "+JSON.stringify(e));
+		Alloy.Globals.Log("alloy.js:Alloy.Globals.shareAnyonePermission:: error is: "+JSON.stringify(e));
 	};
 	xhr.open("POST", 'https://www.googleapis.com/drive/v2/files/'+sid+'/permissions');	
 	xhr.setRequestHeader("Content-type", "application/json");
     xhr.setRequestHeader("Authorization", 'Bearer '+Alloy.Globals.googleAuthSheet.getAccessToken());
-    console.log("enterjobdetail.js::shareAnyonePermission::json post: "+jsonpost);
+    Alloy.Globals.Log("enterjobdetail.js::shareAnyonePermission::json post: "+jsonpost);
 	xhr.send(jsonpost);
 };
 
 
  Alloy.Globals.uploadPictoGoogle = function(image,filename,parentid){
-	console.log("Alloy.Globals.uploadPictoGoogle::uploadPictoGoogle::create ss with filename: "+filename);
+	Alloy.Globals.Log("Alloy.Globals.uploadPictoGoogle::uploadPictoGoogle::create ss with filename: "+filename);
 	//var base64Data = Ti.Utils.base64encode(image);
 	var base64Data = image;
 	 		var parts = [];
@@ -1651,7 +1651,7 @@ Alloy.Globals.submit = function(type,clientfirstname,clientlastname,clientcompan
 	    				Ti.API.info("Alloy.Globals.uploadPictoGoogle::uploadPictoGoogle::id is: "+id+" webcontentlink: "+webcontentlink);
 	    				shareAnyonePermission(id);
 	    				var e = {"value":"none","source":{"_hintText":id}};
-	    				console.log("Alloy.Globals.uploadPictoGoogle::uploadPictoGoogle::entering urlimage with info below e: "+JSON.stringify(e));
+	    				Alloy.Globals.Log("Alloy.Globals.uploadPictoGoogle::uploadPictoGoogle::entering urlimage with info below e: "+JSON.stringify(e));
 	    				enterNotes(e,webcontentlink);
 			    	} catch(e){
 			    		Ti.API.info("Alloy.Globals.uploadPictoGoogle::uploadPictoGoogle::cathing e: "+JSON.stringify(e));
@@ -1659,7 +1659,7 @@ Alloy.Globals.submit = function(type,clientfirstname,clientlastname,clientcompan
 			    	return id;    
 			    },
 			    onerror: function(e) {
-			    	console.log("Alloy.Globals.uploadPictoGoogle::uploadPictoGoogle::error e: "+JSON.stringify(e));
+			    	Alloy.Globals.Log("Alloy.Globals.uploadPictoGoogle::uploadPictoGoogle::error e: "+JSON.stringify(e));
 			        alert("error:"+e.code+": Please connect to the network.");  
 			    }
 			});
@@ -1683,7 +1683,7 @@ Alloy.Globals.populateSpreadsheetHeader = function(sid,rowno,colno,edithref,self
  		+'<gs:cell row=\''+rowno+'\' col=\''+colno+'\' inputValue=\''+value+'\'>'
  		+'</gs:cell>'
  		+'</entry>'].join('');
- 		console.log("alloy.js::xmldatastring: "+xmldatastring);
+ 		Alloy.Globals.Log("alloy.js::xmldatastring: "+xmldatastring);
        var xhr =  Titanium.Network.createHTTPClient({
     onload: function() {
         try {
@@ -1693,7 +1693,7 @@ Alloy.Globals.populateSpreadsheetHeader = function(sid,rowno,colno,edithref,self
         }     
     },
     onerror: function(e) {
-        console.log("Alloy.Globals.populateSpreadsheetHeader::edithref: "+edithref+":: error e: "+JSON.stringify(e));
+        Alloy.Globals.Log("Alloy.Globals.populateSpreadsheetHeader::edithref: "+edithref+":: error e: "+JSON.stringify(e));
         alert("error:"+e.code+": Please connect to the network."); 
     }
 });
@@ -1707,7 +1707,7 @@ Alloy.Globals.populateSpreadsheetHeader = function(sid,rowno,colno,edithref,self
 
 Alloy.Globals.getSSCell = function(sid,rowno,colno,value) {
 	var pos = "R"+rowno+"C"+colno;
-	console.log("alloy.js::get SS Cell on :  https://spreadsheets.google.com/feeds/cells/"+sid+"/od6/private/full/"+pos);
+	Alloy.Globals.Log("alloy.js::get SS Cell on :  https://spreadsheets.google.com/feeds/cells/"+sid+"/od6/private/full/"+pos);
 	var xhr = Ti.Network.createHTTPClient({
 	    onload: function(e) {
 	    try {
@@ -1716,7 +1716,7 @@ Alloy.Globals.getSSCell = function(sid,rowno,colno,value) {
 	    		Ti.API.info("Alloy.Globals.getSSCell:: xml response is: "+xml);
 	    		var entry = xml.documentElement.getElementsByTagName("entry");
 	    		var link = xml.documentElement.getElementsByTagName("link");
-	    		console.log("alloy.js:: Alloy.Globals.getSSCell::number of link found: " +link+ " length: "+link.length);
+	    		Alloy.Globals.Log("alloy.js:: Alloy.Globals.getSSCell::number of link found: " +link+ " length: "+link.length);
 	    		for (i=0;i<link.length;i++){			
 	    			var listitem = link.item(i);
 	    			if (listitem.getAttribute("rel") == "edit"){ var edithref = listitem.getAttribute("href");}
@@ -1732,7 +1732,7 @@ Alloy.Globals.getSSCell = function(sid,rowno,colno,value) {
 		});
 	xhr.onerror = function(e){
 		alert("error:"+e.code+": Please connect to the network."); 
-		console.log("projectdetail::Alloy.Globals.getSSCell::Unable to connect to the cloud. "+JSON.stringify(e));
+		Alloy.Globals.Log("projectdetail::Alloy.Globals.getSSCell::Unable to connect to the cloud. "+JSON.stringify(e));
 	};
 	xhr.open("GET", 'https://spreadsheets.google.com/feeds/cells/'+sid+'/od6/private/full/'+pos);
 	xhr.setRequestHeader("Content-type", "application/atom+xml");
@@ -1742,7 +1742,7 @@ Alloy.Globals.getSSCell = function(sid,rowno,colno,value) {
 
 
 Alloy.Globals.createSpreadsheet2 = function(filename,parentid,isinit){
-	console.log("alloy.js::create ss with filename: "+filename+" and parentid: "+parentid);
+	Alloy.Globals.Log("alloy.js::create ss with filename: "+filename+" and parentid: "+parentid);
 	var jsonpost = '{'
 		 +'\"title\": \"'+filename+'\",'
 		 +'\"parents\": ['
@@ -1761,13 +1761,13 @@ Alloy.Globals.createSpreadsheet2 = function(filename,parentid,isinit){
 	    		///Alloy.Globals.populatesidtoDB(filename,sid);
 	    		Titanium.App.Properties.setString('sid',sid); // 1st sid created.
 	    		// Populate Header
-	    		console.log("Alloy.Globals.createSpreadsheet2: Populate Header: "+filename+" sid: "+sid);
+	    		Alloy.Globals.Log("Alloy.Globals.createSpreadsheet2: Populate Header: "+filename+" sid: "+sid);
     			for (i=1;i<17;i++){
 					var value = "col"+i;
 					Alloy.Globals.getSSCell(sid,1,i,value);
 				}
 				if (isinit == "yes") {
-					console.log("Alloy.Globals.createSpreadsheet2: isinit: "+isinit);
+					Alloy.Globals.Log("Alloy.Globals.createSpreadsheet2: isinit: "+isinit);
 					Alloy.Globals.getSSCell(sid,2,1,"parentid");
 					Alloy.Globals.getSSCell(sid,2,2,parentid);
 					Alloy.Globals.getSSCell(sid,3,1,filename);
@@ -1776,7 +1776,7 @@ Alloy.Globals.createSpreadsheet2 = function(filename,parentid,isinit){
 					var name = filename.replace(/_index$/g,"");
 					Alloy.Globals.locateIndexCreateSpreadsheet(name);
 	    		}		
-	    		console.log("alloy.js:Alloy.Globals.createSpreadsheet2:sid : "+sid);
+	    		Alloy.Globals.Log("alloy.js:Alloy.Globals.createSpreadsheet2:sid : "+sid);
 	    	} catch(e){
 				Ti.API.info("Alloy.Globals.createSpreadsheet2::cathing e: "+JSON.stringify(e));
 			}
@@ -1784,18 +1784,18 @@ Alloy.Globals.createSpreadsheet2 = function(filename,parentid,isinit){
 		});
 	xhr.onerror = function(e){
 		alert("error:"+e.code+": Please connect to the network."); 
-		console.log("projectdetail::createSpreadsheet::Unable to createSpreadsheet with "+filename+".");
+		Alloy.Globals.Log("projectdetail::createSpreadsheet::Unable to createSpreadsheet with "+filename+".");
 	};
 	xhr.open("POST", 'https://www.googleapis.com/drive/v2/files');	
 	xhr.setRequestHeader("Content-type", "application/json");
     xhr.setRequestHeader("Authorization", 'Bearer '+ Alloy.Globals.googleAuthSheet.getAccessToken());
-    console.log("alloy.js::json post: "+jsonpost);
+    Alloy.Globals.Log("alloy.js::json post: "+jsonpost);
 	xhr.send(jsonpost);
 };
 
 
 Alloy.Globals.createFolder = function(foldername,parentid){
-	console.log("alloy.js::create ss with foldername: "+foldername+" and parentid: "+parentid);
+	Alloy.Globals.Log("alloy.js::create ss with foldername: "+foldername+" and parentid: "+parentid);
 	var jsonpost = '{'
 		 +'\"title\": \"'+foldername+'\",'
 		 +'\"parents\": ['
@@ -1813,19 +1813,19 @@ Alloy.Globals.createFolder = function(foldername,parentid){
 	    		var sid = json.id;
 	    		///Alloy.Globals.populatesidtoDB(foldername,sid);
 	    		Titanium.App.Properties.setString('sid',sid);
-	    		console.log("alloy.js::sid : "+sid);
+	    		Alloy.Globals.Log("alloy.js::sid : "+sid);
 	    	} catch(e){
 				Ti.API.info("cathing e: "+JSON.stringify(e));
 			}
 		}
 		});
 	xhr.onerror = function(e){
-		console.log("projectdetail::createFolder::Unable to createFolder with "+foldername+".");
+		Alloy.Globals.Log("projectdetail::createFolder::Unable to createFolder with "+foldername+".");
 	};
 	xhr.open("POST", 'https://www.googleapis.com/drive/v2/files');	
 	xhr.setRequestHeader("Content-type", "application/json");
     xhr.setRequestHeader("Authorization", 'Bearer '+ Alloy.Globals.googleAuthSheet.getAccessToken());
-    console.log("alloy.js::json post: "+jsonpost);
+    Alloy.Globals.Log("alloy.js::json post: "+jsonpost);
 	xhr.send(jsonpost);
 };
 
@@ -1835,8 +1835,8 @@ Alloy.Globals.createFolderIFNotExist = function(foldername,parentid){
 			var fileexistjsonlist = JSON.parse(this.responseText);
 			Ti.API.info("Alloy.Globals.createFolderIFNotExist::response of fileexistjsonlist is: "+JSON.stringify(fileexistjsonlist));
 			if (fileexistjsonlist.items.length == "0" ){
-				console.log("alloy.js::Alloy.Globals.locateIndexCreateSpreadsheet::file "+filename+" does not exist, continue");
-				console.log("alloy.js::create ss with filename: "+filename+" and parentid: "+parentid);
+				Alloy.Globals.Log("alloy.js::Alloy.Globals.locateIndexCreateSpreadsheet::file "+filename+" does not exist, continue");
+				Alloy.Globals.Log("alloy.js::create ss with filename: "+filename+" and parentid: "+parentid);
 				var jsonpost = '{'
 					 +'\"title\": \"'+filename+'\",'
 					 +'\"parents\": ['
@@ -1854,7 +1854,7 @@ Alloy.Globals.createFolderIFNotExist = function(foldername,parentid){
 				    		var sid = json.id;
 				    		///Alloy.Globals.populatesidtoDB(foldername,sid);
 				    		Titanium.App.Properties.setString('sid',sid);
-				    		console.log("Alloy.Globals.createFolderIFNotExist:alloy.js::sid : "+sid);
+				    		Alloy.Globals.Log("Alloy.Globals.createFolderIFNotExist:alloy.js::sid : "+sid);
 				    	} catch(e){
 							Ti.API.info("Alloy.Globals.createFolderIFNotExist:cathing e: "+JSON.stringify(e));
 						}
@@ -1862,16 +1862,16 @@ Alloy.Globals.createFolderIFNotExist = function(foldername,parentid){
 				});
 			xhr2.onerror = function(e){
 				//alert("Alloy.Globals.createFolderIFNotExist::Unable to create spreadsheet.");
-				console.log("Alloy.Globals.createFolderIFNotExist::Unable to createSpreadsheet with "+filename+".");
+				Alloy.Globals.Log("Alloy.Globals.createFolderIFNotExist::Unable to createSpreadsheet with "+filename+".");
 			};
 			xhr2.open("POST", 'https://www.googleapis.com/drive/v2/files');	
 			xhr2.setRequestHeader("Content-type", "application/json");
 		    xhr2.setRequestHeader("Authorization", 'Bearer '+ Alloy.Globals.googleAuthSheet.getAccessToken());
-		    console.log("alloy.js::json post: "+jsonpost);
+		    Alloy.Globals.Log("alloy.js::json post: "+jsonpost);
 			xhr2.send(jsonpost);
 			// Create Credit and Debit END								
 		} else {
-			console.log("alloy.js::Alloy.Globals.createFolderIFNotExist::file "+filename+" EXIST !! Abort...");									
+			Alloy.Globals.Log("alloy.js::Alloy.Globals.createFolderIFNotExist::file "+filename+" EXIST !! Abort...");									
 			}
 		}							
 	});	
@@ -1890,8 +1890,8 @@ Alloy.Globals.createCoreSS = function (filename,parentid,indexsid) {
 			var fileexistjsonlist = JSON.parse(this.responseText);
 			Ti.API.info("Alloy.Globals.createCoreSS::response of fileexistjsonlist is: "+JSON.stringify(fileexistjsonlist));
 			if (fileexistjsonlist.items.length == "0" ){
-				console.log("alloy.js::Alloy.Globals.createCoreSS::file "+filename+" does not exist, continue");
-				console.log("alloy.js::create ss with filename: "+filename+" and parentid: "+parentid);
+				Alloy.Globals.Log("alloy.js::Alloy.Globals.createCoreSS::file "+filename+" does not exist, continue");
+				Alloy.Globals.Log("alloy.js::create ss with filename: "+filename+" and parentid: "+parentid);
 				var jsonpost = '{'
 					 +'\"title\": \"'+filename+'\",'
 					 +'\"parents\": ['
@@ -1909,19 +1909,19 @@ Alloy.Globals.createCoreSS = function (filename,parentid,indexsid) {
 				    		var sid = json.id;
 				    		var filename = json.title;
 				    		///Alloy.Globals.populatesidtoDB(filename,sid); //populate sid db.
-				    		console.log("alloy.js::Alloy.Globals.createCoreSS::updateSpreadsheet filename: "+filename+" and sid: "+sid);
+				    		Alloy.Globals.Log("alloy.js::Alloy.Globals.createCoreSS::updateSpreadsheet filename: "+filename+" and sid: "+sid);
 				    		Alloy.Globals.updateSpreadsheet2(indexsid,filename,sid,"0","0","0","0","0","0","0","0","0","0","0","0","0","0"); //update the index ss with sid
 				    		Titanium.App.Properties.setString('sid',sid); // 1st sid created.
 				    		var item = filename.replace(/list$/g,"").replace(/^.*_/g,"");
 				    		eval("Titanium.App.Properties.setString(item,sid)");
-				    		//console.log("Alloy.Globals.createCoreSS::Titanium.App.Properties.getString(item,sid): "+eval("Titanium.App.Properties.getString(item,sid)"));
+				    		//Alloy.Globals.Log("Alloy.Globals.createCoreSS::Titanium.App.Properties.getString(item,sid): "+eval("Titanium.App.Properties.getString(item,sid)"));
 				    		// Populate Header
 			    			for (i=1;i<17;i++){
 								var value = "col"+i;
 								Alloy.Globals.getSSCell(sid,1,i,value);
 							}
 							filename.match(/_index$/) || Alloy.Globals.getSSCell(sid,2,1,"PLEASE DO NOT EDIT THIS FILE. THE APP WILL BREAK. PLS CONTACT support@thekrani.com TO FIX");		
-				    		console.log("alloy.js::sid : "+sid);
+				    		Alloy.Globals.Log("alloy.js::sid : "+sid);
 				    	} catch(e){
 							Ti.API.info("cathing e: "+JSON.stringify(e));
 						}
@@ -1929,16 +1929,16 @@ Alloy.Globals.createCoreSS = function (filename,parentid,indexsid) {
 				});
 			xhr2.onerror = function(e){
 				alert("error:"+e.code+": Please connect to the network."); 
-				console.log("projectdetail::createSpreadsheet::Unable to createSpreadsheet with "+filename+".");
+				Alloy.Globals.Log("projectdetail::createSpreadsheet::Unable to createSpreadsheet with "+filename+".");
 			};
 			xhr2.open("POST", 'https://www.googleapis.com/drive/v2/files');	
 			xhr2.setRequestHeader("Content-type", "application/json");
 		    xhr2.setRequestHeader("Authorization", 'Bearer '+ Alloy.Globals.googleAuthSheet.getAccessToken());
-		    console.log("alloy.js::json post: "+jsonpost);
+		    Alloy.Globals.Log("alloy.js::json post: "+jsonpost);
 			xhr2.send(jsonpost);
 			// Create Credit and Debit END								
 		} else {
-			console.log("alloy.js::Alloy.Globals.createCoreSS::file "+filename+" EXIST !! Abort...");									
+			Alloy.Globals.Log("alloy.js::Alloy.Globals.createCoreSS::file "+filename+" EXIST !! Abort...");									
 			}
 		}							
 	});	
@@ -1952,14 +1952,14 @@ Alloy.Globals.createCoreSS = function (filename,parentid,indexsid) {
 
 Alloy.Globals.createCoreInitialCoreFolderandSS = function(name,foldername,parentid,indexsid){
 	var foldername = name+"_"+foldername;
-	console.log("alloy.js::create ss with foldername: "+foldername+" and parentid: "+parentid);
+	Alloy.Globals.Log("alloy.js::create ss with foldername: "+foldername+" and parentid: "+parentid);
 	var xhr1 = Ti.Network.createHTTPClient({
     onload: function(e) {
 		var fileexistjsonlist = JSON.parse(this.responseText);
 		Ti.API.info("Alloy.Globals.createCoreInitialCoreFolderandSS::response of fileexistjsonlist is: "+JSON.stringify(fileexistjsonlist));
 		if (fileexistjsonlist.items.length == "0" ){
-				console.log("alloy.js::Alloy.Globals.createCoreInitialCoreFolderandSS::file "+foldername+" does not exist, continue");
-				console.log("alloy.js::create createCoreInitialCoreFolderandSS with foldername: "+foldername+" and parentid: "+parentid);
+				Alloy.Globals.Log("alloy.js::Alloy.Globals.createCoreInitialCoreFolderandSS::file "+foldername+" does not exist, continue");
+				Alloy.Globals.Log("alloy.js::create createCoreInitialCoreFolderandSS with foldername: "+foldername+" and parentid: "+parentid);
 				var jsonpost = '{'
 				 +'\"title\": \"'+foldername+'\",'
 				 +'\"parents\": ['
@@ -1977,8 +1977,8 @@ Alloy.Globals.createCoreInitialCoreFolderandSS = function(name,foldername,parent
 			    		var sid = json.id;
 			    		//Alloy.Globals.populatesidtoDB(foldername,sid);
 			    		Titanium.App.Properties.setString('sid',sid);
-			    		console.log("alloy.js::sid : "+sid);
-			    		console.log("Alloy.Globals.createCoreInitialCoreFolderandSS::Alloy.Globals.updateSpreadsheet2("+indexsid+","+foldername+","+sid+")");
+			    		Alloy.Globals.Log("alloy.js::sid : "+sid);
+			    		Alloy.Globals.Log("Alloy.Globals.createCoreInitialCoreFolderandSS::Alloy.Globals.updateSpreadsheet2("+indexsid+","+foldername+","+sid+")");
 			    		Alloy.Globals.updateSpreadsheet2(indexsid,foldername,sid,"0","0","0","0","0","0","0","0","0","0","0","0","0","0"); //update the index ss with sid
 						//Create Core Spreadsheet
 						var parentid = sid;
@@ -1990,21 +1990,21 @@ Alloy.Globals.createCoreInitialCoreFolderandSS = function(name,foldername,parent
 				}
 				});
 				xhr.onerror = function(e){
-					console.log("projectdetail::createFolder::Unable to createFolder with "+foldername+".");
+					Alloy.Globals.Log("projectdetail::createFolder::Unable to createFolder with "+foldername+".");
 				};
 				xhr.open("POST", 'https://www.googleapis.com/drive/v2/files');	
 				xhr.setRequestHeader("Content-type", "application/json");
 			    xhr.setRequestHeader("Authorization", 'Bearer '+ Alloy.Globals.googleAuthSheet.getAccessToken());
-			    console.log("alloy.js::json post: "+jsonpost);
+			    Alloy.Globals.Log("alloy.js::json post: "+jsonpost);
 				xhr.send(jsonpost);					
 			} else {
 				//STAMP:: the folder SID into memory for additional use.
 				var sid = fileexistjsonlist.items[0].id;
-				console.log("Alloy.Globals.createCoreInitialCoreFolderandSS::dir exists, then stamp: Titanium.App.Properties.setString("+foldername+","+sid+"); sid is: "+sid);
+				Alloy.Globals.Log("Alloy.Globals.createCoreInitialCoreFolderandSS::dir exists, then stamp: Titanium.App.Properties.setString("+foldername+","+sid+"); sid is: "+sid);
 				eval("Titanium.App.Properties.setString(\""+foldername+"\",sid)");
-				console.log("Alloy.Globals.createCoreInitialCoreFolderandSS::dir exists, AFTER stamp: "+eval("Titanium.App.Properties.getString(\""+foldername+"\")"));
+				Alloy.Globals.Log("Alloy.Globals.createCoreInitialCoreFolderandSS::dir exists, AFTER stamp: "+eval("Titanium.App.Properties.getString(\""+foldername+"\")"));
 				//TODO: find the underneath file
-				console.log("Alloy.Globals.createCoreInitialCoreFolderandSS::check endernearth core files: Alloy.Globals.stampSIDFromCoreFilenameGroupOnInitialLogin("+foldername+");");
+				Alloy.Globals.Log("Alloy.Globals.createCoreInitialCoreFolderandSS::check endernearth core files: Alloy.Globals.stampSIDFromCoreFilenameGroupOnInitialLogin("+foldername+");");
 				Alloy.Globals.stampSIDFromCoreFilenameGroupOnInitialLogin(foldername);
 			}	
 		}
@@ -2026,21 +2026,21 @@ Alloy.Globals.locateIndexCreateSpreadsheet = function(name){
 	    	} catch(e){
 				Ti.API.info("Alloy.Globals.locateIndexCreateSpreadsheet::cathing e: "+JSON.stringify(e));
 			}
-			console.log("alloy.js::Alloy.Globals.locateIndexCreateSpreadsheet::jsonlist.items.length: "+jsonlist.items.length);
+			Alloy.Globals.Log("alloy.js::Alloy.Globals.locateIndexCreateSpreadsheet::jsonlist.items.length: "+jsonlist.items.length);
 			if (jsonlist.items.length == "0" ){
-				console.log("alloy.js::Alloy.Globals.locateIndexCreateSpreadsheet::File DOES NOT EXIST");
+				Alloy.Globals.Log("alloy.js::Alloy.Globals.locateIndexCreateSpreadsheet::File DOES NOT EXIST");
 				var fileexist = "false";
 				Titanium.App.Properties.setString("status","failed"); 	
 			} else {
 				var fileexist = "true";
 				var indexsid = jsonlist.items[0].id; Titanium.App.Properties.setString("indexsid",indexsid);
 				var parentid = jsonlist.items[0].parents[0].id; Titanium.App.Properties.setString("parentid",parentid);
-				console.log("alloy.js::Alloy.Globals.locateIndexCreateSpreadsheet::File exist. indexsid is: "+indexsid+" parentid:"+parentid);
+				Alloy.Globals.Log("alloy.js::Alloy.Globals.locateIndexCreateSpreadsheet::File exist. indexsid is: "+indexsid+" parentid:"+parentid);
 				// Create Credit and Debit START
 				var corefilenamearray = ["project","client","invoice","inventory","proposal","master","schedule","labor","joblog"];	
 				for (i=0;i<corefilenamearray.length;i++){	
 					var filename = corefilenamearray[i];	
-					console.log("alloy.js::check if ss with filename: "+filename+" exists ");
+					Alloy.Globals.Log("alloy.js::check if ss with filename: "+filename+" exists ");
 					Alloy.Globals.createCoreInitialCoreFolderandSS(name,filename,parentid,indexsid);		
 				}
 				Titanium.App.Properties.setString("status","passed"); 	
@@ -2049,18 +2049,18 @@ Alloy.Globals.locateIndexCreateSpreadsheet = function(name){
 		});
 	xhr.onerror = function(e){
 		alert("error:"+e.code+": Please connect to the network."); 
-		console.log("alloy.js::locateIndexCreateSpreadsheet:: error is: "+JSON.stringify(e));
+		Alloy.Globals.Log("alloy.js::locateIndexCreateSpreadsheet:: error is: "+JSON.stringify(e));
 		Alloy.Globals.Status ="failed";
 		Titanium.App.Properties.setString("status","failed");	
 	};
 	var filename = name+"_index";
 	var rawquerystring = '?q=title+%3D+\''+filename+'\'+and+mimeType+%3D+\'application%2Fvnd.google-apps.spreadsheet\'+and+trashed+%3D+false&fields=items(id%2CmimeType%2Clabels%2Cparents%2Ctitle)';
-	console.log("alloy.js::Alloy.Globals.locateIndexCreateSpreadsheet: get rawquerystring is: "+rawquerystring);
+	Alloy.Globals.Log("alloy.js::Alloy.Globals.locateIndexCreateSpreadsheet: get rawquerystring is: "+rawquerystring);
 	xhr.open("GET", 'https://www.googleapis.com/drive/v2/files'+rawquerystring);
 	xhr.setRequestHeader("Content-type", "application/json");
     xhr.setRequestHeader("Authorization", 'Bearer '+ Alloy.Globals.googleAuthSheet.getAccessToken());
 	xhr.send();
-	console.log("alloy.js::::JSON.stringify(Alloy.Globals.Status) :"+JSON.stringify(Alloy.Globals.Status)+" Titanium.App.Properties.getString(\"status\"): " +Titanium.App.Properties.getString("status"));	
+	Alloy.Globals.Log("alloy.js::::JSON.stringify(Alloy.Globals.Status) :"+JSON.stringify(Alloy.Globals.Status)+" Titanium.App.Properties.getString(\"status\"): " +Titanium.App.Properties.getString("status"));	
 };
 
 //check initial folder exist after login
@@ -2074,11 +2074,11 @@ Alloy.Globals.checkInitialFolderExistAfterLogin = function(name,parentid){
 		    	} catch(e){
 					Ti.API.info("Alloy.Globals.checkInitialFolderExistAfterLogin::cathing e: "+JSON.stringify(e));
 				}
-			console.log("alloy.js::Alloy.Globals.checkInitialFolderExistAfterLogin::jsonlist.items.length: "+jsonlist.items.length);
+			Alloy.Globals.Log("alloy.js::Alloy.Globals.checkInitialFolderExistAfterLogin::jsonlist.items.length: "+jsonlist.items.length);
 			if (jsonlist.items.length == "0" ){
-				console.log("alloy.js::Alloy.Globals.checkInitialFolderExistAfterLogin:: Folder "+foldername+" does not exist, will create one.");
+				Alloy.Globals.Log("alloy.js::Alloy.Globals.checkInitialFolderExistAfterLogin:: Folder "+foldername+" does not exist, will create one.");
 				//Create folder if it does not yet exist
-				console.log("alloy.js::create folder with folder: "+foldername+" and parentid: "+parentid);
+				Alloy.Globals.Log("alloy.js::create folder with folder: "+foldername+" and parentid: "+parentid);
 				var jsonpost = '{'
 					 +'\"title\": \"'+foldername+'\",'
 					 +'\"parents\": ['
@@ -2097,7 +2097,7 @@ Alloy.Globals.checkInitialFolderExistAfterLogin = function(name,parentid){
 				    		var sid = json.id;
 				    		///Alloy.Globals.populatesidtoDB(foldername,sid);
 				    		Titanium.App.Properties.setString('sid',sid);
-				    		///console.log("alloy.js::sid : "+sid+" setting it to private ");
+				    		///Alloy.Globals.Log("alloy.js::sid : "+sid+" setting it to private ");
 				    		///Alloy.Globals.setPrivate(sid);
 				    		var ssindexname = name+"_index";  		
 				    		Alloy.Globals.createSpreadsheet2(ssindexname,sid,"yes");
@@ -2108,15 +2108,15 @@ Alloy.Globals.checkInitialFolderExistAfterLogin = function(name,parentid){
 				});
 				xhr.onerror = function(e){
 					alert("error:"+e.code+": Please connect to the network."); 
-					console.log("alloy::checkInitialFolderExistAfterLogin::Unable to checkInitialFolderExistAfterLogin with "+foldername+". error is: "+JSON.stringify(e));
+					Alloy.Globals.Log("alloy::checkInitialFolderExistAfterLogin::Unable to checkInitialFolderExistAfterLogin with "+foldername+". error is: "+JSON.stringify(e));
 				};
 				xhr.open("POST", 'https://www.googleapis.com/drive/v2/files');	
 				xhr.setRequestHeader("Content-type", "application/json");
 			    xhr.setRequestHeader("Authorization", 'Bearer '+ Alloy.Globals.googleAuthSheet.getAccessToken());
-			    console.log("alloy.js::json post: "+jsonpost);
+			    Alloy.Globals.Log("alloy.js::json post: "+jsonpost);
 				xhr.send(jsonpost);				
 			} else {
-				console.log("alloy.js::Alloy.Globals.checkInitialFolderExistAfterLogin:: Folder "+foldername+" ALREADY EXIST, SKIPPED.");
+				Alloy.Globals.Log("alloy.js::Alloy.Globals.checkInitialFolderExistAfterLogin:: Folder "+foldername+" ALREADY EXIST, SKIPPED.");
 				Alloy.Globals.locateIndexCreateSpreadsheet(name);
 				
 				}			
@@ -2124,7 +2124,7 @@ Alloy.Globals.checkInitialFolderExistAfterLogin = function(name,parentid){
 		});
 		xhr0.onerror = function(e){
 			alert("error:"+e.code+": Please connect to the network."); 
-			console.log("alloy::checkFolderexist::Unable to checkInitialFolderExistAfterLogin with "+foldername+" error code is: "+JSON.stringify(e));
+			Alloy.Globals.Log("alloy::checkFolderexist::Unable to checkInitialFolderExistAfterLogin with "+foldername+" error code is: "+JSON.stringify(e));
 		};	
 	var rawquerystring = '?q=title+%3D+\''+foldername+'\'+and+mimeType+%3D+\'application%2Fvnd.google-apps.folder\'+and+trashed+%3D+false&fields=items(id%2CmimeType%2Clabels%2Cparents%2Ctitle)';
 	xhr0.open("GET", 'https://www.googleapis.com/drive/v2/files'+rawquerystring);
@@ -2137,7 +2137,7 @@ Alloy.Globals.checkInitialFolderExistAfterLogin = function(name,parentid){
 //Create Initial folder and index file if it does not yet exist. If Exist, create other files.
 Alloy.Globals.createInitialFolder = function(name,parentid){
 	var foldername = name+"_dir";
-	console.log("Alloy.Globals.createInitialFolder("+name+","+parentid+") with foldername: "+foldername);
+	Alloy.Globals.Log("Alloy.Globals.createInitialFolder("+name+","+parentid+") with foldername: "+foldername);
 		var xhr0 = Ti.Network.createHTTPClient({
 			onload: function(e) {
 			    try {
@@ -2146,11 +2146,11 @@ Alloy.Globals.createInitialFolder = function(name,parentid){
 		    	} catch(e){
 					Ti.API.info("Alloy.Globals.createInitialFolder::cathing e: "+JSON.stringify(e));
 				}
-			console.log("alloy.js::Alloy.Globals.createInitialFolder::jsonlist.items.length: "+jsonlist.items.length);
+			Alloy.Globals.Log("alloy.js::Alloy.Globals.createInitialFolder::jsonlist.items.length: "+jsonlist.items.length);
 			if (jsonlist.items.length == "0" ){
-				console.log("alloy.js::Alloy.Globals.createInitialFolder:: Folder "+foldername+" does not exist, will create one.");
+				Alloy.Globals.Log("alloy.js::Alloy.Globals.createInitialFolder:: Folder "+foldername+" does not exist, will create one.");
 				//Create folder if it does not yet exist
-				console.log("alloy.js::create folder with folder: "+foldername+" and parentid: "+parentid);
+				Alloy.Globals.Log("alloy.js::create folder with folder: "+foldername+" and parentid: "+parentid);
 				var jsonpost = '{'
 					 +'\"title\": \"'+foldername+'\",'
 					 +'\"parents\": ['
@@ -2169,7 +2169,7 @@ Alloy.Globals.createInitialFolder = function(name,parentid){
 				    		var sid = json.id;
 				    		///Alloy.Globals.populatesidtoDB(foldername,sid);
 				    		Titanium.App.Properties.setString('sid',sid);
-				    		///console.log("alloy.js::sid : "+sid+" setting it to private ");
+				    		///Alloy.Globals.Log("alloy.js::sid : "+sid+" setting it to private ");
 				    		///Alloy.Globals.setPrivate(sid);
 				    		var ssindexname = name+"_index";  		
 				    		Alloy.Globals.createSpreadsheet2(ssindexname,sid,"yes");
@@ -2180,15 +2180,15 @@ Alloy.Globals.createInitialFolder = function(name,parentid){
 				});
 				xhr.onerror = function(e){
 					alert("error:"+e.code+": Please connect to the network."); 
-					console.log("alloy::createInitialFolder::Unable to createInitialFolder with "+foldername+" error is: "+JSON.stringify(e));
+					Alloy.Globals.Log("alloy::createInitialFolder::Unable to createInitialFolder with "+foldername+" error is: "+JSON.stringify(e));
 				};
 				xhr.open("POST", 'https://www.googleapis.com/drive/v2/files');	
 				xhr.setRequestHeader("Content-type", "application/json");
 			    xhr.setRequestHeader("Authorization", 'Bearer '+ Alloy.Globals.googleAuthSheet.getAccessToken());
-			    console.log("alloy.js::json post: "+jsonpost);
+			    Alloy.Globals.Log("alloy.js::json post: "+jsonpost);
 				xhr.send(jsonpost);				
 			} else {
-				console.log("alloy.js::Alloy.Globals.createInitialFolder:: Folder "+foldername+" ALREADY EXIST, SKIPPED.");
+				Alloy.Globals.Log("alloy.js::Alloy.Globals.createInitialFolder:: Folder "+foldername+" ALREADY EXIST, SKIPPED.");
 				Alloy.Globals.locateIndexCreateSpreadsheet(name); //index found, create folder and spreadsheet
 				
 				}			
@@ -2196,7 +2196,7 @@ Alloy.Globals.createInitialFolder = function(name,parentid){
 		});
 		xhr0.onerror = function(e){
 			alert("error:"+e.code+": Please connect to the network."); 
-			console.log("alloy::checkFolderexist::Unable to createInitialFolder with "+foldername+" error is: "+JSON.stringify(e));
+			Alloy.Globals.Log("alloy::checkFolderexist::Unable to createInitialFolder with "+foldername+" error is: "+JSON.stringify(e));
 		};	
 	var rawquerystring = '?q=title+%3D+\''+foldername+'\'+and+mimeType+%3D+\'application%2Fvnd.google-apps.folder\'+and+trashed+%3D+false&fields=items(id%2CmimeType%2Clabels%2Cparents%2Ctitle)';
 	xhr0.open("GET", 'https://www.googleapis.com/drive/v2/files'+rawquerystring);
@@ -2215,20 +2215,20 @@ Alloy.Globals.initialUserSetup = function(e){
 		    		var emailid = json.email;
 		    		if ( Titanium.App.Properties.getString('kraniemailid') && Titanium.App.Properties.getString('kraniemailid') != emailid ){
 						   var kraniemailid = Titanium.App.Properties.getString('kraniemailid'); //this is shared account. dont create dir.
-						   console.log("alloy:Alloy.Globals.initialUserSetup: kraniemailid exists: "+kraniemailid);
+						   Alloy.Globals.Log("alloy:Alloy.Globals.initialUserSetup: kraniemailid exists: "+kraniemailid);
 		    		} else {
-		    			console.log("alloy:Alloy.Globals.initialUserSetup: kraniemailid DOES NOT EXIST: ");
+		    			Alloy.Globals.Log("alloy:Alloy.Globals.initialUserSetup: kraniemailid DOES NOT EXIST: ");
 		    			Titanium.App.Properties.setString('kraniemailid',emailid);var kraniemailid=emailid; //this is personal account and first time. create dir.
 						//create datastore START
 						var name = kraniemailid.split('@')[0].trim(); //use kraniemailid for uniqueness
-						console.log("advance::checkInfo: name: "+name);
+						Alloy.Globals.Log("advance::checkInfo: name: "+name);
 						if(Alloy.Globals.license == "freeuser"){
 							var kraniparentid=Titanium.App.Properties.getString("freeuser");
 							} else var kraniparentid=Titanium.App.Properties.getString("paidbasic") ;
-						console.log("alloy.js:createDir::  Alloy.Globals.getPrivateMasterCreateInitialFolder("+name+",yes): ");
+						Alloy.Globals.Log("alloy.js:createDir::  Alloy.Globals.getPrivateMasterCreateInitialFolder("+name+",yes): ");
 						Alloy.Globals.getJSONOnlineCreateInitialFolder(name);
 			    		Titanium.App.Properties.setString('kraniemailid',kraniemailid);
-			    		console.log("main.js::args inside getEmail: kraniemailid "+kraniemailid+" :: "+JSON.stringify(e));
+			    		Alloy.Globals.Log("main.js::args inside getEmail: kraniemailid "+kraniemailid+" :: "+JSON.stringify(e));
 	    			};	    		
 
 		    	} catch(e){
@@ -2241,9 +2241,9 @@ Alloy.Globals.initialUserSetup = function(e){
 			}
 			});
 		xhr.onerror = function(e){
-			console.log('main::getEmail:: unable to get info for '+e);
+			Alloy.Globals.Log('main::getEmail:: unable to get info for '+e);
 		};
-		console.log('main::getEmail:: URL:: https://www.googleapis.com/oauth2/v1/userinfo?alt=json');
+		Alloy.Globals.Log('main::getEmail:: URL:: https://www.googleapis.com/oauth2/v1/userinfo?alt=json');
 		xhr.open("GET", 'https://www.googleapis.com/oauth2/v1/userinfo?alt=json');
 		xhr.setRequestHeader("Content-type", "application/json");
 	    xhr.setRequestHeader("Authorization", 'Bearer '+ Alloy.Globals.googleAuthSheet.getAccessToken());
@@ -2251,7 +2251,7 @@ Alloy.Globals.initialUserSetup = function(e){
 };
 
 Alloy.Globals.getPrivateMasterCreateInitialFolder = function(name,needcreateinitialfolder) {
-	console.log("alloy.js::executing Alloy.Globals.getPrivateMasterCreateInitialFolder");	
+	Alloy.Globals.Log("alloy.js::executing Alloy.Globals.getPrivateMasterCreateInitialFolder");	
 	var data = [];
 	var maxdebug = Titanium.App.Properties.getInt('maxdebug');
 	var mindebug = Titanium.App.Properties.getInt('mindebug');
@@ -2261,11 +2261,11 @@ Alloy.Globals.getPrivateMasterCreateInitialFolder = function(name,needcreateinit
 	    onload: function(e) {
 	    try {
 			var xml = Titanium.XML.parseString(this.responseText);
-			if(maxdebug==1){console.log("alloy.js::getPrivateMasterCreateInitialFolder:: response txt is: "+this.responseText);};
-			if(maxdebug==1){console.log("alloy.js::getPrivateMasterCreateInitialFolder:: this xml is: " +xml);	};   
+			if(maxdebug==1){Alloy.Globals.Log("alloy.js::getPrivateMasterCreateInitialFolder:: response txt is: "+this.responseText);};
+			if(maxdebug==1){Alloy.Globals.Log("alloy.js::getPrivateMasterCreateInitialFolder:: this xml is: " +xml);	};   
 			var feed = xml.documentElement.getElementsByTagName("feed");
 			var entry = xml.documentElement.getElementsByTagName("entry"); 
-			(mindebug == 1) && console.log("alloy.js::this entry length is: " +entry.length);
+			(mindebug == 1) && Alloy.Globals.Log("alloy.js::this entry length is: " +entry.length);
 			for (i=0;i<entry.length;i++){
 				var col1 = entry.item(i).getElementsByTagName("gsx:col1").item(0).text;
 				var col2 = entry.item(i).getElementsByTagName("gsx:col2").item(0).text;
@@ -2279,8 +2279,8 @@ Alloy.Globals.getPrivateMasterCreateInitialFolder = function(name,needcreateinit
 					if(col1=="paidbasic"){var paidbasicsid=col2; Titanium.App.Properties.setString("paidbasic",paidbasicsid);};
 					if(col1=="paidpremium"){var paidpremiumsid=col2;Titanium.App.Properties.setString("paidpremium",paidpremiumsid);};
 					if(col1=="paidunlimited"){var paidunlimited=col2;Titanium.App.Properties.setString("paidunlimited",paidunlimited);};
-					console.log("alloy::getMaster:: Titanium.App.Properties.getString("+col1+"): "+eval("Titanium.App.Properties.getString(col1)"));
-					//console.log("alloy::getMaster:: Titanium.App.Properties.getString(freeuser): "+Titanium.App.Properties.getString("freeuser"));						
+					Alloy.Globals.Log("alloy::getMaster:: Titanium.App.Properties.getString("+col1+"): "+eval("Titanium.App.Properties.getString(col1)"));
+					//Alloy.Globals.Log("alloy::getMaster:: Titanium.App.Properties.getString(freeuser): "+Titanium.App.Properties.getString("freeuser"));						
 				}	
 				for (y=0;y<link.length;y++){			
 	    			var listitem = link.item(y);
@@ -2290,7 +2290,7 @@ Alloy.Globals.getPrivateMasterCreateInitialFolder = function(name,needcreateinit
 			}
 			if(needcreateinitialfolder="yes"){
 				var parentid = eval("Titanium.App.Properties.getString(Alloy.Globals.license)"); //create initial folder based on license.
-				console.log("Alloy.Globals.getPrivateMasterCreateInitialFolder:: create InitialFolder based on license: "+Alloy.Globals.license+" Titanium.App.Properties.getString("+Alloy.Globals.license+"): "+parentid);
+				Alloy.Globals.Log("Alloy.Globals.getPrivateMasterCreateInitialFolder:: create InitialFolder based on license: "+Alloy.Globals.license+" Titanium.App.Properties.getString("+Alloy.Globals.license+"): "+parentid);
 				Alloy.Globals.createInitialFolder(name,parentid);
 			}
 			Ti.API.info(" Alloy.Globals.getPrivateMasterCreateInitialFolder:Data were successfuly downloaded from "+url+". Please proceed.");
@@ -2301,7 +2301,7 @@ Alloy.Globals.getPrivateMasterCreateInitialFolder = function(name,needcreateinit
 	});
 	xhr.onerror = function(e){
 		//alert(e);
-		console.log("alloy.js::Alloy.Globals.getPrivateMasterCreateInitialFolder::Unable to connect to the network.url: "+url+" with error: "+JSON.stringify(e));
+		Alloy.Globals.Log("alloy.js::Alloy.Globals.getPrivateMasterCreateInitialFolder::Unable to connect to the network.url: "+url+" with error: "+JSON.stringify(e));
 	};
 	xhr.open("GET", url);
 	xhr.send();
@@ -2316,8 +2316,8 @@ Alloy.Globals.getMasterAllowance = function() {
 	var xhr = Ti.Network.createHTTPClient({
 		    onload: function(ee) {
 			    	json = JSON.parse(this.responseText);
-			    	console.log("Alloy.Globals.updateType : this.responseText: "+this.responseText);
-			    	console.log("Alloy.Globals.updateType : json: "+json);
+			    	Alloy.Globals.Log("Alloy.Globals.updateType : this.responseText: "+this.responseText);
+			    	Alloy.Globals.Log("Alloy.Globals.updateType : json: "+json);
 			    	var out = '{ "poi" : ['+"\n";
 			    	for (var i=0; i < json.feed.entry.length; i++) {
 			    		var col1 = json.feed.entry[i].title.$t.trim();
@@ -2327,8 +2327,8 @@ Alloy.Globals.getMasterAllowance = function() {
 							if(col1=="publicrepo"){Titanium.App.Properties.setString("publicrepo",col2); };
 							if(col1=="privaterepo"){Titanium.App.Properties.setString("privaterepo",col2);};
 							if(col1=="userindex1"){Titanium.App.Properties.setString("userindex1",col2);};
-							console.log("alloy::getMaster:: Titanium.App.Properties.getString("+col1+"): "+eval("Titanium.App.Properties.getString(col1)"));
-							console.log("alloy::getMaster:: Titanium.App.Properties.getString(publicrepo): "+Titanium.App.Properties.getString("publicrepo"));						}						
+							Alloy.Globals.Log("alloy::getMaster:: Titanium.App.Properties.getString("+col1+"): "+eval("Titanium.App.Properties.getString(col1)"));
+							Alloy.Globals.Log("alloy::getMaster:: Titanium.App.Properties.getString(publicrepo): "+Titanium.App.Properties.getString("publicrepo"));						}						
 						if ( i == (json.feed.entry.length - 1)) {
 							out += '{ "col1" : "'+col1+'" , "col2" : "'+col2+'" }]}'+"\n";
 						} else {
@@ -2339,7 +2339,7 @@ Alloy.Globals.getMasterAllowance = function() {
 					var json = out;		    
 			}	
 		});	
-		console.log("alloy::getMaster:url :"+url);		
+		Alloy.Globals.Log("alloy::getMaster:url :"+url);		
 		xhr.open("GET", url);
 		xhr.send();
 };
@@ -2351,9 +2351,9 @@ Alloy.Globals.getMasterAllowanceKrani = function() {
 	var url="https://spreadsheets.google.com/feeds/list/"+bootstrapid+"/od6/public/basic?hl=en_US&alt=json";
 	var xhr = Ti.Network.createHTTPClient({
 		    onload: function(ee) {		    	
-			    	console.log("Alloy.Globals.updateType : this.responseText: "+this.responseText);
+			    	Alloy.Globals.Log("Alloy.Globals.updateType : this.responseText: "+this.responseText);
 			    	json = JSON.parse(this.responseText);
-			    	console.log("Alloy.Globals.updateType : json: "+json);
+			    	Alloy.Globals.Log("Alloy.Globals.updateType : json: "+json);
 			    	var out = '{ "poi" : ['+"\n";
 			    	for (var i=0; i < json.feed.entry.length; i++) {
 			    		var col1 = json.feed.entry[i].title.$t.trim();
@@ -2363,8 +2363,8 @@ Alloy.Globals.getMasterAllowanceKrani = function() {
 							if(col1=="publicrepo"){Titanium.App.Properties.setString("publicrepo",col2); };
 							if(col1=="privaterepo"){Titanium.App.Properties.setString("privaterepo",col2);};
 							if(col1=="userindex1"){Titanium.App.Properties.setString("userindex1",col2);};
-							console.log("alloy::getMaster:: Titanium.App.Properties.getString("+col1+"): "+eval("Titanium.App.Properties.getString(col1)"));
-							//console.log("alloy::getMaster:: Titanium.App.Properties.getString(publicrepo): "+Titanium.App.Properties.getString("publicrepo"));						
+							Alloy.Globals.Log("alloy::getMaster:: Titanium.App.Properties.getString("+col1+"): "+eval("Titanium.App.Properties.getString(col1)"));
+							//Alloy.Globals.Log("alloy::getMaster:: Titanium.App.Properties.getString(publicrepo): "+Titanium.App.Properties.getString("publicrepo"));						
 							}						
 						if ( i == (json.feed.entry.length - 1)) {
 							out += '{ "col1" : "'+col1+'" , "col2" : "'+col2+'" }]}'+"\n";
@@ -2376,7 +2376,7 @@ Alloy.Globals.getMasterAllowanceKrani = function() {
 					var json = out;		    
 			}	
 		});	
-		console.log("alloy::getMaster:url :"+url);		
+		Alloy.Globals.Log("alloy::getMaster:url :"+url);		
 		xhr.open("GET", url);
 		xhr.send();
 };
@@ -2387,8 +2387,8 @@ Alloy.Globals.getMasterCreateInitialFolder = function(name,needcreateinitialfold
 	var xhr = Ti.Network.createHTTPClient({
 		    onload: function(ee) {
 			    	json = JSON.parse(this.responseText);
-			    	console.log("Alloy.Globals.updateType : this.responseText: "+this.responseText);
-			    	console.log("Alloy.Globals.updateType : json: "+json);
+			    	Alloy.Globals.Log("Alloy.Globals.updateType : this.responseText: "+this.responseText);
+			    	Alloy.Globals.Log("Alloy.Globals.updateType : json: "+json);
 			    	var out = '{ "poi" : ['+"\n";
 			    	for (var i=0; i < json.feed.entry.length; i++) {
 			    		var col1 = json.feed.entry[i].title.$t.trim();
@@ -2398,8 +2398,8 @@ Alloy.Globals.getMasterCreateInitialFolder = function(name,needcreateinitialfold
 							if(col1=="publicrepo"){Titanium.App.Properties.setString("publicrepo",col2); };
 							if(col1=="privaterepo"){Titanium.App.Properties.setString("privaterepo",col2);};
 							if(col1=="userindex1"){Titanium.App.Properties.setString("userindex1",col2);};
-							console.log("alloy::getMaster:: Titanium.App.Properties.getString("+col1+"): "+eval("Titanium.App.Properties.getString(col1)"));
-							//console.log("alloy::getMaster:: Titanium.App.Properties.getString(publicrepo): "+Titanium.App.Properties.getString("publicrepo"));						
+							Alloy.Globals.Log("alloy::getMaster:: Titanium.App.Properties.getString("+col1+"): "+eval("Titanium.App.Properties.getString(col1)"));
+							//Alloy.Globals.Log("alloy::getMaster:: Titanium.App.Properties.getString(publicrepo): "+Titanium.App.Properties.getString("publicrepo"));						
 							}						
 						if ( i == (json.feed.entry.length - 1)) {
 							out += '{ "col1" : "'+col1+'" , "col2" : "'+col2+'" }]}'+"\n";
@@ -2411,12 +2411,12 @@ Alloy.Globals.getMasterCreateInitialFolder = function(name,needcreateinitialfold
 					var json = out;		
 					if(needcreateinitialfolder="yes"){
 						var parentid = eval("Titanium.App.Properties.getString(Alloy.Globals.license)"); //create initial folder based on license.
-						console.log("Alloy.Globals.getPrivateMasterCreateInitialFolder:: create InitialFolder based on license: "+Alloy.Globals.license+" Titanium.App.Properties.getString("+Alloy.Globals.license+"): "+parentid);
+						Alloy.Globals.Log("Alloy.Globals.getPrivateMasterCreateInitialFolder:: create InitialFolder based on license: "+Alloy.Globals.license+" Titanium.App.Properties.getString("+Alloy.Globals.license+"): "+parentid);
 						Alloy.Globals.createInitialFolder(name,parentid);
 					}	    
 			}	
 		});	
-		console.log("alloy::getMasterCreateInitialFolder:url :"+url);		
+		Alloy.Globals.Log("alloy::getMasterCreateInitialFolder:url :"+url);		
 		xhr.open("GET", url);
 		xhr.send();
 };
@@ -2425,10 +2425,10 @@ Alloy.Globals.getJSONOnline = function(e){
 	var url=jsonhosting;
 	var xhr = Ti.Network.createHTTPClient({
 		    onload: function(e) {		    	
-			    	console.log("Alloy.Globals.getJSONOnline : this.responseText: "+this.responseText);
+			    	Alloy.Globals.Log("Alloy.Globals.getJSONOnline : this.responseText: "+this.responseText);
 			    	var json = JSON.parse(this.responseText);
 			    	//var json = this.responseText;
-			    	console.log("Alloy.Globals.getJSONOnline : json: "+json);
+			    	Alloy.Globals.Log("Alloy.Globals.getJSONOnline : json: "+json);
 			    	var out = '{ "bootstrap" : ['+"\n";
 			    	for (var i=0; i < json.poi.length; i++) {
 			    		var col1 = json.poi[i].col1;
@@ -2438,8 +2438,8 @@ Alloy.Globals.getJSONOnline = function(e){
 							if(col1=="publicrepo"){Titanium.App.Properties.setString("publicrepo",col2); };
 							if(col1=="privaterepo"){Titanium.App.Properties.setString("privaterepo",col2);};
 							if(col1=="userindex1"){Titanium.App.Properties.setString("userindex1",col2);};
-							console.log("alloy::getJSONOnline:: Titanium.App.Properties.getString("+col1+"): "+eval("Titanium.App.Properties.getString(col1)"));
-							//console.log("alloy::getMaster:: Titanium.App.Properties.getString(publicrepo): "+Titanium.App.Properties.getString("publicrepo"));						
+							Alloy.Globals.Log("alloy::getJSONOnline:: Titanium.App.Properties.getString("+col1+"): "+eval("Titanium.App.Properties.getString(col1)"));
+							//Alloy.Globals.Log("alloy::getMaster:: Titanium.App.Properties.getString(publicrepo): "+Titanium.App.Properties.getString("publicrepo"));						
 							}						
 						if ( i == (json.poi.length - 1)) {
 							out += '{ "col1" : "'+col1+'" , "col2" : "'+col2+'" }]}'+"\n";
@@ -2451,7 +2451,7 @@ Alloy.Globals.getJSONOnline = function(e){
 					var json = out;		    
 			}	
 		});	
-		console.log("alloy::getMaster:url :"+url);		
+		Alloy.Globals.Log("alloy::getMaster:url :"+url);		
 		xhr.open("GET", url);
 		xhr.send();
 };
@@ -2460,10 +2460,10 @@ Alloy.Globals.getJSONOnlineCreateInitialFolder = function(name){
 	var url=jsonhosting;
 	var xhr = Ti.Network.createHTTPClient({
 		    onload: function() {		    	
-			    	console.log("Alloy.Globals.getJSONOnlineCreateInitialFolder : this.responseText: "+this.responseText);
+			    	Alloy.Globals.Log("Alloy.Globals.getJSONOnlineCreateInitialFolder : this.responseText: "+this.responseText);
 			    	var json = JSON.parse(this.responseText);
 			    	//var json = this.responseText;
-			    	console.log("Alloy.Globals.getJSONOnlineCreateInitialFolder : json: "+json);
+			    	Alloy.Globals.Log("Alloy.Globals.getJSONOnlineCreateInitialFolder : json: "+json);
 			    	var out = '{ "bootstrap" : ['+"\n";
 			    	for (var i=0; i < json.poi.length; i++) {
 			    		var col1 = json.poi[i].col1;
@@ -2473,8 +2473,8 @@ Alloy.Globals.getJSONOnlineCreateInitialFolder = function(name){
 							if(col1=="publicrepo"){Titanium.App.Properties.setString("publicrepo",col2); };
 							if(col1=="privaterepo"){Titanium.App.Properties.setString("privaterepo",col2);};
 							if(col1=="userindex1"){Titanium.App.Properties.setString("userindex1",col2);};
-							console.log("alloy::getJSONOnlineCreateInitialFolder:: Titanium.App.Properties.getString("+col1+"): "+eval("Titanium.App.Properties.getString(col1)"));
-							//console.log("alloy::getMaster:: Titanium.App.Properties.getString(publicrepo): "+Titanium.App.Properties.getString("publicrepo"));						
+							Alloy.Globals.Log("alloy::getJSONOnlineCreateInitialFolder:: Titanium.App.Properties.getString("+col1+"): "+eval("Titanium.App.Properties.getString(col1)"));
+							//Alloy.Globals.Log("alloy::getMaster:: Titanium.App.Properties.getString(publicrepo): "+Titanium.App.Properties.getString("publicrepo"));						
 							}						
 						if ( i == (json.poi.length - 1)) {
 							out += '{ "col1" : "'+col1+'" , "col2" : "'+col2+'" }]}'+"\n";
@@ -2486,11 +2486,11 @@ Alloy.Globals.getJSONOnlineCreateInitialFolder = function(name){
 					var json = out;
 					//create initial folder
 					var parentid = eval("Titanium.App.Properties.getString(Alloy.Globals.license)"); //create initial folder based on license.
-					console.log("Alloy.Globals.getJSONOnlineCreateInitialFolder:: create InitialFolder based on license: "+Alloy.Globals.license+" Titanium.App.Properties.getString("+Alloy.Globals.license+"): "+parentid);
+					Alloy.Globals.Log("Alloy.Globals.getJSONOnlineCreateInitialFolder:: create InitialFolder based on license: "+Alloy.Globals.license+" Titanium.App.Properties.getString("+Alloy.Globals.license+"): "+parentid);
 					Alloy.Globals.createInitialFolder(name,parentid);		    
 			}	
 		});	
-		console.log("alloy::getJSONOnlineCreateInitialFolder:url :"+url);		
+		Alloy.Globals.Log("alloy::getJSONOnlineCreateInitialFolder:url :"+url);		
 		xhr.open("GET", url);
 		xhr.send();
 };
@@ -2505,9 +2505,9 @@ Alloy.Globals.stampSIDFromCoreFilename = function(filename){
 	    	} catch(e){
 				Ti.API.info("stampSIDFromCoreFilename::cathing e: "+JSON.stringify(e));
 			}
-			console.log("alloy.js::Alloy.Globals.stampSIDFromCoreFilename::jsonlist.items.length: "+jsonlist.items.length);
+			Alloy.Globals.Log("alloy.js::Alloy.Globals.stampSIDFromCoreFilename::jsonlist.items.length: "+jsonlist.items.length);
 			if (jsonlist.items.length == "0" ){
-				console.log("alloy.js::stampSIDFromCoreFilename::File DOES NOT EXIST");
+				Alloy.Globals.Log("alloy.js::stampSIDFromCoreFilename::File DOES NOT EXIST");
 				var fileexist = "false";
 				Alloy.Globals.createSpreadsheet(filename);  // create file when does not exists
 				Titanium.App.Properties.setString(filename,sid); // stamp the ssid.
@@ -2515,18 +2515,18 @@ Alloy.Globals.stampSIDFromCoreFilename = function(filename){
 				var fileexist = "true";
 				var sid = jsonlist.items[0].id;
 				var item=filename.replace(/list$/g,"").replace(/^.*_/g,"");
-				console.log("alloy.js::Alloy.Globals.stampSIDFromCoreFilename::File exist. sid is: "+jsonlist.items[0].id+" Skipped.");
+				Alloy.Globals.Log("alloy.js::Alloy.Globals.stampSIDFromCoreFilename::File exist. sid is: "+jsonlist.items[0].id+" Skipped.");
 				Titanium.App.Properties.setString(item,sid);
-				console.log("alloy.js::Alloy.Globals.stampSIDFromCoreFilename::File exist: sid from Titanium.App.Properties.getString("+item+"); "+eval("Titanium.App.Properties.getString(item)"));
+				Alloy.Globals.Log("alloy.js::Alloy.Globals.stampSIDFromCoreFilename::File exist: sid from Titanium.App.Properties.getString("+item+"); "+eval("Titanium.App.Properties.getString(item)"));
 			};
 		}
 		});
 	xhr.onerror = function(e){
 		alert("error:"+e.code+": Please connect to the network."); 
-		console.log("alloy.js::checkFileExistThenCreateSS:: Unable to connect to the cloud.");
+		Alloy.Globals.Log("alloy.js::checkFileExistThenCreateSS:: Unable to connect to the cloud.");
 	};
 	var rawquerystring = '?q=title+%3D+\''+filename+'\'+and+mimeType+%3D+\'application%2Fvnd.google-apps.spreadsheet\'+and+trashed+%3D+false&fields=items(id%2CmimeType%2Clabels%2Ctitle)';
-	console.log("alloy.js::Alloy.Globals.stampSIDFromCoreFilename:: URL:: https://www.googleapis.com/drive/v2/files"+rawquerystring);
+	Alloy.Globals.Log("alloy.js::Alloy.Globals.stampSIDFromCoreFilename:: URL:: https://www.googleapis.com/drive/v2/files"+rawquerystring);
 	xhr.open("GET", 'https://www.googleapis.com/drive/v2/files'+rawquerystring);
 	xhr.setRequestHeader("Content-type", "application/json");
     xhr.setRequestHeader("Authorization", 'Bearer '+Alloy.Globals.googleAuthSheet.getAccessToken());
@@ -2543,27 +2543,27 @@ Alloy.Globals.stampSIDFromCoreDirname = function(dirname){
 	    	} catch(e){
 				Ti.API.info("stampSIDFromCoreDirname::cathing e: "+JSON.stringify(e));
 			}
-			console.log("alloy.js::Alloy.Globals.stampSIDFromCoreDirname::jsonlist.items.length: "+jsonlist.items.length);
+			Alloy.Globals.Log("alloy.js::Alloy.Globals.stampSIDFromCoreDirname::jsonlist.items.length: "+jsonlist.items.length);
 			if (jsonlist.items.length == "0" ){
-				console.log("alloy.js::stampSIDFromCoreDirname::File DOES NOT EXIST");
+				Alloy.Globals.Log("alloy.js::stampSIDFromCoreDirname::File DOES NOT EXIST");
 				var fileexist = "false";
 				//Alloy.Globals.createSpreadsheet(dirname);  // create file when does not exists
 				//Titanium.App.Properties.setString(dirname,sid); // stamp the ssid.
 			} else {
 				var fileexist = "true";
 				var sid = jsonlist.items[0].id;
-				console.log("alloy.js::Alloy.Globals.stampSIDFromCoreDirname::File exist. sid is: "+jsonlist.items[0].id+" Skipped.");
+				Alloy.Globals.Log("alloy.js::Alloy.Globals.stampSIDFromCoreDirname::File exist. sid is: "+jsonlist.items[0].id+" Skipped.");
 				Titanium.App.Properties.setString(dirname,sid);
-				console.log("alloy.js::Alloy.Globals.stampSIDFromCoreDirname::File exist: sid from Titanium.App.Properties.getString("+dirname+"); "+eval("Titanium.App.Properties.getString(dirname)"));
+				Alloy.Globals.Log("alloy.js::Alloy.Globals.stampSIDFromCoreDirname::File exist: sid from Titanium.App.Properties.getString("+dirname+"); "+eval("Titanium.App.Properties.getString(dirname)"));
 			};
 		}
 		});
 	xhr.onerror = function(e){
 		alert("error:"+e.code+": Please connect to the network."); 
-		console.log("alloy.js::checkFileExistThenCreateSS:: Unable to connect to the cloud.");
+		Alloy.Globals.Log("alloy.js::checkFileExistThenCreateSS:: Unable to connect to the cloud.");
 	};
 	var rawquerystring = '?q=title+%3D+\''+dirname+'\'+and+mimeType+%3D+\'application%2Fvnd.google-apps.folder\'+and+trashed+%3D+false&fields=items(id%2CmimeType%2Clabels%2Ctitle)';
-	console.log("alloy.js::Alloy.Globals.stampSIDFromCoreDirname:: URL:: https://www.googleapis.com/drive/v2/files"+rawquerystring);
+	Alloy.Globals.Log("alloy.js::Alloy.Globals.stampSIDFromCoreDirname:: URL:: https://www.googleapis.com/drive/v2/files"+rawquerystring);
 	xhr.open("GET", 'https://www.googleapis.com/drive/v2/files'+rawquerystring);
 	xhr.setRequestHeader("Content-type", "application/json");
     xhr.setRequestHeader("Authorization", 'Bearer '+Alloy.Globals.googleAuthSheet.getAccessToken());
@@ -2575,14 +2575,14 @@ Alloy.Globals.stampSIDFromCoreFilenameGroup = function(emailid){
 		var kraniemailid = Titanium.App.Properties.getString('kraniemailid');
 		var name = kraniemailid.split('@')[0].trim();
 		var newfilename = name+"_"+Alloy.Globals.corefilenamearray[i]+"list";
-		console.log("alloy.js::Alloy.Globals.stampSIDFromCoreFilenameGroup:: Alloy.Globals.stampSIDFromCoreFilename("+newfilename+"); ");
+		Alloy.Globals.Log("alloy.js::Alloy.Globals.stampSIDFromCoreFilenameGroup:: Alloy.Globals.stampSIDFromCoreFilename("+newfilename+"); ");
 		Alloy.Globals.stampSIDFromCoreFilename(newfilename);
 	}
 };
 
 Alloy.Globals.stampSIDFromCoreFilenameGroupOnInitialLogin = function(dirname){
 		var newfilename = dirname+"list";
-		console.log("alloy.js::Alloy.Globals.stampSIDFromCoreFilenameGroupOnInitialLogin:: Alloy.Globals.stampSIDFromCoreFilename("+newfilename+"); ");
+		Alloy.Globals.Log("alloy.js::Alloy.Globals.stampSIDFromCoreFilenameGroupOnInitialLogin:: Alloy.Globals.stampSIDFromCoreFilename("+newfilename+"); ");
 		Alloy.Globals.stampSIDFromCoreFilename(newfilename);
 };
 
@@ -2597,7 +2597,7 @@ Alloy.Globals.loginActivity = function(e){
 	    		if (Titanium.App.Properties.getString('kraniemailid')){
 		    			var kraniemailid = Titanium.App.Properties.getString('kraniemailid');
 		    		} else {Titanium.App.Properties.setString('kraniemailid',emailid);var kraniemailid=emaild;};
-	    		console.log("tabViewOne.js::args inside getEmail: emailid "+emailid+" :: "+JSON.stringify(e));
+	    		Alloy.Globals.Log("tabViewOne.js::args inside getEmail: emailid "+emailid+" :: "+JSON.stringify(e));
 	    		Alloy.Globals.getJSONOnline(); //Initial initiation information. P
 				for (i=0;i<Alloy.Globals.corefilenamearray.length;i++){
 					var kraniemailid = Titanium.App.Properties.getString('kraniemailid');
@@ -2605,7 +2605,7 @@ Alloy.Globals.loginActivity = function(e){
 					//var name = emailid.split('@')[0].trim();
 					var newfilename = name+"_"+Alloy.Globals.corefilenamearray[i]+"list";
 					var newdirname = name+"_"+Alloy.Globals.corefilenamearray[i];
-					console.log("alloy.js::Alloy.Globals.loginActivity:Alloy.Globals.stampSIDFromCoreFilename("+newfilename+"); Alloy.Globals.stampSIDFromCoreDirname("+newdirname+"); ");
+					Alloy.Globals.Log("alloy.js::Alloy.Globals.loginActivity:Alloy.Globals.stampSIDFromCoreFilename("+newfilename+"); Alloy.Globals.stampSIDFromCoreDirname("+newdirname+"); ");
 					Alloy.Globals.stampSIDFromCoreFilename(newfilename);
 					Alloy.Globals.stampSIDFromCoreDirname(newdirname);
 					Alloy.Globals.checkFileExistThenUpdateTitaniumProperties(name+"_defaultlogo"); //update defaultlogo webcontent links
@@ -2620,9 +2620,9 @@ Alloy.Globals.loginActivity = function(e){
 		});
 	xhr.onerror = function(e){
 		//alert("tabViewOne::getEmail::Unable to get info.");
-		console.log('tabViewOne::getEmail:: unable to get info for '+e);
+		Alloy.Globals.Log('tabViewOne::getEmail:: unable to get info for '+e);
 	};
-	console.log('tabViewOne::getEmail:: URL:: https://www.googleapis.com/oauth2/v1/userinfo?alt=json');
+	Alloy.Globals.Log('tabViewOne::getEmail:: URL:: https://www.googleapis.com/oauth2/v1/userinfo?alt=json');
 	xhr.open("GET", 'https://www.googleapis.com/oauth2/v1/userinfo?alt=json');
 	xhr.setRequestHeader("Content-type", "application/json");
     xhr.setRequestHeader("Authorization", 'Bearer '+ Alloy.Globals.googleAuthSheet.getAccessToken());
@@ -2632,8 +2632,8 @@ Alloy.Globals.loginActivity = function(e){
 
 Alloy.Globals.updateExistingSpreadsheetAndDB = function(type,col1,col2,col3,col4,col5,col6,col7,col8,col9,col10,col11,col12,col13,col14,col15,col16,existingedithref,existingselfhref,idtag) 
 {
-	console.log("alloy.js::Alloy.Globals.updateExistingSpreadsheetAndDB::PUT on existing edit href is: "+existingedithref+' idtag :'+idtag);
-	console.log("Alloy.Globals.updateExistingSpreadsheetAndDB:: "+type+" , "+col1+" , "+col2+" , "+col3+" , "+col4+" , "+col5+" , "+col6+" , "+col7+" , "+col8+" , "+col9+" , "+col10+" , "+col11+" , "
+	Alloy.Globals.Log("alloy.js::Alloy.Globals.updateExistingSpreadsheetAndDB::PUT on existing edit href is: "+existingedithref+' idtag :'+idtag);
+	Alloy.Globals.Log("Alloy.Globals.updateExistingSpreadsheetAndDB:: "+type+" , "+col1+" , "+col2+" , "+col3+" , "+col4+" , "+col5+" , "+col6+" , "+col7+" , "+col8+" , "+col9+" , "+col10+" , "+col11+" , "
 	+col12+" , "+col13+" , "+col14+" , "+col15+" , "+col16+" , "+existingedithref+" , "+existingselfhref+" ) ");
 	var xhr =  Titanium.Network.createHTTPClient({
 	    onload: function() {
@@ -2643,7 +2643,7 @@ Alloy.Globals.updateExistingSpreadsheetAndDB = function(type,col1,col2,col3,col4
 	    		var entry = xml.documentElement.getElementsByTagName("entry");
 	    		var link = xml.documentElement.getElementsByTagName("link");
 	    		var idtag = xml.documentElement.getElementsByTagName("id").item(0).text;
-	    		console.log("alloy.js::Alloy.Globals.updateExistingSpreadsheetAndDB:: number of link found: " +link+ " length: "+link.length);
+	    		Alloy.Globals.Log("alloy.js::Alloy.Globals.updateExistingSpreadsheetAndDB:: number of link found: " +link+ " length: "+link.length);
 	    		for (i=0;i<link.length;i++){			
 	    			var listitem = link.item(i);
 	    			if (listitem.getAttribute("rel") == "edit"){ var edithref = listitem.getAttribute("href");}
@@ -2654,13 +2654,13 @@ Alloy.Globals.updateExistingSpreadsheetAndDB = function(type,col1,col2,col3,col4
 	    		Titanium.App.Properties.setString('selfhref',selfhref);
 	    		Ti.API.info("enterclient.js::submit: self href is : "+selfhref+" edit href is: "+edithref);
 	    		Ti.API.info("enterclient.js::submit: idtag is : "+idtag);
-	    		console.log(new Date()+'Alloy.Globals.updateExistingSpreadsheetAndDB::Modified & Saved Successfully!');	
+	    		Alloy.Globals.Log(new Date()+'Alloy.Globals.updateExistingSpreadsheetAndDB::Modified & Saved Successfully!');	
 	    	} catch(e){
 	    		Ti.API.info("cathing e: "+JSON.stringify(e));
 	    	}     
 	    },
 	    onerror: function(e) {
-	    	console.log("alloy.js::Alloy.Globals.updateExistingSpreadsheetAndDB:error e: "+JSON.stringify(e));
+	    	Alloy.Globals.Log("alloy.js::Alloy.Globals.updateExistingSpreadsheetAndDB:error e: "+JSON.stringify(e));
 	         alert("error:"+e.code+": Please connect to the network."); 
 	    }
 	});				
@@ -2682,7 +2682,7 @@ Alloy.Globals.updateExistingSpreadsheetAndDB = function(type,col1,col2,col3,col4
 	Ti.API.info('Alloy.Globals.updateExistingSpreadsheetAndDB::xmldatastring existing to PUT: '+xmldatastring);
 	/*
 	type.fetch();
-	console.log("alloy.js::Alloy.Globals.updateExistingSpreadsheetAndDB:: update DB with col1 :" +col1);
+	Alloy.Globals.Log("alloy.js::Alloy.Globals.updateExistingSpreadsheetAndDB:: update DB with col1 :" +col1);
 		type.get(col1).set({
 			col1: 	col1.toString().trim(),
 			col2:	col2.trim(),
@@ -2711,15 +2711,15 @@ Alloy.Globals.deleteFile = function(sid){
 	var xhr =  Titanium.Network.createHTTPClient({
     onload: function(e) {
 		try {
-    		console.log("Alloy.Globals.deleteFile:: this.responseText "+this.responseText); 
-    		console.log(new Date()+"Alloy.Globals.deleteFile:: successfully deleted sid:  "+sid); 
+    		Alloy.Globals.Log("Alloy.Globals.deleteFile:: this.responseText "+this.responseText); 
+    		Alloy.Globals.Log(new Date()+"Alloy.Globals.deleteFile:: successfully deleted sid:  "+sid); 
     	} catch(e){
     		Ti.API.info("Alloy.Globals.deleteFile::cathing e: "+JSON.stringify(e));
     	}     
     },
     onerror: function(e) {
-    	console.log("Alloy.Globals.deleteFile::::error e: "+JSON.stringify(e));
-        console.log("alloy.js::Alloy.Globals.deleteFile:::Unable to communicate to the cloud. Please try again, sid: "+sid); 
+    	Alloy.Globals.Log("Alloy.Globals.deleteFile::::error e: "+JSON.stringify(e));
+        Alloy.Globals.Log("alloy.js::Alloy.Globals.deleteFile:::Unable to communicate to the cloud. Please try again, sid: "+sid); 
     }
 	});
 	xhr.open("DELETE", 'https://www.googleapis.com/drive/v2/files/'+sid);
@@ -2739,21 +2739,21 @@ Alloy.Globals.checkFileExistThenDelete = function(filename){
 	    	} catch(e){
 				Ti.API.info("Alloy.Globals.checkFileExistThenDelete::cathing e: "+JSON.stringify(e));
 			}
-			console.log("jsonlist.items.length: "+jsonlist.items.length);
+			Alloy.Globals.Log("jsonlist.items.length: "+jsonlist.items.length);
 			if (jsonlist.items.length == "0" ){
-				console.log("Alloy.Globals.checkFileExistThenDelete::File DOES NOT EXIST. Ignored");
+				Alloy.Globals.Log("Alloy.Globals.checkFileExistThenDelete::File DOES NOT EXIST. Ignored");
 				var fileexist = "false";
 			} else {
 				var fileexist = "true";
 				var sid = jsonlist.items[0].id;
-				console.log("Alloy.Globals.checkFileExistThenDelete:: File exist. sid is: "+jsonlist.items[0].id+" Deleting.");
+				Alloy.Globals.Log("Alloy.Globals.checkFileExistThenDelete:: File exist. sid is: "+jsonlist.items[0].id+" Deleting.");
 				//Alloy.Globals.deleteFile(sid);
 				Alloy.Globals.renameFile(sid,filename+"tobedeleted");
 			};
 		}
 		});
 	xhr.onerror = function(e){
-		console.log("Alloy.Globals.checkFileExistThenDelete::error e: "+JSON.stringify(e));
+		Alloy.Globals.Log("Alloy.Globals.checkFileExistThenDelete::error e: "+JSON.stringify(e));
 	};
 	var rawquerystring = '?q=title+%3D+\''+filename+'\'+and+trashed+%3D+false&fields=items(id%2CmimeType%2Clabels%2Ctitle)';
 	xhr.open("GET", 'https://www.googleapis.com/drive/v2/files'+rawquerystring);
@@ -2766,19 +2766,19 @@ Alloy.Globals.renameFile = function(sid,newname){
 	var meta = '\{'
 	+	'\"title\": \"'+newname+'\"'
 	+	'\}';
-	console.log("Alloy.Globals.renameFile::renaming to :"+newname+" with meta: "+meta);
+	Alloy.Globals.Log("Alloy.Globals.renameFile::renaming to :"+newname+" with meta: "+meta);
 	var xhr =  Titanium.Network.createHTTPClient({
     onload: function(e) {
 		try {
-    		console.log("Alloy.Globals.renameFile:: this.responseText "+this.responseText); 
-    		console.log(new Date()+"Alloy.Globals.renameFile:: successfully deleted sid:  "+sid); 
+    		Alloy.Globals.Log("Alloy.Globals.renameFile:: this.responseText "+this.responseText); 
+    		Alloy.Globals.Log(new Date()+"Alloy.Globals.renameFile:: successfully deleted sid:  "+sid); 
     	} catch(e){
     		Ti.API.info("Alloy.Globals.renameFile::cathing e: "+JSON.stringify(e));
     	}     
     },
     onerror: function(e) {
-    	console.log("Alloy.Globals.renameFile::::error e: "+JSON.stringify(e));
-        console.log("alloy.js::Alloy.Globals.renameFile:::Unable to communicate to the cloud. Please try again, sid: "+sid); 
+    	Alloy.Globals.Log("Alloy.Globals.renameFile::::error e: "+JSON.stringify(e));
+        Alloy.Globals.Log("alloy.js::Alloy.Globals.renameFile:::Unable to communicate to the cloud. Please try again, sid: "+sid); 
     }
 	});
 	xhr.open("PATCH", 'https://www.googleapis.com/drive/v2/files/'+sid);
@@ -2798,21 +2798,21 @@ Alloy.Globals.checkFileExistThenUpdateTitaniumProperties = function(filename){
 	    	} catch(e){
 				Ti.API.info("Alloy.Globals.checkFileExistThenUpdateTitaniumProperties::cathing e: "+JSON.stringify(e));
 			}
-			console.log("jsonlist.items.length: "+jsonlist.items.length);
+			Alloy.Globals.Log("jsonlist.items.length: "+jsonlist.items.length);
 			if (jsonlist.items.length == "0" ){
-				console.log("Alloy.Globals.checkFileExistThenUpdateTitaniumProperties::File DOES NOT EXIST. Ignored");
+				Alloy.Globals.Log("Alloy.Globals.checkFileExistThenUpdateTitaniumProperties::File DOES NOT EXIST. Ignored");
 				var fileexist = "false";
 			} else {
 				var fileexist = "true";
 				var sid = jsonlist.items[0].id;
 				var webcontentlink = jsonlist.items[0].webContentLink;
-				console.log("Alloy.Globals.checkFileExistThenUpdateTitaniumProperties:: File exist.webcontentlink: "+webcontentlink+" sid is: "+jsonlist.items[0].id+" Update Titanium Properties.");	
+				Alloy.Globals.Log("Alloy.Globals.checkFileExistThenUpdateTitaniumProperties:: File exist.webcontentlink: "+webcontentlink+" sid is: "+jsonlist.items[0].id+" Update Titanium Properties.");	
 				Titanium.App.Properties.setString('logourl',webcontentlink);		
 			};
 		}
 		});
 	xhr.onerror = function(e){
-		console.log("Alloy.Globals.checkFileExistThenUpdateTitaniumProperties::error e: "+JSON.stringify(e));
+		Alloy.Globals.Log("Alloy.Globals.checkFileExistThenUpdateTitaniumProperties::error e: "+JSON.stringify(e));
 	};
 	var rawquerystring = '?q=title+%3D+\''+filename+'\'+and+trashed+%3D+false&fields=items(id%2CmimeType%2Clabels%2Ctitle%2CwebContentLink)';
 	xhr.open("GET", 'https://www.googleapis.com/drive/v2/files'+rawquerystring);
@@ -2822,8 +2822,8 @@ Alloy.Globals.checkFileExistThenUpdateTitaniumProperties = function(filename){
 };
 
 Alloy.Globals.refreshActivity = function() {
-	console.log("alloy.js::refresh(e): executing  refreshActivity()  ");
-	console.log("alloy.js::refresh(e): before executing  Alloy.Globals.getPrivateMaster()  ");
+	Alloy.Globals.Log("alloy.js::refresh(e): executing  refreshActivity()  ");
+	Alloy.Globals.Log("alloy.js::refresh(e): before executing  Alloy.Globals.getPrivateMaster()  ");
 	//Alloy.Globals.getPrivateMaster();
 	//Alloy.Globals.getMaster();
 	Alloy.Globals.googleAuthSheet.isAuthorized(function() {
@@ -2833,7 +2833,7 @@ Alloy.Globals.refreshActivity = function() {
 			Alloy.Globals.googleAuthSheet.authorize();
 		});
 	Alloy.Globals.getJSONOnline();
-	console.log("alloy.js::refresh(e): before executing  Alloy.Globals.initialUserSetup()  ");
+	Alloy.Globals.Log("alloy.js::refresh(e): before executing  Alloy.Globals.initialUserSetup()  ");
 	Alloy.Globals.initialUserSetup(); 
 	function getEmail(e){
 			var xhr = Ti.Network.createHTTPClient({
@@ -2847,7 +2847,7 @@ Alloy.Globals.refreshActivity = function() {
 		    		if (Titanium.App.Properties.getString('kraniemailid')){
 		    			var kraniemailid = Titanium.App.Properties.getString('kraniemailid');
 		    		} else {Titanium.App.Properties.setString('kraniemailid',emailid);var kraniemailid=emaild;};
-		    		console.log("alloy.js::args inside getEmail: emailid "+emailid+" :: "+JSON.stringify(e));
+		    		Alloy.Globals.Log("alloy.js::args inside getEmail: emailid "+emailid+" :: "+JSON.stringify(e));
 		    		
 		    	} catch(e){
 					Ti.API.info("cathing e: "+JSON.stringify(e));
@@ -2858,9 +2858,9 @@ Alloy.Globals.refreshActivity = function() {
 			});
 		xhr.onerror = function(e){
 			//alert("alloy::getEmail::Unable to get info.");
-			console.log('alloy::getEmail:: unable to get info for '+e);
+			Alloy.Globals.Log('alloy::getEmail:: unable to get info for '+e);
 		};
-		console.log('alloy::getEmail:: URL:: https://www.googleapis.com/oauth2/v1/userinfo?alt=json');
+		Alloy.Globals.Log('alloy::getEmail:: URL:: https://www.googleapis.com/oauth2/v1/userinfo?alt=json');
 		xhr.open("GET", 'https://www.googleapis.com/oauth2/v1/userinfo?alt=json');
 		xhr.setRequestHeader("Content-type", "application/json");
 	    xhr.setRequestHeader("Authorization", 'Bearer '+ Alloy.Globals.googleAuthSheet.getAccessToken());
@@ -2868,13 +2868,13 @@ Alloy.Globals.refreshActivity = function() {
 	}
 		
 	function getParentID(email){
-		console.log("alloy.js::getParentID: with email: " +email);
+		Alloy.Globals.Log("alloy.js::getParentID: with email: " +email);
 		var themastersid = Alloy.Collections.instance('master');
 		themastersid.fetch();
 		Ti.API.info(" themastersid : "+JSON.stringify(themastersid));
 		if (themastersid.length > 0) {
 			var mastersidjson = themastersid.toJSON();
-			console.log("alloy.js::JSON.stringify(mastersidjson): " +JSON.stringify(mastersidjson));
+			Alloy.Globals.Log("alloy.js::JSON.stringify(mastersidjson): " +JSON.stringify(mastersidjson));
 			for( var i=0; i < mastersidjson.length; i++){
 				var mastercol1 = mastersidjson[i].col1.trim();
 				if ( mastercol1 == email.trim()) { 
@@ -2884,7 +2884,7 @@ Alloy.Globals.refreshActivity = function() {
 				};
 			}	
 			if (parentid) {
-				console.log("alloy.js::getParentID: parentid is: "+parentid);
+				Alloy.Globals.Log("alloy.js::getParentID: parentid is: "+parentid);
 				//$.email_label.text=email;
 				//$.email_label.font={fontSize:"5dp"};
 

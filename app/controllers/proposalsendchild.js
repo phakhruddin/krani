@@ -25,7 +25,7 @@ function emailpdf(){
      var newurl = Ti.Filesystem.getFile(url);
      emailDialog.addAttachment(newurl);
      emailDialog.open();  
-     console.log("opening viewpdf(url) on "+url);
+     Alloy.Globals.Log("opening viewpdf(url) on "+url);
      viewpdf(url);
  });  
    

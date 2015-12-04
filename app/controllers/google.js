@@ -214,8 +214,8 @@ $.checkuniqueid.addEventListener('click', function() {
 function AdHocTest(e){
 	var joblog = Alloy.Collections.instance('joblog');
 	joblog.fetch();
-	console.log("google.js::JSON stringify joblog.length: "+joblog.length);
-	console.log("google.js::JSON stringify joblog: "+JSON.stringify(joblog));
+	Alloy.Globals.Log("google.js::JSON stringify joblog.length: "+joblog.length);
+	Alloy.Globals.Log("google.js::JSON stringify joblog: "+JSON.stringify(joblog));
 }
 
 function checkSid(e){
@@ -226,12 +226,12 @@ function getIndex() {
 	var emailid = Titanium.App.Properties.getString('emailid');
 	var kraniemailid = Titanium.App.Properties.getString('kraniemailid');
 	var name = kraniemailid.split('@')[0].trim();
-	console.log("google.js:: executing Alloy.Globals.getPrivateIndex(name) with: "+name);
+	Alloy.Globals.Log("google.js:: executing Alloy.Globals.getPrivateIndex(name) with: "+name);
 	Alloy.Globals.getPrivateIndex(name);
 }
 
 function thisOne(){
-	console.log("google,js:: callback of googleAuthorize of Alloy.Globals.googleAuthSheet.getAccessToken() is : "+Alloy.Globals.googleAuthSheet.getAccessToken());
+	Alloy.Globals.Log("google,js:: callback of googleAuthorize of Alloy.Globals.googleAuthSheet.getAccessToken() is : "+Alloy.Globals.googleAuthSheet.getAccessToken());
 }
 
 function AuthFirstThenExeThisOne(thisOne){
@@ -247,7 +247,7 @@ function AuthFirstThenExeThisOne(thisOne){
 //function authorizeCallback() {AuthFirstThenExeThisOne(thisOne);};
 
 function theExe() {
-	console.log("google,js:: callback of googleAuthorize of Alloy.Globals.googleAuthSheet.getAccessToken() is : "+Alloy.Globals.googleAuthSheet.getAccessToken());
+	Alloy.Globals.Log("google,js:: callback of googleAuthorize of Alloy.Globals.googleAuthSheet.getAccessToken() is : "+Alloy.Globals.googleAuthSheet.getAccessToken());
 }
 
 function reAuthorizeThenExe(theExe){	
@@ -258,7 +258,7 @@ function reAuthorizeThenExe(theExe){
 
 function authorizeCallback() {
 	function theExe() {
-		console.log("google,js:: callback of googleAuthorize of Alloy.Globals.googleAuthSheet.getAccessToken() is : "+Alloy.Globals.googleAuthSheet.getAccessToken());
+		Alloy.Globals.Log("google,js:: callback of googleAuthorize of Alloy.Globals.googleAuthSheet.getAccessToken() is : "+Alloy.Globals.googleAuthSheet.getAccessToken());
 	}
 	Alloy.Globals.googleAuthSheet.isAuthorized(function() {
 		Ti.API.info('authorizeCallback::Access Token: ' + Alloy.Globals.googleAuthSheet.getAccessToken());
@@ -285,25 +285,25 @@ function testLoopAuthorize(){
 	
 	function dosettimeout (i,timeoutms) {
 		setTimeout(function(){
-			console.log((new Date())+"testLoopAuthorize::loop no: "+i+" after "+timeoutms*i+" secs");		
+			Alloy.Globals.Log((new Date())+"testLoopAuthorize::loop no: "+i+" after "+timeoutms*i+" secs");		
 		},timeoutms*i);
 	}
 
 	
 	for (i=0;i<count;i++){
-		console.log((new Date())+"testLoopAuthorize::i is: "+i);
+		Alloy.Globals.Log((new Date())+"testLoopAuthorize::i is: "+i);
 		if(Alloy.Globals.googleAuthSheet.getAccessToken()){ 
-			console.log((new Date())+"testLoopAuthorize::break it after "+i+" times w/token: "+ Alloy.Globals.googleAuthSheet.getAccessToken());
+			Alloy.Globals.Log((new Date())+"testLoopAuthorize::break it after "+i+" times w/token: "+ Alloy.Globals.googleAuthSheet.getAccessToken());
 		} else {
-			console.log((new Date())+"testLoopAuthorize::dosettimeout("+i+","+timeoutms+" w/token: "+ Alloy.Globals.googleAuthSheet.getAccessToken());
+			Alloy.Globals.Log((new Date())+"testLoopAuthorize::dosettimeout("+i+","+timeoutms+" w/token: "+ Alloy.Globals.googleAuthSheet.getAccessToken());
 			dosettimeout(i,timeoutms);
 		}	
 	}
-	console.log((new Date())+"testLoopAuthorize:: finally! can execute task after "+i+" iterations");
+	Alloy.Globals.Log((new Date())+"testLoopAuthorize:: finally! can execute task after "+i+" iterations");
 }
 
 function getMaster(){
-		console.log("google.js::refresh(e): before executing  Alloy.Globals.getPrivateMaster()  ");
+		Alloy.Globals.Log("google.js::refresh(e): before executing  Alloy.Globals.getPrivateMaster()  ");
 		Alloy.Globals.getPrivateMaster();
 		//Alloy.Globals.getMaster();
 }
@@ -321,7 +321,7 @@ function getMasterNew(){
 function findSIDFromFilename(){
 	for (i=0;i<Alloy.Globals.corefilenamearray.length;i++){
 		var filename=Alloy.Globals.corefilenamearray[i];
-		console.log("google.js:: Alloy.Globals.checkFileExistThenCreateSS("+filename+"); ");
+		Alloy.Globals.Log("google.js:: Alloy.Globals.checkFileExistThenCreateSS("+filename+"); ");
 		Alloy.Globals.checkFileExistThenCreateSS(filename);
 	}
 	//Alloy.Globals.checkFileExistThenCreateSS("binikucomel_schedulelist");
@@ -338,15 +338,15 @@ $.renameFileNewName_tf.addEventListener("onBlur",function(e){
 	var newnametorename = e.value;
 });
 function renameFile(e) {
-	console.log("google.js:: starting deletion ");
+	Alloy.Globals.Log("google.js:: starting deletion ");
 	$.renameFileSID_tf.blur();
 	var sidtorename = $.renameFileSID_tf.value;
 	$.renameFileNewName_tf.blur();
 	var newnametorename = $.renameFileNewName_tf.value;
 	
-	console.log("google.js:: starting deletion " +sidtorename);
+	Alloy.Globals.Log("google.js:: starting deletion " +sidtorename);
 	if (sidtorename && newnametorename) {
-		console.log("google.js::deleting sid: "+sidtorename);
+		Alloy.Globals.Log("google.js::deleting sid: "+sidtorename);
 		Alloy.Globals.renameFile(sidtorename,newnametorename);
 	} else alert("Please enter SID to be renamed");
 }

@@ -6,5 +6,5 @@ exports.openMainWindow = function(_tab) {
 };
 
 function closeWin(e) {
-	console.log("e is: "+JSON.stringify(e));
+	Alloy.Globals.Log("e is: "+JSON.stringify(e));
 }

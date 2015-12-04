@@ -21,7 +21,7 @@ if (args) {
 	if (theclient.length > 0 ){
 		for (j=0;j<theclient.length;j++){
 			   var theclientjson = theclient[j].toJSON(); // EXTRACT ONE ROW. IF MANY. FOR LOOP.
-    		   console.log("enterclient.js::theclientjson.col1 :"+theclientjson.col1+" col2: "+theclientjson.col2);
+    		   Alloy.Globals.Log("enterclient.js::theclientjson.col1 :"+theclientjson.col1+" col2: "+theclientjson.col2);
 		}
 	}
  
@@ -32,18 +32,18 @@ if (args) {
     Ti.App.Properties.removeProperty('idtag'); //clear ref to previous spreadsheet
     Ti.App.Properties.removeProperty('selfhref'); //clear ref to previous spreadsheet
     
-console.log("clientdetail.js:: JSON.stringify(args) :"+JSON.stringify(args));
+Alloy.Globals.Log("clientdetail.js:: JSON.stringify(args) :"+JSON.stringify(args));
 var edithref = args.edithref;
 var selfhref = args.selfhref;
 var idtag = args.idtag;
-console.log("clientdetail.js:: existing edithref: " +edithref);
+Alloy.Globals.Log("clientdetail.js:: existing edithref: " +edithref);
 (edithref)?Titanium.App.Properties.setString('edithref',edithref):Ti.App.Properties.removeProperty('edithref');
 (selfhref)?Titanium.App.Properties.setString('selfhref',selfhref):Ti.App.Properties.removeProperty('selfhref');
 (idtag)?Titanium.App.Properties.setString('idtag',idtag):Ti.App.Properties.removeProperty('idtag');
-console.log("clientdetail.js:: existing Titanium.App.Properties.getString('edithref'): " +Titanium.App.Properties.getString('edithref'));
+Alloy.Globals.Log("clientdetail.js:: existing Titanium.App.Properties.getString('edithref'): " +Titanium.App.Properties.getString('edithref'));
 
 function addRows(){
- console.log("JSON stringify e : " +JSON.stringify(e));
+ Alloy.Globals.Log("JSON stringify e : " +JSON.stringify(e));
 // Defining new row
 var newRow = Ti.UI.createTableViewRow({
 title : 'Row ' + ($.enterclient_table.data[0].rowCount + 1)
@@ -54,7 +54,7 @@ $.enterclient_table.appendRow(newRow);
 }
 
 $.notes_tf.addEventListener("blur",function(e){
-        console.log("enterclient.js::JSON.stringify(e)  :" +JSON.stringify(e));
+        Alloy.Globals.Log("enterclient.js::JSON.stringify(e)  :" +JSON.stringify(e));
 		var notes = e.value;
 });
 
@@ -65,15 +65,15 @@ Titanium.App.Properties.setInt('count',count);
  var itemvalue =[];
 
  function saveHandler(e){
- 	console.log("enterclient.js::saveHandler::saving all data JSON e: "+JSON.stringify(e));
+ 	Alloy.Globals.Log("enterclient.js::saveHandler::saving all data JSON e: "+JSON.stringify(e));
  	var tabledata = [];	
  	var noentry = "none";
  	var getvalue = ["clientfirstname","clientlastname","clientphone","clientemail","clientstreetaddress","clientcity","clientstate","clientcompany","notes"];
  	for (i=0;i<$.enterclient_table.data[0].rowCount;i++) {		
- 		console.log("children count : "	+$.enterclient_table.data[0].rows[i].children.length);
+ 		Alloy.Globals.Log("children count : "	+$.enterclient_table.data[0].rows[i].children.length);
  		for (j=0;j<+$.enterclient_table.data[0].rows[i].children.length;j++) { 			
-			console.log("JSON stringify table 0 row "+i+' : ' +JSON.stringify($.enterclient_table.data[0].rows[i]));
-			console.log("JSON stringify table 0 row "+i+'w/children '+j+' : ' +JSON.stringify($.enterclient_table.data[0].rows[i].children[j]));
+			Alloy.Globals.Log("JSON stringify table 0 row "+i+' : ' +JSON.stringify($.enterclient_table.data[0].rows[i]));
+			Alloy.Globals.Log("JSON stringify table 0 row "+i+'w/children '+j+' : ' +JSON.stringify($.enterclient_table.data[0].rows[i].children[j]));
 			tabledata.push({data1:$.enterclient_table.data[0].rows[i].children[j].id || "none",data2:$.enterclient_table.data[0].rows[i].children[j].value || "none"});
 			for (z=0;z<getvalue.length;z++){
 				var subject = getvalue[z];
@@ -83,15 +83,15 @@ Titanium.App.Properties.setInt('count',count);
 			}		
 		};
 	};
-	console.log("tabledata are: "+JSON.stringify(tabledata));
-	console.log("enterclient.js::saveHandler:: detect array dyn variable: "+clientfirstname+","+clientlastname+","+clientphone+","+clientemail+","+clientstreetaddress
+	Alloy.Globals.Log("tabledata are: "+JSON.stringify(tabledata));
+	Alloy.Globals.Log("enterclient.js::saveHandler:: detect array dyn variable: "+clientfirstname+","+clientlastname+","+clientphone+","+clientemail+","+clientstreetaddress
 	+","+clientcity+","+clientstate+","+clientcompany);
 	//once tabledata is populated, find submission value
 	var name = clientfirstname+' '+clientlastname;
 	var customerid = e.source.titleid;
-	console.log("enterclient.js::saveHandler::clientfirstname: "+clientfirstname+" clientlastname "+clientlastname);	
+	Alloy.Globals.Log("enterclient.js::saveHandler::clientfirstname: "+clientfirstname+" clientlastname "+clientlastname);	
 	submit(clientfirstname,clientlastname,clientcompany,clientphone,clientemail,clientstreetaddress,clientcity,clientstate,"USA","pending",notes,"0","6/1/2015","7/1/2015",customerid);
-	///console.log('submit('+clientnumber+','+name+','+customerno+','+total+','+bal+','+paid+','+lastpaiddate+','+followupdate+','+clientphone+','+clientemail+','+duedate+','
+	///Alloy.Globals.Log('submit('+clientnumber+','+name+','+customerno+','+total+','+bal+','+paid+','+lastpaiddate+','+followupdate+','+clientphone+','+clientemail+','+duedate+','
 	///+currency+','+status+')');
  }; 
  
@@ -106,7 +106,7 @@ Titanium.App.Properties.setInt('count',count);
     var selfhref = Titanium.App.Properties.getString('selfhref');
     var now = Date.now();
  	var captimestamp = now;
-    console.log("enterclient.js::submit::existing edit href is: "+existingedithref+' idtag :'+idtag);
+    Alloy.Globals.Log("enterclient.js::submit::existing edit href is: "+existingedithref+' idtag :'+idtag);
 	var xhr =  Titanium.Network.createHTTPClient({
 	    onload: function() {
 	    	try {
@@ -115,7 +115,7 @@ Titanium.App.Properties.setInt('count',count);
 	    		var entry = xml.documentElement.getElementsByTagName("entry");
 	    		var link = xml.documentElement.getElementsByTagName("link");
 	    		var idtag = xml.documentElement.getElementsByTagName("id").item(0).text;
-	    		console.log("enterclient.js::submit: number of link found: " +link+ " length: "+link.length);
+	    		Alloy.Globals.Log("enterclient.js::submit: number of link found: " +link+ " length: "+link.length);
 	    		for (i=0;i<link.length;i++){			
 	    			var listitem = link.item(i);
 	    			if (listitem.getAttribute("rel") == "edit"){ var edithref = listitem.getAttribute("href");}
@@ -131,14 +131,14 @@ Titanium.App.Properties.setInt('count',count);
 	    	}     
 	    },
 	    onerror: function(e) {
-	    	console.log("enterclient.js:: error e: "+JSON.stringify(e));
+	    	Alloy.Globals.Log("enterclient.js:: error e: "+JSON.stringify(e));
 	        alert("error:"+e.code+": Please connect to the network.");
 	    }
 	});
 
 	var clients = Alloy.Collections.instance('client');
 	if (existingedithref) {
-			console.log("enterclient.js::submit::PUT on existing edit href is: "+existingedithref);
+			Alloy.Globals.Log("enterclient.js::submit::PUT on existing edit href is: "+existingedithref);
 			xhr.open("PUT", existingedithref);
 			var xmldatastring = '<entry xmlns=\'http://www.w3.org/2005/Atom\' xmlns:gsx=\'http://schemas.google.com/spreadsheets/2006/extended\'>'
 				+'<id>'+idtag+'</id>'
@@ -156,7 +156,7 @@ Titanium.App.Properties.setInt('count',count);
 				+'<gsx:col15>'+notes+'</gsx:col15><gsx:col16>'+customerid+'</gsx:col16></entry>';
 			Ti.API.info('xmldatastring existing to PUT: '+xmldatastring);
 			clients.fetch();
-			console.log("enterclient.js::submit:: update DB with customerid :" +customerid);
+			Alloy.Globals.Log("enterclient.js::submit:: update DB with customerid :" +customerid);
 			Alloy.Collections.client.deleteCol1(customerid);
 				clients.get(customerid).set({
 					col1: 	customerid.toString(),
@@ -182,7 +182,7 @@ Titanium.App.Properties.setInt('count',count);
 				+'<gsx:col15>'+notes+'</gsx:col15><gsx:col16>'+customerid+'</gsx:col16></entry>';
 				Ti.API.info('xmldatastring to POST: '+xmldatastring);
 			xhr.open("POST", 'https://spreadsheets.google.com/feeds/list/'+spreadsheet_id+'/od6/private/full');
-			console.log("enterclient.js::submit:: add DB with customerid :" +customerid);
+			Alloy.Globals.Log("enterclient.js::submit:: add DB with customerid :" +customerid);
 			var dataModel = Alloy.createModel('client',{
 					col1: 	customerid.toString(),
 					col2:	(clientfirstname == " ")?'none':clientfirstname,
@@ -239,7 +239,7 @@ var googleAuth = new GoogleAuth({
 
 
 $.enterclient_table.addEventListener('click', function(e){
-	console.log("JSON stringify after table row is clicked : " +JSON.stringify(e));
+	Alloy.Globals.Log("JSON stringify after table row is clicked : " +JSON.stringify(e));
 	$.notes_tf.blur();
 });
 

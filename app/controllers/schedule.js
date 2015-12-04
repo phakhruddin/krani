@@ -466,9 +466,9 @@ $.ptr.refresh();
 	  var thelabor = Alloy.Collections.instance('labor');
 	  thelabor.fetch();
 	  var laborjson = thelabor.toJSON();
-	  console.log("laborjson.length "+laborjson.length);
-	  console.log("laborjson "+laborjson);
-	  console.log("laborjson[0].col2 "+laborjson[0].col2);
+	  Alloy.Globals.Log("laborjson.length "+laborjson.length);
+	  Alloy.Globals.Log("laborjson "+laborjson);
+	  Alloy.Globals.Log("laborjson[0].col2 "+laborjson[0].col2);
 	  
 	  
 	var labor = [ 'John', 'Alex', 'Marie', 'Eva' ];
@@ -550,7 +550,7 @@ $.ptr.refresh();
 	datePicker.addEventListener('change',function(e)
 	{
 		//dateData.text = e.value;
-		console.log("start date e.value: "+e.value);
+		Alloy.Globals.Log("start date e.value: "+e.value);
 		var startdatetimeUTC = Date.parse(e.value);
 		var startdatetimeLocale = new Date(startdatetimeUTC);
 		//var startdatetime = startdatetimeLocale.toString().replace(/GMT.*/," ");
@@ -564,14 +564,14 @@ $.ptr.refresh();
 	
 	enddatePicker.addEventListener('change',function(e)
 	{
-		console.log("end date e.value: "+e.value);
+		Alloy.Globals.Log("end date e.value: "+e.value);
 		var enddatetimeUTC = Date.parse(e.value);
 		var enddatetimeLocale = new Date(enddatetimeUTC);
 		var enddatetime = enddatetimeLocale.toString().split(' ',4).toString().replace(/,/g,' ')+' '+Alloy.Globals.formatAMPM(enddatetimeLocale);
 		enddateData.text = enddatetime;
 		tableView.setData(array);		
 		var enddateTime = enddatetimeLocale.toISOString();
-		console.log("+enddateTime: " +enddateTime);
+		Alloy.Globals.Log("+enddateTime: " +enddateTime);
 		enddateData.textid = enddateTime;
 		Ti.API.info("enddateData: "+JSON.stringify(enddateData));
 		submitLabel.show();	
@@ -592,24 +592,24 @@ $.ptr.refresh();
 	});
 	
 	submitLabel.addEventListener('click',function() {
-		console.log("title txt :"+JSON.stringify(titleText));
+		Alloy.Globals.Log("title txt :"+JSON.stringify(titleText));
 		var summary = titleText.value;
 		var description = valueData.text;
 		var enddateTime = enddateData.textid;
 		var startdateTime = dateData.textid;
 		var organizerdisplayName = valueData.text;
-		console.log("schedule:submitLabel: summary, organizerdisplayName, startdateTime, enddateTime, description :" +summary+", "+organizerdisplayName+", "+startdateTime+", "+enddateTime+" , "+description);
+		Alloy.Globals.Log("schedule:submitLabel: summary, organizerdisplayName, startdateTime, enddateTime, description :" +summary+", "+organizerdisplayName+", "+startdateTime+", "+enddateTime+" , "+description);
 		alert("event created");
 		//Alloy.Globals.postCreateEvent(startdateTime,enddateTime,location,summary,description,organizerdisplayName,organizeremail,colorid,attendeeslist)
 		Alloy.Globals.googleAuthSheet.isAuthorized(function() {
-				console.log('Access Token: ' + Alloy.Globals.googleAuthSheet.getAccessToken());				
+				Alloy.Globals.Log('Access Token: ' + Alloy.Globals.googleAuthSheet.getAccessToken());				
 		}, function() {
-				console.log('Schedule submit: Authorized first, see next window: ');
+				Alloy.Globals.Log('Schedule submit: Authorized first, see next window: ');
 		});
 		//var calid="idevice.net@gmail.com";
-		var kraniemailid = Titanium.App.Properties.getString('kraniemailid');console.log("schedule.js::kraniemailid:: "+kraniemailid);
+		var kraniemailid = Titanium.App.Properties.getString('kraniemailid');Alloy.Globals.Log("schedule.js::kraniemailid:: "+kraniemailid);
 		var calid = kraniemailid;
-		console.log("postCreateEvent(calid:"+calid+",startdateTime,enddateTime,\"\",summary:"+summary+",description:"+description+",organizerdisplayName:"+organizerdisplayName+")");
+		Alloy.Globals.Log("postCreateEvent(calid:"+calid+",startdateTime,enddateTime,\"\",summary:"+summary+",description:"+description+",organizerdisplayName:"+organizerdisplayName+")");
 		postCreateEvent(calid,startdateTime,enddateTime,"",summary,description,organizerdisplayName);
 		
 	});
@@ -644,18 +644,18 @@ function createEventFuture() {
 
 function sharedCalendar() {
 	//googleAuthCalendar;
-	console.log('schedule::getSharedCalendar:Access Token for Calendar is: ' + Alloy.Globals.googleAuthSheet.getAccessToken());
+	Alloy.Globals.Log('schedule::getSharedCalendar:Access Token for Calendar is: ' + Alloy.Globals.googleAuthSheet.getAccessToken());
 	Alloy.Globals.googleAuthSheet.isAuthorized(function() {
-		console.log('schedule::getSharedCalendar:Access Token: ' + Alloy.Globals.googleAuthSheet.getAccessToken());
+		Alloy.Globals.Log('schedule::getSharedCalendar:Access Token: ' + Alloy.Globals.googleAuthSheet.getAccessToken());
 	}, function() {
-		console.log('schedule::getSharedCalendar::Sch shared cal Authorized first, see next window: ');
+		Alloy.Globals.Log('schedule::getSharedCalendar::Sch shared cal Authorized first, see next window: ');
 		});
 	Alloy.Globals.createController('sharedcalendar',$.schedule_tab);
 }
 
 function transformFunction(model) {
 	var transform = model.toJSON();
-	///console.log("transform is ::" +JSON.stringify(transform));
+	///Alloy.Globals.Log("transform is ::" +JSON.stringify(transform));
 	transform.title = transform.col1+":"+transform.col2+":"+transform.col3+":"+transform.col4+":"+transform.col5+":"+transform.col6+":"+transform.col7+":"+transform.col8+":"+transform.col9+":"+transform.col10
 	+":"+transform.col11+":"+transform.col12+":"+transform.col13+":"+transform.col14+":"+transform.col15+":"+transform.col16;
     //date conversion
@@ -691,13 +691,13 @@ function transformFunction(model) {
     var enddaydate = enddatetime.split(' ')[2];
     var startyear = startdatetime.split(' ')[3];
     var endyear = enddatetime.split(' ')[3];
-    ///console.log("date and daytime :"+startday+' '+startmonth+' '+startdaydate+' '+startyear);
+    ///Alloy.Globals.Log("date and daytime :"+startday+' '+startmonth+' '+startdaydate+' '+startyear);
     var daymonthyear = startday+' '+startmonth+' '+startdaydate+' '+startyear;
     if (transform.col2) { var client = transform.col2; var newclient = client.replace(/.*https.*/g,'No client info');
-    	///console.log("client newclient : " +client+' : '+newclient);
+    	///Alloy.Globals.Log("client newclient : " +client+' : '+newclient);
     };
     	
-    ///console.log("col4: "+transform.col4+" Date: " +startdatetimeUTC+" : "+startdatetimeLocale); 
+    ///Alloy.Globals.Log("col4: "+transform.col4+" Date: " +startdatetimeUTC+" : "+startdatetimeLocale); 
 	//transform.custom = (transform.col1 == "none")?"Event title was not provided":transform.col1;
 	transform.custom = (startdatetimeUTC)?formatAMPM(startdatetimeLocale)+' - '+formatAMPM(enddatetimeLocale):'00 - 00';
 	transform.name = (transform.col2 == "none")?"":transform.col2;
@@ -719,7 +719,7 @@ function transformFunction(model) {
 		transform.img ="proposalpending.gif";
 	}
 	//match day
-	///console.log("startday : "+startday);
+	///Alloy.Globals.Log("startday : "+startday);
 	transform.imgday = startday+".png";
 	
 	return transform;
@@ -728,13 +728,13 @@ function transformFunction(model) {
 // 24hrs - 86400000
 function filterFunction(collection) { 
 		var sorttype = Titanium.App.Properties.getString('sorttype'); 
-	    console.log("schedule::filterFunction:sorttype in filter : "+sorttype); 
-	    //console.log("JSON stringify collection: " +JSON.stringify(collection));
+	    Alloy.Globals.Log("schedule::filterFunction:sorttype in filter : "+sorttype); 
+	    //Alloy.Globals.Log("JSON stringify collection: " +JSON.stringify(collection));
 	    if (sorttype == "Today")  {
 	    	//Alloy.Collections.schedule.today();
 	    	var filterday = new Date();
 	    	var dateNow = Date.now();
-	    	console.log("filterday: "+filterday+ ", dateNow: "+dateNow);
+	    	Alloy.Globals.Log("filterday: "+filterday+ ", dateNow: "+dateNow);
 	    	return collection.where({col6:"confirmed"});
 	    } else if (sorttype == "ThisWeek") {
 	    	return collection.where({col6:"phakhruddin1@gmail.com"});
@@ -746,8 +746,8 @@ function filterFunction(collection) {
 }
 
 function buttonAction(e){
-	console.log("schedule::buttonAction:JSON stringify e : " +JSON.stringify(e));
-	console.log("schedule::buttonAction:JSON stringify e.source : " +JSON.stringify(e.source));
+	Alloy.Globals.Log("schedule::buttonAction:JSON stringify e : " +JSON.stringify(e));
+	Alloy.Globals.Log("schedule::buttonAction:JSON stringify e.source : " +JSON.stringify(e.source));
 	var someDummy = Alloy.Models.dummy;
 	someDummy.set('id', '1234');
     var today = new Date();
@@ -778,7 +778,7 @@ function buttonAction(e){
 		var HeaderTitle = 'Today: '+today.toString().substring(0,15);
 		someDummy.set('HeaderTitle',HeaderTitle);
         var sql = "SELECT * FROM " + Alloy.Collections.schedule.config.adapter.collection_name +" WHERE col4 between "+'"'+yesterdayISO+'"'+" AND "+'"'+tomorrowISO+'"';
-        console.log("sql string:" +sql);
+        Alloy.Globals.Log("sql string:" +sql);
 		Alloy.Collections.schedule.fetch({query:sql});
 		//Alloy.Collections.schedule.today();
 	};
@@ -787,7 +787,7 @@ function buttonAction(e){
 		var HeaderTitle = 'Week: '+today.toString().substring(0,11)+' - '+nextweekLocale.toString().substring(0,15);
 		someDummy.set('HeaderTitle',HeaderTitle);
 		var sql = "SELECT * FROM " + Alloy.Collections.schedule.config.adapter.collection_name +" WHERE col4 between "+'"'+yesterdayISO+'"'+" AND "+'"'+nextweekISO+'"';
-        console.log("sql string:" +sql);
+        Alloy.Globals.Log("sql string:" +sql);
 		Alloy.Collections.schedule.fetch({query:sql});	
 		};
 	if (thesort == "Month") { 
@@ -795,7 +795,7 @@ function buttonAction(e){
 		var HeaderTitle = 'Month: '+today.toString().substring(0,11)+' - '+nextmonthLocale.toString().substring(0,15);
 		someDummy.set('HeaderTitle',HeaderTitle);
 		var sql = "SELECT * FROM " + Alloy.Collections.schedule.config.adapter.collection_name +" WHERE col4 between "+'"'+todayISO+'"'+" AND "+'"'+nextmonthISO+'"';
-        console.log("sql string:" +sql);
+        Alloy.Globals.Log("sql string:" +sql);
 		Alloy.Collections.schedule.fetch({query:sql});	
 		};
 	if (thesort == "All") { 
@@ -811,7 +811,7 @@ function buttonAction(e){
 function refreshCalendar() {
 	//var calid = 'idevice.net@gmail.com';
 	//var calid = '2elugripfnsd2hblojnu4t72u0@group.calendar.google.com';
-	var kraniemailid = Titanium.App.Properties.getString('kraniemailid');console.log("schedule.js::kraniemailid:: "+kraniemailid);
+	var kraniemailid = Titanium.App.Properties.getString('kraniemailid');Alloy.Globals.Log("schedule.js::kraniemailid:: "+kraniemailid);
 	var calid = kraniemailid;
 	var url = 'https://www.googleapis.com/calendar/v3/calendars/'+calid+'/events'+"?access_token="+Alloy.Globals.googleAuthSheet.getAccessToken();;
 	getSharedCalendarData(url);
@@ -825,14 +825,14 @@ var getSharedCalendarData = function(url) {
 	//Alloy.Globals.checkGoogleisAuthorized();
 	//Alloy.Globals.checkNetworkAndGoogleAuthorized('1gnkP116nsTVxtrw6d_mXVdOiesQEPH7LVUIyHUfx9EE');
 	//googleAuthCalendar;
-	console.log('schedule::getSharedCalendarData:Access Token for Calendar is: ' + Alloy.Globals.googleAuthSheet.getAccessToken());
+	Alloy.Globals.Log('schedule::getSharedCalendarData:Access Token for Calendar is: ' + Alloy.Globals.googleAuthSheet.getAccessToken());
 	Alloy.Globals.googleAuthSheet.isAuthorized(function() {
-		console.log('schedule::getSharedCalendarData:Access Token: ' + Alloy.Globals.googleAuthSheet.getAccessToken());
+		Alloy.Globals.Log('schedule::getSharedCalendarData:Access Token: ' + Alloy.Globals.googleAuthSheet.getAccessToken());
 		
 		var xhr = Ti.Network.createHTTPClient({
 		    onload: function(e) {
 		    try {
-				console.log("schedule::getSharedCalendarData:response txt is: "+this.responseText);
+				Alloy.Globals.Log("schedule::getSharedCalendarData:response txt is: "+this.responseText);
 				var file = Ti.Filesystem.getFile(
 					Ti.Filesystem.tempDirectory, thefile
 				);
@@ -873,14 +873,14 @@ var getSharedCalendarData = function(url) {
 		xhr.onerror = function(e){
 			//alert(e);
 			alert("schedule::getSharedCalendarData::Unable to connect to the network. The info displayed here is NOT the latest.");
-			console.log("schedule::getSharedCalendarData:response txt after failure is: "+this.responseText);
+			Alloy.Globals.Log("schedule::getSharedCalendarData:response txt after failure is: "+this.responseText);
 		};
 		xhr.open("GET", url);
 		xhr.send();
 		Ti.API.info(" schedule::getSharedCalendarData:Data were successfuly downloaded from "+url+". Please proceed.");
 		
 	}, function() {
-		console.log('schedule::getSharedCalendarData:Sch get shrd cal Authorized first, see next window: ');
+		Alloy.Globals.Log('schedule::getSharedCalendarData:Sch get shrd cal Authorized first, see next window: ');
 		Alloy.Globals.googleAuthSheet.authorize();
 		///Alloy.Globals.LaunchWindowGoogleAuth();
 	});
@@ -888,15 +888,15 @@ var getSharedCalendarData = function(url) {
 };
 
 function selectItem(e) {
-	console.log("schedule::selectItem:JSON stringify: "+JSON.stringify(e));
+	Alloy.Globals.Log("schedule::selectItem:JSON stringify: "+JSON.stringify(e));
 }
 
 function doClick(e) {
-	console.log("JSON stringify: "+JSON.stringify(e));
+	Alloy.Globals.Log("JSON stringify: "+JSON.stringify(e));
 }
 
 function myRefresher(e) {
-	console.log("refreshing after pull : " +JSON.stringify(e));
+	Alloy.Globals.Log("refreshing after pull : " +JSON.stringify(e));
     Alloy.Collections.schedule.fetch({
         success: e.hide,
         error: e.hide
@@ -918,7 +918,7 @@ function postCreateEvent(calid,startdateTime,enddateTime,location,summary,descri
 	///var url = 'https://www.googleapis.com/calendar/v3/calendars/idevice.net@gmail.com/events';
 	var emailid = Titanium.App.Properties.getString('emailid'); (emailid) && attendeeslist.push(emailid);
 	var kraniemailid = Titanium.App.Properties.getString('kraniemailid');(kraniemailid) && attendeeslist.push(kraniemailid);
-	console.log("schedule.js::postCreateEvent: emailid:  "+emailid+" : kraniemailid:: "+kraniemailid);
+	Alloy.Globals.Log("schedule.js::postCreateEvent: emailid:  "+emailid+" : kraniemailid:: "+kraniemailid);
 	var calid = kraniemailid;
 	//var url = 'https://www.googleapis.com/calendar/v3/calendars/'+calid+'/events';
 	var url = 'https://www.googleapis.com/calendar/v3/calendars/'+calid+'/events?sendNotifications=true';
@@ -953,7 +953,7 @@ function postCreateEvent(calid,startdateTime,enddateTime,location,summary,descri
 	+	'\}'	
 	+recurrences
 	+'\}';
-	console.log("event strings are: "+event);
+	Alloy.Globals.Log("event strings are: "+event);
 	var xhr =  Titanium.Network.createHTTPClient({
     onload: function() {
     	try {

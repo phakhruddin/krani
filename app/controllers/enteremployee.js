@@ -1,12 +1,12 @@
 var args = arguments[0] || {};
 exports.openMainWindow = function(_tab) {
   _tab.open($.enteremployee_window);
-  console.log("This is child widow enteremployee.js" +JSON.stringify(_tab));
+  Alloy.Globals.Log("This is child widow enteremployee.js" +JSON.stringify(_tab));
    (Alloy.Globals.googleAuthSheet.getAccessToken()) || Alloy.Globals.googleAuthSheet.Authorize();
 };
 
 if (args.title) {
-	console.log("enteremployee.js::detected vars:JSON.stringify(vars):: "+JSON.stringify(args));
+	Alloy.Globals.Log("enteremployee.js::detected vars:JSON.stringify(vars):: "+JSON.stringify(args));
 	var data = args.title.split(':');
 	var employeeid = data[0];
 	var firstname = data[1];$.employeefirstname_tf.value=firstname;
@@ -21,13 +21,13 @@ if (args.title) {
 	var project = data[11];
 	var proposal = data[12];
 	var notes = data[14];
-	console.log("enteremployee.js::JSON.stringify($.employeefirstname_tf):: :" +JSON.stringify($.employeefirstname_tf));
+	Alloy.Globals.Log("enteremployee.js::JSON.stringify($.employeefirstname_tf):: :" +JSON.stringify($.employeefirstname_tf));
 	//var idtag = data[13].replace("xCoLoNx",",").split(',')[0].replace("yCoLoNy",":");
 	var idtag = (data[13])?data[13].replace(/xCoLoNx/g,',').split(',')[0].replace('yCoLoNy',':'):"none";
 	var selfhref = (data[13])?data[13].replace(/xCoLoNx/g,',').split(',')[1].replace('yCoLoNy',':'):"none";
 	var edithref = (data[13])?data[13].replace(/xCoLoNx/g,',').split(',')[2].replace('yCoLoNy',':'):"none";
 
-	console.log("enteremployee.js::idtag :"+idtag+" edithref: "+edithref+" selfhref: "+selfhref);
+	Alloy.Globals.Log("enteremployee.js::idtag :"+idtag+" edithref: "+edithref+" selfhref: "+selfhref);
 	//var employeeid = args.employeeid;
 	var employees = Alloy.Collections.instance('labor');
 	employees.fetch();	
@@ -37,7 +37,7 @@ if (args.title) {
 	if (theemployee.length > 0 ){
 		for (j=0;j<theemployee.length;j++){
 			   var theemployeejson = theemployee[j].toJSON(); // EXTRACT ONE ROW. IF MANY. FOR LOOP.
-    		   console.log("enteremployee.js::theemployeejson.col1 :"+theemployeejson.col1+" col2: "+theemployeejson.col2);
+    		   Alloy.Globals.Log("enteremployee.js::theemployeejson.col1 :"+theemployeejson.col1+" col2: "+theemployeejson.col2);
 		}
 	}
  
@@ -48,18 +48,18 @@ if (args.title) {
     Ti.App.Properties.removeProperty('idtag'); //clear ref to previous spreadsheet
     Ti.App.Properties.removeProperty('selfhref'); //clear ref to previous spreadsheet
     
-console.log("employeedetail.js:: JSON.stringify(args) :"+JSON.stringify(args));
+Alloy.Globals.Log("employeedetail.js:: JSON.stringify(args) :"+JSON.stringify(args));
 //var edithref = args.edithref;
 //var selfhref = args.selfhref;
 //var idtag = args.idtag;
-console.log("employeedetail.js:: existing edithref: " +edithref);
+Alloy.Globals.Log("employeedetail.js:: existing edithref: " +edithref);
 (edithref)?Titanium.App.Properties.setString('edithref',edithref):Ti.App.Properties.removeProperty('edithref');
 (selfhref)?Titanium.App.Properties.setString('selfhref',selfhref):Ti.App.Properties.removeProperty('selfhref');
 (idtag)?Titanium.App.Properties.setString('idtag',idtag):Ti.App.Properties.removeProperty('idtag');
-console.log("employeedetail.js:: existing Titanium.App.Properties.getString('edithref'): " +Titanium.App.Properties.getString('edithref'));
+Alloy.Globals.Log("employeedetail.js:: existing Titanium.App.Properties.getString('edithref'): " +Titanium.App.Properties.getString('edithref'));
 
 function addRows(){
- console.log("JSON stringify e : " +JSON.stringify(e));
+ Alloy.Globals.Log("JSON stringify e : " +JSON.stringify(e));
 // Defining new row
 var newRow = Ti.UI.createTableViewRow({
 title : 'Row ' + ($.enteremployee_table.data[0].rowCount + 1)
@@ -70,7 +70,7 @@ $.enteremployee_table.appendRow(newRow);
 }
 
 $.notes_tf.addEventListener("blur",function(e){
-        console.log("enteremployee.js::JSON.stringify(e)  :" +JSON.stringify(e));
+        Alloy.Globals.Log("enteremployee.js::JSON.stringify(e)  :" +JSON.stringify(e));
 		var notes = e.value;
 });
 
@@ -81,7 +81,7 @@ Titanium.App.Properties.setInt('count',count);
  var itemvalue =[];
 
  function saveHandler(e){
- 	console.log("enteremployee.js::saveHandler::saving all data JSON e: "+JSON.stringify(e));
+ 	Alloy.Globals.Log("enteremployee.js::saveHandler::saving all data JSON e: "+JSON.stringify(e));
  	var tabledata = [];	
  	var noentry = "none";
  	var getvalue = ["employeefirstname","employeelastname","employeephone","employeeemail","employeestreetaddress","employeecity","employeestate","employeejobtitle","notes"];
@@ -91,10 +91,10 @@ Titanium.App.Properties.setInt('count',count);
  	}
  	/*
  	for (i=0;i<$.enteremployee_table.data[0].rowCount;i++) {		
- 		console.log("children count : "	+$.enteremployee_table.data[0].rows[i].children.length);
+ 		Alloy.Globals.Log("children count : "	+$.enteremployee_table.data[0].rows[i].children.length);
  		for (j=0;j<+$.enteremployee_table.data[0].rows[i].children.length;j++) { 			
-			console.log("JSON stringify table 0 row "+i+' : ' +JSON.stringify($.enteremployee_table.data[0].rows[i]));
-			console.log("JSON stringify table 0 row "+i+'w/children '+j+' : ' +JSON.stringify($.enteremployee_table.data[0].rows[i].children[j]));
+			Alloy.Globals.Log("JSON stringify table 0 row "+i+' : ' +JSON.stringify($.enteremployee_table.data[0].rows[i]));
+			Alloy.Globals.Log("JSON stringify table 0 row "+i+'w/children '+j+' : ' +JSON.stringify($.enteremployee_table.data[0].rows[i].children[j]));
 			tabledata.push({data1:$.enteremployee_table.data[0].rows[i].children[j].id || "none",data2:$.enteremployee_table.data[0].rows[i].children[j].value || "none"});
 			for (z=0;z<getvalue.length;z++){
 				var subject = getvalue[z];
@@ -104,20 +104,20 @@ Titanium.App.Properties.setInt('count',count);
 			}		
 		};
 	};
-	console.log("tabledata are: "+JSON.stringify(tabledata));
-	console.log("enteremployee.js::saveHandler:: detect array dyn variable: "+employeefirstname+","+employeelastname+","+employeephone+","+employeeemail+","+employeestreetaddress
+	Alloy.Globals.Log("tabledata are: "+JSON.stringify(tabledata));
+	Alloy.Globals.Log("enteremployee.js::saveHandler:: detect array dyn variable: "+employeefirstname+","+employeelastname+","+employeephone+","+employeeemail+","+employeestreetaddress
 	+","+employeecity+","+employeestate+","+employeejobtitle);*/
 	//once tabledata is populated, find submission value
-	console.log("enteremployee.js::saveHandler:: detect array NON DYN variable: "+employeefirstname+","+employeelastname+","+employeephone+","+employeeemail+","+employeestreetaddress
+	Alloy.Globals.Log("enteremployee.js::saveHandler:: detect array NON DYN variable: "+employeefirstname+","+employeelastname+","+employeephone+","+employeeemail+","+employeestreetaddress
 	+","+employeecity+","+employeestate+","+employeejobtitle+","+notes);
 	var name = employeefirstname+' '+employeelastname;
 	var employeeid = (e.source.titleid)?e.source.titleid:Date.now();
 	var lat="42.961409";
  	var lon="-88.223041";
  	var country = "USA"; var none="none";
-	console.log("enteremployee.js::saveHandler::employeefirstname: submit("+ employeeid+","+employeefirstname+","+employeelastname+","+employeejobtitle+","+employeephone+","+employeeemail+","+lat+","+lon+","+employeestreetaddress+","+employeecity+","+employeestate+","+country+","+notes+","+employeeid +")");	
+	Alloy.Globals.Log("enteremployee.js::saveHandler::employeefirstname: submit("+ employeeid+","+employeefirstname+","+employeelastname+","+employeejobtitle+","+employeephone+","+employeeemail+","+lat+","+lon+","+employeestreetaddress+","+employeecity+","+employeestate+","+country+","+notes+","+employeeid +")");	
 	submit(employeeid,employeefirstname,employeelastname,employeejobtitle,employeephone,employeeemail,lat,lon,employeestreetaddress,employeecity,employeestate,country,notes	,employeeid);
-	///console.log('submit('+employeenumber+','+name+','+customerno+','+total+','+bal+','+paid+','+lastpaiddate+','+followupdate+','+employeephone+','+employeeemail+','+duedate+','
+	///Alloy.Globals.Log('submit('+employeenumber+','+name+','+customerno+','+total+','+bal+','+paid+','+lastpaiddate+','+followupdate+','+employeephone+','+employeeemail+','+duedate+','
 	///+currency+','+status+')');
  }; 
  /*
@@ -136,7 +136,7 @@ Titanium.App.Properties.setInt('count',count);
     var selfhref = Titanium.App.Properties.getString('selfhref');
     var now = Date.now();
  	var captimestamp = now;
-    console.log("enteremployee.js::submit::existing edit href is: "+existingedithref+' idtag :'+idtag);
+    Alloy.Globals.Log("enteremployee.js::submit::existing edit href is: "+existingedithref+' idtag :'+idtag);
 	var xhr =  Titanium.Network.createHTTPClient({
 	    onload: function() {
 	    	try {
@@ -145,7 +145,7 @@ Titanium.App.Properties.setInt('count',count);
 	    		var entry = xml.documentElement.getElementsByTagName("entry");
 	    		var link = xml.documentElement.getElementsByTagName("link");
 	    		var idtag = xml.documentElement.getElementsByTagName("id").item(0).text;
-	    		console.log("enteremployee.js::submit: number of link found: " +link+ " length: "+link.length);
+	    		Alloy.Globals.Log("enteremployee.js::submit: number of link found: " +link+ " length: "+link.length);
 	    		for (i=0;i<link.length;i++){			
 	    			var listitem = link.item(i);
 	    			if (listitem.getAttribute("rel") == "edit"){ var edithref = listitem.getAttribute("href");}
@@ -161,13 +161,13 @@ Titanium.App.Properties.setInt('count',count);
 	    	}     
 	    },
 	    onerror: function(e) {
-	    	console.log("enteremployee::error e: "+JSON.stringify(e));
+	    	Alloy.Globals.Log("enteremployee::error e: "+JSON.stringify(e));
 	        alert("error:"+e.code+": Please connect to the network.");
 	    }
 	});
 	var employees = Alloy.Collections.instance('labor');
 	if (existingedithref) {
-			console.log("enteremployee.js::submit::PUT on existing edit href is: "+existingedithref);
+			Alloy.Globals.Log("enteremployee.js::submit::PUT on existing edit href is: "+existingedithref);
 			xhr.open("PUT", existingedithref);
 			var xmldatastring = '<entry xmlns=\'http://www.w3.org/2005/Atom\' xmlns:gsx=\'http://schemas.google.com/spreadsheets/2006/extended\'>'
 				+'<id>'+idtag+'</id>'
@@ -185,7 +185,7 @@ Titanium.App.Properties.setInt('count',count);
 				+country+'</gsx:col13><gsx:col14>none</gsx:col14><gsx:col15>'+notes+'</gsx:col15><gsx:col16>'+employeeid+'</gsx:col16></entry>';
 			Ti.API.info('xmldatastring existing to PUT: '+xmldatastring);
 			employees.fetch();
-			console.log("enteremployee.js::submit:: update DB with employeeid :" +employeeid);
+			Alloy.Globals.Log("enteremployee.js::submit:: update DB with employeeid :" +employeeid);
 			Alloy.Collections.labor.deleteCol1(employeeid);
 				employees.get(employeeid).set({
 					col1: 	employeeid.toString(),
@@ -202,7 +202,7 @@ Titanium.App.Properties.setInt('count',count);
 				}).save();
 			alert('Modified & Saved Successfully!');
 		} else {
-			console.log("enteremployee.js::submit::POST on new: "+ employeeid+","+employeefirstname+","+employeelastname+","+employeejobtitle+","+employeephone+","+employeeemail+","+lat+","+lon+","
+			Alloy.Globals.Log("enteremployee.js::submit::POST on new: "+ employeeid+","+employeefirstname+","+employeelastname+","+employeejobtitle+","+employeephone+","+employeeemail+","+lat+","+lon+","
 			+employeestreetaddress+","+employeecity+","+employeestate+","+country+","+notes+","+employeeid);
 			var employeeid = now;
 			$.save_button.titleid = employeeid; //feed id the save button of the customer id.
@@ -215,8 +215,8 @@ Titanium.App.Properties.setInt('count',count);
 				+country+'</gsx:col13><gsx:col14>none</gsx:col14><gsx:col15>'+notes+'</gsx:col15><gsx:col16>'+employeeid+'</gsx:col16></entry>';
 			Ti.API.info('xmldatastring to POST: '+xmldatastring);
 			xhr.open("POST", 'https://spreadsheets.google.com/feeds/list/'+spreadsheet_id+'/od6/private/full');
-			console.log("enteremployee.js::submit:: add DB with employeeid :" +employeeid);
-			console.log("enteremployee.js::submit::POST on new: "+xmldatastring);
+			Alloy.Globals.Log("enteremployee.js::submit:: add DB with employeeid :" +employeeid);
+			Alloy.Globals.Log("enteremployee.js::submit::POST on new: "+xmldatastring);
 			var dataModel = Alloy.createModel('labor',{
 					col1: 	employeeid.toString(),
 					col2:	(employeefirstname == " ")?'none':employeefirstname.trim(),
@@ -257,7 +257,7 @@ $.check_employee.addEventListener('click', function(e){
 });
 
 $.enteremployee_table.addEventListener('click', function(e){
-	console.log("JSON stringify after table row is clicked : " +JSON.stringify(e));
+	Alloy.Globals.Log("JSON stringify after table row is clicked : " +JSON.stringify(e));
 	$.notes_tf.blur();
 });
 

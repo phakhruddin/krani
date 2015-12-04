@@ -7,18 +7,18 @@ exports.openMainWindow = function(_tab) {
 	indexselect = null;
 	
 		$.employee_window.addEventListener("click", function(e){
-			console.log("location.js: indexselect : "+indexselect);
+			Alloy.Globals.Log("location.js: indexselect : "+indexselect);
 			Alloy.Globals.openDetail(e);
 			e.row.titleid = "rowidimage";
-			console.log("location.js: source is : "+args.source);
-			console.log("location.js: JSON.stringify(e) : "+ JSON.stringify(e));
+			Alloy.Globals.Log("location.js: source is : "+args.source);
+			Alloy.Globals.Log("location.js: JSON.stringify(e) : "+ JSON.stringify(e));
 			if (indexselect || indexselect == "0"){
 				if (indexselect == e.index){
-					console.log("location.js: previous e.source.image : "+ e.source.image+" indexselect : "+indexselect);
+					Alloy.Globals.Log("location.js: previous e.source.image : "+ e.source.image+" indexselect : "+indexselect);
 					e.source.image = "EditControl.png";
 					e.row.backgroundColor = "transparent";
 					indexselect = null; //reset indexselect		
-					console.log("location.js: e.source.image : "+ e.source.image);		
+					Alloy.Globals.Log("location.js: e.source.image : "+ e.source.image);		
 				}			
 			} else {
 				if (e.source.image == "EditControl.png") {
@@ -27,18 +27,18 @@ exports.openMainWindow = function(_tab) {
 					indexselect = e.index;
 					e.row.id = "selected";
 					$.toggle_button.titleid = e;
-					console.log("location.js: e.source.image : "+ e.source.image+" indexselect : "+indexselect);
+					Alloy.Globals.Log("location.js: e.source.image : "+ e.source.image+" indexselect : "+indexselect);
 					var employee = e.row.title.split(':')[1]+" "+e.row.title.split(':')[2];
 					Titanium.App.Properties.setString('employee',employee);
-					console.log("location.js: employee: "+ Titanium.App.Properties.getString('employee'));
+					Alloy.Globals.Log("location.js: employee: "+ Titanium.App.Properties.getString('employee'));
 				} else {
 					e.source.image = "EditControl.png";
 					e.row.backgroundColor = "transparent";
-					console.log("location.js: e.source.image : "+ e.source.image);
+					Alloy.Globals.Log("location.js: e.source.image : "+ e.source.image);
 					indexselect = null;
 				}
 			}
-			console.log("location.js: JSON.stringify(e) : "+ JSON.stringify(e));
+			Alloy.Globals.Log("location.js: JSON.stringify(e) : "+ JSON.stringify(e));
 		});	
 		
 };
@@ -46,7 +46,7 @@ exports.openMainWindow = function(_tab) {
 function transformFunction(model) {
 	var currentaddr;
 	var transform = model.toJSON();
-	///console.log("transform is ::" +JSON.stringify(transform));
+	///Alloy.Globals.Log("transform is ::" +JSON.stringify(transform));
 	transform.title = transform.col1+":"+transform.col2+":"+transform.col3+":"+transform.col4+":"+transform.col5+":"+transform.col6+":"+transform.col7+":"+transform.col8+":"+transform.col9+":"+transform.col10+":"+transform.col11+":"+transform.col12+":"+transform.col13+":"+transform.col14+":"+transform.col15+":"+transform.col16;
 	transform.custom = transform.col2+"  "+transform.col3;
 	transform.phone = "Phone: "+transform.col5;
@@ -56,8 +56,8 @@ function transformFunction(model) {
 }
 
 function toggle(e) {
-	console.log("location.js:: toggle:: JSON.stringify(e) : "+ JSON.stringify(e));
+	Alloy.Globals.Log("location.js:: toggle:: JSON.stringify(e) : "+ JSON.stringify(e));
 	var therow = e.source.titleid;
-	console.log("location.js:: toggle:: therow : "+therow);
+	Alloy.Globals.Log("location.js:: toggle:: therow : "+therow);
 	therow.row.backgroundColor="red";
 }

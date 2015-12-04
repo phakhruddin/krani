@@ -11,7 +11,7 @@ $.ptr.refresh();
 
 function transformFunction(model) {
 	var transform = model.toJSON();
-	console.log("project.js::transform col1 data:: "+JSON.stringify(transform.col1)+" col15:"+JSON.stringify(transform.col15)+" col16:"+JSON.stringify(transform.col16));
+	Alloy.Globals.Log("project.js::transform col1 data:: "+JSON.stringify(transform.col1)+" col15:"+JSON.stringify(transform.col15)+" col16:"+JSON.stringify(transform.col16));
 	transform.title = transform.col1.trim()+":"+transform.col2.trim()+":"+transform.col3.trim()+":"+transform.col4.trim()+":"+transform.col5.trim()+":"+transform.col6+":"+transform.col7+":"
 	+transform.col8+":"+transform.col9+":"+transform.col10+":"+transform.col11+":"+transform.col12+":"+transform.col13+":"+transform.col14+":"
 	+transform.col15+":"+transform.col16;
@@ -33,7 +33,7 @@ function transformFunction(model) {
 	if (datesraw != "NA"){
 		datesdata = datesraw.replace(/cOlOn/g,":");
 		datesdata = JSON.parse(datesdata);
-		console.log("project.js::transformfunction: JSON.stringify(datesraw): "+JSON.stringify(datesraw)+"due date: "+datesdata[0].duedate);
+		Alloy.Globals.Log("project.js::transformfunction: JSON.stringify(datesraw): "+JSON.stringify(datesraw)+"due date: "+datesdata[0].duedate);
 		if (datesdata) {
 			if(transform.datedue != "none" || transform.datedue != "NA" ){transform.datedue = "due date: "+datesdata[0].duedate; } else { transform.datedue = "due date: ";} ;
 		} else transform.datedue = "due date: ";
@@ -43,20 +43,20 @@ function transformFunction(model) {
 }
 
 function addHandler(e) {
-	console.log("addHandler e : "+JSON.stringify(e));
+	Alloy.Globals.Log("addHandler e : "+JSON.stringify(e));
 			var clientController = Alloy.createController('enterproject');
 		clientController.openMainWindow($.tab_projectlist);
 }
 
 function myRefresher(e) {
-	console.log("refreshing after pull : " +JSON.stringify(e));
+	Alloy.Globals.Log("refreshing after pull : " +JSON.stringify(e));
     Alloy.Collections.project.fetch({
         success: e.hide,
         error: e.hide
     });
 }
 
-console.log("args sourcecall detected is: " +args.sourcecall);
+Alloy.Globals.Log("args sourcecall detected is: " +args.sourcecall);
 if (args.sourcecall) {
 	$.projectlist_window.addEventListener("click", function(e){
 		Alloy.Globals.openDetail(e);
@@ -79,6 +79,6 @@ if (args.sourcecall) {
 }
 
 function pulledEvent(e){
-	console.log("project.js:pulledEvent:: Alloy.Collections.project.fetch()");
+	Alloy.Globals.Log("project.js:pulledEvent:: Alloy.Collections.project.fetch()");
 	Alloy.Collections.project.fetch();
 }

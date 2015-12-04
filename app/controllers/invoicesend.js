@@ -10,12 +10,12 @@ exports.openMainWindow = function(_tab) {
 $.invoicesend_window.addEventListener("click", function(e){
 		Alloy.Globals.openDetail(e);
 		var title = e.row.title;
-		console.log("title is: "+title);
+		Alloy.Globals.Log("title is: "+title);
 		emailpdf();
 		//var url = '../Documents/invoice.pdf';
 		//var file = '../Documents/Expose.pdf';
 		var file = 'Expose.pdf';
-		console.log("opening viewpdf(url) on "+file);
+		Alloy.Globals.Log("opening viewpdf(url) on "+file);
      	viewpdf(file);
      	Alloy.Globals.checkGoogleisAuthorized();
      	 Alloy.Globals.uploadFile(file,"invdeen1.pdf") ;
@@ -24,7 +24,7 @@ $.invoicesend_window.addEventListener("click", function(e){
 
 function transformFunction(model) {
 	var transform = model.toJSON();
-	///console.log("transform is ::" +JSON.stringify(transform));
+	///Alloy.Globals.Log("transform is ::" +JSON.stringify(transform));
 	transform.title = transform.col1+":"+transform.col2+":"+transform.col3+":"+transform.col4+":"+transform.col5+":"+transform.col6+":"+transform.col7+":"+transform.col8+":"+transform.col9+":"+transform.col10+":"+transform.col11+":"+transform.col12+":"+transform.col13+":"+transform.col14+":"+transform.col15+":"+transform.col16;
 	transform.custom = "Invoice#: "+transform.col1+" - "+transform.col2;
 	return transform;
@@ -299,7 +299,7 @@ function uploadFile(file,filename){
  		var fileget = Ti.Filesystem.getFile(file);
 		var fileread = fileget.read();
 		var filebase64 = Ti.Utils.base64encode(fileread);
-	 		console.log('Access Token for File upload is: ' + Alloy.Globals.googleAuthSheet.getAccessToken());
+	 		Alloy.Globals.Log('Access Token for File upload is: ' + Alloy.Globals.googleAuthSheet.getAccessToken());
 	 		var parts = [];
 	 		var bound = 287032396531387;
 	 		var meta = '\{'

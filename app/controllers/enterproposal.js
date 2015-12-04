@@ -8,12 +8,12 @@ exports.openMainWindow = function(_tab) {
 	(Alloy.Globals.googleAuthSheet.getAccessToken()) || Alloy.Globals.googleAuthSheet.Authorized();
 	//googleAuth.authorize();
 	
-	console.log("enterproposal.js::openMainWindow:: $.enterproposal_table.data[0] count "+$.enterproposal_table.data[0].rowCount+" contents: "+JSON.stringify($.enterproposal_table.data[0].rows));
+	Alloy.Globals.Log("enterproposal.js::openMainWindow:: $.enterproposal_table.data[0] count "+$.enterproposal_table.data[0].rowCount+" contents: "+JSON.stringify($.enterproposal_table.data[0].rows));
  	if (args.clienttitle) {  //when user select existing client
 		selectClient(args);
-		//console.log("enterproposal.js::after selectClient:: selectclientrow "+JSON.stringify(selectclientrow));
-		console.log("enterproposal.js::after selectClient::openMainWindow:: b4 exe $.enterproposal_table.data[0].rowCount : "+$.enterproposal_table.data[0].rowCount);
-		console.log("enterproposal.js::after selectClient::openMainWindow:: b4 exe $.enterproposal_table.data[0] "+JSON.stringify($.enterproposal_table.data[0].rows));
+		//Alloy.Globals.Log("enterproposal.js::after selectClient:: selectclientrow "+JSON.stringify(selectclientrow));
+		Alloy.Globals.Log("enterproposal.js::after selectClient::openMainWindow:: b4 exe $.enterproposal_table.data[0].rowCount : "+$.enterproposal_table.data[0].rowCount);
+		Alloy.Globals.Log("enterproposal.js::after selectClient::openMainWindow:: b4 exe $.enterproposal_table.data[0] "+JSON.stringify($.enterproposal_table.data[0].rows));
 		$.coverview.hide();
 		$.selectclient_button.hide();	
 		//$.enterproposal_table.deleteRow()
@@ -22,11 +22,11 @@ exports.openMainWindow = function(_tab) {
 		for (x=0;x<tohide.length;x++){
 			$.enterproposal_table.deleteRow(tohide[x]);
 		}; //hide first*/
-		console.log("enterproposal.js::after selectClient::openMainWindow:: after exe $.enterproposal_table.data[0].rowCount : "+$.enterproposal_table.data[0].rowCount);
-		console.log("enterproposal.js::after selectClient::openMainWindow:: after exe $.enterproposal_table.data[0] "+JSON.stringify($.enterproposal_table.data[0].rows));
+		Alloy.Globals.Log("enterproposal.js::after selectClient::openMainWindow:: after exe $.enterproposal_table.data[0].rowCount : "+$.enterproposal_table.data[0].rowCount);
+		Alloy.Globals.Log("enterproposal.js::after selectClient::openMainWindow:: after exe $.enterproposal_table.data[0] "+JSON.stringify($.enterproposal_table.data[0].rows));
 		addJobItemFromClientSelection();		
 		$.enterproposal_window.setRightNavButton($.savebutton);		
-		console.log("enterproposal.js::after selectClient::openMainWindow:: checking $.jobitem_row "+JSON.stringify($.jobitem_row));	
+		Alloy.Globals.Log("enterproposal.js::after selectClient::openMainWindow:: checking $.jobitem_row "+JSON.stringify($.jobitem_row));	
 	} else {
 		//$.enterproposal_table.setData(addnewclientrow)	;
 		Titanium.App.Properties.setString('selectclient',"false");
@@ -37,12 +37,12 @@ exports.openMainWindow = function(_tab) {
 		// required entry
 	}
 	
-	console.log("enterproposal.js::after selectClient::openMainWindow:: END $.enterproposal_table.data[0].rows "+JSON.stringify($.enterproposal_table.data[0].rows));
+	Alloy.Globals.Log("enterproposal.js::after selectClient::openMainWindow:: END $.enterproposal_table.data[0].rows "+JSON.stringify($.enterproposal_table.data[0].rows));
 	for (i=0;i<$.enterproposal_table.data[0].rowCount;i++) {		
- 		console.log("children count : "	+$.enterproposal_table.data[0].rows[i].children.length);
+ 		Alloy.Globals.Log("children count : "	+$.enterproposal_table.data[0].rows[i].children.length);
  		for (j=0;j<+$.enterproposal_table.data[0].rows[i].children.length;j++) { 			
-			console.log("enterproposal.js::after selectClient::openMainWindow::END:JSON stringify table 0 row "+i+' : ' +JSON.stringify($.enterproposal_table.data[0].rows[i]));
-			console.log("nterproposal.js::after selectClient::openMainWindow::END:JSON stringify table 0 row "+i+'w/children '+j+' : ' +JSON.stringify($.enterproposal_table.data[0].rows[i].children[j]));		
+			Alloy.Globals.Log("enterproposal.js::after selectClient::openMainWindow::END:JSON stringify table 0 row "+i+' : ' +JSON.stringify($.enterproposal_table.data[0].rows[i]));
+			Alloy.Globals.Log("nterproposal.js::after selectClient::openMainWindow::END:JSON stringify table 0 row "+i+'w/children '+j+' : ' +JSON.stringify($.enterproposal_table.data[0].rows[i].children[j]));		
 		};
 	};
 	
@@ -57,9 +57,9 @@ exports.openMainWindow = function(_tab) {
 	var maxdebug = Titanium.App.Properties.getInt('maxdebug');
 	var mindebug = Titanium.App.Properties.getInt('mindebug');
 
-console.log("enterproposal.js::outside openMainWindow:: $.enterproposal_table.data[0] count "+$.enterproposal_table.data[0].rowCount+" contents: "+JSON.stringify($.enterproposal_table.data[0].rows));
+Alloy.Globals.Log("enterproposal.js::outside openMainWindow:: $.enterproposal_table.data[0] count "+$.enterproposal_table.data[0].rowCount+" contents: "+JSON.stringify($.enterproposal_table.data[0].rows));
 
-console.log("enterproposal.js::JSON.stringify(args) : "+JSON.stringify(args));
+Alloy.Globals.Log("enterproposal.js::JSON.stringify(args) : "+JSON.stringify(args));
 
 
 if(args.clienttitle){
@@ -89,7 +89,7 @@ if(args.clienttitle){
 
 
 function addRows(){
- console.log("JSON stringify e : " +JSON.stringify(e));
+ Alloy.Globals.Log("JSON stringify e : " +JSON.stringify(e));
 // Defining new row
 var newRow = Ti.UI.createTableViewRow({
 title : 'Row ' + ($.enterproposal_table.data[0].rowCount + 1)
@@ -105,17 +105,17 @@ Titanium.App.Properties.setInt('count',count);
 
 function addItem(e,itemTextField){
 	var count = Titanium.App.Properties.getInt('count',3);
-    console.log("count :" +count);
+    Alloy.Globals.Log("count :" +count);
 	//log
-	console.log("JSON stringify e : " +JSON.stringify(e));
+	Alloy.Globals.Log("JSON stringify e : " +JSON.stringify(e));
 	Ti.API.info("data length " +$.enterproposal_table.data.length);		
 	Ti.API.info("table data 0 "+$.enterproposal_table.data[0]);
 	Ti.API.info("table row count : "+$.enterproposal_table.data[0].rowCount);
-	console.log("JSON stringify table data 0 : " +JSON.stringify($.enterproposal_table.data[0]));
+	Alloy.Globals.Log("JSON stringify table data 0 : " +JSON.stringify($.enterproposal_table.data[0]));
 	/*
 	for (i=0;i<$.enterproposal_table.data[0].rowCount;i++) {			
 		Ti.API.info($.enterproposal_table.data[0].rows[i]);		
-		console.log("JSON stringify table 0 row "+i+' : ' +JSON.stringify($.enterproposal_table.data[0].rows[i]));
+		Alloy.Globals.Log("JSON stringify table 0 row "+i+' : ' +JSON.stringify($.enterproposal_table.data[0].rows[i]));
 	}*/
 	var itemval = count - 1;
 	// Defining new test field
@@ -208,21 +208,21 @@ function addItem(e,itemTextField){
 	// Adding row to the table view
 	$.enterproposal_table.insertRowAfter(count,newRow);
 	var count = count+1;
-	console.log("new count :" +count);
+	Alloy.Globals.Log("new count :" +count);
 	Titanium.App.Properties.setInt('count',count);
 	
 	itemTextField.addEventListener('blur', function(_e) {
  	var clientproject = itemTextField.value;
  	Ti.API.info("clientproject entered in dyn field is: "+clientproject);
- 	console.log("e JSON of textfield: "+JSON.stringify(_e));
+ 	Alloy.Globals.Log("e JSON of textfield: "+JSON.stringify(_e));
  });
  
  	itemTextFieldprice.addEventListener("blur",function(e){
-		console.log("enterproposal.js::itempricelabel eventListener:" +JSON.stringify(e));
+		Alloy.Globals.Log("enterproposal.js::itempricelabel eventListener:" +JSON.stringify(e));
 		/* NOT NEEDED
-		console.log("enterproposal.js::itemTextFieldprice: isNaN("+e.source.value+")?total = "+total+":total = "+total+" + "+parseFloat(e.source.value)+";");
+		Alloy.Globals.Log("enterproposal.js::itemTextFieldprice: isNaN("+e.source.value+")?total = "+total+":total = "+total+" + "+parseFloat(e.source.value)+";");
 		isNaN(e.source.value)?total = total:total = total + parseFloat(e.source.value);
-		console.log("enterproposal.js::itemTextFieldprice: total :" + total);*/
+		Alloy.Globals.Log("enterproposal.js::itemTextFieldprice: total :" + total);*/
 		$.totalvalue.text = total;
 	});
  
@@ -235,14 +235,14 @@ $.itemlist_tf.addEventListener('blur', function(_e) {
     Ti.API.info("clientproject entered is: "+clientproject);
     Titanium.App.Properties.setString('clientproject',clientproject);
     Ti.API.info("clientproject obtained is: "+Titanium.App.Properties.getString('clientproject',"none"));
-    console.log("e JSON of textfield: "+JSON.stringify(_e));
+    Alloy.Globals.Log("e JSON of textfield: "+JSON.stringify(_e));
  });
  
  var itemvalue =[];
 
  function saveHandler(e){
- 	console.log("enterproposal.js::saveHandler::JSON.stringify(e): "+JSON.stringify(e));
- 	console.log("enterproposal.js::saveHandler::JSON.stringify(args): "+JSON.stringify(args));
+ 	Alloy.Globals.Log("enterproposal.js::saveHandler::JSON.stringify(e): "+JSON.stringify(e));
+ 	Alloy.Globals.Log("enterproposal.js::saveHandler::JSON.stringify(args): "+JSON.stringify(args));
  	var clientfirstname = e.source.clientfirstname.trim();
  	var clientlastname = e.source.clientlastname.trim();
  	var customerid = e.source.customerid.trim();
@@ -253,22 +253,22 @@ $.itemlist_tf.addEventListener('blur', function(_e) {
  	var clientcity = e.source.clientcity.trim();
  	var clientstate = e.source.clientstate.trim();
  	var country = e.source.clientcountry.trim();
- 	console.log("enterproposal.js::saveHandler::customerid: clientfirstname: clientlastname "+customerid+" : "+clientfirstname+" : "+clientlastname);
+ 	Alloy.Globals.Log("enterproposal.js::saveHandler::customerid: clientfirstname: clientlastname "+customerid+" : "+clientfirstname+" : "+clientlastname);
  	var isSelectClientTrue = Titanium.App.Properties.getString('selectclient');
- 	console.log("saving all data ");
- 	console.log("isSelectClientTrue is:"+isSelectClientTrue);
+ 	Alloy.Globals.Log("saving all data ");
+ 	Alloy.Globals.Log("isSelectClientTrue is:"+isSelectClientTrue);
  	tabledata = [];	
  	projectdata = [];
  	//suck in all the table value
  	for (i=0;i<$.enterproposal_table.data[0].rowCount;i++) {		
- 		console.log("children count : "	+$.enterproposal_table.data[0].rows[i].children.length);
+ 		Alloy.Globals.Log("children count : "	+$.enterproposal_table.data[0].rows[i].children.length);
  		for (j=0;j<+$.enterproposal_table.data[0].rows[i].children.length;j++) { 			
-			console.log("JSON stringify table 0 row "+i+' : ' +JSON.stringify($.enterproposal_table.data[0].rows[i]));
-			console.log("JSON stringify table 0 row "+i+'w/children '+j+' : ' +JSON.stringify($.enterproposal_table.data[0].rows[i].children[j]));
+			Alloy.Globals.Log("JSON stringify table 0 row "+i+' : ' +JSON.stringify($.enterproposal_table.data[0].rows[i]));
+			Alloy.Globals.Log("JSON stringify table 0 row "+i+'w/children '+j+' : ' +JSON.stringify($.enterproposal_table.data[0].rows[i].children[j]));
 			tabledata.push({data1:$.enterproposal_table.data[0].rows[i].children[j].id || "none",data2:$.enterproposal_table.data[0].rows[i].children[j].value || "none"});		
 		};
 	};
-	console.log("tabledata are: "+JSON.stringify(tabledata));
+	Alloy.Globals.Log("tabledata are: "+JSON.stringify(tabledata));
 	var projectname = [];
 	var projectdescr = [];
 	var lineitem = [];
@@ -281,30 +281,30 @@ $.itemlist_tf.addEventListener('blur', function(_e) {
 		if (tabledata[i].data1 == "itemqty_tf") {  lineitemqty.push({ itemqty:tabledata[i].data2.trim() }); };
 		if (tabledata[i].data1 == "itemprice_tf") {  lineitemprice.push({ itemprice:tabledata[i].data2.trim() }); };
 	}
-	console.log("lineitem: "+JSON.stringify(lineitem));
-	console.log("lineitemqty: "+JSON.stringify(lineitemqty));
-	console.log("lineitemprice: "+JSON.stringify(lineitemprice));
+	Alloy.Globals.Log("lineitem: "+JSON.stringify(lineitem));
+	Alloy.Globals.Log("lineitemqty: "+JSON.stringify(lineitemqty));
+	Alloy.Globals.Log("lineitemprice: "+JSON.stringify(lineitemprice));
 	var item = [];
 	item.push({'name':projectname[0].name,'descr':projectdescr[0].descr});
 	for (i=0;i<lineitem.length;i++){
 		var price = lineitemprice[i].itemprice;
-		console.log("enterproposal.js:: BEFORE push:: lineitem[i].item: "+lineitem[i].item);
+		Alloy.Globals.Log("enterproposal.js:: BEFORE push:: lineitem[i].item: "+lineitem[i].item);
 		if (lineitem[i].item != "none"){
-			console.log("enterproposal.js:: item.push:: lineitem[i].item: "+lineitem[i].item);
+			Alloy.Globals.Log("enterproposal.js:: item.push:: lineitem[i].item: "+lineitem[i].item);
 			item.push({
 				'lineitem':lineitem[i].item,
 				'qty':lineitemqty[i].itemqty,
 				'price':lineitemprice[i].itemprice
 			});
 		}
-		console.log("enterproposal.js:: itemprice_tf: in a Loop line#293:: isNaN("+price+")?total = "+total+":total = "+total+" + "+parseFloat(price)+";");
+		Alloy.Globals.Log("enterproposal.js:: itemprice_tf: in a Loop line#293:: isNaN("+price+")?total = "+total+":total = "+total+" + "+parseFloat(price)+";");
 		isNaN(price)?total=total:total = total + parseFloat(price);
-		console.log("enterproposal.js::itemprice_tf: in a Loop line#293::: total :" + total);
+		Alloy.Globals.Log("enterproposal.js::itemprice_tf: in a Loop line#293::: total :" + total);
 	}
 	$.totalvalue.text = total;
-	console.log("enterproject::saveHandler:total price and JSON.stringify(item): "+total+" AND "+JSON.stringify(item));
+	Alloy.Globals.Log("enterproject::saveHandler:total price and JSON.stringify(item): "+total+" AND "+JSON.stringify(item));
 	var projectdata = item;
-	console.log("enterproposal.js::saveHandler:projectdata: "+JSON.stringify(projectdata));
+	Alloy.Globals.Log("enterproposal.js::saveHandler:projectdata: "+JSON.stringify(projectdata));
 	var proposalnumber = Date.now();
 	var projectid = proposalnumber;
 	var name = clientfirstname+' '+clientlastname;
@@ -319,12 +319,12 @@ $.itemlist_tf.addEventListener('blur', function(_e) {
 	var clientproject = projectdata[0].name.trim();
  	var notes = JSON.stringify(projectdata).toString().replace(/:/g,'cOlOn');
  	var dates = "[{\"nextapptdate\"cOlOn\"Please update\",\"duedate\"cOlOn\"Please update\",\"lastpaiddate\"cOlOn\"Please update\"}]";
-	console.log("clientfirstname: "+clientfirstname+" clientlastname "+clientlastname);	
+	Alloy.Globals.Log("clientfirstname: "+clientfirstname+" clientlastname "+clientlastname);	
 	if (name.match(/[A-Za-z].+/)) {		
-		console.log('submit('+proposalnumber+','+clientfirstname+','+clientlastname+','+total+','+bal+','+paid+','+lastpaiddate+','+followupdate+','+customerid+','+clientemail+','+duedate+','
+		Alloy.Globals.Log('submit('+proposalnumber+','+clientfirstname+','+clientlastname+','+total+','+bal+','+paid+','+lastpaiddate+','+followupdate+','+customerid+','+clientemail+','+duedate+','
 	+currency+','+status+','+clientphone+')');
 		submit(proposalnumber,clientfirstname,clientlastname,total,bal,paid,lastpaiddate,followupdate,customerid,clientemail,duedate,currency,status,clientphone);
-		console.log('submitproject('+clientproject+','+clientfirstname+','+clientlastname+','+clientcompany+','+clientphone+','+clientemail+','+clientaddress+','+clientcity+','+clientstate+','+country+','+notes+','
+		Alloy.Globals.Log('submitproject('+clientproject+','+clientfirstname+','+clientlastname+','+clientcompany+','+clientphone+','+clientemail+','+clientaddress+','+clientcity+','+clientstate+','+country+','+notes+','
 	+customerid+','+dates+','+projectid+')');
 		submitproject(clientproject,clientfirstname,clientlastname,clientcompany,clientphone,clientemail,clientaddress,clientcity,clientstate,country,"Proposal",notes,customerid,"none",dates,projectid);
 	}
@@ -354,7 +354,7 @@ $.itemlist_tf.addEventListener('blur', function(_e) {
     	}     
     },
     onerror: function(e) {
-    	console.log("enterproposal::submit:: error e: "+JSON.stringify(e));
+    	Alloy.Globals.Log("enterproposal::submit:: error e: "+JSON.stringify(e));
        alert("error:"+e.code+": Please connect to the network.");
     }
 });
@@ -384,7 +384,7 @@ $.itemlist_tf.addEventListener('blur', function(_e) {
     		var entry = xml.documentElement.getElementsByTagName("entry");
     		var link = xml.documentElement.getElementsByTagName("link");
     		var idtag = xml.documentElement.getElementsByTagName("id").item(0).text;
-    		console.log("enterclient.js::submit: number of link found: " +link+ " length: "+link.length);
+    		Alloy.Globals.Log("enterclient.js::submit: number of link found: " +link+ " length: "+link.length);
     		for (i=0;i<link.length;i++){			
     			var listitem = link.item(i);
     			if (listitem.getAttribute("rel") == "edit"){ var edithref = listitem.getAttribute("href");}
@@ -401,7 +401,7 @@ $.itemlist_tf.addEventListener('blur', function(_e) {
     	}     
     },
     onerror: function(e) {
-    	console.log("enterproposal::submitproject::error e: "+JSON.stringify(e));
+    	Alloy.Globals.Log("enterproposal::submitproject::error e: "+JSON.stringify(e));
         alert("error:"+e.code+": Please connect to the network.");
     }
 });
@@ -449,9 +449,9 @@ $.itemlist_tf.addEventListener('blur', function(_e) {
  
  $.itemprice_tf.addEventListener("blur",function(e){
  	    /* NOT NEEDED
- 		console.log("enterproposal.js:: itemprice_tf::singleton #443: isNaN("+e.source.value+")?total = "+total+":total = "+total+" + "+parseFloat(e.source.value)+";");
+ 		Alloy.Globals.Log("enterproposal.js:: itemprice_tf::singleton #443: isNaN("+e.source.value+")?total = "+total+":total = "+total+" + "+parseFloat(e.source.value)+";");
 		isNaN(e.source.value)?total = total:total = total + parseFloat(e.source.value);
-		console.log("enterproposal.js::itemprice_tf::singleton #443: total :" + total);*/
+		Alloy.Globals.Log("enterproposal.js::itemprice_tf::singleton #443: total :" + total);*/
 		$.totalvalue.text = total;
  });
 
@@ -509,12 +509,12 @@ function matchClient() {
 			sourcecall: 'enterproposal'
 		});
 	clientController.openMainWindow($.enterproposal_tab);
-	console.log("enterproposal.js:: examine clientController: "+JSON.stringify(clientController));
+	Alloy.Globals.Log("enterproposal.js:: examine clientController: "+JSON.stringify(clientController));
 	$.selectclient_button.hide();
 	$.coverview.hide();
 	
 	var someDummy = Alloy.Models.dummy;
-	console.log("stringify dummy after selectClient :"+JSON.stringify(someDummy));
+	Alloy.Globals.Log("stringify dummy after selectClient :"+JSON.stringify(someDummy));
 	someDummy.set('id', '1234');
 	someDummy.fetch();
 	someDummy.set('searchagain', 'Click here to search again.');
@@ -525,7 +525,7 @@ function matchProject(){
 	var projectController = Alloy.createController('project',{
 			sourcecall: 'enterproposal'
 		});
-	console.log("enterproposal.js:: examine projectController: "+JSON.stringify(projectController));
+	Alloy.Globals.Log("enterproposal.js:: examine projectController: "+JSON.stringify(projectController));
 	projectController.openMainWindow($.enterproposal_tab);
 }
 
@@ -560,7 +560,7 @@ var googleAuth = new GoogleAuth({
 
 
 $.enterproposal_table.addEventListener('click', function(e){
-	console.log("JSON stringify after table row is clicked : " +JSON.stringify(e));
+	Alloy.Globals.Log("JSON stringify after table row is clicked : " +JSON.stringify(e));
 		 	$.itemlist_tf.blur();
 	 	$.itemqty_tf.blur();
 	 	$.itemprice_tf.blur();
@@ -581,26 +581,26 @@ if (uniqueid.match(/[0-9]/g)){
 		col13:uniqueid
 		}); //FILTER
 	if(theproject.length > 0){
-		console.log("enterproposal.js:: JSON.stringify(theproject): "+JSON.stringify(theproject));
+		Alloy.Globals.Log("enterproposal.js:: JSON.stringify(theproject): "+JSON.stringify(theproject));
 		for (i=0;i<theproject.length;i++){
 			var projectnames = theproject[i].toJSON().col1;
 			var projectitems = theproject[i].toJSON().col12;
 			projectitemsarray.push(projectitems);
 			projectnamesarray.push(projectnames);
 		}
-		console.log("enterproposal.js:: JSON.stringify(projectitemsarray): "+JSON.stringify(projectitemsarray));
+		Alloy.Globals.Log("enterproposal.js:: JSON.stringify(projectitemsarray): "+JSON.stringify(projectitemsarray));
 	}
 }
 
 if(projectitemsarray.length>0){
 	
 for (i=0;i<projectitemsarray.length;i++) {
-	console.log("enterproposal.js:: JSON.stringify(projectnamesarray): "+JSON.stringify(projectnamesarray));	
+	Alloy.Globals.Log("enterproposal.js:: JSON.stringify(projectnamesarray): "+JSON.stringify(projectnamesarray));	
 	var projectitems = JSON.parse(projectitemsarray[i].replace(/cOlOn/g,":").toString());
-	console.log("enterproposal.js:: JSON.stringify(projectitems): "+JSON.stringify(projectitems));
+	Alloy.Globals.Log("enterproposal.js:: JSON.stringify(projectitems): "+JSON.stringify(projectitems));
 	for (j=0;j<projectitems.length;j++){
-		if (j==0){console.log("enterproposal.js:: projectitems[0].descr: "+projectitems[j].descr);};	
-		if (j>0){console.log("enterproposal.js:: projectitems["+j+"].lineitem: "+projectitems[j].lineitem);};			
+		if (j==0){Alloy.Globals.Log("enterproposal.js:: projectitems[0].descr: "+projectitems[j].descr);};	
+		if (j>0){Alloy.Globals.Log("enterproposal.js:: projectitems["+j+"].lineitem: "+projectitems[j].lineitem);};			
 		}	
 	}	
 }
@@ -638,9 +638,9 @@ if (projectitemsarray.length>0) {
 		var projectitems = JSON.parse(projectitemsarray[x].replace(/cOlOn/g,":").toString());   // replacing all cOlOn to ':'
 		var projectname = projectnamesarray[x];
 		if(maxdebug==1){
-			console.log("enterproposal.js:: createRow: projectnamesarray["+x+"]: "+projectnamesarray[x]);
-			console.log("enterproposal.js:: createRow: JSON.stringify(projectitems): "+JSON.stringify(projectitems));
-			console.log("enterproposal.js::topvalue at START : "+topvalue);
+			Alloy.Globals.Log("enterproposal.js:: createRow: projectnamesarray["+x+"]: "+projectnamesarray[x]);
+			Alloy.Globals.Log("enterproposal.js:: createRow: JSON.stringify(projectitems): "+JSON.stringify(projectitems));
+			Alloy.Globals.Log("enterproposal.js::topvalue at START : "+topvalue);
 		};
 		topvalue = topvalue + 30;
 		var projectidentification=projectnamesarray[x].trim().replace(/\s/g,'_'); //
@@ -707,10 +707,10 @@ if (projectitemsarray.length>0) {
 		$.jobitem_row.add(descrtitlelabel);
 		$.jobitem_row.add(descrbodylabel);
 		if(maxdebug==1){
-			console.log("enterproposal.js:: addRow: projectnamelabel: "+x+" : " +projectnamesarray[x].trim());		
-			//console.log("enterproposal.js:: addRow: unchecked:  "+x+" : " +JSON.stringify(unchecked));		
-			console.log("enterproposal.js:: addRow: descrtitlelabel:   "+x+" :" +JSON.stringify(descrtitlelabel));		
-			console.log("enterproposal.js:: addRow: descrbodylabel:  "+x+" : " +descr);
+			Alloy.Globals.Log("enterproposal.js:: addRow: projectnamelabel: "+x+" : " +projectnamesarray[x].trim());		
+			//Alloy.Globals.Log("enterproposal.js:: addRow: unchecked:  "+x+" : " +JSON.stringify(unchecked));		
+			Alloy.Globals.Log("enterproposal.js:: addRow: descrtitlelabel:   "+x+" :" +JSON.stringify(descrtitlelabel));		
+			Alloy.Globals.Log("enterproposal.js:: addRow: descrbodylabel:  "+x+" : " +descr);
 		}
 		topvalue=topvalue+18;
 		var itemtitlelabel = Ti.UI.createLabel ({
@@ -760,20 +760,20 @@ if (projectitemsarray.length>0) {
 			$.jobitem_row.add(itemqtylabel);
 			$.jobitem_row.add(itempricelabel);
 			if(maxdebug==1){
-				console.log("enterproposal.js:: addRow: itembodylabel: "+i+" : " +projectitems[i].lineitem);			
-				console.log("enterproposal.js:: addRow: itemqtylabel: "+i+" : " +projectitems[i].qty);			
-				console.log("enterproposal.js:: addRow: itempricelabel: "+i+" : " +projectitems[i].price);
+				Alloy.Globals.Log("enterproposal.js:: addRow: itembodylabel: "+i+" : " +projectitems[i].lineitem);			
+				Alloy.Globals.Log("enterproposal.js:: addRow: itemqtylabel: "+i+" : " +projectitems[i].qty);			
+				Alloy.Globals.Log("enterproposal.js:: addRow: itempricelabel: "+i+" : " +projectitems[i].price);
 			}			
 			$.jobitem_row.iteminfo=[projectitems[i].lineitem,projectitems[i].qty,projectitems[i].price];
 			var info={"names":projectnamesarray[x].trim(),"descr":projectitems[0].descr,"lineitem":projectitems[i].lineitem,"qty":projectitems[i].qty,"price":projectitems[i].price};
 			projectinfoarray.push(info);
 			//add total price	
-			console.log("enterproposal.js::itempricelabel:itempricelabel:existing project: isNaN("+projectitems[i].price+")?total = "+total+":total = "+total+" + "+parseFloat(projectitems[i].price)+";");
+			Alloy.Globals.Log("enterproposal.js::itempricelabel:itempricelabel:existing project: isNaN("+projectitems[i].price+")?total = "+total+":total = "+total+" + "+parseFloat(projectitems[i].price)+";");
 			isNaN(projectitems[i].price)?total = total:total = total + parseFloat(projectitems[i].price);
-			console.log("enterproposal.js::itempricelabel::(projectitems["+i+"].price)?total : "+projectitems[i].price+" : total: "+total);		
+			Alloy.Globals.Log("enterproposal.js::itempricelabel::(projectitems["+i+"].price)?total : "+projectitems[i].price+" : total: "+total);		
 			//unchecked.titleid=projectinfoarray;
 			//checked.titleid=projectinfoarray;
-			if(maxdebug==1){console.log("enterproposal.js::topvalue at Sub END : "+topvalue);};
+			if(maxdebug==1){Alloy.Globals.Log("enterproposal.js::topvalue at Sub END : "+topvalue);};
 		}
 		topvalue=topvalue+20;
 		var grayline = Ti.UI.createImageView({
@@ -787,9 +787,9 @@ if (projectitemsarray.length>0) {
 		projectinfoarray=[];
 		topvalue = topvalue + 4;
 		if(maxdebug==1){
-			console.log("enterproposal.js:: addRow: grayline ");	
-			console.log("enterproposal.js:: table appendRow: " +JSON.stringify($.jobitem_row));		
-			console.log("enterproposal.js::topvalue at END : "+topvalue);
+			Alloy.Globals.Log("enterproposal.js:: addRow: grayline ");	
+			Alloy.Globals.Log("enterproposal.js:: table appendRow: " +JSON.stringify($.jobitem_row));		
+			Alloy.Globals.Log("enterproposal.js::topvalue at END : "+topvalue);
 		}
 	}
 	$.enterproposal_table.appendRow($.jobitem_row); // append row once.
@@ -798,7 +798,7 @@ if (projectitemsarray.length>0) {
 }
 
 function genproposal(e){
-	console.log("enterproposal.js::genproposal: JSON.stringify(e): "+JSON.stringify(e));
+	Alloy.Globals.Log("enterproposal.js::genproposal: JSON.stringify(e): "+JSON.stringify(e));
 }
 
 
