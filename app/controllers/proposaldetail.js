@@ -34,6 +34,9 @@ exports.openMainWindow = function(_tab) {
   var parentid = Titanium.App.Properties.getString(name+"_proposal");
   Alloy.Globals.checkFileExistThenUpdateTitaniumProperties(name+"_defaultlogo"); //check the logo
 };
+
+callbackFunction = args.callbackFunction;
+
 Alloy.Collections.adhoc.deleteAll(); //reset adhoc tables.
 var someDummy = Alloy.Models.dummy;
 Alloy.Globals.Log("stringify dummy :"+JSON.stringify(someDummy));
@@ -1237,6 +1240,8 @@ function duedateActionDone(e){
 	//$.datepicker_row.remove(duedatePicker);
 	duedatePicker.hide();
 	$.duedate_done.hide();
+	Alloy.Globals.Log("proposaldetail.js:: Alloy.Globals.UpdateSSDBthenFetch: ");
+	Alloy.Globals.UpdateSSDBthenFetch("proposal");
 	//create reminder
 	var kraniemailid = Titanium.App.Properties.getString('kraniemailid');Alloy.Globals.Log("schedule.js::kraniemailid:: "+kraniemailid);
 	var calid = kraniemailid;
@@ -1245,7 +1250,7 @@ function duedateActionDone(e){
 	var description = "Balance Amount: "+newbal+" ,email: "+col10+" ,Phone: "+col12;
 	updatecalendardialog.data = [{"calid":calid,"startdateTimeISO":startdateTimeISO,"enddateTimeISO":enddateTimeISO,"summary":summary,"description":description,"organizerdisplayName":organizerdisplayName}];
 	updatecalendardialog.show();
-	var item="proposal";var sid = Titanium.App.Properties.getString(item);Alloy.Globals.getPrivateData(sid,item);eval("Alloy.Collections."+item+".fetch()");
+	//var item="proposal";var sid = Titanium.App.Properties.getString(item);Alloy.Globals.getPrivateData(sid,item);eval("Alloy.Collections."+item+".fetch()");
 }
 
 var updatecalendardialog = Ti.UI.createAlertDialog({
@@ -1271,6 +1276,10 @@ updatecalendardialog.addEventListener('click', function(e){
 	} else {
 		Alloy.Globals.Log("proposaldetail.js:: updatecalendardialog: Cancelled :");
 	}
+});
+
+$.proposaldetail_window.addEventListener("close",function(){
+	callbackFunction();
 });
  
  

@@ -4,8 +4,8 @@
  	  <TableView id="settings_table" backgroundColor="transparent" separatorStyle="Ti.UI.iPhone.TableViewSeparatorStyle.NONE">
  	  	<TableViewSection headerTitle="Debug">
 		 <TableViewRow id="row_mindebug" Title="Min Debug">
-			 <Label id="label_mindebug" color="#333" top="5" left="20" text="Minimum Debug">Turn ON Minimum Debug</Label>
-			 <Label id="label_mindebug1" color="gray" top="30" left="20" text="FG LOC">Minimum debug</Label>
+			 <Label id="label_mindebug" color="#333" top="5" left="20" text="Minimum Debug">OFFLINE MODE</Label>
+			 <Label id="label_mindebug1" color="gray" top="30" left="20" text="FG LOC">Turn on/off offline mode</Label>
 		     <Switch id="switch_mindebug" right="20" titleOff="OFF" titleOn="ON" value=false/>
 		 </TableViewRow>
 		 <TableViewRow id="row_maxdebug" Title="max Debug">

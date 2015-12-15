@@ -7,6 +7,12 @@ exports.openMainWindow = function(_tab) {
 };
 $.ptr.refresh();
 
+function pulledEvent(e){
+	Alloy.Globals.Cleanup();
+	Alloy.Globals.Log("invoice.js:pulledEvent:use in callback: Alloy.Collections.invoice.fetch()");
+	Alloy.Collections.invoice.fetch();
+}
+
 
 function transformFunction(model) {
 	var transform = model.toJSON();
@@ -34,7 +40,8 @@ function doClick(e) {
 		var title = e.source.input;
 		Alloy.Globals.Log("title is: "+title);
 		var clientController = Alloy.createController('invoicedetail',{
-			title: title
+			title: title,
+			callbackFunction : pulledEvent
 		});
 		clientController.openMainWindow($.tab_invoicelist);
 	//alert("click this");

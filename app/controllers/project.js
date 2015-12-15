@@ -17,7 +17,8 @@ function transformFunction(model) {
 	+transform.col15+":"+transform.col16;
 	transform.custom = transform.col1;
 	transform.name = transform.col2+" "+transform.col3;
-	transform.phone = "phone: "+transform.col5;
+	transform.phone = "Phone: "+(transform.col5)?transform.col5.toString().replace(/^(...)(...)/g, "\($1\) $2-"):"";
+	transform.labelcolor = (transform.col5.length != 10)?"red":"#330"; //alert user to fix the phone number
 	transform.email = "email: "+transform.col6;
 	transform.addresscolor = "orange";
 	var address = transform.col7.trim();
@@ -79,6 +80,7 @@ if (args.sourcecall) {
 }
 
 function pulledEvent(e){
-	Alloy.Globals.Log("project.js:pulledEvent:: Alloy.Collections.project.fetch()");
-	Alloy.Collections.project.fetch();
+	Alloy.Globals.Cleanup();
+	Alloy.Globals.Log("project.js:pulledEvent:use in callback: Alloy.Collections.project.fetch()");
+	Alloy.Collections.project.fetch();	
 }

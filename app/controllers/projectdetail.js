@@ -42,9 +42,9 @@ var datesdata = dates.replace(/cOlOn/g,":");Alloy.Globals.Log("projectdetail.js:
 var datedue = JSON.parse(datesdata)[0].duedate;
 var nextapptdate = JSON.parse(datesdata)[0].nextapptdate;
 var lastpaiddate = JSON.parse(datesdata)[0].lastpaiddate;
-var idtag = (data[13])?data[13].replace(/xCoLoNx/g,',').split(',')[0].replace('yCoLoNy',':'):"none";
-var selfhref = (data[13])?data[13].replace(/xCoLoNx/g,',').split(',')[1].replace('yCoLoNy',':'):"none";
-var edithref = (data[13])?data[13].replace(/xCoLoNx/g,',').split(',')[2].replace('yCoLoNy',':'):"none";
+var idtag = (data[13])?data[13].replace(/xCoLoNx/g,',').split(',')[0].replace('yCoLoNy',':'):"none";Titanium.App.Properties.setString('idtag',idtag);
+var selfhref = (data[13])?data[13].replace(/xCoLoNx/g,',').split(',')[1].replace('yCoLoNy',':'):"none";Titanium.App.Properties.setString('selfhref',selfhref);
+var edithref = (data[13])?data[13].replace(/xCoLoNx/g,',').split(',')[2].replace('yCoLoNy',':'):"none";Titanium.App.Properties.setString('edithref',edithref);
 //var datedue = 0;
 $.nextapptdate_done.summary = firstname+" "+lastname+" - "+projectname;
 $.nextapptdate_done.descr = projectname;
@@ -57,7 +57,7 @@ Alloy.Globals.Log("projectdetail.js::projectdetail:: filename : "+filename);
 someDummy.set('projectname', projectname);
 someDummy.set('fullname', fullname);
 someDummy.set('company', company);
-someDummy.set('phone', phone);
+someDummy.set('phone', (phone)?phone.toString().replace(/^(...)(...)/g, "\($1\) $2-"):"");
 someDummy.set('email', email);
 someDummy.set('address', address);
 someDummy.set('citystate', city+' , '+state);
@@ -710,17 +710,21 @@ done.addEventListener('click',function(e) {
 	picker_view.hide();
 	$.status_row.add(my_combo);
 	$.status_row.height="30";
-	var status = my_combo.value;
+	status = my_combo.value;
+    var edithref = Titanium.App.Properties.getString('edithref');
+    var idtag = Titanium.App.Properties.getString('idtag');
+    var selfhref = Titanium.App.Properties.getString('selfhref');
 	Alloy.Globals.updateExistingSpreadsheetAndDB("project",projectname,firstname,lastname,company,phone,email,address,city,state,country,status,notesraw,customerid,"none",dates,projectid,edithref,selfhref,idtag);
 	var projectsid = Titanium.App.Properties.getString('project');
 	Alloy.Globals.getPrivateData(projectsid,"project");
-	callbackFunction();
+	Alloy.Globals.UpdateSSDBthenFetch("project");
+	//callbackFunction();
 });
 
 $.status_row.add(my_combo);
 
 $.projectdetail_window.addEventListener("close",function(){
-	
+callbackFunction();
 });
 
 //JOB REPORT EMAIL PDF START
@@ -1055,21 +1059,30 @@ dateduePicker.addEventListener("change",function(e) {
 
 function duedateActionDone(e){
 	Alloy.Globals.Log("projectdetail.js::duedateActionDone on Done: "+JSON.stringify(e));
-	var dates = e.source.dates;
-	var dates = JSON.stringify(dates).replace(/:/g,"cOlOn");
-	Alloy.Globals.Log("projectdetail.js::duedatepicker before SS update: "+dates);
-	Alloy.Globals.updateExistingSpreadsheetAndDB("project",projectname,firstname,lastname,company,phone,email,address,city,state,country,status,notesraw,customerid,"none",dates,projectid,edithref,selfhref,idtag);
-	var projectsid = Titanium.App.Properties.getString('project');
-	Alloy.Globals.getPrivateData(projectsid,"project");
-	callbackFunction();
-	//hide
-			dateduePicker.hide(); $.duedate_button.textid="pickerhide";
+	if (e.source.dates) {
+		var dates = e.source.dates;
+		var dates = JSON.stringify(dates).replace(/:/g,"cOlOn");
+		Alloy.Globals.Log("projectdetail.js::duedatepicker before SS update: "+dates);
+		//ReREAD the URL HREF
+	    var newedithref = (Titanium.App.Properties.getString('edithref'))?Titanium.App.Properties.getString('edithref'):edithref;
+	    var newidtag = (Titanium.App.Properties.getString('idtag'))?Titanium.App.Properties.getString('idtag'):idtag;
+	    var newselfhref = (Titanium.App.Properties.getString('selfhref'))?Titanium.App.Properties.getString('selfhref'):selfhref;
+		Alloy.Globals.updateExistingSpreadsheetAndDB("project",projectname,firstname,lastname,company,phone,email,address,city,state,country,status,notesraw,customerid,"none",dates,projectid,newedithref,newselfhref,newidtag);
+		var projectsid = Titanium.App.Properties.getString('project');
+		Alloy.Globals.getPrivateData(projectsid,"project");
+		callbackFunction();
+		//hide
+		dateduePicker.hide(); $.duedate_button.textid="pickerhide";
 		$.datepicker_row.height="1";
 		///$.datepicker_row.remove(dateduePicker);
 		dateduePicker.hide();
 		///$.datepicker_row.remove(nextapptdatePicker);
 		nextapptdatePicker.hide();
 		$.duedate_done.hide();
+	} else {
+		alert("Please select the date");
+	}
+	
 		
 }
 
@@ -1111,35 +1124,44 @@ nextapptdatePicker.addEventListener("change",function(e) {
 
 function nextapptdateActionDone(e) {
 	Alloy.Globals.Log("projectdetail.js::nextapptdateActionDone on Done: "+JSON.stringify(e));
-	var dates = e.source.dates;
-	var datesinUTC = e.source.datesinUTC;
-	var startdateTimeUTC = datesinUTC[0].nextapptdate;
-	var startdateTimeLocale = new Date(startdateTimeUTC);
-	var startdateTimeISO = startdateTimeLocale.toISOString();
-	var enddateTimeUTC = parseFloat(60*60*1000+parseFloat(startdateTimeUTC));
-	var enddateTimeLocale = new Date(enddateTimeUTC);
-	var enddateTimeISO = enddateTimeLocale.toISOString();
-	Alloy.Globals.Log("projectdetail.js::nextapptdateActionDone: startdateTimeUTC "+startdateTimeUTC + " datesinUTC " +JSON.stringify(datesinUTC));
-	var summary = e.source.summary;
-	var description = e.source.descr;
-	var organizerdisplayName = e.source.organizerdisplayName;
-	var dates = JSON.stringify(dates).replace(/:/g,"cOlOn");
-	Alloy.Globals.Log("projectdetail.js::nextapptdatepicker before SS update: "+dates);
-	Alloy.Globals.updateExistingSpreadsheetAndDB("project",projectname,firstname,lastname,company,phone,email,address,city,state,country,status,notesraw,customerid,"none",dates,projectid,edithref,selfhref,idtag);
-	var projectsid = Titanium.App.Properties.getString('project');
-	Alloy.Globals.getPrivateData(projectsid,"project");
-	callbackFunction();
-	//Hide next appt date
-	$.nextapptdate_button.textid="pickerhide";
-	$.datepicker_row.height="1";
-	$.datepicker_row.remove(nextapptdatePicker);
-	$.datepicker_row.remove(dateduePicker);
-	$.nextapptdate_done.hide();
-	//create reminder
-	var kraniemailid = Titanium.App.Properties.getString('kraniemailid');Alloy.Globals.Log("schedule.js::kraniemailid:: "+kraniemailid);
-	var calid = kraniemailid;
-	updatecalendardialog.data = [{"calid":calid,"startdateTimeISO":startdateTimeISO,"enddateTimeISO":enddateTimeISO,"summary":summary,"description":description,"organizerdisplayName":organizerdisplayName}];
-	updatecalendardialog.show();
+	if (e.source.dates) {
+		var dates = e.source.dates;
+		var datesinUTC = e.source.datesinUTC;
+		var startdateTimeUTC = datesinUTC[0].nextapptdate;
+		var startdateTimeLocale = new Date(startdateTimeUTC);
+		var startdateTimeISO = startdateTimeLocale.toISOString();
+		var enddateTimeUTC = parseFloat(60*60*1000+parseFloat(startdateTimeUTC));
+		var enddateTimeLocale = new Date(enddateTimeUTC);
+		var enddateTimeISO = enddateTimeLocale.toISOString();
+		Alloy.Globals.Log("projectdetail.js::nextapptdateActionDone: startdateTimeUTC "+startdateTimeUTC + " datesinUTC " +JSON.stringify(datesinUTC));
+		var summary = e.source.summary;
+		var description = e.source.descr;
+		var organizerdisplayName = e.source.organizerdisplayName;
+		var dates = JSON.stringify(dates).replace(/:/g,"cOlOn");
+		Alloy.Globals.Log("projectdetail.js::nextapptdatepicker before SS update: "+dates);
+				//ReREAD the URL HREF
+	    var newedithref = (Titanium.App.Properties.getString('edithref'))?Titanium.App.Properties.getString('edithref'):edithref;
+	    var newidtag = (Titanium.App.Properties.getString('idtag'))?Titanium.App.Properties.getString('idtag'):idtag;
+	    var newselfhref = (Titanium.App.Properties.getString('selfhref'))?Titanium.App.Properties.getString('selfhref'):selfhref;
+		Alloy.Globals.updateExistingSpreadsheetAndDB("project",projectname,firstname,lastname,company,phone,email,address,city,state,country,status,notesraw,customerid,"none",dates,projectid,newedithref,newselfhref,newidtag);
+		var projectsid = Titanium.App.Properties.getString('project');
+		Alloy.Globals.getPrivateData(projectsid,"project");
+		callbackFunction();
+		//Hide next appt date
+		$.nextapptdate_button.textid="pickerhide";
+		$.datepicker_row.height="1";
+		$.datepicker_row.remove(nextapptdatePicker);
+		$.datepicker_row.remove(dateduePicker);
+		$.nextapptdate_done.hide();
+		//create reminder
+		var kraniemailid = Titanium.App.Properties.getString('kraniemailid');Alloy.Globals.Log("schedule.js::kraniemailid:: "+kraniemailid);
+		var calid = kraniemailid;
+		updatecalendardialog.data = [{"calid":calid,"startdateTimeISO":startdateTimeISO,"enddateTimeISO":enddateTimeISO,"summary":summary,"description":description,"organizerdisplayName":organizerdisplayName}];
+		updatecalendardialog.show();
+	} else {
+		alert("Please select the date and time");
+	}
+	
 }
 
 function nextapptdateAction(e){

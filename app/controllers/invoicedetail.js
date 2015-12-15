@@ -30,6 +30,9 @@ exports.openMainWindow = function(_tab) {
   var parentid = Titanium.App.Properties.getString(name+"_invoice");
   Alloy.Globals.checkFileExistThenUpdateTitaniumProperties(name+"_defaultlogo"); //check the logo
 };
+
+callbackFunction = args.callbackFunction; //callback
+
 Alloy.Collections.adhoc.deleteAll(); //reset adhoc tables.
 var someDummy = Alloy.Models.dummy;
 Alloy.Globals.Log("stringify dummy :"+JSON.stringify(someDummy));
@@ -81,7 +84,7 @@ if (balance == 0){
 someDummy.set({'invoicenumber': 'Invoice#: '+invoicenumber,
 	'firstname': firstname,
 	'lastname': lastname,
-	'phone': phone,
+	'phone': (phone != "NA")?phone.toString().replace(/^(...)(...)/g, "\($1\) $2-"):"",
 	'email': email,
 	'total': 'Total: '+total,
 	'balance': balance,
@@ -1154,39 +1157,43 @@ function duedateAction(e){
 
 function duedateActionDone(e){
 	Alloy.Globals.Log("invoicedetail.js:: duedateActionDone:: JSON.stringify(e): "+JSON.stringify(e));
-	var dates = e.source.dates;
-	var duedate = dates[0].duedate;
-	var datesinUTC = e.source.datesinUTC;
-	var startdateTimeUTC = datesinUTC[0].duedate;
-	var startdateTimeLocale = new Date(startdateTimeUTC);
-	var startdateTimeISO = startdateTimeLocale.toISOString();
-	var enddateTimeUTC = parseFloat(5*60*1000+parseFloat(startdateTimeUTC));
-	var enddateTimeLocale = new Date(enddateTimeUTC);
-	var enddateTimeISO = enddateTimeLocale.toISOString();
-	Alloy.Globals.Log("invoicedetail.js:: duedateActionDone:: startdateTimeUTC "+startdateTimeUTC + " datesinUTC " +JSON.stringify(datesinUTC));
-	var summary = e.source.summary;
-	var description = e.source.descr;
-	var organizerdisplayName = e.source.organizerdisplayName;
-	var dates = JSON.stringify(dates).replace(/:/g,"cOlOn");
-	Alloy.Globals.Log("invoicedetail.js:: duedatepicker before SS update: "+dates);
-	Alloy.Globals.updateExistingSpreadsheetAndDB("invoice",col1,col2,lastname,newtotal,newbal,paid,col7,col8,col9,col10,duedate,col12,col13,col14,col15,col16,edithref,selfhref);
-	///var projectsid = Titanium.App.Properties.getString('project');
-	///Alloy.Globals.getPrivateData(projectsid,"project");
-	///callbackFunction();
-	//Hide next appt date
-	$.duedate_button.textid="pickerhide";
-	$.datepicker_row.height="1";
-	//$.datepicker_row.remove(duedatePicker);
-	duedatePicker.hide();
-	$.duedate_done.hide();
-	//create reminder
-	var kraniemailid = Titanium.App.Properties.getString('kraniemailid');Alloy.Globals.Log("schedule.js::kraniemailid:: "+kraniemailid);
-	var calid = kraniemailid;
-	var organizerdisplayName = kraniemailid;
-	var summary = "Invoice Follow-up: "+col2+" "+col3;
-	var description = "Balance Amount: "+newbal+" ,email: "+col10+" ,Phone: "+col12;
-	updatecalendardialog.data = [{"calid":calid,"startdateTimeISO":startdateTimeISO,"enddateTimeISO":enddateTimeISO,"summary":summary,"description":description,"organizerdisplayName":organizerdisplayName}];
-	updatecalendardialog.show();
+	if (e.source.dates) {
+		var dates = e.source.dates;
+		var duedate = dates[0].duedate;
+		var datesinUTC = e.source.datesinUTC;
+		var startdateTimeUTC = datesinUTC[0].duedate;
+		var startdateTimeLocale = new Date(startdateTimeUTC);
+		var startdateTimeISO = startdateTimeLocale.toISOString();
+		var enddateTimeUTC = parseFloat(5*60*1000+parseFloat(startdateTimeUTC));
+		var enddateTimeLocale = new Date(enddateTimeUTC);
+		var enddateTimeISO = enddateTimeLocale.toISOString();
+		Alloy.Globals.Log("invoicedetail.js:: duedateActionDone:: startdateTimeUTC "+startdateTimeUTC + " datesinUTC " +JSON.stringify(datesinUTC));
+		var summary = e.source.summary;
+		var description = e.source.descr;
+		var organizerdisplayName = e.source.organizerdisplayName;
+		var dates = JSON.stringify(dates).replace(/:/g,"cOlOn");
+		Alloy.Globals.Log("invoicedetail.js:: duedatepicker before SS update: "+dates);
+		Alloy.Globals.updateExistingSpreadsheetAndDB("invoice",col1,col2,lastname,newtotal,newbal,paid,col7,col8,col9,col10,duedate,col12,col13,col14,col15,col16,edithref,selfhref);
+		///var projectsid = Titanium.App.Properties.getString('project');
+		///Alloy.Globals.getPrivateData(projectsid,"project");
+		///callbackFunction();
+		//Hide next appt date
+		$.duedate_button.textid="pickerhide";
+		$.datepicker_row.height="1";
+		//$.datepicker_row.remove(duedatePicker);
+		duedatePicker.hide();
+		$.duedate_done.hide();
+		//create reminder
+		var kraniemailid = Titanium.App.Properties.getString('kraniemailid');Alloy.Globals.Log("schedule.js::kraniemailid:: "+kraniemailid);
+		var calid = kraniemailid;
+		var organizerdisplayName = kraniemailid;
+		var summary = "Invoice Follow-up: "+col2+" "+col3;
+		var description = "Balance Amount: "+newbal+" ,email: "+col10+" ,Phone: "+col12;
+		updatecalendardialog.data = [{"calid":calid,"startdateTimeISO":startdateTimeISO,"enddateTimeISO":enddateTimeISO,"summary":summary,"description":description,"organizerdisplayName":organizerdisplayName}];
+		updatecalendardialog.show();
+	} else {
+		alert("Please select date");
+	}	
 }
 
 var updatecalendardialog = Ti.UI.createAlertDialog({
@@ -1214,4 +1221,7 @@ updatecalendardialog.addEventListener('click', function(e){
 	}
 });
  
+$.invoicedetail_window.addEventListener("close",function(){
+	callbackFunction();
+});
  

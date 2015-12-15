@@ -5,6 +5,14 @@ exports.openMainWindow = function(_tab) {
    (Alloy.Globals.googleAuthSheet.getAccessToken()) || Alloy.Globals.googleAuthSheet.Authorize();
 };
 
+if (args.callbackFunction){
+	callbackFunction = args.callbackFunction;
+} else {
+	callbackFunction = function() {
+		Alloy.Globals.Log("no callback");
+	};
+}
+
 if (args.title) {
 	Alloy.Globals.Log("enteremployee.js::detected vars:JSON.stringify(vars):: "+JSON.stringify(args));
 	var data = args.title.split(':');
@@ -261,8 +269,8 @@ $.enteremployee_table.addEventListener('click', function(e){
 	$.notes_tf.blur();
 });
 
-$.enteremployee_window.addEventListener("close",function(e){
-	var args = "";
+$.enteremployee_window.addEventListener("close",function(e){	
+	callbackFunction();
 });
 
  

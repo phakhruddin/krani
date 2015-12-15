@@ -49,9 +49,10 @@ function transformFunction(model) {
 	///Alloy.Globals.Log("transform is ::" +JSON.stringify(transform));
 	transform.title = transform.col1+":"+transform.col2+":"+transform.col3+":"+transform.col4+":"+transform.col5+":"+transform.col6+":"+transform.col7+":"+transform.col8+":"+transform.col9+":"+transform.col10+":"+transform.col11+":"+transform.col12+":"+transform.col13+":"+transform.col14+":"+transform.col15+":"+transform.col16;
 	transform.custom = transform.col2+"  "+transform.col3;
-	transform.phone = "Phone: "+transform.col5;
+	transform.phone = "Phone: "+(transform.col5)?transform.col5.toString().replace(/^(...)(...)/g, "\($1\) $2-"):"";
 	transform.email = "Email: "+transform.col6;
 	transform.img ="EditControl.png";
+	transform.labelcolor = (transform.col5.length != 10)?"red":"#330"; //alert user to fix the phone number
 	return transform;
 }
 

@@ -10,7 +10,7 @@ $.ptr.refresh();
 
 function transformFunction(model) {
 	var transform = model.toJSON();
-	///Alloy.Globals.Log("transform is ::" +JSON.stringify(transform));
+	//Alloy.Globals.Log("transform is ::" +JSON.stringify(transform));
 	transform.title = transform.col1+":"+transform.col2+":"+transform.col3+":"+transform.col4+":"+transform.col5+":"+transform.col6+":"+transform.col7+":"+transform.col8+":"+transform.col9+":"
 		+transform.col10+":"+transform.col11+":"+transform.col12+":"+transform.col13+":"+transform.col14+":"+transform.col15+":"+transform.col16;
 	transform.custom = transform.col2+" "+transform.col3;
@@ -34,7 +34,8 @@ function doClick(e) {
 		var title = e.source.input;
 		Alloy.Globals.Log("title is: "+title);
 		var clientController = Alloy.createController('proposaldetail',{
-			title: title
+			title: title,
+			callbackFunction : pulledEvent
 		});
 		clientController.openMainWindow($.tab_proposallist);
 	//alert("click this");
@@ -89,5 +90,11 @@ function myRefresher(e) {
         success: e.hide,
         error: e.hide
     });
+}
+
+function pulledEvent(e){
+	Alloy.Globals.Cleanup();
+	Alloy.Globals.Log("proposallistlist.js:pulledEvent:use in callback: Alloy.Collections.proposal.fetch()");
+	Alloy.Collections.proposal.fetch();
 }
    

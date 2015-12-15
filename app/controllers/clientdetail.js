@@ -50,7 +50,7 @@ someDummy.set('fullname', fullname);
 someDummy.set('firstname', firstname);
 someDummy.set('lastname', lastname);
 someDummy.set('company', company);
-someDummy.set('phone', phone);
+someDummy.set('phone', (phone)?phone.toString().replace(/^(...)(...)/g, "\($1\) $2-"):"");
 someDummy.set('email', email);
 someDummy.set('address', address);
 someDummy.set('city', city);

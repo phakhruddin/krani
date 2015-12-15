@@ -12,11 +12,11 @@ $.switch_mindebug.addEventListener("change", function(e){
 	if ( switchMDValue == true ) {
 		Titanium.App.Properties.setInt('mindebug',1);
 		var mindebugstatus = "ON";
-		alert("Minimum Debug is "+mindebugstatus);
+		alert("OFFLINE Mode is "+mindebugstatus);
 	} else {
 		Titanium.App.Properties.setInt('mindebug',0);
 		var mindebugstatus = "OFF";
-		alert("Minimum Debug is "+mindebugstatus);
+		alert("OFFLINE Mode  is "+mindebugstatus);
 	};
 });
 

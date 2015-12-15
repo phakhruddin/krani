@@ -109,9 +109,9 @@ function transformFunction(model) {
 	///Alloy.Globals.Log("transform is ::" +JSON.stringify(transform));
 	transform.title = transform.col1+":"+transform.col2+":"+transform.col3+":"+transform.col4+":"+transform.col5+":"+transform.col6+":"+transform.col7+":"+transform.col8+":"+transform.col9+":"+transform.col10+":"+transform.col11+":"+transform.col12+":"+transform.col13+":"+transform.col14+":"+transform.col15+":"+transform.col16;
 	transform.custom = transform.col2+"  "+transform.col3;
-	transform.phone = "Phone: "+transform.col5;
+	transform.phone = "Phone: "+(transform.col5)?transform.col5.toString().replace(/^(...)(...)/g, "\($1\) $2-"):"";
 	transform.email = "Email: "+transform.col6;
-	
+	transform.labelcolor = (transform.col5.length != 10)?"red":"#330"; //alert user to fix the phone number
 	lat1=transform.col8;
 	lon1=transform.col9;
 	
@@ -159,7 +159,8 @@ function addLabor(e){
 	if (e.row) {
 		Alloy.Globals.Log("location.js::addLabor:e.row.title: "+e.row.title);
 		var tabViewOneChildController = Alloy.createController("enteremployee",{
-  		title:e.row.title
+  		title:e.row.title,
+  		callbackFunction : pulledEvent
   	});
 	} else {
 		var tabViewOneChildController = Alloy.createController("enteremployee");
@@ -188,5 +189,12 @@ $.labor_table.addEventListener("scroll",function(){
 	$.sortview.hide();
 	$.location_tab.addEventListener("singletap",function(){$.sortview.show();});
 });
+
+function pulledEvent(e){
+	Alloy.Globals.Cleanup();
+	Alloy.Globals.Log("location.js:pulledEvent:use in callback: Alloy.Collections.labor.fetch()");
+	Alloy.Collections.labor.fetch();
+}
+
 
 

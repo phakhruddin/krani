@@ -25,7 +25,19 @@ Alloy.Globals.license = "freeuser";
 var corefilenamearray = ["project","client","invoice","inventory","proposal","master","schedule","labor","joblog"];	
 Alloy.Globals.corefilenamearray = corefilenamearray;
 var jsonhosting = "https://api.myjson.com/bins/srmw";
+var OfflineMode = 0; //default is ONLINE mode
+//Titanium.App.Properties.setInt('mindebug',1);
 //
+
+Alloy.Globals.Cleanup = function(){
+	var proptoremove = ["edithref","idtag","selfhref"];
+	for (i=0;i<proptoremove.length;i++){
+		console.log("alloy.js:: b4 remove property "+proptoremove[i]+" Titanium.App.Properties.getString(\'"+proptoremove[i]+"\') : "+eval("Titanium.App.Properties.getString(\'"+proptoremove[i]+"\')"));
+		eval("Ti.App.Properties.removeProperty(\'"+proptoremove[i]+"\')");
+		console.log("alloy.js:: AFTER remove property "+proptoremove[i]+" Titanium.App.Properties.getString(\'"+proptoremove[i]+"\') : "+eval("Titanium.App.Properties.getString(\'"+proptoremove[i]+"\')"));
+	}
+};
+Alloy.Globals.Cleanup();
 
 Alloy.Globals.getMaster = function() {
 	var url="https://spreadsheets.google.com/feeds/list/"+bootstrapid+"/od6/public/basic?hl=en_US&alt=json";
@@ -460,14 +472,17 @@ Alloy.Globals.getData = function(sid,type) {
 			    Ti.API.info((success==true) ? 'success' : 'fail'); // outputs 'success'
 			}
 			file.write(this.responseText);
-			(type == 'client') && Alloy.Collections.client.deleteAll();
-			(type == 'project') && Alloy.Collections.project.deleteAll();
-			(type == 'inventory') && Alloy.Collections.inventory.deleteAll();
-			(type == 'invoice') && Alloy.Collections.invoice.deleteAll();
-			(type == 'supplier') && Alloy.Collections.supplier.deleteAll();
-			(type == 'proposal') && Alloy.Collections.proposal.deleteAll();
-			(type == 'labor') && Alloy.Collections.labor.deleteAll();
-			(type == 'joblog') && Alloy.Collections.joblog.deleteAll();
+			//var OfflineMode = Titanium.App.Properties.setInt('mindebug');
+			//if ( OfflineMode == 0 ) {
+				(type == 'client') && Alloy.Collections.client.deleteAll();
+				(type == 'project') && Alloy.Collections.project.deleteAll();
+				(type == 'inventory') && Alloy.Collections.inventory.deleteAll();
+				(type == 'invoice') && Alloy.Collections.invoice.deleteAll();
+				(type == 'supplier') && Alloy.Collections.supplier.deleteAll();
+				(type == 'proposal') && Alloy.Collections.proposal.deleteAll();
+				(type == 'labor') && Alloy.Collections.labor.deleteAll();
+				(type == 'joblog') && Alloy.Collections.joblog.deleteAll();
+			//}		
 			for (var i=1; i < +json.feed.entry.length; i++) {
 				var dataModel = Alloy.createModel(type,{
 					col1 :  json.feed.entry[i].title.$t.trim() || "none",
@@ -510,7 +525,8 @@ Alloy.Globals.createController = function(controller,sourcetab){
 
 Alloy.Globals.getPrivateData = function(sid,type) {	
 	var data = [];
-	var maxdebug = mindebug = 1;
+	var maxdebug = Titanium.App.Properties.getInt('maxdebug');
+	var mindebug = Titanium.App.Properties.getInt('mindebug');
 	Alloy.Globals.Log("alloy.js::Alloy.Globals.getPrivateData: type: min max debug: "+type+" :"+mindebug+" : "+maxdebug+" sid: "+sid);
 	//Alloy.Globals.checkGoogleisAuthorized();
 	//Alloy.Globals.checkNetworkAndGoogleAuthorized('1gnkP116nsTVxtrw6d_mXVdOiesQEPH7LVUIyHUfx9EE');
@@ -528,18 +544,21 @@ Alloy.Globals.getPrivateData = function(sid,type) {
 			var entry = xml.documentElement.getElementsByTagName("entry"); 
 			Alloy.Globals.Log("alloy.js::this entry length is: " +entry.length);
 			// deleting existing entry in database start
-			(type == 'client') && Alloy.Collections.client.deleteAll();
-			(type == 'project') && Alloy.Collections.project.deleteAll();
-			(type == 'inventory') && Alloy.Collections.inventory.deleteAll();
-			(type == 'invoice') && Alloy.Collections.invoice.deleteAll();
-			(type == 'supplier') && Alloy.Collections.supplier.deleteAll();
-			(type == 'proposal') && Alloy.Collections.proposal.deleteAll();
-			(type == 'labor') && Alloy.Collections.labor.deleteAll();
-			(type == 'joblog') && Alloy.Collections.joblog.deleteAll();
-			(type == 'master') && Alloy.Collections.master.deleteAll();
-			(type == 'joblogsid') && Alloy.Collections.joblogsid.deleteAll();
-			(type == 'payment') && Alloy.Collections.payment.deleteAll();
-			(type == 'paymentsid') && Alloy.Collections.paymentsid.deleteAll();
+			//var OfflineMode = Titanium.App.Properties.setInt('mindebug');
+			//if ( OfflineMode == 0 ){
+				(type == 'client') && Alloy.Collections.client.deleteAll();
+				(type == 'project') && Alloy.Collections.project.deleteAll();
+				(type == 'inventory') && Alloy.Collections.inventory.deleteAll();
+				(type == 'invoice') && Alloy.Collections.invoice.deleteAll();
+				(type == 'supplier') && Alloy.Collections.supplier.deleteAll();
+				(type == 'proposal') && Alloy.Collections.proposal.deleteAll();
+				(type == 'labor') && Alloy.Collections.labor.deleteAll();
+				(type == 'joblog') && Alloy.Collections.joblog.deleteAll();
+				(type == 'master') && Alloy.Collections.master.deleteAll();
+				(type == 'joblogsid') && Alloy.Collections.joblogsid.deleteAll();
+				(type == 'payment') && Alloy.Collections.payment.deleteAll();
+				(type == 'paymentsid') && Alloy.Collections.paymentsid.deleteAll();
+			//};		
 			// deleting existing entry done
 			for (i=1;i<entry.length;i++){
 				var col1 = entry.item(i).getElementsByTagName("gsx:col1").item(0).text;
@@ -2906,3 +2925,9 @@ Alloy.Globals.refreshActivity = function() {
 	} else {(Alloy.Globals.googleAuthSheet.getAccessToken()) && getEmail(); }
 };
 
+Alloy.Globals.UpdateSSDBthenFetch = function(item){
+  var sid = Titanium.App.Properties.getString(item);
+  Alloy.Globals.getPrivateData(sid,item);
+  Alloy.Globals.Log("Alloy.Globals.UpdateSSDBthenFetch: updating item: " +item+" with sid: "+sid);
+  eval("Alloy.Collections."+item+".fetch()");
+};

@@ -2,7 +2,7 @@
 	<Model src="dummy" />
 	<Collection src="adhoc" />
 	<Tab id="tab_proposaldetail">
-  <Window id="proposaldetail_window" title="proposal by Customer Name" backgroundColor="white">
+  <Window id="proposaldetail_window" title="Proposal Detail" backgroundColor="white">
 	  <TableView id="proposaldetail_table"  backgroundColor="transparent">
 	  	<TableViewSection  headerTitle="Summary">
 		  <TableViewRow id="proposalnumber_row" color="gray" Title="Summary" height="100">
