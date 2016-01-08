@@ -4,6 +4,7 @@ exports.openMainWindow = function(_tab) {
   Ti.API.info("invoicedetail.js::This is child widow checking _tab on : " +JSON.stringify(_tab));
   Ti.API.info("invoicedetail.js:: input details : "+JSON.stringify(args));
   prefetchPayment(); //prefetch payment to get existing sid or to create new
+  prefetchinvoicesent();
   $.totalbalance_row.addEventListener("click", function(e){
   	    var firstname = e.row.firstname;
   	    var lastname = e.row.lastname;
@@ -31,7 +32,7 @@ exports.openMainWindow = function(_tab) {
   Alloy.Globals.checkFileExistThenUpdateTitaniumProperties(name+"_defaultlogo"); //check the logo
 };
 
-callbackFunction = args.callbackFunction; //callback
+invoicecallbackFunction = args.callbackFunction; //callback
 
 Alloy.Collections.adhoc.deleteAll(); //reset adhoc tables.
 var someDummy = Alloy.Models.dummy;
@@ -58,9 +59,10 @@ var status = col13 = data[12];
 var currency = col15 = data[14];
 var notes = col14 = col16 = data[15];
 var filename = 'payment_'+invoicenumber+'_'+firstname+'_'+lastname; $.totalbalance_row.filename = filename;
-var idtag = (data[13])?data[13].replace(/xCoLoNx/g,',').split(',')[0].replace('yCoLoNy',':'):"none";
-var selfhref = (data[13])?data[13].replace(/xCoLoNx/g,',').split(',')[1].replace('yCoLoNy',':'):"none";
-var edithref = (data[13])?data[13].replace(/xCoLoNx/g,',').split(',')[2].replace('yCoLoNy',':'):"none";
+var invoicesentfilename = 'invoicesent_'+invoicenumber+'_'+firstname+'_'+lastname; $.action_row.invoicesentfilename = invoicesentfilename;
+var idtag = (data[13])?data[13].replace(/xCoLoNx/g,',').split(',')[0].replace('yCoLoNy',':'):"none";Titanium.App.Properties.setString('idtag',idtag);
+var selfhref = (data[13])?data[13].replace(/xCoLoNx/g,',').split(',')[1].replace('yCoLoNy',':'):"none";Titanium.App.Properties.setString('selfhref',selfhref);
+var edithref = (data[13])?data[13].replace(/xCoLoNx/g,',').split(',')[2].replace('yCoLoNy',':'):"none";Titanium.App.Properties.setString('edithref',edithref);
 $.duedate_done.idtag = idtag;
 $.duedate_done.selfhref = selfhref;
 $.duedate_done.edithref = edithref;
@@ -151,9 +153,9 @@ if (uniqueid){
 		Alloy.Globals.Log("invocedetail.js:: JSON.stringify(projectitemsarray): "+JSON.stringify(projectitemsarray));
 	}
 } else { Alloy.Globals.Log("unqueid is not a number: uniqueid: "+uniqueid);};
-
+/*
 if(projectitemsarray.length>0){
-	
+
 for (i=0;i<projectitemsarray.length;i++) {
 	Alloy.Globals.Log("invocedetail.js:: JSON.stringify(projectnamesarray): "+JSON.stringify(projectnamesarray));	
 	var projectitems = JSON.parse(projectitemsarray[i].replace(/cOlOn/g,":").toString());
@@ -163,7 +165,7 @@ for (i=0;i<projectitemsarray.length;i++) {
 		if (j>0){Alloy.Globals.Log("invocedetail.js:: projectitems["+j+"].lineitem: "+projectitems[j].lineitem);};			
 		}	
 	}	
-}
+}*/
 
 /// processing array in notes
 if (projectitemsarray.length>0) {
@@ -314,9 +316,12 @@ if (projectitemsarray.length>0) {
 	var newbal = parseFloat(newtotal)-parseFloat(paid);	
 	Titanium.App.Properties.setString(invoicenumber+'_balance',prevbal);
 	//Delay 1 secs. Too much conflict for concurrent edit. error code 409
+	var edithref = Titanium.App.Properties.getString('edithref');
+    var idtag = Titanium.App.Properties.getString('idtag');
+    var selfhref = Titanium.App.Properties.getString('selfhref');
 	if (edithref) {		
-		Alloy.Globals.Log("invoicedetail.js: update spreadsheet and database with new balance: "+prevbal);
-		Alloy.Globals.updateExistingSpreadsheetAndDB("invoice",col1,col2,lastname,newtotal,newbal,paid,col7,col8,col9,col10,col11,col12,col13,col14,col15,col16,edithref,selfhref);
+		Alloy.Globals.Log("invoicedetail.js: update spreadsheet and database with new balance: "+prevbal+" executing Alloy.Globals.updateExistingSpreadsheetAndDB");
+		Alloy.Globals.updateExistingSpreadsheetAndDB("invoice",col1,col2,lastname,newtotal,newbal,paid,col7,col8,col9,col10,col11,col12,col13,col14,col15,col16,edithref,selfhref,idtag);
 	}		
 	
 };
@@ -326,42 +331,44 @@ var adhocs = Alloy.Collections.instance('adhoc');
 
 //selection on invoce.
 $.jobitem_row.addEventListener("click",function(e){
-	Alloy.Globals.Log("invoicedetail.js::jobitem_row event listener: JSON.stringify(e): "+JSON.stringify(e));
-	if (e.source.image=="EditControl.png"){
-		Alloy.Globals.Log("invoicedetail.js::after "+e.source.image+" clicked: JSON.stringify(e): "+JSON.stringify(e));
-		Alloy.Globals.Log("invoicedetail.js::after "+e.source.image+" clicked: retrieved JSON.stringify(e.source.titleid): "+JSON.stringify(e.source.titleid));
-		var info=e.source.titleid;
-		var infostring = JSON.stringify(e.source.titleid);
-		var infostringmod = infostring.replace(/\[/g,"xSqBracketOpen").replace(/\]/g,"xSqBracketClose");
-		Alloy.Globals.Log("invoicedetail.js::after "+e.source.image+" clicked: retrieved project name at Pos 0 again: "+info[0].names);
-		e.source.image="EditControlSelected.png";
-		var itemid = Date.now().toString();
-		//update adhoc table.
-		var dataModel = Alloy.createModel("adhoc",{
-                                        col1 :  itemid,
-                                        col2 : info[0].names,
-                                        col3 : infostringmod, 
-                                        //col4:	projectitems[i].price
-                                });     
-        dataModel.save();
-		adhocs.fetch();
-		Alloy.Globals.Log("invoicedetail.js:: aftere adhocs add & fetch: "+JSON.stringify(adhocs));
-		// tag source with itemid
-		e.source.itemid=itemid;
-		Alloy.Globals.Log("invoicedetail.js::itemid, "+itemid+", stamp to "+e.source.image+" clicked: JSON.stringify(e): "+JSON.stringify(e));
-	} else {
-		Alloy.Globals.Log("invoicedetail.js::after "+e.source.image+" clicked: JSON.stringify(e): "+JSON.stringify(e));
-		e.source.image="EditControl.png";
-		var itemid=e.source.itemid;
-		adhocs.fetch();
-		var theadhoc = adhocs.where({
-			col1:itemid
-			}); 
-		Alloy.Globals.Log("invoicedetail.js::to uncheck: theadhoc is: "+JSON.stringify(theadhoc));
-		Alloy.Globals.Log("invoicedetail.js::to uncheck: adhocs is: "+JSON.stringify(adhocs));
-		Alloy.Collections.adhoc.deleteCol1(itemid);
-		adhocs.fetch();
-		Alloy.Globals.Log("invoicedetail.js::to uncheck: adhocs after delete : "+JSON.stringify(adhocs));
+	if (e.source.titleid) {
+		Alloy.Globals.Log("invoicedetail.js::jobitem_row event listener: JSON.stringify(e): "+JSON.stringify(e));
+		if (e.source.image=="EditControl.png"){
+			Alloy.Globals.Log("invoicedetail.js::after "+e.source.image+" clicked: JSON.stringify(e): "+JSON.stringify(e));
+			Alloy.Globals.Log("invoicedetail.js::after "+e.source.image+" clicked: retrieved JSON.stringify(e.source.titleid): "+JSON.stringify(e.source.titleid));
+			var info=e.source.titleid;
+			var infostring = JSON.stringify(e.source.titleid);
+			var infostringmod = (infostring)?infostring.replace(/\[/g,"xSqBracketOpen").replace(/\]/g,"xSqBracketClose"):"";
+			Alloy.Globals.Log("invoicedetail.js::after "+e.source.image+" clicked: retrieved project name at Pos 0 again: "+info[0].names);
+			e.source.image="EditControlSelected.png";
+			var itemid = Date.now().toString();
+			//update adhoc table.
+			var dataModel = Alloy.createModel("adhoc",{
+	                                        col1 :  itemid,
+	                                        col2 : info[0].names,
+	                                        col3 : infostringmod, 
+	                                        //col4:	projectitems[i].price
+	                                });     
+	        dataModel.save();
+			adhocs.fetch();
+			Alloy.Globals.Log("invoicedetail.js:: aftere adhocs add & fetch: "+JSON.stringify(adhocs));
+			// tag source with itemid
+			e.source.itemid=itemid;
+			Alloy.Globals.Log("invoicedetail.js::itemid, "+itemid+", stamp to "+e.source.image+" clicked: JSON.stringify(e): "+JSON.stringify(e));
+		} else {
+			Alloy.Globals.Log("invoicedetail.js::after "+e.source.image+" clicked: JSON.stringify(e): "+JSON.stringify(e));
+			e.source.image="EditControl.png";
+			var itemid=e.source.itemid;
+			adhocs.fetch();
+			var theadhoc = adhocs.where({
+				col1:itemid
+				}); 
+			Alloy.Globals.Log("invoicedetail.js::to uncheck: theadhoc is: "+JSON.stringify(theadhoc));
+			Alloy.Globals.Log("invoicedetail.js::to uncheck: adhocs is: "+JSON.stringify(adhocs));
+			Alloy.Collections.adhoc.deleteCol1(itemid);
+			adhocs.fetch();
+			Alloy.Globals.Log("invoicedetail.js::to uncheck: adhocs after delete : "+JSON.stringify(adhocs));
+		}
 	}
 });
 
@@ -859,7 +866,7 @@ function fileExist(filename,parentid){
 	    onload: function(e) {
 	    try {
 	    		var jsonlist = JSON.parse(this.responseText);
-	    		Ti.API.info("response of jsonlist is: "+JSON.stringify(jsonlist));
+	    		Ti.API.info("fileExist::response of jsonlist is: "+JSON.stringify(jsonlist));
 	    	} catch(e){
 				Ti.API.info("cathing e: "+JSON.stringify(e));
 			}
@@ -873,8 +880,10 @@ function fileExist(filename,parentid){
 			} else {
 				var fileexist = "true";
 				var sid = jsonlist.items[0].id;
+				eval("Titanium.App.Properties.setString('"+filename+"_sid',sid)");
 				$.totalbalance_row.sid = sid;
 				Alloy.Globals.Log("invoicedetail.js::fileExist:: File exist. sid is: "+jsonlist.items[0].id+" Skipped.");
+				Alloy.Globals.Log("invoicedetail.js:: fileExist. Titanium.App.Properties.setString('"+filename+"_sid',sid) is: "+eval("Titanium.App.Properties.getString('"+filename+"_sid')")+".");
 				Titanium.App.Properties.setString('sid',sid);
 				populatepaymentSIDtoDB(filename,sid);
 				//populateSpreadsheetHeader();
@@ -882,7 +891,7 @@ function fileExist(filename,parentid){
 		}
 		});
 	xhr.onerror = function(e){
-		alert("Creating new document in the cloud");
+		alert("fileExist:: Creating new document in the cloud");
 	};
 	var rawquerystring = '?q=title+%3D+\''+filename+'\'+and+mimeType+%3D+\'application%2Fvnd.google-apps.spreadsheet\'+and+trashed+%3D+false&fields=items(id%2CmimeType%2Clabels%2Ctitle)';
 	xhr.open("GET", 'https://www.googleapis.com/drive/v2/files'+rawquerystring);
@@ -981,6 +990,10 @@ function createSpreadsheet(filename,parentid) {
 	    		Ti.API.info("response is: "+this.responseText);
 	    		var json = JSON.parse(this.responseText);
 	    		var sid = json.id;
+	    		//Add dynamic Ti Properties set for sid
+	    		eval("Titanium.App.Properties.setString('"+filename+"_sid',sid)");
+	    		Alloy.Globals.Log("Alloy.Globals.checkFileExistThenUpdateSID:: File exist. sid is: "+json.id+" ");
+				Alloy.Globals.Log("Alloy.Globals.checkFileExistThenUpdateSID:: File exist. Titanium.App.Properties.setString('"+filename+"_sid',sid) is: "+eval("Titanium.App.Properties.getString('"+filename+"_sid')")+".");
 	    		$.totalbalance_row.sid = sid; // inject sid to tableviewrow
 	    		populatepaymentSIDtoDB(filename,sid);
 	    		Titanium.App.Properties.setString('sid',sid); // 1st sid created.
@@ -1088,7 +1101,7 @@ function prefetchPayment(e){
 }
 
 function dummyRefresh(paid,balance,lastpaiddate){
-	Alloy.Globals.Log("invoicedetail.js::dummyRefresh:: balance: "+paid);
+	Alloy.Globals.Log("invoicedetail.js::dummyRefresh:: execute in enterpayment:: balance: "+paid);
 	someDummy.set({'id': '1234',
 		'paid': 'Paid: '+paid,
 		'balance': +balance,
@@ -1096,19 +1109,31 @@ function dummyRefresh(paid,balance,lastpaiddate){
 		});
 	someDummy.fetch();
 	Alloy.Globals.Log("invoicedetail.js:dummyRefresh: JSON.stringify(someDummy):: "+JSON.stringify(someDummy));
-	//Alloy.Globals.updateExistingSpreadsheetAndDB("invoice",col1,col2,lastname,newtotal,newbal,paid,col7,col8,col9,col10,col11,col12,col13,col14,col15,col16,edithref,selfhref);
+		//Alloy.Globals.Cleanup();
+	Alloy.Globals.Log("invoicedetail.js:pulledEvent:use in callback: Alloy.Collections.payment.fetch()");
+	prefetchPayment(); //refresh. pulledEvent.
+	///Alloy.Collections.payment.fetch();	
+	var edithref = Titanium.App.Properties.getString('edithref');
+    var idtag = Titanium.App.Properties.getString('idtag');
+    var selfhref = Titanium.App.Properties.getString('selfhref');
+	Alloy.Globals.Log("invoicedetail.js::dummyRefresh::Alloy.Globals.updateExistingSpreadsheetAndDB:: invoice , "+col1+" , "+col2+" , "+lastname+" , "+newtotal+" , "+balance+" , "+paid+" , "+lastpaiddate+" , "+col8+" , "+col9+" , "+col10+" , "+col11+" , "
+	+col12+" , "+col13+" , "+col14+" , "+col15+" , "+col16+" , "+edithref+" , "+selfhref+", "+idtag+" ) ");
+	var col4 = newtotal;
+	var col5 = balance;
+	var col6 = paid;
+	Alloy.Globals.updateExistingSpreadsheetAndDB("invoice",col1,col2,lastname,col4,col5,col6,col7,col8,col9,col10,col11,col12,col13,col14,col15,col16,edithref,selfhref,idtag);
 }	
 
 function actionPhone(e){
 	Alloy.Globals.Log("invoicedetail.js:actionPhone:JSON.stringify(e): "+JSON.stringify(e));
-	var phonenumber = e.source.title.trim();
+	var phonenumber = e.source.titleid.trim();
 	//var phonenumber = "2623526221";
 	//Ti.Platform.openURL('telprompt://' + phonenumber);; 
 	Ti.Platform.openURL('tel:'+phonenumber+'');; 
 }
 function actioneMail(e){
 	Alloy.Globals.Log("invoicedetail.js:actioneMail:JSON.stringify(e): "+JSON.stringify(e));
-	var email = e.source.title.trim();
+	var email = e.source.titleid.trim();
 	var emailDialog = Ti.UI.createEmailDialog();
 	emailDialog.subject = "Invoice #"+ e.source.data[0];
 	emailDialog.toRecipients = [email];
@@ -1173,7 +1198,10 @@ function duedateActionDone(e){
 		var organizerdisplayName = e.source.organizerdisplayName;
 		var dates = JSON.stringify(dates).replace(/:/g,"cOlOn");
 		Alloy.Globals.Log("invoicedetail.js:: duedatepicker before SS update: "+dates);
-		Alloy.Globals.updateExistingSpreadsheetAndDB("invoice",col1,col2,lastname,newtotal,newbal,paid,col7,col8,col9,col10,duedate,col12,col13,col14,col15,col16,edithref,selfhref);
+		var edithref = Titanium.App.Properties.getString('edithref');
+    	var idtag = Titanium.App.Properties.getString('idtag');
+    	var selfhref = Titanium.App.Properties.getString('selfhref');
+		Alloy.Globals.updateExistingSpreadsheetAndDB("invoice",col1,col2,lastname,newtotal,newbal,paid,col7,col8,col9,col10,duedate,col12,col13,col14,col15,col16,edithref,selfhref,idtag);
 		///var projectsid = Titanium.App.Properties.getString('project');
 		///Alloy.Globals.getPrivateData(projectsid,"project");
 		///callbackFunction();
@@ -1222,6 +1250,35 @@ updatecalendardialog.addEventListener('click', function(e){
 });
  
 $.invoicedetail_window.addEventListener("close",function(){
-	callbackFunction();
+	invoicecallbackFunction();
 });
+
+Alloy.Globals.checkFileExistThenUpdateSID("invoicesentfilename","invoicesent");
+
+function prefetchinvoicesent(e){
+	var parentid = Titanium.App.Properties.getString('parentid');
+	Alloy.Globals.Log("invoicedetail.js::prefetchinvoicesent::need to check if parent/filename exist: "+parentid+'/'+invoicesentfilename);
+	fileExist(invoicesentfilename,parentid);
+	var item = "invoicesent";	
+	var sid = eval("Titanium.App.Properties.getString('"+invoicesentfilename+"_sid')");
+	Alloy.Globals.Log("invoicedetail.js::prefetchinvoicesent::sidmatch: filename "+invoicesentfilename+'_sid : sid '+sid);
+	if(sid){
+		Alloy.Globals.Log("invoicedetail.js::prefetchinvoicesent: updating DB with: item : sid : "+item+" : "+sid);
+		Alloy.Globals.getPrivateData(sid,item);
+	} else {
+		Alloy.Globals.Log("invoicedetail.js::prefetchinvoicesent: creating sid. very first new project");
+	};  // a very first new project would not have sid. suppress error.
+	Alloy.Globals.Log("invoicedetail.js::prefetchinvoicesent:: Alloy.Collections.invoicesent.fetch()");
+	//Alloy.Collections.invoicesent.fetch();	
+	var invoicesent  = Alloy.Collections.instance('invoicesent');
+        invoicesent.fetch();
+        Alloy.Globals.Log("invoicedetail.js::JSON stringify invoicesent data on prefetch: "+JSON.stringify(invoicesent));
+}
+
+function actionPreview(e) {
+	Alloy.Globals.Log("invoicedetail.js:: actionPreview: JSON.stringify(e) :"+JSON.stringify(e));
+	var tabViewOneController = Alloy.createController("invoicesent",{
+			});
+	tabViewOneController.openMainWindow($.tab_invoicedetail);
+}
  

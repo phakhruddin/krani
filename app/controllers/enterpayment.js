@@ -424,7 +424,8 @@ function enterNotes(e,imgurl) {
         var balance = parseFloat(total)-parseFloat(paidamount);
         Alloy.Globals.Log("enterpayment.js::enterNotes: paidamount , parseFloat(notesbody) : "+paidamount+" + "+parseFloat(notesbody));
         $.paymentsection.headerTitle = firstname+" "+lastname+"    PAID: "+paidamount;
-        updateInvoice(paidamount,datepaid,balance); //update invoice spreadsheet
+        ///updateInvoice(paidamount,datepaid,balance); //update invoice spreadsheet
+        //Alloy.Globals.UpdateSSDBthenFetch("payment"); //load the data back
         callbackFunction(paidamount,balance,datepaid); //update the dummy
         
 };
@@ -460,13 +461,13 @@ function enterNotes(e,imgurl) {
 	    		Titanium.App.Properties.setString('selfhref',selfhref);
 	    		Ti.API.info("enterpayment.js::submit: self href is : "+selfhref+" edit href is: "+edithref);
 	    		Ti.API.info("enterpayment.js::submit: idtag is : "+idtag);
-	    		Alloy.Globals.Log("enterpayment.js::submit:: update DB with jobitemid :" +jobitemid);
+	    		Alloy.Globals.Log("enterpayment.js::submit:: update DB with jobitemid :" +jobitemid+" sid: "+sid);
 				payment.get(jobitemid).set({
 					col16:	idtag+"xCoLoNx"+selfhref+"xCoLoNx"+edithref+"xCoLoNx"+selfhref || "none",
 				}).save();
 			alert('Modified & Saved Successfully!');
         } catch(e){
-                Ti.API.info("enterpayment.js::submit::cathing e: "+JSON.stringify(e));
+                Alloy.Globals.Log("enterpayment.js::submit:: sid:"+sid+" :cathing e: "+JSON.stringify(e));
         }     
     },
     onerror: function(e) {
@@ -793,3 +794,6 @@ function updateInvoice(paidamount,datepaid,balance){
         xhr.send(xmldatastring);
         Ti.API.info('done POSTed');
 }
+
+$.enterpayment_window.addEventListener("close",function(){
+});

@@ -1,0 +1,16 @@
+<Alloy>
+  <Collection src="invoicesent" />
+  <Window id="invoicesent_window" backgroundColor="white" title="Invoice Sent">
+ 	<RightNavButton platform="ios">
+	   <Button systemButton="Ti.UI.iPhone.SystemButton.ADD" onClick="addHandler" /> 
+	</RightNavButton>
+		<!--Widget id="ptr" src="nl.fokkezb.pullToRefresh" onRelease="myRefresher"-->
+ 	  <TableView id="invoicesent_table" backgroundColor="transparent" dataCollection="invoicesent" dataTransform="transformFunction"  search="search_history" filterAttribute="title" >
+ 	  	<SearchBar id="search_history" height="43" />
+ 	  	<TableViewRow id="invoicesent_row" height="75" backgroundColor="transparent" opacity="0" color="transparent" title="{title}" >
+ 	  		<Label id="label_header" color="#333" color="gray" top="10" textAlign="Ti.UI.TEXT_ALIGNMENT_CENTER" text="{custom}" />
+ 	  	</TableViewRow>
+	  </TableView>
+	  <!--/Widget-->
+  </Window>
+</Alloy>

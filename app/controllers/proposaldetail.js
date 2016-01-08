@@ -65,9 +65,9 @@ var notes = col14 = col16 = data[15];
 (col15)?pdfquote = col15.replace(/XCoLoNX/g,':').replace(/XQuestionX/g,'?').replace(/XequalsX/g,'=').replace(/XDashX/g,'-').replace(/XAmpersandX/g,'&'):"NA" ;
 Alloy.Globals.Log("proposaldetail.js:: pdfquote" +pdfquote);   	 	
 var filename = 'payment_'+proposalnumber+'_'+firstname+'_'+lastname; $.totalbalance_row.filename = filename;
-var idtag = (data[13])?data[13].replace(/xCoLoNx/g,',').split(',')[0].replace('yCoLoNy',':'):"none";
-var selfhref = (data[13])?data[13].replace(/xCoLoNx/g,',').split(',')[1].replace('yCoLoNy',':'):"none";
-var edithref = (data[13])?data[13].replace(/xCoLoNx/g,',').split(',')[2].replace('yCoLoNy',':'):"none";
+var idtag = (data[13])?data[13].replace(/xCoLoNx/g,',').split(',')[0].replace('yCoLoNy',':'):"none";Titanium.App.Properties.setString('idtag',idtag);
+var selfhref = (data[13])?data[13].replace(/xCoLoNx/g,',').split(',')[1].replace('yCoLoNy',':'):"none";Titanium.App.Properties.setString('selfhref',selfhref);
+var edithref = (data[13])?data[13].replace(/xCoLoNx/g,',').split(',')[2].replace('yCoLoNy',':'):"none";Titanium.App.Properties.setString('edithref',edithref);
 $.duedate_done.idtag = idtag;
 $.duedate_done.selfhref = selfhref;
 $.duedate_done.edithref = edithref;
@@ -375,6 +375,9 @@ if ( duedate.toString().match(/\//g) ) {
 	}
 	var newbal = parseFloat(newtotal)-parseFloat(paid);	
 	Titanium.App.Properties.setString(proposalnumber+'_balance',prevbal);
+	var edithref = Titanium.App.Properties.getString('edithref');
+    var idtag = Titanium.App.Properties.getString('idtag');
+    var selfhref = Titanium.App.Properties.getString('selfhref');
 	//Delay 1 secs. Too much conflict for concurrent edit. error code 409
 	if (edithref) {		
 		Alloy.Globals.Log("proposaldetail.js: update spreadsheet and database with new balance: "+prevbal);
@@ -484,6 +487,9 @@ function emailpdf(firstname,lastname,address,city,state,phone,email,proposalnumb
      	 setTimeout( function(){ 
      	 	var col15 = Titanium.App.Properties.getString('webcontentlink').replace(/:/g,'XCoLoNX').replace(/\?/g,'XQuestionX').replace(/=/g,'XequalsX').replace(/-/g,'XDashX').replace(/&/g,'XAmpersandX');    	 	
      	 	Alloy.Globals.Log(new Date()+"::proposaldetail.js::html2pdf::webcontentlink: col15: "+col15); 	
+     	 	var edithref = Titanium.App.Properties.getString('edithref');
+    		var idtag = Titanium.App.Properties.getString('idtag');
+    		var selfhref = Titanium.App.Properties.getString('selfhref');
      	 	Alloy.Globals.updateExistingSpreadsheetAndDB("proposal",col1,col2,lastname,newtotal,newbal,paid,col7,col8,col9,col10,col11,col12,"submitted",col14,col15,col16,edithref,selfhref,idtag);
      	 	}, 5000 );
      	
@@ -1230,6 +1236,9 @@ function duedateActionDone(e){
 	var dates = JSON.stringify(dates).replace(/:/g,"cOlOn");
 	Alloy.Globals.Log("proposaldetail.js:: duedatepicker before SS update: "+dates);
 	//var col14 = 'https://docs.google.com/uc?id=0B22E-wz0NGrrdlBabzJFT25ZV1E&export=download';
+	var edithref = Titanium.App.Properties.getString('edithref');
+    var idtag = Titanium.App.Properties.getString('idtag');
+    var selfhref = Titanium.App.Properties.getString('selfhref');
 	Alloy.Globals.updateExistingSpreadsheetAndDB("proposal",col1,col2,lastname,newtotal,newbal,paid,col7,col8,col9,col10,duedate,col12,col13,col14,col15,col16,edithref,selfhref);
 	///var projectsid = Titanium.App.Properties.getString('project');
 	///Alloy.Globals.getPrivateData(projectsid,"project");
