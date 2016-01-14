@@ -945,6 +945,8 @@ Alloy.Globals.uploadFile = function(file,filename,parentid) {
 		Ti.API.info('done POSTed');
 };
 
+
+
 Alloy.Globals.formatAMPM = 	function(date) {
 	  var hours = date.getHours();
 	  var minutes = date.getMinutes();
@@ -1230,7 +1232,7 @@ Alloy.Globals.saveHandler = function(type){
 	///+currency+','+status+')');
  }; 
 
-
+/*
 Alloy.Globals.submit = function(type,clientfirstname,clientlastname,clientcompany,clientphone,clientemail,clientstreetaddress,clientcity,clientstate,country,status,notes,percentcompletion,nextappt,datedue,customerid) {	
  	//var spreadsheet_id = '1-Wz7Apn4AvVpfqcNyMgfqyKA8OAoLNy5Bl0d_jQ9IZk';
     var spreadsheet_id = Titanium.App.Properties.getString(type);
@@ -1337,6 +1339,91 @@ Alloy.Globals.submit = function(type,clientfirstname,clientlastname,clientcompan
 					col15: "none",
 					col16: "none"
 				});			
+				dataModel.save();
+			alert('Saved Successfully!');
+		} 
+	xhr.setRequestHeader("Content-type", "application/atom+xml");
+	xhr.setRequestHeader("Authorization", 'Bearer '+ googleAuth.getAccessToken());
+	xhr.send(xmldatastring);
+ }; */
+ 
+ Alloy.Globals.submit = function(type,col1,col2,col3,col4,col5,col6,col7,col8,col9,col10,col11,col12,col13,col14,col15,col16) {	
+    var spreadsheet_id = Titanium.App.Properties.getString(type);
+    var existingedithref = Titanium.App.Properties.getString('edithref');
+    var edithref = Titanium.App.Properties.getString('edithref');
+   /// var existingedithref = edithref;
+    var idtag = Titanium.App.Properties.getString('idtag');
+    //var edithref = existingedithref;
+    var selfhref = Titanium.App.Properties.getString('selfhref');
+    var now = Date.now();
+ 	var captimestamp = now;
+    Alloy.Globals.Log("alloy.js::Alloy.Globals.submit::existing edit href is: "+existingedithref+' idtag :'+idtag);
+	var xhr =  Titanium.Network.createHTTPClient({
+	    onload: function() {
+	    	try {
+	    		Ti.API.info(this.responseText);
+	    		var xml = Titanium.XML.parseString(this.responseText);
+	    		var entry = xml.documentElement.getElementsByTagName("entry");
+	    		var link = xml.documentElement.getElementsByTagName("link");
+	    		var idtag = xml.documentElement.getElementsByTagName("id").item(0).text;
+	    		Alloy.Globals.Log("alloy.js::submit: number of link found: " +link+ " length: "+link.length);
+	    		for (i=0;i<link.length;i++){			
+	    			var listitem = link.item(i);
+	    			if (listitem.getAttribute("rel") == "edit"){ var edithref = listitem.getAttribute("href");}
+	    			if (listitem.getAttribute("rel") == "self"){ var selfhref = listitem.getAttribute("href");}
+	    		}
+	    		Titanium.App.Properties.setString('edithref',edithref);
+	    		Titanium.App.Properties.setString('idtag',idtag);
+	    		Titanium.App.Properties.setString('selfhref',selfhref);
+	    		Ti.API.info("alloy.js::Alloy.Globals.submit : self href is : "+selfhref+" edit href is: "+edithref);
+	    		Ti.API.info("alloy.js::Alloy.Globals.submit : idtag is : "+idtag);
+	    	} catch(e){
+	    		Ti.API.info("Alloy.Globals.submit ::cathing e: "+JSON.stringify(e));
+	    	}     
+	    },
+	    onerror: function(e) {
+	    	Alloy.Globals.Log("Alloy.Globals.submit ::error e: "+JSON.stringify(e));
+	        alert("error:"+e.code+": Please connect to the network."); 
+	    }
+	});
+	eval("var "+type+" = Alloy.Collections.instance('"+type+"')");
+	if (existingedithref) {
+			Alloy.Globals.Log("alloy.js::Alloy.Globals.submit::PUT on existing edit href is: "+existingedithref);
+			xhr.open("PUT", existingedithref);
+			var xmldatastring = '<entry xmlns=\'http://www.w3.org/2005/Atom\' xmlns:gsx=\'http://schemas.google.com/spreadsheets/2006/extended\'>'
+				+'<id>'+idtag+'</id>'
+				+'<updated>2015-05-16T08:01:19.680Z</updated>'
+				+'<category scheme=\'http://schemas.google.com/spreadsheets/2006\' term=\'http://schemas.google.com/spreadsheets/2006#list\'/>'
+				+'<title type=\'text\'>'+col1+'</title>'
+				+'<content type=\'text\'>col2: '+col2+', col3: '+col3+', col4: '+col4+', col5: '+col5+', col6: '+col6+', col7: '+col7
+				+', col8: '+col8+', col9: '+col9+', col10: '+col10+', col11: NA, col12: NA, col13: NA, col14: '+col14+', col15: none, col16: '+col16+'</content>'
+				+'<link rel=\'self\' type=\'application/atom+xml\' href=\''+selfhref+'\'/>'
+				+'<link rel=\'edit\' type=\'application/atom+xml\' href=\''+edithref+'\'/>'
+				+'<gsx:col1>'+col1+'</gsx:col1><gsx:col2>'+col2+'</gsx:col2><gsx:col3>'
+				+col3+'</gsx:col3><gsx:col4>'+col4+'</gsx:col4><gsx:col5>'
+				+col5+'</gsx:col5><gsx:col6>'+col6+'</gsx:col6><gsx:col7>'+col7+'</gsx:col7><gsx:col8>'+col8+'</gsx:col8>'
+				+'<gsx:col9>'+col9+'</gsx:col9><gsx:col10>'+col10+'</gsx:col10><gsx:col11>NA</gsx:col11><gsx:col12>NA</gsx:col12><gsx:col13>NA</gsx:col13><gsx:col14>'+col15+'</gsx:col14>'
+				+'<gsx:col15>'+col15+'</gsx:col15><gsx:col16>'+col16+'</gsx:col16></entry>';
+			Ti.API.info('xmldatastring existing to PUT: '+xmldatastring);
+			//eval("type.fetch()");
+			Alloy.Globals.Log("alloy.js::Alloy.Globals.submit:: update DB with col16 :" +col16);
+			//write to DB
+			eval(type+".get(col16).set({col1:col1.trim(),col2:col2.trim(),col3:col3.trim(),col4:col4.trim(),col5:col5.trim(),col6:col6.trim(),col7:col7.trim(),col8:col8.trim(),col9:col9.trim(),col10:col10.trim(),col11:col11.trim(),col12:col12.trim(),col13:col13.trim(),col14:col14.trim(),col15:col15.trim(),col16:col16.trim()}).save()");
+			alert('Modified & Saved Successfully!');
+		} else {
+			var col16 = now;
+			$.save_button.titleid = col16; //feed id the save button of the customer id.
+			var xmldatastring = '<entry xmlns=\'http://www.w3.org/2005/Atom\' xmlns:gsx=\'http://schemas.google.com/spreadsheets/2006/extended\'>'
+				+'<gsx:col1>'+col1+'</gsx:col1><gsx:col2>'+col2+'</gsx:col2><gsx:col3>'
+				+col3+'</gsx:col3><gsx:col4>'+col4+'</gsx:col4><gsx:col5>'
+				+col5+'</gsx:col5><gsx:col6>'+col6+'</gsx:col6><gsx:col7>'+col7+'</gsx:col7><gsx:col8>'+col8+'</gsx:col8>'
+				+'<gsx:col9>'+col9+'</gsx:col9><gsx:col10>'+col10+'</gsx:col10><gsx:col11>NA</gsx:col11><gsx:col12>NA</gsx:col12><gsx:col13>NA</gsx:col13><gsx:col14>'+col15+'</gsx:col14>'
+				+'<gsx:col15>'+col15+'</gsx:col15><gsx:col16>'+col16+'</gsx:col16></entry>';
+				Ti.API.info('xmldatastring to POST: '+xmldatastring);
+			xhr.open("POST", 'https://spreadsheets.google.com/feeds/list/'+spreadsheet_id+'/od6/private/full');
+			Alloy.Globals.Log("alloy.js::Alloy.Globals.submit:: add DB with col16 :" +col16);
+			eval(type+".get(col16).set({col1:col1.trim(),col2:col2.trim(),col3:col3.trim(),col4:col4.trim(),col5:col5.trim(),col6:col6.trim(),col7:col7.trim(),col8:col8.trim(),col9:col9.trim(),col10:col10.trim(),col11:col11.trim(),col12:col12.trim(),col13:col13.trim(),col14:col14.trim(),col15:col15.trim(),col16:col16.trim()}).save()");
+            eval("var dataModel = Alloy.createModel('"+type+"',{col1:col1.trim(),col2:col2.trim(),col3:col3.trim(),col4:col4.trim(),col5:col5.trim(),col6:col6.trim(),col7:col7.trim(),col8:col8.trim(),col9:col9.trim(),col10:col10.trim(),col11:col11.trim(),col12:col12.trim(),col13:col13.trim(),col14:col14.trim(),col15:col15.trim(),col16:col16.trim()})");			
 				dataModel.save();
 			alert('Saved Successfully!');
 		} 
@@ -1631,15 +1718,16 @@ Alloy.Globals.submit = function(type,clientfirstname,clientlastname,clientcompan
 	xhr.open("POST", 'https://www.googleapis.com/drive/v2/files/'+sid+'/permissions');	
 	xhr.setRequestHeader("Content-type", "application/json");
     xhr.setRequestHeader("Authorization", 'Bearer '+Alloy.Globals.googleAuthSheet.getAccessToken());
-    Alloy.Globals.Log("enterjobdetail.js::shareAnyonePermission::json post: "+jsonpost);
+    Alloy.Globals.Log("Alloy.Globals.shareAnyonePermission::shareAnyonePermission::json post: "+jsonpost);
 	xhr.send(jsonpost);
 };
 
 
- Alloy.Globals.uploadPictoGoogle = function(image,filename,parentid){
+ Alloy.Globals.uploadPictoGoogle = function(image,filename,parentid,position,type,col1,col2,col3,col4,col5,col6,col7,col8,col9,col10,col11,col12,col13,col14,col15,col16){
 	Alloy.Globals.Log("Alloy.Globals.uploadPictoGoogle::uploadPictoGoogle::create ss with filename: "+filename);
 	//var base64Data = Ti.Utils.base64encode(image);
-	var base64Data = image;
+	var base64Data = Ti.Utils.base64encode(image);
+	//var base64Data = image;
 	 		var parts = [];
 	 		var bound = 287032396531387;
 	 		var meta = '\{'
@@ -1670,10 +1758,12 @@ Alloy.Globals.submit = function(type,clientfirstname,clientlastname,clientcompan
 	    				var id = json.id;
 	    				var webcontentlink = json.webContentLink;
 	    				Ti.API.info("Alloy.Globals.uploadPictoGoogle::uploadPictoGoogle::id is: "+id+" webcontentlink: "+webcontentlink);
-	    				shareAnyonePermission(id);
+	    				Alloy.Globals.shareAnyonePermission(id);
 	    				var e = {"value":"none","source":{"_hintText":id}};
 	    				Alloy.Globals.Log("Alloy.Globals.uploadPictoGoogle::uploadPictoGoogle::entering urlimage with info below e: "+JSON.stringify(e));
-	    				enterNotes(e,webcontentlink);
+	    				//enterNotes(e,webcontentlink);
+	    				eval("var col"+position+" = webcontentlink");
+	    				Alloy.Globals.submit(type,col1,col2,col3,col4,col5,col6,col7,col8,col9,col10,col11,col12,col13,col14,col15,col16);
 			    	} catch(e){
 			    		Ti.API.info("Alloy.Globals.uploadPictoGoogle::uploadPictoGoogle::cathing e: "+JSON.stringify(e));
 			    	} 
@@ -2967,3 +3057,121 @@ Alloy.Globals.checkFileExistThenUpdateSID = function(filename){
     xhr.setRequestHeader("Authorization", 'Bearer '+Alloy.Globals.googleAuthSheet.getAccessToken());
 	xhr.send();
 };
+
+Alloy.Globals.createImageSnapshotofPDFandUpload = function(url,filename,parentid,position,type,col1,col2,col3,col4,col5,col6,col7,col8,col9,col10,col11,col12,col13,col14,col15,col16){
+	Alloy.Globals.Log("Alloy.Globals.createImageSnapshotofPDF:: url:: "+url);
+	 var webView= Ti.UI.createWebView({
+	 	url:url
+	 });
+	 // Added for test
+	 Titanium.UI.setBackgroundColor('#fff'); 
+	  		
+	  	var win= Ti.UI.createWindow({
+	  		modal : true,
+		    title: "Invoice #: "
+		});
+		var close = Ti.UI.createButton({
+			title : "close"
+		});
+		close.addEventListener("click", function() {
+    		win1.close();
+		});
+		//
+		var preview = Ti.UI.createButton({
+			title : "preview"
+		});
+		//
+	  	var win1 = Titanium.UI.iOS.createNavigationWindow({
+  		 	window: win,
+  		 	Title:" "
+		});		
+		var view= Ti.UI.createView({
+		    height:'auto',
+		    width:'auto',
+		});	
+		 webView.addEventListener('load',function(){
+		     view.show();
+		 });
+		 
+		 view.add(webView);
+		 win.add(view);		
+		 win.rightNavButton = close;
+		 
+		 win1.open();
+		 //Added for test Done
+	 Alloy.Globals.Log("Alloy.Globals.createImageSnapshotofPDF:: DONE: webView:: "+JSON.stringify(webView));
+ 	 setTimeout(function() {
+		 var pdf2image = webView.toImage();
+		 var filepdf2image = Titanium.Filesystem.createTempFile(Titanium.Filesystem.resourcesDirectory);
+		 filepdf2image.write(pdf2image);
+		 Alloy.Globals.Log("Alloy.Globals.createImageSnapshotofPDF:: JSON.stringify(filepdf2image):: "+JSON.stringify(filepdf2image));
+		 Alloy.Globals.uploadPictoGoogle(pdf2image,filename,parentid,position,type,col1,col2,col3,col4,col5,col6,col7,col8,col9,col10,col11,col12,col13,col14,col15,col16);
+		 
+	 },50000);	 
+};
+
+Alloy.Globals.uploadPDFFileCreateSnapshotSubmit = function(file,filename,parentid,position,type,col1,col2,col3,col4,col5,col6,col7,col8,col9,col10,col11,col12,col13,col14,col15,col16) {
+		var fileget = Ti.Filesystem.getFile(Ti.Filesystem.applicationDataDirectory,file);
+    	//var fileget = Ti.Filesystem.getFile(file);
+		var fileread = fileget.read();
+		var filebase64 = Ti.Utils.base64encode(fileread);
+ 		Alloy.Globals.Log('Access Token for File upload is: ' +Alloy.Globals.googleAuthSheet.getAccessToken());
+ 		var parts = [];
+ 		var bound = 287032396531387;
+	 		var meta = '\{'
+	 		+	'\"title\": \"'+filename+'\",'
+	 		+'\"parents\": ['
+		  	+'{'
+		   	+'\"id\": \"'+parentid+'\"'
+		 	+' }'
+		 	+']'
+			+	'\}';
+		var parts = [];
+        parts.push('--' + bound);
+        parts.push('Content-Type: application/json');
+        parts.push('');
+        parts.push(meta);
+        parts.push('--' + bound);
+		parts.push('Content-Type: application/pdf');
+        parts.push('Content-Transfer-Encoding: base64');
+        parts.push('');
+        parts.push(filebase64);
+        parts.push('--' + bound + '--');
+ 		var url = "https://www.googleapis.com/upload/drive/v2/files?uploadType=multipart";
+ 		var xhr =  Titanium.Network.createHTTPClient({
+		    onload: function() {
+		    	try {
+		    		Ti.API.info(this.responseText); 
+		    		var json = JSON.parse(this.responseText);
+		    		var id = json.id;
+		    		var webcontentlink = json.webContentLink;
+		    		Titanium.App.Properties.setString('webcontentlink',webcontentlink);
+	    			Ti.API.info("alloy.js::Alloy.Globals.uploadPDFFileCreateSnapshotSubmit::id is: "+id+" webcontentlink: "+webcontentlink);
+	    			eval("var col"+position+" = webcontentlink");	
+	    			var col2 = Titanium.App.Properties.getString('webcontentlink');
+	    			var col4=col5=col6=col7=col8=col9=col10=col11=col12=col13=col14=col15=col16="NA";
+	    			setTimeout(function(){
+	    				Alloy.Globals.createImageSnapshotofPDFandUpload(webcontentlink,filename+"_image",parentid,"3","invoicesent",col1,col2,col3,col4,col5,col6,col7,col8,col9,col10,col11,col12,col13,col14,col15,col16);
+	    				//Alloy.Globals.submit(type,col1,col2,col3,col4,col5,col6,col7,col8,col9,col10,col11,col12,col13,col14,col15,col16);		
+	    			},10000);
+	    			Alloy.Globals.shareAnyonePermission(id);
+     	 			
+		    	} catch(e){
+		    		Ti.API.info("Alloy.Globals.uploadPDFFileCreateSnapshotSubmit::cathing e: "+JSON.stringify(e));
+		    	}     
+		    },
+		    onerror: function(e) {
+		    	Alloy.Globals.Log("Alloy.Globals.uploadFileSubmit::error e: "+JSON.stringify(e));
+		        alert("Please connect to the network."); 
+		    }
+		});
+		xhr.open("POST", url);
+		xhr.setRequestHeader("Content-type", "multipart/mixed; boundary=" + bound);
+		xhr.setRequestHeader("Authorization", 'Bearer '+Alloy.Globals.googleAuthSheet.getAccessToken());
+		xhr.setRequestHeader("Content-Length", "2000000");
+		xhr.send(parts.join("\r\n"));
+		Ti.API.info('done POSTed');
+};
+
+
+

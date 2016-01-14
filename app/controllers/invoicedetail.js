@@ -422,9 +422,13 @@ function emailpdf(firstname,lastname,address,city,state,phone,email,invoicenumbe
 		 var name = kraniemailid.split('@')[0].trim();
      	 var parentid = Titanium.App.Properties.getString(name+"_invoice");
      	 Alloy.Globals.Log(new Date()+"::invoicedetail.js::html2pdf::Alloy.Globals.uploadFile("+file+","+pdffilename+","+parentid+")");
-     	 Alloy.Globals.uploadFile(file,pdffilename,parentid) ;
+     	 //Alloy.Globals.uploadFile(file,pdffilename,parentid) ;
+     	 var col1 = Date.now();
+     	 Alloy.Globals.uploadPDFFileCreateSnapshotSubmit(file,pdffilename,parentid,"2","invoicesent",col1,col2,col3,col4,col5,col6,col7,col8,col9,col10,col11,col12,col13,col14,col15,col16);
      	 //Alloy.Globals.uploadFile(imagefile,jpgfilename) ;
- 	});  
+     	 //Added for PNG snapshot
+     	 //Alloy.Globals.createImageSnapshotofPDFandUpload(file,pdffilename+"_image",parentid);
+     	  	});  
  	
  	//var html = '<html><body><p>dBayCo Inc. limited </p></body></html>'; 
  	

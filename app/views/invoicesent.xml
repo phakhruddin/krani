@@ -7,7 +7,7 @@
 		<!--Widget id="ptr" src="nl.fokkezb.pullToRefresh" onRelease="myRefresher"-->
  	  <TableView id="invoicesent_table" backgroundColor="transparent" dataCollection="invoicesent" dataTransform="transformFunction"  search="search_history" filterAttribute="title" >
  	  	<SearchBar id="search_history" height="43" />
- 	  	<TableViewRow id="invoicesent_row" height="75" backgroundColor="transparent" opacity="0" color="transparent" title="{title}" >
+ 	  	<TableViewRow id="invoicesent_row" height="75" backgroundColor="transparent" opacity="0" color="transparent" title="{title}" url="{url}" onClick="viewInvoice" >
  	  		<Label id="label_header" color="#333" color="gray" top="10" textAlign="Ti.UI.TEXT_ALIGNMENT_CENTER" text="{custom}" />
  	  	</TableViewRow>
 	  </TableView>
