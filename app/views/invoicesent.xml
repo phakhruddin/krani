@@ -4,13 +4,12 @@
  	<RightNavButton platform="ios">
 	   <Button systemButton="Ti.UI.iPhone.SystemButton.ADD" onClick="addHandler" /> 
 	</RightNavButton>
-		<!--Widget id="ptr" src="nl.fokkezb.pullToRefresh" onRelease="myRefresher"-->
- 	  <TableView id="invoicesent_table" backgroundColor="transparent" dataCollection="invoicesent" dataTransform="transformFunction"  search="search_history" filterAttribute="title" >
+ 	  <TableView id="invoicesent_table" backgroundColor="transparent" dataCollection="invoicesent" dataFilter="filterFunction" dataTransform="transformFunction"  search="search_history" filterAttribute="title" >
  	  	<SearchBar id="search_history" height="43" />
- 	  	<TableViewRow id="invoicesent_row" height="75" backgroundColor="transparent" opacity="0" color="transparent" title="{title}" url="{url}" onClick="viewInvoice" >
- 	  		<Label id="label_header" color="#333" color="gray" top="10" textAlign="Ti.UI.TEXT_ALIGNMENT_CENTER" text="{custom}" />
+ 	  	<TableViewRow id="invoicesent_row" backgroundColor="transparent" opacity="0" color="transparent" title="{title}" url="{url}" onClick="viewInvoice" >
+ 	  		<Label id="label_header" color="orange" top="5" left="20" textAlign="Ti.UI.TEXT_ALIGNMENT_CENTER" text="{custom}" />
+ 	  		<ImageView id="img_preview" image="{imgurl}" left="100" top="30" width="200" length="400"></ImageView>
  	  	</TableViewRow>
 	  </TableView>
-	  <!--/Widget-->
   </Window>
 </Alloy>

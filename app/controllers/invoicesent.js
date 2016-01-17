@@ -20,13 +20,18 @@ function addHandler(e) {
 function transformFunction(model) {
 	var transform = model.toJSON();
 	Alloy.Globals.Log("invoicesent.js::transform is ::" +JSON.stringify(transform));
-	transform.url = transform.col2; //update invoiceurl.	
+	transform.url = transform.col2; //update invoiceurl.
+	transform.imgurl = transform.col3; //update imgurl	
 	var utcdate = JSON.stringify(transform.col1);
 	var date = (transform.col1)?new Date(parseInt(transform.col1)):"";
 	transform.custom = (date.toString().substring(0,16));
 	transform.title = transform.col1+":"+transform.custom+":"+transform.col16;
 	Alloy.Globals.Log("utcdate is ::" +utcdate+" transform.col1: " +transform.col1+ " date is: "+date);
 	return transform;
+}
+
+function filterFunction(collection) {
+	return collection.where({col5:'NA'});
 }
 
 function uploadPictoGoogle(image,filename,parentid){
@@ -146,6 +151,7 @@ function viewInvoice(e) {
 		    height:'auto',
 		    width:'auto',
 		});
+		/*
 		 //add delay for pdf2image START
 		 setTimeout(function() {
  			 var pdf2image = webView.toImage();
@@ -181,7 +187,7 @@ function viewInvoice(e) {
 			var col2=col4=col5=col6=col7=col8=col9=col10=col11=col12=col13=col14=col15=col16="none";
 			///Alloy.Globals.uploadPictoGoogle(pdf2image,"test_Alloy.Globals.uploadPictoGoogle_"+col1+"_image","0B22E-wz0NGrrV0Ixd1ZSQ0xpN1E","3","invoicesent",col1,col2,col3,col4,col5,col6,col7,col8,col9,col10,col11,col12,col13,col14,col15,col16);
 			Alloy.Globals.createImageSnapshotofPDFandUpload("https://docs.google.com/uc?id=0B22E-wz0NGrrWk93WUY0blhZVUE&export=download","test_Alloy.Globals.createImageSnapshotofPDFandUpload_"+col1+"_image","0B22E-wz0NGrrV0Ixd1ZSQ0xpN1E","3","invoicesent",col1,col2,col3,col4,col5,col6,col7,col8,col9,col10,col11,col12,col13,col14,col15,col16);
-		 },10000);	 
+		 },10000);	*/ 
 		//add delay for pdf2image END	
 		//pdf to image end
 

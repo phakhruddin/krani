@@ -1347,8 +1347,11 @@ Alloy.Globals.submit = function(type,clientfirstname,clientlastname,clientcompan
 	xhr.send(xmldatastring);
  }; */
  
- Alloy.Globals.submit = function(type,col1,col2,col3,col4,col5,col6,col7,col8,col9,col10,col11,col12,col13,col14,col15,col16) {	
-    var spreadsheet_id = Titanium.App.Properties.getString(type);
+ Alloy.Globals.submit = function(type,spreadsheet_id,col1,col2,col3,col4,col5,col6,col7,col8,col9,col10,col11,col12,col13,col14,col15,col16) {	
+ 	Alloy.Globals.Log("alloy.js::Alloy.Globals.submit::executed with: type:"+type+',col1:'+col1+',col2'+col2+',col3:'+col3);
+ 	if (! spreadsheet_id) {
+ 		var spreadsheet_id = Titanium.App.Properties.getString(type);
+ 	};
     var existingedithref = Titanium.App.Properties.getString('edithref');
     var edithref = Titanium.App.Properties.getString('edithref');
    /// var existingedithref = edithref;
@@ -1387,6 +1390,7 @@ Alloy.Globals.submit = function(type,clientfirstname,clientlastname,clientcompan
 	    }
 	});
 	eval("var "+type+" = Alloy.Collections.instance('"+type+"')");
+	Alloy.Globals.Log("Alloy.Globals.submit ::JSON.stringify("+type+"): "+eval("JSON.stringify("+type+")"));
 	if (existingedithref) {
 			Alloy.Globals.Log("alloy.js::Alloy.Globals.submit::PUT on existing edit href is: "+existingedithref);
 			xhr.open("PUT", existingedithref);
@@ -1412,23 +1416,24 @@ Alloy.Globals.submit = function(type,clientfirstname,clientlastname,clientcompan
 			alert('Modified & Saved Successfully!');
 		} else {
 			var col16 = now;
-			$.save_button.titleid = col16; //feed id the save button of the customer id.
+			var col2="<![CDATA["+col2+"]]>"; 
+			var col3 = "<![CDATA["+col3+"]]>";
 			var xmldatastring = '<entry xmlns=\'http://www.w3.org/2005/Atom\' xmlns:gsx=\'http://schemas.google.com/spreadsheets/2006/extended\'>'
 				+'<gsx:col1>'+col1+'</gsx:col1><gsx:col2>'+col2+'</gsx:col2><gsx:col3>'
 				+col3+'</gsx:col3><gsx:col4>'+col4+'</gsx:col4><gsx:col5>'
 				+col5+'</gsx:col5><gsx:col6>'+col6+'</gsx:col6><gsx:col7>'+col7+'</gsx:col7><gsx:col8>'+col8+'</gsx:col8>'
-				+'<gsx:col9>'+col9+'</gsx:col9><gsx:col10>'+col10+'</gsx:col10><gsx:col11>NA</gsx:col11><gsx:col12>NA</gsx:col12><gsx:col13>NA</gsx:col13><gsx:col14>'+col15+'</gsx:col14>'
+				+'<gsx:col9>'+col9+'</gsx:col9><gsx:col10>'+col10+'</gsx:col10><gsx:col11>NA</gsx:col11><gsx:col12>NA</gsx:col12><gsx:col13>NA</gsx:col13><gsx:col14>'+col14+'</gsx:col14>'
 				+'<gsx:col15>'+col15+'</gsx:col15><gsx:col16>'+col16+'</gsx:col16></entry>';
-				Ti.API.info('xmldatastring to POST: '+xmldatastring);
+			Alloy.Globals.Log('xmldatastring to POST: '+xmldatastring);
 			xhr.open("POST", 'https://spreadsheets.google.com/feeds/list/'+spreadsheet_id+'/od6/private/full');
-			Alloy.Globals.Log("alloy.js::Alloy.Globals.submit:: add DB with col16 :" +col16);
-			eval(type+".get(col16).set({col1:col1.trim(),col2:col2.trim(),col3:col3.trim(),col4:col4.trim(),col5:col5.trim(),col6:col6.trim(),col7:col7.trim(),col8:col8.trim(),col9:col9.trim(),col10:col10.trim(),col11:col11.trim(),col12:col12.trim(),col13:col13.trim(),col14:col14.trim(),col15:col15.trim(),col16:col16.trim()}).save()");
-            eval("var dataModel = Alloy.createModel('"+type+"',{col1:col1.trim(),col2:col2.trim(),col3:col3.trim(),col4:col4.trim(),col5:col5.trim(),col6:col6.trim(),col7:col7.trim(),col8:col8.trim(),col9:col9.trim(),col10:col10.trim(),col11:col11.trim(),col12:col12.trim(),col13:col13.trim(),col14:col14.trim(),col15:col15.trim(),col16:col16.trim()})");			
-				dataModel.save();
+			Alloy.Globals.Log("alloy.js::Alloy.Globals.submit: post done on spreadsheet_id: "+spreadsheet_id);
+			Alloy.Globals.Log("alloy.js::Alloy.Globals.submit:: add DB with col16 :" +col16+'col1:'+col1+',col2'+col2+',col3:'+col3);
+        	///eval("var dataModel = Alloy.createModel('"+type+"',{col1:col1.trim(),col2:col2.trim(),col3:col3.trim(),col4:col4.trim(),col5:col5.trim(),col6:col6.trim(),col7:col7.trim(),col8:col8.trim(),col9:col9.trim(),col10:col10.trim(),col11:col11.trim(),col12:col12.trim(),col13:col13.trim(),col14:col14.trim(),col15:col15.trim(),col16:col16.trim()})");			
+			///dataModel.save();
 			alert('Saved Successfully!');
 		} 
 	xhr.setRequestHeader("Content-type", "application/atom+xml");
-	xhr.setRequestHeader("Authorization", 'Bearer '+ googleAuth.getAccessToken());
+	xhr.setRequestHeader("Authorization", 'Bearer '+ Alloy.Globals.googleAuthSheet.getAccessToken());
 	xhr.send(xmldatastring);
  };
  
@@ -1757,13 +1762,16 @@ Alloy.Globals.submit = function(type,clientfirstname,clientlastname,clientcompan
 	    				Ti.API.info("Alloy.Globals.uploadPictoGoogle::uploadPictoGoogle::response is: "+JSON.stringify(json));
 	    				var id = json.id;
 	    				var webcontentlink = json.webContentLink;
-	    				Ti.API.info("Alloy.Globals.uploadPictoGoogle::uploadPictoGoogle::id is: "+id+" webcontentlink: "+webcontentlink);
+	    				Alloy.Globals.Log("Alloy.Globals.uploadPictoGoogle::uploadPictoGoogle::id is: "+id+" webcontentlink: "+webcontentlink);
 	    				Alloy.Globals.shareAnyonePermission(id);
 	    				var e = {"value":"none","source":{"_hintText":id}};
 	    				Alloy.Globals.Log("Alloy.Globals.uploadPictoGoogle::uploadPictoGoogle::entering urlimage with info below e: "+JSON.stringify(e));
 	    				//enterNotes(e,webcontentlink);
 	    				eval("var col"+position+" = webcontentlink");
-	    				Alloy.Globals.submit(type,col1,col2,col3,col4,col5,col6,col7,col8,col9,col10,col11,col12,col13,col14,col15,col16);
+	    				var ssidsourcename = filename.split("_")[0]+"_"+filename.split("_")[1]+"_"+filename.split("_")[2];
+	    				var ssid = Titanium.App.Properties.getString(type+'_'+ssidsourcename+"_sid");
+	    				Alloy.Globals.Log("alloy.js:Alloy.Globals.uploadPictoGoogle:b4 execute Alloy.Globals.submit, ssid is : "+ssid);
+	    				Alloy.Globals.submit(type,ssid,col1,col2,col3,col4,col5,col6,col7,col8,col9,col10,col11,col12,col13,col14,col15,col16);
 			    	} catch(e){
 			    		Ti.API.info("Alloy.Globals.uploadPictoGoogle::uploadPictoGoogle::cathing e: "+JSON.stringify(e));
 			    	} 
@@ -3068,7 +3076,7 @@ Alloy.Globals.createImageSnapshotofPDFandUpload = function(url,filename,parentid
 	  		
 	  	var win= Ti.UI.createWindow({
 	  		modal : true,
-		    title: "Invoice #: "
+		    title: "Invoice Preview"
 		});
 		var close = Ti.UI.createButton({
 			title : "close"
@@ -3076,11 +3084,6 @@ Alloy.Globals.createImageSnapshotofPDFandUpload = function(url,filename,parentid
 		close.addEventListener("click", function() {
     		win1.close();
 		});
-		//
-		var preview = Ti.UI.createButton({
-			title : "preview"
-		});
-		//
 	  	var win1 = Titanium.UI.iOS.createNavigationWindow({
   		 	window: win,
   		 	Title:" "
@@ -3091,23 +3094,22 @@ Alloy.Globals.createImageSnapshotofPDFandUpload = function(url,filename,parentid
 		});	
 		 webView.addEventListener('load',function(){
 		     view.show();
-		 });
-		 
+		 });	 
 		 view.add(webView);
 		 win.add(view);		
 		 win.rightNavButton = close;
 		 
-		 win1.open();
+		 win1.open(); //open it
 		 //Added for test Done
 	 Alloy.Globals.Log("Alloy.Globals.createImageSnapshotofPDF:: DONE: webView:: "+JSON.stringify(webView));
- 	 setTimeout(function() {
+ 	 setTimeout(function() { 	 	
 		 var pdf2image = webView.toImage();
 		 var filepdf2image = Titanium.Filesystem.createTempFile(Titanium.Filesystem.resourcesDirectory);
 		 filepdf2image.write(pdf2image);
 		 Alloy.Globals.Log("Alloy.Globals.createImageSnapshotofPDF:: JSON.stringify(filepdf2image):: "+JSON.stringify(filepdf2image));
 		 Alloy.Globals.uploadPictoGoogle(pdf2image,filename,parentid,position,type,col1,col2,col3,col4,col5,col6,col7,col8,col9,col10,col11,col12,col13,col14,col15,col16);
-		 
-	 },50000);	 
+		 win1.close();
+	 },15000);	 
 };
 
 Alloy.Globals.uploadPDFFileCreateSnapshotSubmit = function(file,filename,parentid,position,type,col1,col2,col3,col4,col5,col6,col7,col8,col9,col10,col11,col12,col13,col14,col15,col16) {
