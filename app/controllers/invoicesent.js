@@ -1,9 +1,12 @@
+var args = arguments[0] || {};
 exports.openMainWindow = function(_tab) {
   _tab.open($.invoicesent_window);
   Alloy.Globals.Log("This is child widow invoicesent.js" +JSON.stringify(_tab));
   $.invoicesent_table.search = $.search_history;
   Alloy.Collections.invoicesent.fetch();
 };
+
+callbackFunction = args.callbackFunction;
 
 function addHandler(e) {
 	Alloy.Globals.Log("JSON stringify addHandler(e): "+JSON.stringify(e));
@@ -193,3 +196,21 @@ function viewInvoice(e) {
 
 	} else Alloy.Globals.Log("invoicesent.js:: viewInvoice:: url is not http "+url);
 }
+
+$.invoicesent_window.addEventListener('close',function(){
+	callbackFunction();
+});
+
+var refresh = Ti.UI.createRefreshControl({
+    tintColor:'orange'
+});
+
+$.invoicesent_table.refreshControl=refresh;
+
+refresh.addEventListener('refreshstart',function(e){
+	setTimeout(function(){
+        Alloy.Globals.Log('invoicesent::refresh:: JSON.stringify(e): '+JSON.stringify(e));
+        callbackFunction();
+        refresh.endRefreshing();
+    }, 2000);
+});

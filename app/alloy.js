@@ -2932,6 +2932,8 @@ Alloy.Globals.checkFileExistThenUpdateTitaniumProperties = function(filename){
 		});
 	xhr.onerror = function(e){
 		Alloy.Globals.Log("Alloy.Globals.checkFileExistThenUpdateTitaniumProperties::error e: "+JSON.stringify(e));
+		Alloy.Globals.Log("Alloy.Globals.checkFileExistThenUpdateTitaniumProperties::refReshActivity needed:  Alloy.Globals.refreshActivity()");
+		Alloy.Globals.refreshActivity();
 	};
 	var rawquerystring = '?q=title+%3D+\''+filename+'\'+and+trashed+%3D+false&fields=items(id%2CmimeType%2Clabels%2Ctitle%2CwebContentLink)';
 	xhr.open("GET", 'https://www.googleapis.com/drive/v2/files'+rawquerystring);
@@ -3076,13 +3078,7 @@ Alloy.Globals.createImageSnapshotofPDFandUpload = function(url,filename,parentid
 	  		
 	  	var win= Ti.UI.createWindow({
 	  		modal : true,
-		    title: "Invoice Preview"
-		});
-		var close = Ti.UI.createButton({
-			title : "close"
-		});
-		close.addEventListener("click", function() {
-    		win1.close();
+		    title: "Invoice preview uploaded. Please wait."
 		});
 	  	var win1 = Titanium.UI.iOS.createNavigationWindow({
   		 	window: win,
@@ -3109,7 +3105,7 @@ Alloy.Globals.createImageSnapshotofPDFandUpload = function(url,filename,parentid
 		 Alloy.Globals.Log("Alloy.Globals.createImageSnapshotofPDF:: JSON.stringify(filepdf2image):: "+JSON.stringify(filepdf2image));
 		 Alloy.Globals.uploadPictoGoogle(pdf2image,filename,parentid,position,type,col1,col2,col3,col4,col5,col6,col7,col8,col9,col10,col11,col12,col13,col14,col15,col16);
 		 win1.close();
-	 },15000);	 
+	 },10000);	 
 };
 
 Alloy.Globals.uploadPDFFileCreateSnapshotSubmit = function(file,filename,parentid,position,type,col1,col2,col3,col4,col5,col6,col7,col8,col9,col10,col11,col12,col13,col14,col15,col16) {

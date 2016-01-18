@@ -427,6 +427,7 @@ function emailpdf(firstname,lastname,address,city,state,phone,email,invoicenumbe
      	 setTimeout(function(){
      	 	Alloy.Globals.Cleanup(); //cleanup existing edithref.
      	 	Alloy.Globals.uploadPDFFileCreateSnapshotSubmit(file,pdffilename,parentid,"2","invoicesent",col1,col2,col3,col4,col5,col6,col7,col8,col9,col10,col11,col12,col13,col14,col15,col16);
+     	 	setTimeout(function(){prefetchinvoicesent();},2000); // after 2 secs. refresh DB.
      	 },10000);
       	 //Alloy.Globals.uploadFile(imagefile,jpgfilename) ;
      	 //Added for PNG snapshot
@@ -1284,7 +1285,9 @@ function prefetchinvoicesent(e){
 
 function actionPreview(e) {
 	Alloy.Globals.Log("invoicedetail.js:: actionPreview: JSON.stringify(e) :"+JSON.stringify(e));
+	prefetchinvoicesent();
 	var tabViewOneController = Alloy.createController("invoicesent",{
+		callbackFunction : prefetchinvoicesent
 			});
 	tabViewOneController.openMainWindow($.tab_invoicedetail);
 }
