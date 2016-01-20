@@ -3093,7 +3093,6 @@ Alloy.Globals.createImageSnapshotofPDFandUpload = function(url,filename,parentid
 		 });	 
 		 view.add(webView);
 		 win.add(view);		
-		 win.rightNavButton = close;
 		 
 		 win1.open(); //open it
 		 //Added for test Done

@@ -9,8 +9,10 @@ exports.openMainWindow = function(_tab) {
   	    var firstname = e.row.firstname;
   	    var lastname = e.row.lastname;
   	    var invoicenumber = e.row.invoicenumber;
-	  	var sid = e.row.sid;
-	  	Alloy.Globals.Log("invoicedetail.js::detailAction:: JSON.stringify(e) "+JSON.stringify(e)+" with : "+firstname+" "+lastname+" : "+invoicenumber+" : "+sid);
+  	    var filename = e.row.filename;
+	  	//var sid = e.row.sid;
+	  	eval("var sid = e.row."+filename+"_sid");
+	  	Alloy.Globals.Log("invoicedetail.js::totalbalance_row:: JSON.stringify(e) "+JSON.stringify(e)+" with : "+firstname+" "+lastname+" : "+invoicenumber+" : "+sid+" : "+filename);
 		if (sid){	
 			var tabViewOneController = Alloy.createController("enterpayment",{
 				title: args,
@@ -889,7 +891,8 @@ function fileExist(filename,parentid){
 				var fileexist = "true";
 				var sid = jsonlist.items[0].id;
 				eval("Titanium.App.Properties.setString('"+filename+"_sid',sid)");
-				$.totalbalance_row.sid = sid;
+				//$.totalbalance_row.sid = sid;
+				eval("$.totalbalance_row."+filename+"_sid = sid");
 				Alloy.Globals.Log("invoicedetail.js::fileExist:: File exist. sid is: "+jsonlist.items[0].id+" Skipped.");
 				Alloy.Globals.Log("invoicedetail.js:: fileExist. Titanium.App.Properties.setString('"+filename+"_sid',sid) is: "+eval("Titanium.App.Properties.getString('"+filename+"_sid')")+".");
 				Titanium.App.Properties.setString('sid',sid);
@@ -1268,13 +1271,13 @@ function prefetchinvoicesent(e){
 	Alloy.Globals.Log("invoicedetail.js::prefetchinvoicesent::need to check if parent/filename exist: "+parentid+'/'+invoicesentfilename);
 	fileExist(invoicesentfilename,parentid);
 	var item = "invoicesent";	
-	var sid = eval("Titanium.App.Properties.getString('"+invoicesentfilename+"_sid')");
-	Alloy.Globals.Log("invoicedetail.js::prefetchinvoicesent::sidmatch: filename "+invoicesentfilename+'_sid : sid '+sid);
-	if(sid){
-		Alloy.Globals.Log("invoicedetail.js::prefetchinvoicesent: updating DB with: item : sid : "+item+" : "+sid);
-		Alloy.Globals.getPrivateData(sid,item);
+	var invoicesentsid = eval("Titanium.App.Properties.getString('"+invoicesentfilename+"_sid')");
+	Alloy.Globals.Log("invoicedetail.js::prefetchinvoicesent::sidmatch: filename "+invoicesentfilename+'_sid : invoicesentsid '+invoicesentsid);
+	if(invoicesentsid){
+		Alloy.Globals.Log("invoicedetail.js::prefetchinvoicesent: updating DB with: item : invoicesentsid : "+item+" : "+invoicesentsid);
+		Alloy.Globals.getPrivateData(invoicesentsid,item);
 	} else {
-		Alloy.Globals.Log("invoicedetail.js::prefetchinvoicesent: creating sid. very first new project");
+		Alloy.Globals.Log("invoicedetail.js::prefetchinvoicesent: creating invoicesentsid. very first new project");
 	};  // a very first new project would not have sid. suppress error.
 	Alloy.Globals.Log("invoicedetail.js::prefetchinvoicesent:: Alloy.Collections.invoicesent.fetch()");
 	//Alloy.Collections.invoicesent.fetch();	

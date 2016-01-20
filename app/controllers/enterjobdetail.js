@@ -271,7 +271,7 @@ function takePic(e){
                                 Alloy.Globals.Log("enterjobdetail.js::beginning to upload to the cloud.");
                                 var date = new Date();
         						var imagefilename = filename+"_"+date.toString().replace(/ /g,'_');;
-						        uploadPictoGoogle(image,imagefilename);
+						        uploadPictoGoogle(image,imagefilename,parentid);
                         } else if (e.mediaType === Titanium.Media.MEDIA_TYPE_VIDEO){
                                 var w = Titanium.UI.createWindow({
                                         title:"Job Video",

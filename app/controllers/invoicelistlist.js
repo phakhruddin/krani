@@ -9,6 +9,10 @@ $.ptr.refresh();
 
 function pulledEvent(e){
 	Alloy.Globals.Cleanup();
+	var item="invoice";
+	var sid = Titanium.App.Properties.getString(item,"none");
+	Alloy.Globals.Log("invoice.js:pulledEvent:use in callback: Alloy.Globals.getPrivateData("+sid+","+item+")");
+	Alloy.Globals.getPrivateData(sid,item);
 	Alloy.Globals.Log("invoice.js:pulledEvent:use in callback: Alloy.Collections.invoice.fetch()");
 	Alloy.Collections.invoice.fetch();
 }
