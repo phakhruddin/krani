@@ -81,6 +81,10 @@ if (args.sourcecall) {
 
 function pulledEvent(e){
 	Alloy.Globals.Cleanup();
+	var item = "project";
+	var sid = Titanium.App.Properties.getString(item,"none");
+	Alloy.Globals.Log("project.js::pulledEvent::sid for Alloy.Globals.getPrivateData("+ item +" , "+sid+" )");
+	Alloy.Globals.getPrivateData(sid,item);
 	Alloy.Globals.Log("project.js:pulledEvent:use in callback: Alloy.Collections.project.fetch()");
 	Alloy.Collections.project.fetch();	
 }
