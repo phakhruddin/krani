@@ -24,7 +24,7 @@ var GoogleAuth = function(o) {
 		url : 'https://accounts.google.com/o/oauth2/auth',
 		scope : (o.scope) ? o.scope : ['https://www.googleapis.com/auth/tasks'],
 		closeTitle : (o.closeTitle) ? o.closeTitle : 'Close',
-		winTitle : (o.winTitle) ? o.winTitle : 'Authentication. Please wait.',
+		winTitle : (o.winTitle) ? o.winTitle : 'Scroll down and click allow.',
 		errorText : (o.errorText) ? o.errorText : 'Can not authorize user!',
 		winColor : (o.winColor) ? o.winColor : '#000',
 		quiet : ( typeof (o.quiet) === 'undefined') ? true : o.quiet
@@ -116,7 +116,11 @@ var GoogleAuth = function(o) {
 
 		win.add(spinner);
 		//win.rightNavButton = close;
-		win.leftNavButton = close;
+		setTimeout(function(){
+			win.leftNavButton = close;
+			win.title = "Timeout, click close";
+		},60000); //user able to force close only after 1 min timeout.
+		
 
 		close.addEventListener('click', function() {
 			win1.close({transition:Titanium.UI.iPhone.AnimationStyle.CURL_DOWN});

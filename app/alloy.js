@@ -31,7 +31,7 @@ var OfflineMode = 0; //default is ONLINE mode
 //
 
 Alloy.Globals.Cleanup = function(){
-	var proptoremove = ["edithref","idtag","selfhref","lastpaiddate","paid","balance"];
+	var proptoremove = ["edithref","idtag","selfhref","lastpaiddate","paid","balance","krani_t"];
 	for (i=0;i<proptoremove.length;i++){
 		console.log("alloy.js:: b4 remove property "+proptoremove[i]+" Titanium.App.Properties.getString(\'"+proptoremove[i]+"\') : "+eval("Titanium.App.Properties.getString(\'"+proptoremove[i]+"\')"));
 		eval("Ti.App.Properties.removeProperty(\'"+proptoremove[i]+"\')");
