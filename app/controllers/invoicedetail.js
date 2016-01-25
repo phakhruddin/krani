@@ -170,7 +170,7 @@ for (i=0;i<projectitemsarray.length;i++) {
 }*/
 
 /// processing array in notes
-if (projectitemsarray.length>0) {
+if (projectitemsarray && projectitemsarray.length>0) {
 	var topvalue = 10;
 	for (x=0;x<projectitemsarray.length;x++) {
 		var projectitems = JSON.parse(projectitemsarray[x].replace(/cOlOn/g,":").toString());   // replacing all cOlOn to ':'
@@ -326,6 +326,13 @@ if (projectitemsarray.length>0) {
 		Alloy.Globals.updateExistingSpreadsheetAndDB("invoice",col1,col2,lastname,newtotal,newbal,paid,col7,col8,col9,col10,col11,col12,col13,col14,col15,col16,edithref,selfhref,idtag);
 	}		
 	
+} else {
+	Alloy.Globals.Log("invoicedetail.js:: NO projectitemsarray: need client refresh ");
+	var clientsid = Titanium.App.Properties.getString("client");
+	Alloy.Globals.getPrivateData(clientsid,"client");
+	var clientcollection  = Alloy.Collections.instance('client');
+    clientcollection.fetch();
+    alert("Invoice data downloaded. Please try again.");
 };
 
 //prep adhoc tables.

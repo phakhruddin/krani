@@ -10,7 +10,7 @@ $.location.addEventListener ("click", function(e){
 
 function openNextTab(item){
 	var sid = Titanium.App.Properties.getString(item,"none");
-	Ti.API.info("tabViewOne::openNextTab::sid for "+ item +" : "+sid);
+	Alloy.Globals.Log("tabViewOne::openNextTab::sid for "+ item +" : "+sid);
 	Alloy.Globals.getPrivateData(sid,item);
 	var scheduleController = Alloy.createController(item);
 	scheduleController.openMainWindow($.tab_one);	
@@ -42,7 +42,7 @@ $.invoicelistlist.addEventListener ("click", function(e){
 
  		var item = 'invoice';
  			var sid = Titanium.App.Properties.getString(item,"none");
-	Ti.API.info("sid for "+ item +" : "+sid);
+	Alloy.Globals.Log("tabviewone.js::sid for "+ item +" : "+sid);
 	Alloy.Globals.getPrivateData(sid,item);
 		var scheduleController = Alloy.createController("invoicelistlist");
  	scheduleController.openMainWindow($.tab_one);
@@ -70,7 +70,7 @@ $.proposallistlist.addEventListener ("click", function(e){
 
  		var item = 'proposal';
  			var sid = Titanium.App.Properties.getString(item,"none");
-	Ti.API.info("sid for "+ item +" : "+sid);
+	Alloy.Globals.Log("tabviewone.js::sid for "+ item +" : "+sid);
 	Alloy.Globals.getPrivateData(sid,item);
 		var scheduleController = Alloy.createController("proposallistlist");
  	scheduleController.openMainWindow($.tab_one);
@@ -164,7 +164,7 @@ checkNetworkAndGoogleAuthorized = function(sid){
 		}
 	});
 	xhr.onerror = function(e){
-		alert("No network connection. Information update will NOT be immediately synchronized to central location. Please take note.");
+		alert("error: "+e.code+" : Unable to pull data from cloud");
 		Alloy.Globals.Log("tabViewOne::checkNetworkAndGoogleAuthorized:failed to get to: "+url);
 	};
 	xhr.open("GET", url);
@@ -189,7 +189,7 @@ function initialLoad(){
 	checkNetworkAndGoogleAuthorized('1gnkP116nsTVxtrw6d_mXVdOiesQEPH7LVUIyHUfx9EE');
 	var item = 'invoice';
  	var sid = Titanium.App.Properties.getString(item,"none");
- 	Ti.API.info("index.js::sid for "+ item +" : "+sid);
+ 	Alloy.Globals.Log("tabviewone.js:InitialLoad:sid for "+ item +" : "+sid);
 	Alloy.Globals.getPrivateData(sid,item);
 	Alloy.Collections.instance(item).fetch();
 }
@@ -414,7 +414,7 @@ function login(e) {
 			$.status_label.text="";
 			$.login_button.title="Logout";
 			$.tabviewone_window.remove(refreshView);
-			$.logout_button.title=Titanium.App.Properties.getString("kraniemailid").split('@')[0].trim();
+			if (Titanium.App.Properties.getString("kraniemailid")) {$.logout_button.title=Titanium.App.Properties.getString("kraniemailid").split('@')[0].trim();};
 		},2000);
         break;
     case "RefreshAgain":

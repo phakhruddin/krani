@@ -637,7 +637,7 @@ function populatepaymentSIDtoDB(filename,sid) {
 //Retrieve cloud data again
 
 var sid = args.sid;
-Ti.API.info("sid for payment in enterpayment.js : "+sid);
+Alloy.Globals.Log("enterpayment.js::sid for payment in enterpayment.js : "+sid);
 Alloy.Globals.getPrivateData(sid,"payment");
 
 function uploadPictoGoogle(image,filename){
