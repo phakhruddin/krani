@@ -1892,15 +1892,15 @@ Alloy.Globals.createSpreadsheet2 = function(filename,parentid,isinit){
 	    		Titanium.App.Properties.setString('sid',sid); // 1st sid created.
 	    		// Populate Header
 	    		Alloy.Globals.Log("Alloy.Globals.createSpreadsheet2: Populate Header: "+filename+" sid: "+sid);
-    			for (i=1;i<17;i++){
+    			for (j=1;j<17;j++){
     				var t = parseFloat(Titanium.App.Properties.getInt("krani_t",1000));
-					var value = "col"+i;
+					var value = "col"+j;
 					setTimeout(function(){
-						Alloy.Globals.Log("Alloy.Globals.createSpreadsheet2: Alloy.Globals.getSSCell("+sid+",1,"+i+","+value+") at "+t+" ms");
-						Alloy.Globals.getSSCell(sid,1,i,value);
+						Alloy.Globals.Log("Alloy.Globals.createSpreadsheet2: Alloy.Globals.getSSCell("+sid+",1,"+j+","+value+") at "+t+" ms");
+						Alloy.Globals.getSSCell(sid,1,j,value);
 						},t); //delay to avoid api exhaustion	
 					var t = parseFloat(t) + 500;Titanium.App.Properties.setInt("krani_t",t);
-					Alloy.Globals.Log("Alloy.Globals.createSpreadsheet2: Populate Header: wait at "+t+" ms, getSSCell("+sid+",1,"+i+","+value+")");			
+					Alloy.Globals.Log("Alloy.Globals.createSpreadsheet2: Populate Header: wait at "+t+" ms, getSSCell("+sid+",1,"+j+","+value+")");			
 				}
 				if (isinit == "yes") {
 					var t = parseFloat(Titanium.App.Properties.getInt("krani_t",10500));
@@ -2057,12 +2057,12 @@ Alloy.Globals.createCoreSS = function (filename,parentid,indexsid) {
 				    		eval("Titanium.App.Properties.setString(item,sid)");
 				    		//Alloy.Globals.Log("Alloy.Globals.createCoreSS::Titanium.App.Properties.getString(item,sid): "+eval("Titanium.App.Properties.getString(item,sid)"));
 				    		// Populate Header
-			    			for (i=1;i<17;i++){
+			    			for (k=1;k<17;k++){
 			    				var t = parseFloat(Titanium.App.Properties.getInt("krani_t",10000));
-								var value = "col"+i;
-								setTimeout(function(){Alloy.Globals.getSSCell(sid,1,i,value);},t);
+								var value = "col"+k;
+								setTimeout(function(){Alloy.Globals.getSSCell(sid,1,k,value);},t);
 								var t = parseFloat(t) + 500;Titanium.App.Properties.setInt("krani_t",t);
-								Alloy.Globals.Log("Alloy.Globals.createCoreSS:Populate Header: wait at "+t+" ms, getSSCell("+sid+",1,"+i+","+value+")");
+								Alloy.Globals.Log("Alloy.Globals.createCoreSS:Populate Header: wait at "+t+" ms, getSSCell("+sid+",1,"+k+","+value+")");
 							}
 							var t = parseFloat(Titanium.App.Properties.getInt("krani_t",10500));
 							setTimeout(function(){
