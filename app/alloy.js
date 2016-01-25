@@ -1812,13 +1812,13 @@ Alloy.Globals.populateSpreadsheetHeader = function(sid,rowno,colno,edithref,self
  		+'<gs:cell row=\''+rowno+'\' col=\''+colno+'\' inputValue=\''+value+'\'>'
  		+'</gs:cell>'
  		+'</entry>'].join('');
- 		Alloy.Globals.Log("alloy.js::xmldatastring: "+xmldatastring);
+ 		Alloy.Globals.Log("alloy.js:Alloy.Globals.populateSpreadsheetHeader:xmldatastring: "+xmldatastring);
        var xhr =  Titanium.Network.createHTTPClient({
     onload: function() {
         try {
-                Alloy.Globals.Log(this.responseText); 
+                Alloy.Globals.Log("alloy.js:Alloy.Globals.populateSpreadsheetHeader:this.responseText::"+this.responseText); 
         } catch(e){
-                Alloy.Globals.Log("cathing e: "+JSON.stringify(e));
+                Alloy.Globals.Log("alloy.js:Alloy.Globals.populateSpreadsheetHeader:cathing e: "+JSON.stringify(e));
         }     
     },
     onerror: function(e) {
@@ -1836,6 +1836,7 @@ Alloy.Globals.populateSpreadsheetHeader = function(sid,rowno,colno,edithref,self
 
 Alloy.Globals.getSSCell = function(sid,rowno,colno,value) {
 	var pos = "R"+rowno+"C"+colno;
+	var value = value;
 	Alloy.Globals.Log("alloy.js::get SS Cell on :  https://spreadsheets.google.com/feeds/cells/"+sid+"/od6/private/full/"+pos);
 	var xhr = Ti.Network.createHTTPClient({
 	    onload: function(e) {
@@ -1851,8 +1852,7 @@ Alloy.Globals.getSSCell = function(sid,rowno,colno,value) {
 	    			if (listitem.getAttribute("rel") == "edit"){ var edithref = listitem.getAttribute("href");}
 	    			if (listitem.getAttribute("rel") == "self"){ var selfhref = listitem.getAttribute("href");}
 	    		}
-	    		Alloy.Globals.Log("Alloy.Globals.getSSCell:self href is : "+selfhref);
-				Alloy.Globals.Log("Alloy.Globals.getSSCell:edit href is : "+edithref);
+				Alloy.Globals.Log("Alloy.Globals.getSSCell:executing  : Alloy.Globals.populateSpreadsheetHeader("+sid+","+rowno+","+colno+","+edithref+","+selfhref+","+value+")");
 	    		Alloy.Globals.populateSpreadsheetHeader(sid,rowno,colno,edithref,selfhref,value);	    				    			
 	    	} catch(e){
 				Alloy.Globals.Log("Alloy.Globals.getSSCell::cathing e: "+JSON.stringify(e));
@@ -1895,7 +1895,10 @@ Alloy.Globals.createSpreadsheet2 = function(filename,parentid,isinit){
     			for (i=1;i<17;i++){
     				var t = parseFloat(Titanium.App.Properties.getInt("krani_t",1000));
 					var value = "col"+i;
-					setTimeout(function(){Alloy.Globals.getSSCell(sid,1,i,value);},t); //delay to avoid api exhaustion	
+					setTimeout(function(){
+						Alloy.Globals.Log("Alloy.Globals.createSpreadsheet2: Alloy.Globals.getSSCell("+sid+",1,"+i+","+value+") at "+t+" ms");
+						Alloy.Globals.getSSCell(sid,1,i,value);
+						},t); //delay to avoid api exhaustion	
 					var t = parseFloat(t) + 500;Titanium.App.Properties.setInt("krani_t",t);
 					Alloy.Globals.Log("Alloy.Globals.createSpreadsheet2: Populate Header: wait at "+t+" ms, getSSCell("+sid+",1,"+i+","+value+")");			
 				}
@@ -2668,7 +2671,7 @@ Alloy.Globals.stampSIDFromCoreFilename = function(filename){
 				var fileexist = "true";
 				var sid = jsonlist.items[0].id;
 				var item=filename.replace(/list$/g,"").replace(/^.*_/g,"");
-				Alloy.Globals.Log("alloy.js::Alloy.Globals.stampSIDFromCoreFilename::File exist. sid is: "+jsonlist.items[0].id+" Skipped.");
+				Alloy.Globals.Log("alloy.js::Alloy.Globals.stampSIDFromCoreFilename::File exist. filename/sid is: "+jsonlist.items[0].title+"/"+jsonlist.items[0].id+" Skipped.");
 				Titanium.App.Properties.setString(item,sid);
 				Alloy.Globals.Log("alloy.js::Alloy.Globals.stampSIDFromCoreFilename::File exist: sid from Titanium.App.Properties.getString("+item+"); "+eval("Titanium.App.Properties.getString(item)"));
 			};
@@ -2705,7 +2708,7 @@ Alloy.Globals.stampSIDFromCoreDirname = function(dirname){
 			} else {
 				var fileexist = "true";
 				var sid = jsonlist.items[0].id;
-				Alloy.Globals.Log("alloy.js::Alloy.Globals.stampSIDFromCoreDirname::File exist. sid is: "+jsonlist.items[0].id+" Skipped.");
+				Alloy.Globals.Log("alloy.js::Alloy.Globals.stampSIDFromCoreDirname::File exist. filename/sid is: "+jsonlist.items[0].title+"/"+jsonlist.items[0].id+" Skipped.");
 				Titanium.App.Properties.setString(dirname,sid);
 				Alloy.Globals.Log("alloy.js::Alloy.Globals.stampSIDFromCoreDirname::File exist: sid from Titanium.App.Properties.getString("+dirname+"); "+eval("Titanium.App.Properties.getString(dirname)"));
 			};
