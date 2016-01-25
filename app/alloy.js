@@ -1834,10 +1834,11 @@ Alloy.Globals.populateSpreadsheetHeader = function(sid,rowno,colno,edithref,self
 };
 
 
-Alloy.Globals.getSSCell = function(sid,rowno,colno,value) {
+Alloy.Globals.getSSCell = function(sid,rowno,colno,value,t) {
 	var pos = "R"+rowno+"C"+colno;
 	var value = value;
-	Alloy.Globals.Log("alloy.js::get SS Cell on :  https://spreadsheets.google.com/feeds/cells/"+sid+"/od6/private/full/"+pos);
+	(t)?t=t:t=0; //check if there is no delay needed
+	Alloy.Globals.Log("alloy.js::get SS Cell on :  https://spreadsheets.google.com/feeds/cells/"+sid+"/od6/private/full/"+pos+" at "+t+" ms");
 	var xhr = Ti.Network.createHTTPClient({
 	    onload: function(e) {
 	    try {
@@ -1865,8 +1866,13 @@ Alloy.Globals.getSSCell = function(sid,rowno,colno,value) {
 	};
 	xhr.open("GET", 'https://spreadsheets.google.com/feeds/cells/'+sid+'/od6/private/full/'+pos);
 	xhr.setRequestHeader("Content-type", "application/atom+xml");
-    xhr.setRequestHeader("Authorization", 'Bearer '+Alloy.Globals.googleAuthSheet.getAccessToken());
-	xhr.send();
+    xhr.setRequestHeader("Authorization", 'Bearer '+Alloy.Globals.googleAuthSheet.getAccessToken());    
+	//xhr.send();
+	Alloy.Globals.Log("alloy.js::get SS Cell on : executing xhr.send() after "+t+" ms");
+	setTimeout(function(){
+			xhr.send();
+			Alloy.Globals.Log("alloy.js::get SS Cell on : xhr.send() EXECUTED after "+t+" ms");
+		},t);
 };
 
 
@@ -1895,10 +1901,14 @@ Alloy.Globals.createSpreadsheet2 = function(filename,parentid,isinit){
     			for (j=1;j<17;j++){
     				var t = parseFloat(Titanium.App.Properties.getInt("krani_t",1000));
 					var value = "col"+j;
+					/*
 					setTimeout(function(){
 						Alloy.Globals.Log("Alloy.Globals.createSpreadsheet2: Alloy.Globals.getSSCell("+sid+",1,"+j+","+value+") at "+t+" ms");
 						Alloy.Globals.getSSCell(sid,1,j,value);
-						},t); //delay to avoid api exhaustion	
+						},t); //delay to avoid api exhaustion
+						*/
+					Alloy.Globals.Log("Alloy.Globals.createSpreadsheet2: Alloy.Globals.getSSCell("+sid+",1,"+j+","+value+","+t+")");
+					Alloy.Globals.getSSCell(sid,1,j,value,t);
 					var t = parseFloat(t) + 500;Titanium.App.Properties.setInt("krani_t",t);
 					Alloy.Globals.Log("Alloy.Globals.createSpreadsheet2: Populate Header: wait at "+t+" ms, getSSCell("+sid+",1,"+j+","+value+")");			
 				}
