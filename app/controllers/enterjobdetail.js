@@ -6,6 +6,7 @@ exports.openMainWindow = function(_tab) {
 };
 
 var parentid = args.parentid;
+genJoblog = args.callbackFunction;
 
 var GoogleAuth = require('googleAuth');
 var googleAuthSheet = new GoogleAuth({
@@ -758,7 +759,7 @@ refresh.addEventListener('refreshstart',function(e){
     }, 2000);
 });
 
-genJoblog = args.functionfromSource;
+//genJoblog = args.functionfromSource;
 
 function getReport(){
 	var joblogs = Alloy.Collections.instance('joblog');
@@ -771,5 +772,5 @@ function getReport(){
 		}
 	}
 	Alloy.Globals.Log("projectdetail.js: genReport: execute the source genJoblog()");
-	genJoblog;
+	genJoblog();
 }

@@ -151,6 +151,7 @@ $.joblog_button.addEventListener("click", function(e){
 			title: args,
 			sid: sid,
 			parentid: parentid,
+			callbackFunction: genJoblog
 	});
 	tabViewOneController.openMainWindow($.tab_projectdetail);		
 });

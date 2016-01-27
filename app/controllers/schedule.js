@@ -872,7 +872,9 @@ var getSharedCalendarData = function(url) {
 		});
 		xhr.onerror = function(e){
 			//alert(e);
-			alert("schedule::getSharedCalendarData::Unable to connect to the network. The info displayed here is NOT the latest.");
+			var kraniemailid = Titanium.App.Properties.getString('kraniemailid');
+			var jsonlist = JSON.parse(this.responseText);
+			alert("schedule:error:"+jsonlist.error.code+": Send email to "+kraniemailid+" asking shared calendar access permission");
 			Alloy.Globals.Log("schedule::getSharedCalendarData:response txt after failure is: "+this.responseText);
 		};
 		xhr.open("GET", url);

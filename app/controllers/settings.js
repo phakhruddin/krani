@@ -52,12 +52,19 @@ $.state_tf.hintText=Titanium.App.Properties.getString("coState","STATE");
 $.zipcode_tf.hintText=Titanium.App.Properties.getString("coZip")?+Titanium.App.Properties.getString("coZip"):"Zipcode";
 $.companyphone_tf.hintText=Titanium.App.Properties.getString("coPhone")?"Phone: "+Titanium.App.Properties.getString("coPhone"):"Phone: (414)555-1212";
 function coName(e) {Titanium.App.Properties.setString("coName", e.value);}
-function coGmail(e) {Titanium.App.Properties.setString("kraniemailid", e.value);}
 function coStreetAddress(e) {Titanium.App.Properties.setString("coStreetAddress", e.value);}
 function coCity(e) {Titanium.App.Properties.setString("coCity", e.value);}
 function coState(e) {Titanium.App.Properties.setString("coState", e.value);}
 function coZip(e) {Titanium.App.Properties.setString("coZip", e.value);}
 function coPhone(e) {Titanium.App.Properties.setString("coPhone", e.value);}
+function coGmail(e) {
+	Titanium.App.Properties.setString("kraniemailid", e.value);
+	var kraniemailid = Titanium.App.Properties.getString('kraniemailid');	
+	var name = kraniemailid.split('@')[0].trim(); //use kraniemailid for uniqueness
+	Alloy.Globals.Log("settings.js:coGmail:Alloy.Globals.getJSONOnlineCreateInitialFolder('"+name+"')");
+	Alloy.Globals.getJSONOnlineCreateInitialFolder(name); // refresh user
+	alert("shared account: "+name);
+	}
 
 //LOGO
 var logourl = Titanium.App.Properties.getString("logourl");
