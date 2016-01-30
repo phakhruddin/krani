@@ -343,7 +343,13 @@ function takePic(e){
 
 var sid = args.sid;
 Alloy.Globals.Log("enterjobdetail.js::before notes_textarea hintText: JSON.stringify(args): "+JSON.stringify(args)+" sid:"+sid);
-$.notes_textarea._hintText = sid;           
+$.notes_textarea._hintText = sid; 
+$.notes_textarea.addEventListener("return",function(e){
+	e.source.value = e.source.value;
+}); 
+function save(){
+	$.notes_textarea.blur();
+};      
 $.notes_textarea.addEventListener("blur",function(e){
         Alloy.Globals.Log("enterjobdetail.js::JSON.stringify(e)  :" +JSON.stringify(e));
         e.source.keyboardToolbar.items = null;
@@ -666,28 +672,34 @@ $.labor_table.addEventListener("delete", function(e){
 	Alloy.Globals.Log("enterjobdetail.js::$.labor_table delete: "+JSON.stringify(e));
 	if (metadata != "none") {
 		var metadata = e.row.metadata[13];
-		var urls = metadata.replace(/yCoLoNy/g,':').replace(/xCoLoNx/g,',');
-		var existingurlsidtag = urls.split(',')[0];
-		var existingurlsselfhref = urls.split(',')[1];
-		var existingurlsedithref = urls.split(',')[2];
-		var uniqueid = e.row.metadata[15];
-		Alloy.Collections.joblog.deleteCol16(uniqueid); //deleting the database
-		Alloy.Globals.Log("enterjobdetail.js::$.labor_table delete: idtag:"+existingurlsidtag+" selfhref: "+existingurlsselfhref+" edithref: "+existingurlsedithref);
-		var xhr = Ti.Network.createHTTPClient({
-		    onload: function(e) {
-		    try {
-		    		Ti.API.info("enterjobdetail.js::$.labor_table delete:success e: "+JSON.stringify(e));
-		    		Ti.API.info("enterjobdetail.js::$.labor_table delete:response is: "+this.responseText);
-		    	} catch(e){
-					Ti.API.info("enterjobdetail.js::$.labor_table delete:cathing e: "+JSON.stringify(e));
+		if (metadata) {
+			var urls = metadata.replace(/yCoLoNy/g,':').replace(/xCoLoNx/g,',');
+			var existingurlsidtag = urls.split(',')[0];
+			var existingurlsselfhref = urls.split(',')[1];
+			var existingurlsedithref = urls.split(',')[2];
+			var uniqueid = e.row.metadata[15];
+			Alloy.Collections.joblog.deleteCol16(uniqueid); //deleting the database
+			Alloy.Globals.Log("enterjobdetail.js::$.labor_table delete: idtag:"+existingurlsidtag+" selfhref: "+existingurlsselfhref+" edithref: "+existingurlsedithref);
+			var xhr = Ti.Network.createHTTPClient({
+			    onload: function(e) {
+			    try {
+			    		Ti.API.info("enterjobdetail.js::$.labor_table delete:success e: "+JSON.stringify(e));
+			    		Ti.API.info("enterjobdetail.js::$.labor_table delete:response is: "+this.responseText);
+			    	} catch(e){
+						Ti.API.info("enterjobdetail.js::$.labor_table delete:cathing e: "+JSON.stringify(e));
+					}
 				}
-			}
-		});
-		xhr.open("DELETE", existingurlsedithref);	
-		//xhr.setRequestHeader("Content-type", "application/json");
-	    xhr.setRequestHeader("Authorization", 'Bearer '+Alloy.Globals.googleAuthSheet.getAccessToken());
-		if (existingurlsedithref) {xhr.send();} else {Alloy.Globals.Log("enterjobdetail.js::$.labor_table delete: NO edithref. abort delete ");}
-		Alloy.Globals.Log("enterjobdetail.js::$.labor_table delete: DONE: DELETE "+existingurlsedithref);
+			});
+			xhr.open("DELETE", existingurlsedithref);	
+			//xhr.setRequestHeader("Content-type", "application/json");
+		    xhr.setRequestHeader("Authorization", 'Bearer '+Alloy.Globals.googleAuthSheet.getAccessToken());
+			if (existingurlsedithref) {xhr.send();} else {Alloy.Globals.Log("enterjobdetail.js::$.labor_table delete: NO edithref. abort delete ");}
+			Alloy.Globals.Log("enterjobdetail.js::$.labor_table delete: DONE: DELETE "+existingurlsedithref);
+		} else {
+			Alloy.Globals.Log("enterjobdetail.js:: metadata is empty : need refresh");
+			alert("Please refresh in order to delete");
+		}
+
 	} else {
 		Alloy.Globals.Log("enterjobdetail.js:: metadata is none : "+metadata);
 	}

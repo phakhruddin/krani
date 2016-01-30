@@ -1781,8 +1781,12 @@ Alloy.Globals.submit = function(type,clientfirstname,clientlastname,clientcompan
 	    				eval("var col"+position+" = webcontentlink");
 	    				var ssidsourcename = filename.split("_")[0]+"_"+filename.split("_")[1]+"_"+filename.split("_")[2];
 	    				var ssid = Titanium.App.Properties.getString(type+'_'+ssidsourcename+"_sid");
-	    				Alloy.Globals.Log("alloy.js:Alloy.Globals.uploadPictoGoogle:b4 execute Alloy.Globals.submit, ssid is : "+ssid);
-	    				Alloy.Globals.submit(type,ssid,col1,col2,col3,col4,col5,col6,col7,col8,col9,col10,col11,col12,col13,col14,col15,col16);
+	    				if (type) {
+	    					Alloy.Globals.Log("alloy.js:Alloy.Globals.uploadPictoGoogle:b4 execute Alloy.Globals.submit, ssid is : "+ssid);
+	    					Alloy.Globals.submit(type,ssid,col1,col2,col3,col4,col5,col6,col7,col8,col9,col10,col11,col12,col13,col14,col15,col16);
+	    				} else {
+	    					Alloy.Globals.Log("alloy.js:Alloy.Globals.uploadPictoGoogle: Plain upload, no spreadsheet registration for link, ssid is : "+ssid);
+	    				}	    				
 			    	} catch(e){
 			    		Alloy.Globals.Log("Alloy.Globals.uploadPictoGoogle::uploadPictoGoogle::cathing e: "+JSON.stringify(e));
 			    	} 
@@ -3168,6 +3172,7 @@ Alloy.Globals.createImageSnapshotofPDFandUpload = function(url,filename,parentid
 	 var webView= Ti.UI.createWebView({
 	 	url:url
 	 });
+	 Alloy.Globals.Log("Alloy.Globals.createImageSnapshotofPDF:: Initial: webView:: "+JSON.stringify(webView));
 	 // Added for test
 	 Titanium.UI.setBackgroundColor('#fff'); 
 	  		
@@ -3184,22 +3189,27 @@ Alloy.Globals.createImageSnapshotofPDFandUpload = function(url,filename,parentid
 		    width:'auto',
 		});	
 		 webView.addEventListener('load',function(){
-		     view.show();
+		     ///view.show();     	 	 		 
+		     setTimeout(function(){
+		     	var pdf2image = webView.toImage();
+				 var filepdf2image = Titanium.Filesystem.createTempFile(Titanium.Filesystem.resourcesDirectory);
+				 filepdf2image.write(pdf2image);
+				 Alloy.Globals.Log("Alloy.Globals.createImageSnapshotofPDF:: JSON.stringify(filepdf2image):: "+JSON.stringify(filepdf2image)+" filepdf2image "+filepdf2image+" pdf2image "+pdf2image);
+				 Alloy.Globals.uploadPictoGoogle(pdf2image,filename,parentid,position,type,col1,col2,col3,col4,col5,col6,col7,col8,col9,col10,col11,col12,col13,col14,col15,col16);
+		     	 win1.close();
+		     },10000);
 		 });	 
 		 view.add(webView);
 		 win.add(view);		
 		 
-		 win1.open(); //open it
-		 //Added for test Done
+		
+	 //Added for test Done
 	 Alloy.Globals.Log("Alloy.Globals.createImageSnapshotofPDF:: DONE: webView:: "+JSON.stringify(webView));
- 	 setTimeout(function() { 	 	
-		 var pdf2image = webView.toImage();
-		 var filepdf2image = Titanium.Filesystem.createTempFile(Titanium.Filesystem.resourcesDirectory);
-		 filepdf2image.write(pdf2image);
-		 Alloy.Globals.Log("Alloy.Globals.createImageSnapshotofPDF:: JSON.stringify(filepdf2image):: "+JSON.stringify(filepdf2image));
-		 Alloy.Globals.uploadPictoGoogle(pdf2image,filename,parentid,position,type,col1,col2,col3,col4,col5,col6,col7,col8,col9,col10,col11,col12,col13,col14,col15,col16);
-		 win1.close();
-	 },10000);	 
+	 
+	 win1.addEventListener('open',function() {
+	 	
+	 });
+	 win1.open(); //open it	 
 };
 
 Alloy.Globals.uploadPDFFileCreateSnapshotSubmit = function(file,filename,parentid,position,type,col1,col2,col3,col4,col5,col6,col7,col8,col9,col10,col11,col12,col13,col14,col15,col16) {

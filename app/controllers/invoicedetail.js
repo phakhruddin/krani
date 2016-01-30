@@ -196,6 +196,7 @@ if (projectitemsarray && projectitemsarray.length>0) {
 			width : 30,
 			image : "EditControlSelected.png"
 		});
+		topvalue = topvalue + 5;
 		var projectnamelabel = Ti.UI.createLabel ({
 			color : "#333",
 			textAlign : "Ti.UI.TEXT_ALIGNMENT_LEFT",
@@ -218,6 +219,8 @@ if (projectitemsarray && projectitemsarray.length>0) {
 			},
 			text : 'Description: '
 		});
+		//calculate height of item description.
+		var descr_height = ((Math.round(descr.split('').length/70)+(descr.split(/\r?\n|\r/).length))*14)+14;
 		var descrbodylabel = Ti.UI.createLabel ({
 			color : "#333",
 			left  : "120",
@@ -240,7 +243,7 @@ if (projectitemsarray && projectitemsarray.length>0) {
 		$.jobitem_row.add(unchecked);
 		$.jobitem_row.add(descrtitlelabel);
 		$.jobitem_row.add(descrbodylabel);
-		topvalue=topvalue+20;
+		topvalue=topvalue+20+descr_height-20;
 		var itemtitlelabel = Ti.UI.createLabel ({
 			left  : "20",
 			textAlign : "Ti.UI.TEXT_ALIGNMENT_LEFT",
@@ -400,48 +403,52 @@ function emailpdf(firstname,lastname,address,city,state,phone,email,invoicenumbe
  	
  	var oldfile = Ti.Filesystem.getFile('invoice.pdf'); if (oldfile.exists()) { oldfile.deleteFile(); } // cleanup old file
    
- 	html2pdf.addEventListener('pdfready', function(e) {  
-	     var file = Ti.Filesystem.getFile(e.pdf);   
+ 	html2pdf.addEventListener('pdfready', function(e) {
+ 		Alloy.Globals.Log("invoicedetail.js::html2pdf.addEventListener: pdf is ready.");
+ 		$.invoicedetail_window.title = "Uploading to cloud. Please wait..." ; 
+	    var file = Ti.Filesystem.getFile(e.pdf);   
 	    Alloy.Globals.Log("invoicedetail.js::html2pdf.addEventListener:: Ti.Filesystem.applicationDataDirectory "+Ti.Filesystem.applicationDataDirectory);
 		var oldfile = Ti.Filesystem.getFile(Ti.Filesystem.applicationDataDirectory,'invoice.pdf');
 		if (oldfile.exists()) { oldfile.deleteFile(); }
 		var orgfile =  Ti.Filesystem.getFile(Ti.Filesystem.applicationDataDirectory,'Expose.pdf');
         var renamesuccess = orgfile.rename('invoice.pdf');
         Alloy.Globals.Log("invoicedetail.js::html2pdf.addEventListener:: renamesuccess "+renamesuccess);
-	     ///var emailDialog = Ti.UI.createEmailDialog();  
-	     ///var newfile = file.rename('invoice.pdf');
-	     //emailDialog.addAttachment(Ti.Filesystem.getFile(e.pdf));
-	     //emailDialog.open();  
-	     ///file.rename('invoice.pdf');
-	     var url = '../Documents/invoice.pdf';
-	     //var url = '../Documents/Expose.pdf';
-	     var newurl = Ti.Filesystem.getFile(url);
-	     var file = 'invoice.pdf';
-	     Alloy.Globals.Log("opening viewpdf(url) on "+file);
-     	 viewpdf(file);
-     	 (Alloy.Globals.googleAuthSheet.getAccessToken()) || Alloy.Globals.googleAuthSheet.Authorized();
-     	 //Set filename for uploaded file
-     	 var date = new Date();
-     	 var dateinsert = date.getFullYear()+""+(date.getMonth()+1)+""+date.getDate()+""+date.getHours();
-     	 var pdffilename = invoicenumber+"_"+firstname+"_"+lastname+"_"+dateinsert;
-     	 var predocViewer = Ti.UI.iOS.createDocumentViewer({url:'invoice.pdf'});
-     	 //var imagefile = predocViewer.toImage();
-     	 var jpgfilename = "jpg_"+invoicenumber+"_"+firstname+"_"+lastname+"_"+dateinsert;
-     	 var kraniemailid = Titanium.App.Properties.getString('kraniemailid');
+		 ///var emailDialog = Ti.UI.createEmailDialog();  
+		 ///var newfile = file.rename('invoice.pdf');
+		 //emailDialog.addAttachment(Ti.Filesystem.getFile(e.pdf));
+		 //emailDialog.open();  
+		 ///file.rename('invoice.pdf');
+		 var url = '../Documents/invoice.pdf';
+		 //var url = '../Documents/Expose.pdf';
+		 var newurl = Ti.Filesystem.getFile(url);
+		 var file = 'invoice.pdf';
+		 Alloy.Globals.Log("opening viewpdf(url) on "+file);
+		 ///viewpdf(file);
+		 (Alloy.Globals.googleAuthSheet.getAccessToken()) || Alloy.Globals.googleAuthSheet.Authorized();
+		 //Set filename for uploaded file
+		 var date = new Date();
+		 var dateinsert = date.getFullYear()+""+(date.getMonth()+1)+""+date.getDate()+""+date.getHours()+""+date.getMinutes()+""+date.getSeconds();
+		 var pdffilename = invoicenumber+"_"+firstname+"_"+lastname+"_"+dateinsert;
+		 var predocViewer = Ti.UI.iOS.createDocumentViewer({url:'invoice.pdf'});
+		 //var imagefile = predocViewer.toImage();
+		 var jpgfilename = "jpg_"+invoicenumber+"_"+firstname+"_"+lastname+"_"+dateinsert;
+		 var kraniemailid = Titanium.App.Properties.getString('kraniemailid');
 		 var name = kraniemailid.split('@')[0].trim();
-     	 var parentid = Titanium.App.Properties.getString(name+"_invoice");
-     	 Alloy.Globals.Log(new Date()+"::invoicedetail.js::html2pdf::Alloy.Globals.uploadFile("+file+","+pdffilename+","+parentid+")");
-     	 //Alloy.Globals.uploadFile(file,pdffilename,parentid) ;
-     	 var col1 = Date.now();
-     	 setTimeout(function(){
-     	 	Alloy.Globals.Cleanup(); //cleanup existing edithref.
-     	 	Alloy.Globals.uploadPDFFileCreateSnapshotSubmit(file,pdffilename,parentid,"2","invoicesent",col1,col2,col3,col4,col5,col6,col7,col8,col9,col10,col11,col12,col13,col14,col15,col16);
-     	 	setTimeout(function(){prefetchinvoicesent();},2000); // after 2 secs. refresh DB.
-     	 },10000);
-      	 //Alloy.Globals.uploadFile(imagefile,jpgfilename) ;
-     	 //Added for PNG snapshot
-     	 //Alloy.Globals.createImageSnapshotofPDFandUpload(file,pdffilename+"_image",parentid);
-     	  	});  
+		 var parentid = Titanium.App.Properties.getString(name+"_invoice");
+		 Alloy.Globals.Log(new Date()+"::invoicedetail.js::html2pdf::Alloy.Globals.uploadFile("+file+","+pdffilename+","+parentid+")");
+		 //Alloy.Globals.uploadFile(file,pdffilename,parentid) ;
+		 var col1 = Date.now();
+		Alloy.Globals.Cleanup(); //cleanup existing edithref.
+		Alloy.Globals.uploadPDFFileCreateSnapshotSubmit(file,pdffilename,parentid,"2","invoicesent",col1,col2,col3,col4,col5,col6,col7,col8,col9,col10,col11,col12,col13,col14,col15,col16);
+		setTimeout(function(){prefetchinvoicesent();},2000); // after 2 secs. refresh DB.
+		//Alloy.Globals.uploadFile(imagefile,jpgfilename) ;
+		 //Added for PNG snapshot
+		 //Alloy.Globals.createImageSnapshotofPDFandUpload(file,pdffilename+"_image",parentid);
+		 setTimeout(function(){
+		 	viewpdf(file);
+		 	$.invoicedetail_window.title = "Invoice Detail" ; 
+	 		},21000); // after 11 secs when the image is finished uploaded	
+  	});  
  	
  	//var html = '<html><body><p>dBayCo Inc. limited </p></body></html>'; 
  	
@@ -717,7 +724,16 @@ function viewpdf(url){
 	// Create a document viewer to preview a PDF file
 	var url = Ti.Filesystem.getFile(Ti.Filesystem.applicationDataDirectory,url);
 	url.rename('invoice.pdf');
+	var docViewer2 = Ti.UI.iOS.createDocumentViewer({url:'invoice.pdf'});
+	Alloy.Globals.Log("invoicedetail.js::viewpdf: JSON.stringify(docViewer2) only:"+JSON.stringify(docViewer2) );
+	
 	var docViewer = Ti.UI.iOS.createDocumentViewer({url:url.nativePath});
+	docViewer.addEventListener('load',function(){
+		Alloy.Globals.Log("invoicedetail.js::viewpdf: JSON.stringify(docViewer) after callback:"+JSON.stringify(docViewer) );
+	});
+	
+	var prepdftheimage = docViewer.toImage;
+	Alloy.Globals.Log("invoicedetail.js::viewpdf: JSON.stringify(docViewer) + JSON.stringify(prepdftheimage) : "+JSON.stringify(docViewer) +" : prepdftheimage: "+ JSON.stringify(prepdftheimage));
 	navButton.addEventListener('click', function(){
 	    //docViewer.show({view:navButton, animated: true});
 	    navWin.close();
@@ -734,7 +750,8 @@ function viewpdf(url){
 		});
 	
 	navWin.open();
-
+	var pdftoimage = docViewer.toImage;
+	Alloy.Globals.Log("invoicedetail.js::viewpdf: JSON.stringify(pdftoimage) :  pdftoimage: "+ JSON.stringify(pdftoimage));
 }
  
 function uploadFile(file,filename,parentid){
@@ -786,37 +803,18 @@ function uploadFile(file,filename,parentid){
  	}
    
 function genInvoice(e){
+	$.invoicedetail_window.title = "Please wait ...";
 	Alloy.Globals.Log("invoicedetail.js::genInvoice:: JSON.stringify(e) "+JSON.stringify(e)+" with : "+firstname+" "+lastname+" : "+invoicenumber);
-		var logourl = Titanium.App.Properties.getString('logourl');
-		Alloy.Globals.Log("invoicedetail.js::genInvoice:: logourl is: "+logourl);
-		emailpdf(firstname,lastname,address,city,state,phone,email,invoicenumber,company,total,balance,paid,lastpaiddate,duedate,price);
-		//var url = '../Documents/invoice.pdf';
-		//var file = '../Documents/Expose.pdf';
+	var logourl = Titanium.App.Properties.getString('logourl');
+	Alloy.Globals.Log("invoicedetail.js::genInvoice:: logourl is: "+logourl);
+	emailpdf(firstname,lastname,address,city,state,phone,email,invoicenumber,company,total,balance,paid,lastpaiddate,duedate,price);
+	//var url = '../Documents/invoice.pdf';
+	//var file = '../Documents/Expose.pdf';
 
-		//var file = 'Expose.pdf';
-		//var orgfile = 'Expose.pdf';
-		//var file = orgfile.rename('invoice.pdf');
-		
- 
+	//var file = 'Expose.pdf';
+	//var orgfile = 'Expose.pdf';
+	//var file = orgfile.rename('invoice.pdf');
 };
-
-function detailAction(e){
-	var sid = e.source.sid;
-	if (sid){
-		Alloy.Globals.Log("invoicedetail.js::detailAction:: JSON.stringify(e) "+JSON.stringify(e)+" with : "+firstname+" "+lastname+" : "+invoicenumber);
-		var tabViewOneController = Alloy.createController("enterpayment",{
-			title: args,
-			firstname : firstname,
-			lastname : lastname,
-			invoicenumber : invoicenumber,
-			sid : sid
-		});
-		tabViewOneController.openMainWindow($.tab_invoicedetail);
-	} else {
-		alert("Loading data from the cloud. Please click OK and try again.");
-	}
-
-}
 
 // Section where payment is tracked.
 
@@ -909,7 +907,7 @@ function fileExist(filename,parentid){
 		}
 		});
 	xhr.onerror = function(e){
-		alert("fileExist:: Creating new document in the cloud");
+		alert("error:"+e.code+": Please refresh");
 	};
 	var rawquerystring = '?q=title+%3D+\''+filename+'\'+and+mimeType+%3D+\'application%2Fvnd.google-apps.spreadsheet\'+and+trashed+%3D+false&fields=items(id%2CmimeType%2Clabels%2Ctitle)';
 	xhr.open("GET", 'https://www.googleapis.com/drive/v2/files'+rawquerystring);
@@ -1010,25 +1008,28 @@ function createSpreadsheet(filename,parentid) {
 	    		var sid = json.id;
 	    		//Add dynamic Ti Properties set for sid
 	    		eval("Titanium.App.Properties.setString('"+filename+"_sid',sid)");
-	    		Alloy.Globals.Log("Alloy.Globals.checkFileExistThenUpdateSID:: File exist. sid is: "+json.id+" ");
-				Alloy.Globals.Log("Alloy.Globals.checkFileExistThenUpdateSID:: File exist. Titanium.App.Properties.setString('"+filename+"_sid',sid) is: "+eval("Titanium.App.Properties.getString('"+filename+"_sid')")+".");
+	    		Alloy.Globals.Log("invoicedetail.js::createSpreadsheet:: File exist. sid is: "+json.id+" ");
+				Alloy.Globals.Log("invoicedetail.js::createSpreadsheet:: File exist. Titanium.App.Properties.setString('"+filename+"_sid',sid) is: "+eval("Titanium.App.Properties.getString('"+filename+"_sid')")+".");
 	    		$.totalbalance_row.sid = sid; // inject sid to tableviewrow
 	    		populatepaymentSIDtoDB(filename,sid);
 	    		Titanium.App.Properties.setString('sid',sid); // 1st sid created.
-	    		for (i=1;i<17;i++){
+	    		var t = 0;
+	    		for (i=1;i<17;i++){ 			   
 						var value = "col"+i;
-						getSSCell(sid,1,i,value);
+						//getSSCell(sid,1,i,value);
+						Alloy.Globals.getSSCell(sid,1,i,value,t);
+						var t = parseFloat(t) + 500;
 					}
-					getSSCell(sid,2,1,"Date");
-					getSSCell(sid,2,2,"Notes");
-					//Initial spreadsheet data.
-					var date = new Date();	
-					var month = date.getMonth()+1;
-					var day = date.getDate();
-					var year = date.getFullYear();			
-					getSSCell(sid,3,1,month+"/"+day+"/"+year);
-					getSSCell(sid,3,2,"0.00");
-					getSSCell(sid,3,16,Date.now()); //jobitemid							
+				Alloy.Globals.getSSCell(sid,2,1,"Date",9000);
+				Alloy.Globals.getSSCell(sid,2,2,"Notes",9500);
+				//Initial spreadsheet data.
+				var date = new Date();	
+				var month = date.getMonth()+1;
+				var day = date.getDate();
+				var year = date.getFullYear();			
+				Alloy.Globals.getSSCell(sid,3,1,month+"/"+day+"/"+year,10000);
+				Alloy.Globals.getSSCell(sid,3,2,"0.00",10500);
+				Alloy.Globals.getSSCell(sid,3,16,Date.now(),11000); //jobitemid							
 	    		Alloy.Globals.Log("invoicedetail.js::sid : "+sid);
 	    	} catch(e){
 				Ti.API.info("cathing e: "+JSON.stringify(e));
@@ -1036,12 +1037,12 @@ function createSpreadsheet(filename,parentid) {
 		}
 		});
 	xhr.onerror = function(e){
-		alert("invoicedetail::createSpreadsheet::Unable to connect to the cloud.");
+		alert("invoicedetail:error:"+e.code+"::Unable to connect to the cloud. Pls refresh.");
 	};
 	xhr.open("POST", 'https://www.googleapis.com/drive/v2/files');	
 	xhr.setRequestHeader("Content-type", "application/json");
     xhr.setRequestHeader("Authorization", 'Bearer '+Alloy.Globals.googleAuthSheet.getAccessToken());
-    Alloy.Globals.Log("invoicedetail.js::json post: "+jsonpost);
+    Alloy.Globals.Log("invoicedetail.js:createSpreadsheet:json post: "+jsonpost);
 	xhr.send(jsonpost);
 }
 
@@ -1100,6 +1101,7 @@ function matchpaymentsidfromDB(filename){
 function prefetchPayment(e){
 	var parentid = Titanium.App.Properties.getString('parentid');
 	Alloy.Globals.Log("invoicedetail.js::prefetchpayment::need to check if parent/filename exist: "+parentid+'/'+filename);
+	
 	fileExist(filename,parentid);
 	var item = "payment";
 	var sidmatch = matchpaymentsidfromDB(filename);
@@ -1140,6 +1142,7 @@ function dummyRefresh(paid,balance,lastpaiddate){
 	var col5 = balance;
 	var col6 = paid;
 	Alloy.Globals.updateExistingSpreadsheetAndDB("invoice",col1,col2,lastname,col4,col5,col6,col7,col8,col9,col10,col11,col12,col13,col14,col15,col16,edithref,selfhref,idtag);
+	invoicecallbackFunction(); //download update SS then update the local DB.
 }	
 
 function actionPhone(e){

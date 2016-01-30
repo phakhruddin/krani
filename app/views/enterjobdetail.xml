@@ -10,12 +10,15 @@
 		<FooterView>
 	        <View backgroundColor="#DDD" height="150">
 	        	<TextArea id="notes_textarea" width="300" height="100" top="5" borderWidth="2" borderColor="#bbb" borderRadius="5" 
-	        		color="#888" textAlign="left" >
+	        		color="#888" textAlign="left" suppressReturn="false" >
 	        		<KeyboardToolbar id="ktb_textarea">
 	        			<Toolbar>
 	        				<Items>
 	        					<Button systemButton="ACTION" onClick="uploadFile"/>
             					<Button systemButton="CAMERA" onClick="takePic"/>
+            					<FlexSpace/>
+            					<FlexSpace/>
+             					<Button title="Save" onClick="save"/> 
 	        				</Items>
 	        			</Toolbar>
 	        		</KeyboardToolbar>	        		
@@ -29,9 +32,10 @@
             	<FlexSpace/>
             	<Button systemButton="ACTION" onClick="uploadFile"/>
             	<Button systemButton="CAMERA" onClick="takePic"/>
-             	<FlexSpace/> 
+             	<FlexSpace/> 	
+             	<Button title="GeneratePDFReport" onClick="getReport"/>  
              	<FlexSpace/>
-             	<Button title="Submit Report" onClick="getReport"/>  
+             	<Button title="Save" onClick="save"/>
              	<FlexSpace/>        	
             </Items>
         </Toolbar>   

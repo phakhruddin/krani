@@ -502,6 +502,8 @@ if (notesraw != "none") {
 		},
 		text : 'Description: '
 	});
+	//calculate height of item description.
+	var descr_height = ((Math.round(descr.split('').length/70)+(descr.split(/\r?\n|\r/).length))*14)+14;
 	var descrbodylabel = Ti.UI.createLabel ({
 		color : "#333",
 		left  : "120",
@@ -514,6 +516,8 @@ if (notesraw != "none") {
 	});
 	$.jobdescr_row.add(descrtitlelabel);
 	$.jobdescr_row.add(descrbodylabel);
+	$.jobdescr_row.height= descr_height + 5;
+	
 	var itemtitlelabel = Ti.UI.createLabel ({
 		left  : "20",
 		textAlign : "Ti.UI.TEXT_ALIGNMENT_LEFT",
@@ -544,7 +548,7 @@ if (notesraw != "none") {
 			font:{
 				fontSize:10
 			},
-			text : 'Qty :'+notes[i].qty
+			text : isNaN(notes[i].qty)?notes[i].qty='Qty :'+0:'Qty :'+notes[i].qty  
 		});
 		var itempricelabel = Ti.UI.createLabel ({
 			color : "#333",
@@ -554,7 +558,7 @@ if (notesraw != "none") {
 			font:{
 				fontSize:10
 			},
-			text : 'Price : '+notes[i].price
+			text : isNaN(notes[i].price)?notes[i].qty='Price : '+0:'Price : '+notes[i].price
 		});
 		var blanklabel = Ti.UI.createLabel ({
 			top : topvalue+12+4+6,

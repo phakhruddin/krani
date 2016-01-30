@@ -94,6 +94,10 @@ function myRefresher(e) {
 
 function pulledEvent(e){
 	Alloy.Globals.Cleanup();
+	var item="proposal";
+	var sid = Titanium.App.Properties.getString(item,"none");
+	Alloy.Globals.Log("proposallistlist.js:pulledEvent:use in callback: Alloy.Globals.getPrivateData("+sid+","+item+")");
+	Alloy.Globals.getPrivateData(sid,item);
 	Alloy.Globals.Log("proposallistlist.js:pulledEvent:use in callback: Alloy.Collections.proposal.fetch()");
 	Alloy.Collections.proposal.fetch();
 }

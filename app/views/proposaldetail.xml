@@ -14,15 +14,14 @@
 	  <TableViewSection  headerTitle="Details">
 	  	<TableViewRow id="totalbalance_row" height="140">
 	  		<Label id="bal_title" color="gray" textAlign="Ti.UI.TEXT_ALIGNMENT_CENTER" top="10" text="total"/>
-	  		  <Label id="balance1" color="red" textAlign="Ti.UI.TEXT_ALIGNMENT_CENTER" top="20" text="{dummy.balance}" />
-	  		  <Label id="balance2" color="green" textAlign="Ti.UI.TEXT_ALIGNMENT_CENTER" top="20" text="{dummy.balance}" />
+	  		  <Label id="balance1" color="red" textAlign="Ti.UI.TEXT_ALIGNMENT_CENTER" top="20" text="{dummy.total}" />
 	  		  <Label id="currency" color="gray" textAlign="Ti.UI.TEXT_ALIGNMENT_CENTER" top="90" text="{dummy.currency}" />
 	  		  <Button id="viewproposal_button" top="115" title="Click to view the proposal"></Button>
 	   </TableViewRow>
 	   </TableViewSection>
 	  <TableViewSection  headerTitle="Dates">
 	  	<TableViewRow id="dates_row" height="35" >
-	   		  <Button id="duedate_button" left="20" top="5" title="submission date: " onClick="duedateAction" />
+	   		  <Button id="duedate_button" left="20" top="5" title="Follow-up date: " onClick="duedateAction" />
 	   		  <Label id="duedate_label" color="red" left="45%" top="10"  text="{dummy.duedate}" /> 
 	   		  <Button id="duedate_done" right="40" top="10" title="DONE" onClick="duedateActionDone" />
 	    </TableViewRow>

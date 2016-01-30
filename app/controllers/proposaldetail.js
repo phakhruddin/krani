@@ -71,6 +71,9 @@ var edithref = (data[13])?data[13].replace(/xCoLoNx/g,',').split(',')[2].replace
 $.duedate_done.idtag = idtag;
 $.duedate_done.selfhref = selfhref;
 $.duedate_done.edithref = edithref;
+$.duedate_done.total = total;
+$.duedate_done.balance = balance;
+$.duedate_done.paid = paid;
 
 
 if (balance == 0){
@@ -78,13 +81,11 @@ if (balance == 0){
 	$.email_button.hide();
 	$.duedate_label.hide();
 	$.balance1.hide();
-	$.balance2.show();
 } else {
 	$.phone_button.show();
 	$.email_button.show();
 	$.duedate_label.show();
 	$.balance1.show();
-	$.balance2.hide();
 }
 
 someDummy.set({'proposalnumber': 'proposal#: '+proposalnumber,
@@ -92,7 +93,7 @@ someDummy.set({'proposalnumber': 'proposal#: '+proposalnumber,
 	'lastname': lastname,
 	'phone': phone,
 	'email': email,
-	'total': 'Total: '+total,
+	'total': total,
 	'balance': balance,
 	'paid': 'Paid: '+paid,
 	'lastpaiddate': 'Last paid date: ' +lastpaiddate,
@@ -210,8 +211,9 @@ for (i=0;i<projectitemsarray.length;i++) {
 		}	
 	}	
 }
-
+//TODO: check this logic about proposal submitted then dont list item.
 //if proposal submitted. dont list items.
+Alloy.Globals.Log("proposaldetail.js:: prior to duedate match:duedate.toString(): "+duedate.toString());
 if ( duedate.toString().match(/\//g) ) { 
 	Alloy.Globals.Log("proposaldetail.js:: duedate.toString().match() : "+duedate.toString().match(/\//g));
 	$.viewproposal_button.show(); 
@@ -228,6 +230,7 @@ if ( duedate.toString().match(/\//g) ) {
 	$.phone_button.hide();
 	$.email_button.hide(); 
 /// processing array in notes
+	Alloy.Globals.Log("proposaldetail.js:: displaying row: projectitemsarray.length: "+projectitemsarray.length);
 	if (projectitemsarray.length>0) {
 	var topvalue = 10;
 	for (x=0;x<projectitemsarray.length;x++) {
@@ -1239,6 +1242,9 @@ function duedateActionDone(e){
 	var edithref = Titanium.App.Properties.getString('edithref');
     var idtag = Titanium.App.Properties.getString('idtag');
     var selfhref = Titanium.App.Properties.getString('selfhref');
+    var newtotal = e.source.total;
+    var newbal = e.source.balance;
+    var paid = e.source.paid;
 	Alloy.Globals.updateExistingSpreadsheetAndDB("proposal",col1,col2,lastname,newtotal,newbal,paid,col7,col8,col9,col10,duedate,col12,col13,col14,col15,col16,edithref,selfhref);
 	///var projectsid = Titanium.App.Properties.getString('project');
 	///Alloy.Globals.getPrivateData(projectsid,"project");

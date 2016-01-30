@@ -236,6 +236,7 @@ var parentid = Titanium.App.Properties.getString("freeuser");
 
 function logout(e){
 	Alloy.Globals.Log("tabviewone:: logout: "+JSON.stringify(e));
+	Alloy.Globals.Cleanup();
 	Alloy.Globals.googleAuthSheet.deAuthorize();
 	$.logout_button.title = "Please click login ->";
 }
@@ -247,6 +248,7 @@ function login(e) {
 	function logout(e){
 		Alloy.Globals.Log("tabviewone:: logout: "+JSON.stringify(e));
 		Alloy.Globals.googleAuthSheet.deAuthorize();
+		Alloy.Globals.Cleanup();
 		$.logout_button.title = "Please click login ->";
 		$.login_button.title="LOGIN";
 	}

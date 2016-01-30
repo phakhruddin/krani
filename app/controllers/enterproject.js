@@ -130,6 +130,7 @@ function addItem(e,itemvalues){
 		left: '20',
 		color: "#3B708A"
 		});
+	isNaN(itemvalues.qty)?itemvalues.qty=0:itemvalues.qty;
 	var itemTextFieldqty = Titanium.UI.createTextField({
 		id:"lineitemqty_tf",
 		borderColor : 'white', // border color
@@ -141,7 +142,7 @@ function addItem(e,itemvalues){
     	keyboardType: Ti.UI.KEYBOARD_NUMBER_PAD,
     	returnKeyType : Ti.UI.RETURNKEY_DONE,
     	font: {fontSize: '14'},
-    	value: (e == "modify")?itemvalues.qty:""
+    	value: (e == "modify")?isNaN(itemvalues.qty)?itemvalues.qty=0:itemvalues.qty:""
 		});
 	var itemLabelprice = Ti.UI.createLabel({
 		id:"linetflabelqty" , 
@@ -154,6 +155,7 @@ function addItem(e,itemvalues){
 		left: '180',
 		color: "#3B708A"
 		});
+	isNaN(itemvalues.price)?itemvalues.price=0:itemvalues.price;
 	var itemTextFieldprice = Titanium.UI.createTextField({
 		id:"lineitemprice_tf",
 		borderColor : 'white', // border color
@@ -249,8 +251,8 @@ $.lineitem_tf.addEventListener('blur', function(_e) {
 		if (tabledata[i].data1 == "projectname_tf") {  projectname.push({ name:tabledata[i].data2.trim() }); };
 		if (tabledata[i].data1 == "projectdescr_tf") {  projectdescr.push({ descr:tabledata[i].data2.trim() }); };
 		if (tabledata[i].data1 == "lineitem_tf") {  lineitem.push({ item:tabledata[i].data2.trim()}); };
-		if (tabledata[i].data1 == "lineitemqty_tf") {  lineitemqty.push({ itemqty:tabledata[i].data2.trim() }); };
-		if (tabledata[i].data1 == "lineitemprice_tf") {  lineitemprice.push({ itemprice:tabledata[i].data2.trim() }); };
+		if (tabledata[i].data1 == "lineitemqty_tf") {  lineitemqty.push({ itemqty:isNaN(tabledata[i].data2.trim())?0:tabledata[i].data2.trim() }); };
+		if (tabledata[i].data1 == "lineitemprice_tf") {  lineitemprice.push({ itemprice:isNaN(tabledata[i].data2.trim())?0:tabledata[i].data2.trim() }); };
 	}
 	Alloy.Globals.Log("lineitem: "+JSON.stringify(lineitem));
 	Alloy.Globals.Log("lineitemqty: "+JSON.stringify(lineitemqty));
@@ -565,8 +567,8 @@ if (args.notesraw) {
 		eval('var itemvalues = notesJSON['+c+'];');	
 		if (c==1){
 			$.lineitem_tf.value =itemvalues.lineitem; 
-			$.lineitemqty_tf.value =itemvalues.qty; 
-			$.lineitemprice_tf.value =itemvalues.price; 			
+			$.lineitemqty_tf.value = isNaN(itemvalues.qty)?itemvalues.qty=0:itemvalues.qty;
+			$.lineitemprice_tf.value =isNaN(itemvalues.price)?itemvalues.price=0:itemvalues.price; 			
 		}	else {
 			var e = "modify";
 			addItem(e,itemvalues);
@@ -574,8 +576,36 @@ if (args.notesraw) {
 
 	}
 }
-//(args.state)?$.projectclientstate_tf.value=args.state:$.projectclientstate_tf.value=" ";
-(itemdescrvalue)?$.projectdescr_tf.value=itemdescrvalue:$.projectdescr_tf.value=" ";
+
+function projectDetailsAutoHeight(projectdescr_tf_height){
+	var new_projectdescr_tf_height = 14 + parseFloat(projectdescr_tf_height);
+	$.projectdescr_tf.height = new_projectdescr_tf_height;
+	$.tflabellineitem.top = 32 + new_projectdescr_tf_height + 5;
+	$.lineitem_tf.top = 32 + new_projectdescr_tf_height + 5 + 2;
+	$.tflineitemqty.top = 32 + new_projectdescr_tf_height + 5 + 20;
+	$.lineitemqty_tf.top = 32 + new_projectdescr_tf_height + 5 + 20 + 2;
+	$.tflineitemprice.top = 32 + new_projectdescr_tf_height + 5 + 20;
+	$.lineitemprice_tf.top = 32 + new_projectdescr_tf_height + 5 + 20 + 2;	
+}
+
+$.projectdescr_tf.addEventListener('return',function(){projectDetailsAutoHeight($.projectdescr_tf.height);}); //prevent return key from done
+function done(){$.projectdescr_tf.blur();} //actual done
+
+if (itemdescrvalue) {
+	$.projectdescr_tf.value=itemdescrvalue;
+	//fontSize is 14. Width = Ti.UI.Size.
+	var projectdescr_tf_height = ((Math.round(itemdescrvalue.split('').length/70)+(itemdescrvalue.split(/\r?\n|\r/).length))*14)+14;
+	var new_projectdescr_tf_height = 2 + projectdescr_tf_height;
+	$.projectdescr_tf.height = new_projectdescr_tf_height;
+	$.tflabellineitem.top = 32 + new_projectdescr_tf_height + 5;
+	$.lineitem_tf.top = 32 + new_projectdescr_tf_height + 5 + 2;
+	$.tflineitemqty.top = 32 + new_projectdescr_tf_height + 5 + 20;
+	$.lineitemqty_tf.top = 32 + new_projectdescr_tf_height + 5 + 20 + 2;
+	$.tflineitemprice.top = 32 + new_projectdescr_tf_height + 5 + 20;
+	$.lineitemprice_tf.top = 32 + new_projectdescr_tf_height + 5 + 20 + 2;	
+} else {
+	$.projectdescr_tf.value=" ";
+}
  
 var refresh = Ti.UI.createRefreshControl({
     tintColor:'orange'
