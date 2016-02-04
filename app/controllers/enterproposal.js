@@ -10,23 +10,7 @@ exports.openMainWindow = function(_tab) {
 	
 	Alloy.Globals.Log("enterproposal.js::openMainWindow:: $.enterproposal_table.data[0] count "+$.enterproposal_table.data[0].rowCount+" contents: "+JSON.stringify($.enterproposal_table.data[0].rows));
  	if (args.clienttitle) {  //when user select existing client
-		selectClient(args);
-		//Alloy.Globals.Log("enterproposal.js::after selectClient:: selectclientrow "+JSON.stringify(selectclientrow));
-		Alloy.Globals.Log("enterproposal.js::after selectClient::openMainWindow:: b4 exe $.enterproposal_table.data[0].rowCount : "+$.enterproposal_table.data[0].rowCount);
-		Alloy.Globals.Log("enterproposal.js::after selectClient::openMainWindow:: b4 exe $.enterproposal_table.data[0] "+JSON.stringify($.enterproposal_table.data[0].rows));
-		$.coverview.hide();
-		$.selectclient_button.hide();	
-		//$.enterproposal_table.deleteRow()
-		/*
-		var tohide = [$.itemdetail_row, $.addrow_row, $.itemlineend_row,$.totalrow];
-		for (x=0;x<tohide.length;x++){
-			$.enterproposal_table.deleteRow(tohide[x]);
-		}; //hide first*/
-		Alloy.Globals.Log("enterproposal.js::after selectClient::openMainWindow:: after exe $.enterproposal_table.data[0].rowCount : "+$.enterproposal_table.data[0].rowCount);
-		Alloy.Globals.Log("enterproposal.js::after selectClient::openMainWindow:: after exe $.enterproposal_table.data[0] "+JSON.stringify($.enterproposal_table.data[0].rows));
-		addJobItemFromClientSelection();		
-		$.enterproposal_window.setRightNavButton($.savebutton);		
-		Alloy.Globals.Log("enterproposal.js::after selectClient::openMainWindow:: checking $.jobitem_row "+JSON.stringify($.jobitem_row));	
+		selectClient(args);	
 	} else {
 		//$.enterproposal_table.setData(addnewclientrow)	;
 		Titanium.App.Properties.setString('selectclient',"false");
@@ -54,8 +38,8 @@ exports.openMainWindow = function(_tab) {
 	}
 };
 
-	var maxdebug = Titanium.App.Properties.getInt('maxdebug');
-	var mindebug = Titanium.App.Properties.getInt('mindebug');
+var maxdebug = Titanium.App.Properties.getInt('maxdebug');
+var mindebug = Titanium.App.Properties.getInt('mindebug');
 
 Alloy.Globals.Log("enterproposal.js::outside openMainWindow:: $.enterproposal_table.data[0] count "+$.enterproposal_table.data[0].rowCount+" contents: "+JSON.stringify($.enterproposal_table.data[0].rows));
 
@@ -89,14 +73,14 @@ if(args.clienttitle){
 
 
 function addRows(){
- Alloy.Globals.Log("JSON stringify e : " +JSON.stringify(e));
-// Defining new row
-var newRow = Ti.UI.createTableViewRow({
+  Alloy.Globals.Log("JSON stringify e : " +JSON.stringify(e));
+  // Defining new row
+  var newRow = Ti.UI.createTableViewRow({
 title : 'Row ' + ($.enterproposal_table.data[0].rowCount + 1)
 });
  
-// Adding row to the table view
-///$.enterproposal_table.appendRow(newRow);
+  // Adding row to the table view
+  ///$.enterproposal_table.appendRow(newRow);
 }
 
 
@@ -483,6 +467,38 @@ function setClientExisting(args) {
 
 }
 
+var selectclientdialog = Ti.UI.createAlertDialog({
+	cancel: 1,
+	buttonNames: ['NO', 'YES'],
+	message: 'They are existing proposals under this client, proceed?',
+	title: 'Proposal exist'
+});
+
+function clientSelected() {
+		Alloy.Globals.Log("enterproposal.js::after selectClient::openMainWindow:: b4 exe $.enterproposal_table.data[0].rowCount : "+$.enterproposal_table.data[0].rowCount);
+		Alloy.Globals.Log("enterproposal.js::after selectClient::openMainWindow:: b4 exe $.enterproposal_table.data[0] "+JSON.stringify($.enterproposal_table.data[0].rows));
+		$.coverview.hide();
+		$.selectclient_button.hide();
+		//$.enterproposal_table.deleteRow()
+		/*
+		var tohide = [$.itemdetail_row, $.addrow_row, $.itemlineend_row,$.totalrow];
+		for (x=0;x<tohide.length;x++){
+		$.enterproposal_table.deleteRow(tohide[x]);
+		}; //hide first*/
+		Alloy.Globals.Log("enterproposal.js::after selectClient::openMainWindow:: after exe $.enterproposal_table.data[0].rowCount : "+$.enterproposal_table.data[0].rowCount);
+		Alloy.Globals.Log("enterproposal.js::after selectClient::openMainWindow:: after exe $.enterproposal_table.data[0] "+JSON.stringify($.enterproposal_table.data[0].rows));
+		addJobItemFromClientSelection();
+		$.enterproposal_window.setRightNavButton($.savebutton);
+		Alloy.Globals.Log("enterproposal.js::after selectClient::openMainWindow:: checking $.jobitem_row "+JSON.stringify($.jobitem_row));
+}
+
+selectclientdialog.addEventListener("click",function(e){
+	if (e.index == 1 ) {
+		clientSelected();
+	} else {return 100;};
+});
+
+
 function selectClient(args) {
 	Titanium.App.Properties.setString('selectclient',"true");
 			var data = args.clienttitle.split(':');
@@ -501,20 +517,35 @@ function selectClient(args) {
 	var proposal = data[10];
 	var project = data[11];
 	var proposal = data[12];
-	var customerid = data[15];
+	var customerid = data[4];
+	Alloy.Globals.Log("enterproposal.js:selectClient: examine (args): "+JSON.stringify(args));
+	//Alloy.Globals.Log("enterproposal.js:selectClient: examine (check): "+JSON.stringify(check));
+	//checking existing customer id
+	var item = "proposal";
+	var check = Alloy.Collections.instance(item);
+	check.fetch();
+	var found = check.where({col12:""+customerid+""});
+	Alloy.Globals.Log("enterproposal.js:selectClient: examine (found): "+JSON.stringify(found));
+	//if name already exist, ask for confirmation
+	if (found.length > 0) {
+		selectclientdialog.show();
+	} else { clientSelected();}
 }
 
+
 function matchClient() {
+	/*
 	var clientController = Alloy.createController('client',{
 			sourcecall: 'enterproposal'
 		});
-	clientController.openMainWindow($.enterproposal_tab);
-	Alloy.Globals.Log("enterproposal.js:: examine clientController: "+JSON.stringify(clientController));
+	clientController.openMainWindow($.enterproposal_tab);*/
+	Alloy.createController('client',{sourcecall: 'enterproposal'}).openMainWindow($.enterproposal_tab);
+	///Alloy.Globals.Log("enterproposal.js:matchClient: examine clientController: "+JSON.stringify(clientController));
 	$.selectclient_button.hide();
 	$.coverview.hide();
 	
 	var someDummy = Alloy.Models.dummy;
-	Alloy.Globals.Log("stringify dummy after selectClient :"+JSON.stringify(someDummy));
+	Alloy.Globals.Log("enterproposal.js:matchClient:stringify dummy after selectClient :"+JSON.stringify(someDummy));
 	someDummy.set('id', '1234');
 	someDummy.fetch();
 	someDummy.set('searchagain', 'Click here to search again.');
@@ -566,235 +597,240 @@ $.enterproposal_table.addEventListener('click', function(e){
 	 	$.itemprice_tf.blur();
 });
  
- function addJobItemFromClientSelection() {
- 	
- 
- 
- if(args.clienttitle){  //Locate existing jobs.
- 
-if (uniqueid.match(/[0-9]/g)){
-	projectitemsarray = [];
-	projectnamesarray = [];
-	var projects = Alloy.Collections.instance('project');
-	projects.fetch();
-	var theproject = projects.where({
-		col13:uniqueid
-		}); //FILTER
-	if(theproject.length > 0){
-		Alloy.Globals.Log("enterproposal.js:: JSON.stringify(theproject): "+JSON.stringify(theproject));
-		for (i=0;i<theproject.length;i++){
-			var projectnames = theproject[i].toJSON().col1;
-			var projectitems = theproject[i].toJSON().col12;
-			projectitemsarray.push(projectitems);
-			projectnamesarray.push(projectnames);
-		}
-		Alloy.Globals.Log("enterproposal.js:: JSON.stringify(projectitemsarray): "+JSON.stringify(projectitemsarray));
-	}
-}
-
-if(projectitemsarray.length>0){
+ function addJobItemFromClientSelection() {	 
+    if(args.clienttitle) {  //Locate existing jobs.	 
+		if (uniqueid.match(/[0-9]/g)){
+				projectitemsarray = [];
+				projectnamesarray = [];
+				projectstatusarray = [];				
+				var projects = Alloy.Collections.instance('project');
+				projects.fetch();
+				var theproject = projects.where({
+					col13:uniqueid
+					}); //FILTER
+				if(theproject.length > 0){
+					Alloy.Globals.Log("enterproposal.js:: JSON.stringify(theproject): "+JSON.stringify(theproject));
+					for (i=0;i<theproject.length;i++){
+						var projectnames = theproject[i].toJSON().col1;
+						var projectitems = theproject[i].toJSON().col12;
+						var projectstatus = theproject[i].toJSON().col11;
+						projectitemsarray.push(projectitems);
+						projectnamesarray.push(projectnames);
+						projectstatusarray.push(projectstatus);
+					}
+					Alloy.Globals.Log("enterproposal.js:: JSON.stringify(projectitemsarray): "+JSON.stringify(projectitemsarray));
+				}
+			}
 	
-for (i=0;i<projectitemsarray.length;i++) {
-	Alloy.Globals.Log("enterproposal.js:: JSON.stringify(projectnamesarray): "+JSON.stringify(projectnamesarray));	
-	var projectitems = JSON.parse(projectitemsarray[i].replace(/cOlOn/g,":").toString());
-	Alloy.Globals.Log("enterproposal.js:: JSON.stringify(projectitems): "+JSON.stringify(projectitems));
-	for (j=0;j<projectitems.length;j++){
-		if (j==0){Alloy.Globals.Log("enterproposal.js:: projectitems[0].descr: "+projectitems[j].descr);};	
-		if (j>0){Alloy.Globals.Log("enterproposal.js:: projectitems["+j+"].lineitem: "+projectitems[j].lineitem);};			
-		}	
-	}	
-}
-
-/// processing array in notes
-if (projectitemsarray.length>0) {
-	$.itemline_row.title = "Enter new project. Existing projects are added by default.";
-	var topvalue = 10;
-	// title start
-	topvalue = topvalue + 10;
-   	var blueline = Ti.UI.createImageView ({
-        left  : "20",
-        textAlign : "Ti.UI.TEXT_ALIGNMENT_LEFT",
-        top : topvalue,
-        width : "85%",
-        height : "3",
-        image : "blueline.png"
-    });
-	topvalue = topvalue + 10;
-	var currentTitle = Ti.UI.createLabel ({
-		color : "#333",
-		textAlign : "Ti.UI.TEXT_ALIGNMENT_LEFT",
-		left : "20",
-		top : topvalue,
-		font:{
-			fontSize:18,
-			fontWeight: "bold"
-		},
-		text : "Current projects:"
-	});
-	$.jobitem_row.add(blueline);
-	$.jobitem_row.add(currentTitle);
-	// title END
-	for (x=0;x<projectitemsarray.length;x++) {
-		var projectitems = JSON.parse(projectitemsarray[x].replace(/cOlOn/g,":").toString());   // replacing all cOlOn to ':'
-		var projectname = projectnamesarray[x];
-		if(maxdebug==1){
-			Alloy.Globals.Log("enterproposal.js:: createRow: projectnamesarray["+x+"]: "+projectnamesarray[x]);
-			Alloy.Globals.Log("enterproposal.js:: createRow: JSON.stringify(projectitems): "+JSON.stringify(projectitems));
-			Alloy.Globals.Log("enterproposal.js::topvalue at START : "+topvalue);
-		};
-		topvalue = topvalue + 30;
-		var projectidentification=projectnamesarray[x].trim().replace(/\s/g,'_'); //
-		var projectinfoarray=[];
-
-
-		var unchecked = Ti.UI.createButton({
-			id: projectidentification,
-			top: topvalue,
-			left: "85%",
-			height : 30,
-			width : 30,
-			image : "square82.png"
-		});
-		var checked = Ti.UI.createButton({
-			top: topvalue,
-			left: "85%",
-			height : 30,
-			width : 30,
-			image : "check70.png"
-		});
-		var projectnamelabel = Ti.UI.createLabel ({
+		if(projectitemsarray.length>0){
+				
+				for (i=0;i<projectitemsarray.length;i++) {
+					Alloy.Globals.Log("enterproposal.js:: JSON.stringify(projectnamesarray): "+JSON.stringify(projectnamesarray));	
+					var projectitems = JSON.parse(projectitemsarray[i].replace(/cOlOn/g,":").toString());
+					Alloy.Globals.Log("enterproposal.js:: JSON.stringify(projectitems): "+JSON.stringify(projectitems));
+					for (j=0;j<projectitems.length;j++){
+						if (j==0){Alloy.Globals.Log("enterproposal.js:: projectitems[0].descr: "+projectitems[j].descr);};	
+						if (j>0){Alloy.Globals.Log("enterproposal.js:: projectitems["+j+"].lineitem: "+projectitems[j].lineitem);};			
+					}	
+				}	
+			}
+		
+		/// processing array in notes
+		if (projectitemsarray.length>0) {
+		$.itemline_row.title = "Enter new project. Existing projects are added by default.";
+		var topvalue = 10;
+		// title start
+		topvalue = topvalue + 10;
+	   	var blueline = Ti.UI.createImageView ({
+	        left  : "20",
+	        textAlign : "Ti.UI.TEXT_ALIGNMENT_LEFT",
+	        top : topvalue,
+	        width : "85%",
+	        height : "3",
+	        image : "blueline.png"
+	    });
+		topvalue = topvalue + 10;
+		var currentTitle = Ti.UI.createLabel ({
 			color : "#333",
 			textAlign : "Ti.UI.TEXT_ALIGNMENT_LEFT",
 			left : "20",
 			top : topvalue,
 			font:{
-				fontSize:16,
+				fontSize:14,
 				fontWeight: "bold"
 			},
-			text : projectnamesarray[x].trim()
+			text : "Current projects (only green will be selected)"
 		});
-		var descr = projectitems[0].descr;
-		topvalue = topvalue + 20;
-		var descrtitlelabel = Ti.UI.createLabel ({
-			left  : "20",
-			textAlign : "Ti.UI.TEXT_ALIGNMENT_LEFT",
-			top : topvalue,
-			font:{
-				fontSize:14
-			},
-			text : 'Description: '
-		});
-		var descrbodylabel = Ti.UI.createLabel ({
-			color : "#333",
-			left  : "120",
-			textAlign : "Ti.UI.TEXT_ALIGNMENT_LEFT",
-			top : topvalue,
-			font:{
-				fontSize:12
-			},
-			text : descr
-		});
-		var innerview = Ti.UI.createView({
-	        width:"90%",
-	        height:"85%",
-	        backgroundColor:"white",
-	        borderRadius:"10",
-	        borderWidth:"0.1",
-	        borderColor:"white"
-		});	
-		$.jobitem_row.add(projectnamelabel);
-		//$.jobitem_row.add(unchecked);
-		$.jobitem_row.add(descrtitlelabel);
-		$.jobitem_row.add(descrbodylabel);
-		if(maxdebug==1){
-			Alloy.Globals.Log("enterproposal.js:: addRow: projectnamelabel: "+x+" : " +projectnamesarray[x].trim());		
-			//Alloy.Globals.Log("enterproposal.js:: addRow: unchecked:  "+x+" : " +JSON.stringify(unchecked));		
-			Alloy.Globals.Log("enterproposal.js:: addRow: descrtitlelabel:   "+x+" :" +JSON.stringify(descrtitlelabel));		
-			Alloy.Globals.Log("enterproposal.js:: addRow: descrbodylabel:  "+x+" : " +descr);
-		}
-		topvalue=topvalue+18;
-		var itemtitlelabel = Ti.UI.createLabel ({
-			left  : "20",
-			textAlign : "Ti.UI.TEXT_ALIGNMENT_LEFT",
-			top : topvalue,
-			font:{
-				fontSize:14
-			},
-			text : 'List Item :'
-		});
-		if ( projectitems.length > 1) {$.jobitem_row.add(itemtitlelabel); }
-		for (i=1;i<projectitems.length;i++){
-			topvalue=topvalue+14;
-			var itembodylabel = Ti.UI.createLabel ({
-				color : "#333",
+		topvalue = topvalue + 5;
+		$.jobitem_row.add(blueline);
+		$.jobitem_row.add(currentTitle);
+		// title END
+		for (x=0;x<projectitemsarray.length;x++) {
+			var projectitems = JSON.parse(projectitemsarray[x].replace(/cOlOn/g,":").toString());   // replacing all cOlOn to ':'
+			var projectname = projectnamesarray[x];
+			if(maxdebug==1){
+				Alloy.Globals.Log("enterproposal.js:: createRow: projectnamesarray["+x+"]: "+projectnamesarray[x]);
+				Alloy.Globals.Log("enterproposal.js:: createRow: JSON.stringify(projectitems): "+JSON.stringify(projectitems));
+				Alloy.Globals.Log("enterproposal.js::topvalue at START : "+topvalue);
+			};
+			topvalue = topvalue + 30;
+			var projectidentification=projectnamesarray[x].trim().replace(/\s/g,'_'); //
+			var projectinfoarray=[];
+	
+	
+			var unchecked = Ti.UI.createButton({
+				id: projectidentification,
+				top: topvalue,
+				left: "85%",
+				height : 30,
+				width : 30,
+				image : "square82.png"
+			});
+			var checked = Ti.UI.createButton({
+				top: topvalue,
+				left: "85%",
+				height : 30,
+				width : 30,
+				image : "check70.png"
+			});
+			var projectnamelabel = Ti.UI.createLabel ({
+				color : (projectstatusarray[x].trim() == "Proposal")?"#80c342":"gray",
+				textAlign : "Ti.UI.TEXT_ALIGNMENT_LEFT",
+				left : "20",
+				top : topvalue,
+				font:{
+					fontSize:16,
+					fontWeight: "bold"
+				},
+				text : projectnamesarray[x].trim()
+			});
+			var descr = projectitems[0].descr;
+			topvalue = topvalue + 20;
+			var descrtitlelabel = Ti.UI.createLabel ({
+				color : (projectstatusarray[x].trim() == "Proposal")?"#80c342":"gray",
 				left  : "20",
+				textAlign : "Ti.UI.TEXT_ALIGNMENT_LEFT",
+				top : topvalue,
+				font:{
+					fontSize:14
+				},
+				text : 'Description: '
+			});
+			//calculate height of item description.
+			var descr_height = ((Math.round(descr.split('').length/70)+(descr.split(/\r?\n|\r/).length))*14)+14;
+			var descrbodylabel = Ti.UI.createLabel ({
+				color : (projectstatusarray[x].trim() == "Proposal")?"#80c342":"gray",
+				left  : "120",
 				textAlign : "Ti.UI.TEXT_ALIGNMENT_LEFT",
 				top : topvalue,
 				font:{
 					fontSize:12
 				},
-				text : i+' :    '+projectitems[i].lineitem
-			});	
-			topvalue=topvalue+14;
-			var itemqtylabel = Ti.UI.createLabel ({
-				color : "#333",
-				left  : "50%",
-				textAlign : "Ti.UI.TEXT_ALIGNMENT_LEFT",
-				top : topvalue,
-				font:{
-					fontSize:10
-				},
-				text : 'Qty :'+projectitems[i].qty
+				text : descr
 			});
-			var itempricelabel = Ti.UI.createLabel ({
-				color : "#333",
-				left  : "75%",
+			var innerview = Ti.UI.createView({
+		        width:"90%",
+		        height:"85%",
+		        backgroundColor:"white",
+		        borderRadius:"10",
+		        borderWidth:"0.1",
+		        borderColor:"white"
+			});	
+			$.jobitem_row.add(projectnamelabel);
+			//$.jobitem_row.add(unchecked);
+			$.jobitem_row.add(descrtitlelabel);
+			$.jobitem_row.add(descrbodylabel);
+			if(maxdebug==1){
+				Alloy.Globals.Log("enterproposal.js:: addRow: projectnamelabel: "+x+" : " +projectnamesarray[x].trim());		
+				//Alloy.Globals.Log("enterproposal.js:: addRow: unchecked:  "+x+" : " +JSON.stringify(unchecked));		
+				Alloy.Globals.Log("enterproposal.js:: addRow: descrtitlelabel:   "+x+" :" +JSON.stringify(descrtitlelabel));		
+				Alloy.Globals.Log("enterproposal.js:: addRow: descrbodylabel:  "+x+" : " +descr);
+			}
+			//topvalue=topvalue+18;
+			topvalue=topvalue+20+descr_height-20;
+			var itemtitlelabel = Ti.UI.createLabel ({
+				color : (projectstatusarray[x].trim() == "Proposal")?"#80c342":"gray",
+				left  : "20",
 				textAlign : "Ti.UI.TEXT_ALIGNMENT_LEFT",
 				top : topvalue,
 				font:{
-					fontSize:10
+					fontSize:14
 				},
-				text : 'Price : '+projectitems[i].price
+				text : 'List Item :'
+			});
+			if ( projectitems.length > 1) {$.jobitem_row.add(itemtitlelabel); }
+			for (i=1;i<projectitems.length;i++){
+				topvalue=topvalue+14;
+				var itembodylabel = Ti.UI.createLabel ({
+					color : (projectstatusarray[x].trim() == "Proposal")?"#80c342":"gray",
+					left  : "20",
+					textAlign : "Ti.UI.TEXT_ALIGNMENT_LEFT",
+					top : topvalue,
+					font:{
+						fontSize:12
+					},
+					text : i+' :    '+projectitems[i].lineitem
+				});	
+				topvalue=topvalue+14;
+				var itemqtylabel = Ti.UI.createLabel ({
+					color : (projectstatusarray[x].trim() == "Proposal")?"#80c342":"gray",
+					left  : "50%",
+					textAlign : "Ti.UI.TEXT_ALIGNMENT_LEFT",
+					top : topvalue,
+					font:{
+						fontSize:10
+					},
+					text : 'Qty :'+projectitems[i].qty
+				});
+				var itempricelabel = Ti.UI.createLabel ({
+					color : (projectstatusarray[x].trim() == "Proposal")?"#80c342":"gray",
+					left  : "75%",
+					textAlign : "Ti.UI.TEXT_ALIGNMENT_LEFT",
+					top : topvalue,
+					font:{
+						fontSize:10
+					},
+					text : 'Price : '+projectitems[i].price
+				});	
+				$.jobitem_row.add(itembodylabel);
+				$.jobitem_row.add(itemqtylabel);
+				$.jobitem_row.add(itempricelabel);
+				if(maxdebug==1){
+					Alloy.Globals.Log("enterproposal.js:: addRow: itembodylabel: "+i+" : " +projectitems[i].lineitem);			
+					Alloy.Globals.Log("enterproposal.js:: addRow: itemqtylabel: "+i+" : " +projectitems[i].qty);			
+					Alloy.Globals.Log("enterproposal.js:: addRow: itempricelabel: "+i+" : " +projectitems[i].price);
+				}			
+				$.jobitem_row.iteminfo=[projectitems[i].lineitem,projectitems[i].qty,projectitems[i].price];
+				var info={"names":projectnamesarray[x].trim(),"descr":projectitems[0].descr,"lineitem":projectitems[i].lineitem,"qty":projectitems[i].qty,"price":projectitems[i].price};
+				projectinfoarray.push(info);
+				//add total price	
+				Alloy.Globals.Log("enterproposal.js::itempricelabel:itempricelabel:existing project: isNaN("+projectitems[i].price+")?total = "+total+":total = "+total+" + "+parseFloat(projectitems[i].price)+";");
+				isNaN(projectitems[i].price)?total = total:total = total + parseFloat(projectitems[i].price);
+				Alloy.Globals.Log("enterproposal.js::itempricelabel::(projectitems["+i+"].price)?total : "+projectitems[i].price+" : total: "+total);		
+				//unchecked.titleid=projectinfoarray;
+				//checked.titleid=projectinfoarray;
+				if(maxdebug==1){Alloy.Globals.Log("enterproposal.js::topvalue at Sub END : "+topvalue);};
+			}
+			topvalue=topvalue+20;
+			var grayline = Ti.UI.createImageView({
+				image: "grayline.png",
+				height: "2",
+				width: "90%",
+				left: "20",
+				top: topvalue
 			});	
-			$.jobitem_row.add(itembodylabel);
-			$.jobitem_row.add(itemqtylabel);
-			$.jobitem_row.add(itempricelabel);
+			$.jobitem_row.add(grayline);
+			projectinfoarray=[];
+			topvalue = topvalue + 4;
 			if(maxdebug==1){
-				Alloy.Globals.Log("enterproposal.js:: addRow: itembodylabel: "+i+" : " +projectitems[i].lineitem);			
-				Alloy.Globals.Log("enterproposal.js:: addRow: itemqtylabel: "+i+" : " +projectitems[i].qty);			
-				Alloy.Globals.Log("enterproposal.js:: addRow: itempricelabel: "+i+" : " +projectitems[i].price);
-			}			
-			$.jobitem_row.iteminfo=[projectitems[i].lineitem,projectitems[i].qty,projectitems[i].price];
-			var info={"names":projectnamesarray[x].trim(),"descr":projectitems[0].descr,"lineitem":projectitems[i].lineitem,"qty":projectitems[i].qty,"price":projectitems[i].price};
-			projectinfoarray.push(info);
-			//add total price	
-			Alloy.Globals.Log("enterproposal.js::itempricelabel:itempricelabel:existing project: isNaN("+projectitems[i].price+")?total = "+total+":total = "+total+" + "+parseFloat(projectitems[i].price)+";");
-			isNaN(projectitems[i].price)?total = total:total = total + parseFloat(projectitems[i].price);
-			Alloy.Globals.Log("enterproposal.js::itempricelabel::(projectitems["+i+"].price)?total : "+projectitems[i].price+" : total: "+total);		
-			//unchecked.titleid=projectinfoarray;
-			//checked.titleid=projectinfoarray;
-			if(maxdebug==1){Alloy.Globals.Log("enterproposal.js::topvalue at Sub END : "+topvalue);};
+				Alloy.Globals.Log("enterproposal.js:: addRow: grayline ");	
+				Alloy.Globals.Log("enterproposal.js:: table appendRow: " +JSON.stringify($.jobitem_row));		
+				Alloy.Globals.Log("enterproposal.js::topvalue at END : "+topvalue);
+			}
 		}
-		topvalue=topvalue+20;
-		var grayline = Ti.UI.createImageView({
-			image: "grayline.png",
-			height: "2",
-			width: "90%",
-			left: "20",
-			top: topvalue
-		});	
-		$.jobitem_row.add(grayline);
-		projectinfoarray=[];
-		topvalue = topvalue + 4;
-		if(maxdebug==1){
-			Alloy.Globals.Log("enterproposal.js:: addRow: grayline ");	
-			Alloy.Globals.Log("enterproposal.js:: table appendRow: " +JSON.stringify($.jobitem_row));		
-			Alloy.Globals.Log("enterproposal.js::topvalue at END : "+topvalue);
-		}
+		$.enterproposal_table.appendRow($.jobitem_row); // append row once.
+		};
 	}
-	$.enterproposal_table.appendRow($.jobitem_row); // append row once.
-	};
-}
 }
 
 function genproposal(e){

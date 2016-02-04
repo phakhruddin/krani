@@ -3,7 +3,8 @@ exports.openMainWindow = function(_tab) {
   _tab.open($.proposaldetail_window);
   Ti.API.info("proposaldetail.js::This is child widow checking _tab on : " +JSON.stringify(_tab));
   Ti.API.info("proposaldetail.js:: input details : "+JSON.stringify(args));
-  prefetchPayment(); //prefetch payment to get existing sid or to create new
+  //prefetchPayment(); //prefetch payment to get existing sid or to create new
+  prefetchproposalsent();
   /*
   $.totalbalance_row.addEventListener("click", function(e){
   	    var firstname = e.row.firstname;
@@ -64,7 +65,8 @@ var currency = Titanium.App.Properties.getString('currency','USD');
 var notes = col14 = col16 = data[15];
 (col15)?pdfquote = col15.replace(/XCoLoNX/g,':').replace(/XQuestionX/g,'?').replace(/XequalsX/g,'=').replace(/XDashX/g,'-').replace(/XAmpersandX/g,'&'):"NA" ;
 Alloy.Globals.Log("proposaldetail.js:: pdfquote" +pdfquote);   	 	
-var filename = 'payment_'+proposalnumber+'_'+firstname+'_'+lastname; $.totalbalance_row.filename = filename;
+var filename = 'proposalsent_'+proposalnumber+'_'+firstname+'_'+lastname; $.totalbalance_row.filename = filename;
+var proposalsentfilename = 'proposalsent_'+proposalnumber+'_'+firstname+'_'+lastname; $.action_row.proposalsentfilename = proposalsentfilename;
 var idtag = (data[13])?data[13].replace(/xCoLoNx/g,',').split(',')[0].replace('yCoLoNy',':'):"none";Titanium.App.Properties.setString('idtag',idtag);
 var selfhref = (data[13])?data[13].replace(/xCoLoNx/g,',').split(',')[1].replace('yCoLoNy',':'):"none";Titanium.App.Properties.setString('selfhref',selfhref);
 var edithref = (data[13])?data[13].replace(/xCoLoNx/g,',').split(',')[2].replace('yCoLoNy',':'):"none";Titanium.App.Properties.setString('edithref',edithref);
@@ -119,7 +121,7 @@ Alloy.Globals.Log("proposaldetail.js:: firstname and lastname is: "+firstname+" 
 	Alloy.Globals.Log("proposaldetail.js:: number of clients are: "+clients.length);
 	Alloy.Globals.Log("proposaldetail.js:: theclient is: "+JSON.stringify(theclient));
 	if(theclient.length > 0){
-		Alloy.Globals.Log("invocedetail.js:: JSON.stringify(theclient): "+JSON.stringify(theclient));
+		Alloy.Globals.Log("proposaldetail.js:: JSON.stringify(theclient): "+JSON.stringify(theclient));
 		var uniqueid = theclient[0].toJSON().col1;
 		var company = theclient[0].toJSON().col4;
 		var phone = theclient[0].toJSON().col5;
@@ -127,7 +129,7 @@ Alloy.Globals.Log("proposaldetail.js:: firstname and lastname is: "+firstname+" 
 		var address = theclient[0].toJSON().col7;
 		var city = theclient[0].toJSON().col8;
 		var state = theclient[0].toJSON().col9;	
-		Alloy.Globals.Log("invocedetail.js:: uniqueid: "+uniqueid);
+		Alloy.Globals.Log("proposaldetail.js:: uniqueid: "+uniqueid);
 	} else {
 		alert("could not locate "+firstname+" "+lastname+" . Please try again.");
 	}
@@ -138,7 +140,7 @@ Alloy.Globals.Log("proposaldetail.js:: firstname and lastname is: "+firstname+" 
   	    var lastname = e.row.lastname;
   	    var proposalnumber = e.row.proposalnumber;
 	  	var sid = e.row.sid;
-	  	Alloy.Globals.Log("proposaldetail.js::detailAction:: JSON.stringify(e) "+JSON.stringify(e)+" with : "+firstname+" "+lastname+" : "+proposalnumber+" : "+pdfquote);
+	  	Alloy.Globals.Log("proposaldetail.js::from $.totalbalance_row:: JSON.stringify(e) "+JSON.stringify(e)+" with : "+firstname+" "+lastname+" : "+proposalnumber+" : "+pdfquote);
 	  	Titanium.UI.setBackgroundColor('#fff'); 
 	  	
 	  	var win= Ti.UI.createWindow({
@@ -173,48 +175,48 @@ Alloy.Globals.Log("proposaldetail.js:: firstname and lastname is: "+firstname+" 
   });
 	
 //Locate jobs.
-Alloy.Globals.Log("invocedetail.js:: locate jobs with uniqueid: "+uniqueid);
+Alloy.Globals.Log("proposaldetail.js:: locate jobs with uniqueid: "+uniqueid);
 if (uniqueid){
 	var uniqueid = uniqueid.toString().trim();
 	projectitemsarray = [];
 	projectnamesarray = [];
 	var projects = Alloy.Collections.instance('project');
 	projects.fetch();
-	Alloy.Globals.Log("invocedetail.js:: JSON.stringify(projects): "+JSON.stringify(projects));
+	Alloy.Globals.Log("proposaldetail.js:: JSON.stringify(projects): "+JSON.stringify(projects));
 	var theproject = projects.where({
 		col13:uniqueid,
 		col11:"Proposal"
 		}); //FILTER
-	Alloy.Globals.Log("invocedetail.js:: locate jobs with uniqueid: "+uniqueid + " theproject.length "+theproject.length);
-	Alloy.Globals.Log("invocedetail.js:: b4 JSON.stringify(theproject): "+JSON.stringify(theproject));
+	Alloy.Globals.Log("proposaldetail.js:: locate jobs with uniqueid: "+uniqueid + " theproject.length "+theproject.length);
+	Alloy.Globals.Log("proposaldetail.js:: b4 JSON.stringify(theproject): "+JSON.stringify(theproject));
 	if(theproject.length > 0){
-		Alloy.Globals.Log("invocedetail.js:: JSON.stringify(theproject): "+JSON.stringify(theproject));
+		Alloy.Globals.Log("proposaldetail.js:: JSON.stringify(theproject): "+JSON.stringify(theproject));
 		for (i=0;i<theproject.length;i++){
 			var projectnames = theproject[i].toJSON().col1;
 			var projectitems = theproject[i].toJSON().col12;
 			projectitemsarray.push(projectitems);
 			projectnamesarray.push(projectnames);
 		}
-		Alloy.Globals.Log("invocedetail.js:: JSON.stringify(projectitemsarray): "+JSON.stringify(projectitemsarray));
+		Alloy.Globals.Log("proposaldetail.js:: JSON.stringify(projectitemsarray): "+JSON.stringify(projectitemsarray));
 	}
 } else { Alloy.Globals.Log("unqueid is not a number: uniqueid: "+uniqueid);};
 
 if(projectitemsarray.length>0){
 	
 for (i=0;i<projectitemsarray.length;i++) {
-	Alloy.Globals.Log("invocedetail.js:: JSON.stringify(projectnamesarray): "+JSON.stringify(projectnamesarray));	
+	Alloy.Globals.Log("proposaldetail.js:: JSON.stringify(projectnamesarray): "+JSON.stringify(projectnamesarray));	
 	var projectitems = JSON.parse(projectitemsarray[i].replace(/cOlOn/g,":").toString());
-	Alloy.Globals.Log("invocedetail.js:: JSON.stringify(projectitems): "+JSON.stringify(projectitems));
+	Alloy.Globals.Log("proposaldetail.js:: JSON.stringify(projectitems): "+JSON.stringify(projectitems));
 	for (j=0;j<projectitems.length;j++){
-		if (j==0){Alloy.Globals.Log("invocedetail.js:: projectitems[0].descr: "+projectitems[j].descr);};	
-		if (j>0){Alloy.Globals.Log("invocedetail.js:: projectitems["+j+"].lineitem: "+projectitems[j].lineitem);};			
+		if (j==0){Alloy.Globals.Log("proposaldetail.js:: projectitems[0].descr: "+projectitems[j].descr);};	
+		if (j>0){Alloy.Globals.Log("proposaldetail.js:: projectitems["+j+"].lineitem: "+projectitems[j].lineitem);};			
 		}	
 	}	
 }
 //TODO: check this logic about proposal submitted then dont list item.
 //if proposal submitted. dont list items.
 Alloy.Globals.Log("proposaldetail.js:: prior to duedate match:duedate.toString(): "+duedate.toString());
-if ( duedate.toString().match(/\//g) ) { 
+/*if ( duedate.toString().match(/\//g) ) { 
 	Alloy.Globals.Log("proposaldetail.js:: duedate.toString().match() : "+duedate.toString().match(/\//g));
 	$.viewproposal_button.show(); 
 	$.proposal_button.hide();
@@ -222,13 +224,15 @@ if ( duedate.toString().match(/\//g) ) {
 	$.projitem_section.headerTitle = "";
 	$.proposaldetail_table.separatorStyle="Titanium.UI.iPhone.TableViewSeparatorStyle.NONE";
 	//$.jobitem_row.height = "500";
-} else { 
-	Alloy.Globals.Log("proposaldetail.js:: NOT MATCH duedate.toString().match() : ");
-	$.viewproposal_button.hide();
-	$.proposal_button.top="10";
-	$.action_row.height="40";
-	$.phone_button.hide();
-	$.email_button.hide(); 
+} else { */
+	//Alloy.Globals.Log("proposaldetail.js:: NOT MATCH duedate.toString().match() : ");
+	
+	//$.viewproposal_button.hide();
+	//$.viewproposal_button.show(); 
+	//$.proposal_button.top="50";
+	//$.action_row.height="40";
+	//$.phone_button.hide();
+	//$.email_button.hide(); 
 /// processing array in notes
 	Alloy.Globals.Log("proposaldetail.js:: displaying row: projectitemsarray.length: "+projectitemsarray.length);
 	if (projectitemsarray.length>0) {
@@ -236,8 +240,8 @@ if ( duedate.toString().match(/\//g) ) {
 	for (x=0;x<projectitemsarray.length;x++) {
 		var projectitems = JSON.parse(projectitemsarray[x].replace(/cOlOn/g,":").toString());   // replacing all cOlOn to ':'
 		var projectname = projectnamesarray[x];
-		Alloy.Globals.Log("invocedetail.js:: createRow: projectnamesarray["+x+"]: "+projectnamesarray[x]);
-		Alloy.Globals.Log("invocedetail.js:: createRow: JSON.stringify(projectitems): "+JSON.stringify(projectitems));
+		Alloy.Globals.Log("proposaldetail.js:: createRow: projectnamesarray["+x+"]: "+projectnamesarray[x]);
+		Alloy.Globals.Log("proposaldetail.js:: createRow: JSON.stringify(projectitems): "+JSON.stringify(projectitems));
 		Alloy.Globals.Log("proposaldetail.js::topvalue at START : "+topvalue);
 		topvalue = topvalue + 8;
 		var projectidentification=projectnamesarray[x].trim().replace(/\s/g,'_'); //
@@ -279,6 +283,8 @@ if ( duedate.toString().match(/\//g) ) {
 			},
 			text : 'Description: '
 		});
+		//calculate height of item description.
+		var descr_height = ((Math.round(descr.split('').length/70)+(descr.split(/\r?\n|\r/).length))*14)+14;
 		var descrbodylabel = Ti.UI.createLabel ({
 			color : "#333",
 			left  : "120",
@@ -301,7 +307,7 @@ if ( duedate.toString().match(/\//g) ) {
 		$.jobitem_row.add(unchecked);
 		$.jobitem_row.add(descrtitlelabel);
 		$.jobitem_row.add(descrbodylabel);
-		topvalue=topvalue+20;
+		topvalue=topvalue+20+descr_height-20;
 		var itemtitlelabel = Ti.UI.createLabel ({
 			left  : "20",
 			textAlign : "Ti.UI.TEXT_ALIGNMENT_LEFT",
@@ -389,7 +395,7 @@ if ( duedate.toString().match(/\//g) ) {
 	}		
 	
 	};
-};
+//};
 
 //prep adhoc tables.
 var adhocs = Alloy.Collections.instance('adhoc');
@@ -397,7 +403,7 @@ var adhocs = Alloy.Collections.instance('adhoc');
 //selection on invoce.
 $.jobitem_row.addEventListener("click",function(e){
 	Alloy.Globals.Log("proposaldetail.js::jobitem_row event listener: JSON.stringify(e): "+JSON.stringify(e));
-	if (e.source.image=="EditControl.png"){
+	if (e.source.image=="EditControl.png" && e.source.titleid){
 		Alloy.Globals.Log("proposaldetail.js::after "+e.source.image+" clicked: JSON.stringify(e): "+JSON.stringify(e));
 		Alloy.Globals.Log("proposaldetail.js::after "+e.source.image+" clicked: retrieved JSON.stringify(e.source.titleid): "+JSON.stringify(e.source.titleid));
 		var info=e.source.titleid;
@@ -472,7 +478,7 @@ function emailpdf(firstname,lastname,address,city,state,phone,email,proposalnumb
 	     var newurl = Ti.Filesystem.getFile(url);
 	     var file = 'proposal.pdf';
 	     Alloy.Globals.Log("opening viewpdf(url) on "+file);
-     	 viewpdf(file);
+     	 //viewpdf(file);
      	 (Alloy.Globals.googleAuthSheet.getAccessToken()) || Alloy.Globals.googleAuthSheet.Authorized();
      	 //Set filename for uploaded file
      	 var date = new Date();
@@ -485,17 +491,17 @@ function emailpdf(firstname,lastname,address,city,state,phone,email,proposalnumb
 		 var name = kraniemailid.split('@')[0].trim();
      	 var parentid = Titanium.App.Properties.getString(name+"_proposal");
      	 Alloy.Globals.Log(new Date()+"::proposaldetail.js::html2pdf::Alloy.Globals.uploadFile("+file+","+pdffilename+","+parentid+")");
-     	 Alloy.Globals.uploadFile(file,pdffilename,parentid) ;
-     	 // delay to get the webcontentlink to write to spreadsheet.
-     	 setTimeout( function(){ 
-     	 	var col15 = Titanium.App.Properties.getString('webcontentlink').replace(/:/g,'XCoLoNX').replace(/\?/g,'XQuestionX').replace(/=/g,'XequalsX').replace(/-/g,'XDashX').replace(/&/g,'XAmpersandX');    	 	
-     	 	Alloy.Globals.Log(new Date()+"::proposaldetail.js::html2pdf::webcontentlink: col15: "+col15); 	
-     	 	var edithref = Titanium.App.Properties.getString('edithref');
-    		var idtag = Titanium.App.Properties.getString('idtag');
-    		var selfhref = Titanium.App.Properties.getString('selfhref');
-     	 	Alloy.Globals.updateExistingSpreadsheetAndDB("proposal",col1,col2,lastname,newtotal,newbal,paid,col7,col8,col9,col10,col11,col12,"submitted",col14,col15,col16,edithref,selfhref,idtag);
-     	 	}, 5000 );
-     	
+     	 var col1 = Date.now();
+		 Alloy.Globals.Cleanup(); //cleanup existing edithref.
+		 Alloy.Globals.uploadPDFFileCreateSnapshotSubmit(file,pdffilename,parentid,"2","proposalsent",col1,col2,col3,col4,col5,col6,col7,col8,col9,col10,col11,col12,col13,col14,col15,col16);
+		 setTimeout(function(){prefetchproposalsent();},2000); // after 2 secs. refresh DB.
+		 setTimeout(function(){
+		 	viewpdf(file);
+		 	$.proposaldetail_window.title = "proposal Detail" ;
+		 	$.proposal_button.title = " Generate proposal";
+			$.proposal_button.image = "pdf.png"; 
+			$.proposal_button.color = "#007AFF" ;
+ 			},21000); // after 11 secs when the image is finished uploaded	
  	});  
  	
  	//var html = '<html><body><p>dBayCo Inc. limited </p></body></html>'; 
@@ -827,6 +833,10 @@ function uploadFile(file,filename,parentid){
  	}
    
 function genproposal(e){
+	$.proposaldetail_window.title = "Please wait ...";
+	$.proposal_button.title = "Please wait ...";
+	$.proposal_button.image = "";
+	$.proposal_button.color = "gray";
 	Alloy.Globals.Log("proposaldetail.js::genproposal:: JSON.stringify(e) "+JSON.stringify(e)+" with : "+firstname+" "+lastname+" : "+proposalnumber);
 		var logourl = Titanium.App.Properties.getString('logourl');
 		Alloy.Globals.Log("proposaldetail.js::genproposal:: logourl is: "+logourl);
@@ -861,7 +871,7 @@ function detailAction(e){
 
 // Section where payment is tracked.
 
-function populatepaymentSIDtoDB(filename,sid) {
+function populateItemSIDtoDB(filename,sid) {
 	var needupdate = "yes";
 	var thepaymentsid = Alloy.Collections.instance('paymentsid');
 	thepaymentsid.fetch();
@@ -869,10 +879,10 @@ function populatepaymentSIDtoDB(filename,sid) {
     	var paymentsidjson = thepaymentsid.toJSON();
     	for( var i=0; i < paymentsidjson.length; i++ ){
     		var oldsid = paymentsidjson[i].col2.trim();
-    		Alloy.Globals.Log("proposaldetail.js::populatepaymentSIDtoDB::compare sid : "+oldsid+" vs. "+sid);
+    		Alloy.Globals.Log("proposaldetail.js::populateItemSIDtoDB::compare sid : "+oldsid+" vs. "+sid);
     		if ( sid == oldsid ){
     			var needupdate = "no";
-    			Alloy.Globals.Log("proposaldetail.js::populatepaymentSIDtoDB::needupdate: "+needupdate+" , abort!");
+    			Alloy.Globals.Log("proposaldetail.js::populateItemSIDtoDB::needupdate: "+needupdate+" , abort!");
     			return;
     		} 
     	}
@@ -887,7 +897,7 @@ function populatepaymentSIDtoDB(filename,sid) {
     		dataModel.save();
     	}; 	
 	thepaymentsid.fetch();
-	Ti.API.info(" proposaldetail.js::populatepaymentSIDtoDB::needupdate "+needupdate+" with thepaymentsid: "+thepaymentsid.length+" : "+JSON.stringify(thepaymentsid));
+	Ti.API.info(" proposaldetail.js::populateItemSIDtoDB::needupdate "+needupdate+" with thepaymentsid: "+thepaymentsid.length+" : "+JSON.stringify(thepaymentsid));
 	}
 
 function getParentFolder(args) {
@@ -924,7 +934,7 @@ function fileExist(filename,parentid){
 	    onload: function(e) {
 	    try {
 	    		var jsonlist = JSON.parse(this.responseText);
-	    		Ti.API.info("response of jsonlist is: "+JSON.stringify(jsonlist));
+	    		Ti.API.info("fileExist::response of jsonlist is: "+JSON.stringify(jsonlist));
 	    	} catch(e){
 				Ti.API.info("cathing e: "+JSON.stringify(e));
 			}
@@ -938,16 +948,20 @@ function fileExist(filename,parentid){
 			} else {
 				var fileexist = "true";
 				var sid = jsonlist.items[0].id;
-				$.totalbalance_row.sid = sid;
+				eval("Titanium.App.Properties.setString('"+filename+"_sid',sid)");
+				//$.totalbalance_row.sid = sid;
+				eval("$.totalbalance_row."+filename+"_sid = sid");
 				Alloy.Globals.Log("proposaldetail.js::fileExist:: File exist. sid is: "+jsonlist.items[0].id+" Skipped.");
+				Alloy.Globals.Log("proposaldetail.js:: fileExist. Titanium.App.Properties.setString('"+filename+"_sid',sid) is: "+eval("Titanium.App.Properties.getString('"+filename+"_sid')")+".");
 				Titanium.App.Properties.setString('sid',sid);
-				populatepaymentSIDtoDB(filename,sid);
+				populateItemSIDtoDB(filename,sid);
 				//populateSpreadsheetHeader();
 			};
 		}
 		});
 	xhr.onerror = function(e){
-		alert("Creating new document in the cloud");
+		alert("error:"+e.code+": Please refresh");
+		Alloy.Globals.googleAuthSheet.authorize();
 	};
 	var rawquerystring = '?q=title+%3D+\''+filename+'\'+and+mimeType+%3D+\'application%2Fvnd.google-apps.spreadsheet\'+and+trashed+%3D+false&fields=items(id%2CmimeType%2Clabels%2Ctitle)';
 	xhr.open("GET", 'https://www.googleapis.com/drive/v2/files'+rawquerystring);
@@ -955,6 +969,7 @@ function fileExist(filename,parentid){
     xhr.setRequestHeader("Authorization", 'Bearer '+Alloy.Globals.googleAuthSheet.getAccessToken());
 	xhr.send();
 }
+
 
 function xmlToJson(xml) {
 	
@@ -1002,8 +1017,8 @@ function getSSCell(sid,rowno,colno,value) {
 	    onload: function(e) {
 	    try {
 	    		var xml = Titanium.XML.parseString(this.responseText);
-	    		Ti.API.info("getSSCell:: response is: "+this.responseText);
-	    		Ti.API.info("getSSCell:: xml response is: "+xml);
+	    		Ti.API.info("proposaldetail.js:getSSCell:: response is: "+this.responseText);
+	    		Ti.API.info("proposaldetail.js:getSSCell:: xml response is: "+xml);
 	    		var entry = xml.documentElement.getElementsByTagName("entry");
 	    		var link = xml.documentElement.getElementsByTagName("link");
 	    		Alloy.Globals.Log("proposaldetail.js:: number of link found: " +link+ " length: "+link.length);
@@ -1043,29 +1058,32 @@ function createSpreadsheet(filename,parentid) {
 		var xhr = Ti.Network.createHTTPClient({
 	    onload: function(e) {
 	    try {
-	    		Ti.API.info("response is: "+this.responseText);
+	    		Alloy.Globals.Log("proposaldetail.js:response is: "+this.responseText);
 	    		var json = JSON.parse(this.responseText);
 	    		var sid = json.id;
 	    		$.totalbalance_row.sid = sid; // inject sid to tableviewrow
-	    		populatepaymentSIDtoDB(filename,sid);
+	    		populateItemSIDtoDB(filename,sid);
 	    		Titanium.App.Properties.setString('sid',sid); // 1st sid created.
-	    		for (i=1;i<17;i++){
-						var value = "col"+i;
-						getSSCell(sid,1,i,value);
-					}
-					getSSCell(sid,2,1,"Date");
-					getSSCell(sid,2,2,"Notes");
-					//Initial spreadsheet data.
-					var date = new Date();	
-					var month = date.getMonth()+1;
-					var day = date.getDate();
-					var year = date.getFullYear();			
-					getSSCell(sid,3,1,month+"/"+day+"/"+year);
-					getSSCell(sid,3,2,"0.00");
-					getSSCell(sid,3,16,Date.now()); //jobitemid							
+	    		var t = 0;
+	    		for (i=1;i<17;i++){ 			   
+					var value = "col"+i;
+					//getSSCell(sid,1,i,value);
+					Alloy.Globals.getSSCell(sid,1,i,value,t);
+					var t = parseFloat(t) + 500;
+				}
+				Alloy.Globals.getSSCell(sid,2,1,"Date",9000);
+				Alloy.Globals.getSSCell(sid,2,2,"Notes",9500);
+				//Initial spreadsheet data.
+				var date = new Date();	
+				var month = date.getMonth()+1;
+				var day = date.getDate();
+				var year = date.getFullYear();
+				Alloy.Globals.getSSCell(sid,3,1,month+"/"+day+"/"+year,10000);
+				Alloy.Globals.getSSCell(sid,3,2,"0.00",10500);
+				Alloy.Globals.getSSCell(sid,3,16,Date.now(),11000); //jobitemid								
 	    		Alloy.Globals.Log("proposaldetail.js::sid : "+sid);
 	    	} catch(e){
-				Ti.API.info("cathing e: "+JSON.stringify(e));
+				Alloy.Globals.Log("proposaldetail.js:createSpreadsheet:cathing e: "+JSON.stringify(e));
 			}
 		}
 		});
@@ -1116,12 +1134,12 @@ function matchpaymentsidfromDB(filename){
 	Ti.API.info(" matchpaymentsidfromDB::thepaymentsid : "+JSON.stringify(thepaymentsid));
 	if (thepaymentsid.length > 0) {
 		var paymentsidjson = thepaymentsid.toJSON();
-		Alloy.Globals.Log("projectdetail.js::matchpaymentsidfromDB::JSON.stringify(paymentsidjson): " +JSON.stringify(paymentsidjson));
+		Alloy.Globals.Log("proposaldetail.js::matchpaymentsidfromDB::JSON.stringify(paymentsidjson): " +JSON.stringify(paymentsidjson));
 		for( var i=0; i < paymentsidjson.length; i++){
 			var projectname = paymentsidjson[i].col1;
 			var sid = paymentsidjson[i].col2.trim();
 			if (filename == projectname){
-				Alloy.Globals.Log("projectdetail.js::matchpaymentsidfromDB::sid: " +sid);
+				Alloy.Globals.Log("proposaldetail.js::matchpaymentsidfromDB::sid: " +sid);
 				$.totalbalance_row.sid = sid;
 				return sid;			
 			}
@@ -1166,14 +1184,18 @@ function dummyRefresh(paid,balance,lastpaiddate){
 
 function actionPhone(e){
 	Alloy.Globals.Log("proposaldetail.js:actionPhone:JSON.stringify(e): "+JSON.stringify(e));
-	var phonenumber = e.source.title.trim();
+	//var phonenumber = e.source.title.trim();
+	var phonenumber = e.source.titleid.trim();
+	if (phonenumber) {var phonenumber = phonenumber.replace(/(\s|\)|\(|-)/g,"");}
+	Alloy.Globals.Log("proposaldetail.js:actionPhone:call number: Ti.Platform.openURL('tel:'"+phonenumber+"''): "+phonenumber);
 	//var phonenumber = "2623526221";
 	//Ti.Platform.openURL('telprompt://' + phonenumber);; 
 	Ti.Platform.openURL('tel:'+phonenumber+'');; 
 }
 function actioneMail(e){
 	Alloy.Globals.Log("proposaldetail.js:actioneMail:JSON.stringify(e): "+JSON.stringify(e));
-	var email = e.source.title.trim();
+	//var email = e.source.title.trim();
+	var email = e.source.titleid.trim();
 	var emailDialog = Ti.UI.createEmailDialog();
 	emailDialog.subject = "proposal #"+ e.source.data[0];
 	emailDialog.toRecipients = [email];
@@ -1188,7 +1210,7 @@ duedatePicker.selectionIndicator=true;
 duedatePicker.addEventListener("change",function(e) {
 	var dates = [];
 	var datesinUTC = [];
-	Alloy.Globals.Log("projectdetail.js::duedatepicker on change: "+JSON.stringify(e));
+	Alloy.Globals.Log("proposaldetail.js::duedatepicker on change: "+JSON.stringify(e));
 	var duedateISO = e.value.toString();
 	var utcdate = Date.parse(e.value.toString());
 	var regdate = new Date(utcdate);
@@ -1262,9 +1284,10 @@ function duedateActionDone(e){
 	var calid = kraniemailid;
 	var organizerdisplayName = kraniemailid;
 	var summary = "proposal Follow-up: "+col2+" "+col3;
-	var description = "Balance Amount: "+newbal+" ,email: "+col10+" ,Phone: "+col12;
+	var description = "Proposal: "+Titanium.App.Properties.getString('webcontentlink')+" ,email: "+col10+" ,Phone: "+col12;
 	updatecalendardialog.data = [{"calid":calid,"startdateTimeISO":startdateTimeISO,"enddateTimeISO":enddateTimeISO,"summary":summary,"description":description,"organizerdisplayName":organizerdisplayName}];
 	updatecalendardialog.show();
+	setTimeout(function(){myRefresher();},2000);
 	//var item="proposal";var sid = Titanium.App.Properties.getString(item);Alloy.Globals.getPrivateData(sid,item);eval("Alloy.Collections."+item+".fetch()");
 }
 
@@ -1284,10 +1307,11 @@ updatecalendardialog.addEventListener('click', function(e){
 	var calid = data[0].calid;
 	var description = data[0].description;
 	var summary = data[0].summary;
+	var fileUrl = Titanium.App.Properties.getString('webcontentlink');
 	if (e.index == 1 ) {
 		Alloy.Globals.Log("proposaldetail.js:: updatecalendardialog: startdateTimeISO :"+startdateTimeISO);
 		Alloy.Globals.Log("Alloy.Globals.postCreateEvent(calid:"+calid+","+startdateTimeISO+","+enddateTimeISO+",\"\",summary:"+summary+",description:"+description+",organizerdisplayName:"+organizerdisplayName+")");
-		Alloy.Globals.postCreateEvent(calid,startdateTimeISO,enddateTimeISO,"",summary,description,organizerdisplayName);
+		Alloy.Globals.postCreateEvent(calid,startdateTimeISO,enddateTimeISO,"",summary,description,organizerdisplayName,fileUrl);
 	} else {
 		Alloy.Globals.Log("proposaldetail.js:: updatecalendardialog: Cancelled :");
 	}
@@ -1296,6 +1320,57 @@ updatecalendardialog.addEventListener('click', function(e){
 $.proposaldetail_window.addEventListener("close",function(){
 	callbackFunction();
 });
- 
- 
- 
+
+function prefetchproposalsent(e){
+	//var parentid = Titanium.App.Properties.getString('parentid');
+	var kraniemailid = Titanium.App.Properties.getString('kraniemailid');
+	var name = kraniemailid.split('@')[0].trim();
+	var parentid = Titanium.App.Properties.getString(name+"_proposal");
+	Alloy.Globals.Log("proposaldetail.js::prefetchproposalsent::need to check if parent/filename exist: "+parentid+'/'+proposalsentfilename);
+	fileExist(proposalsentfilename,parentid);
+	var item = "proposalsent";	
+	var proposalsentsid = eval("Titanium.App.Properties.getString('"+proposalsentfilename+"_sid')");
+	Alloy.Globals.Log("proposaldetail.js::prefetchproposalsent::sidmatch: filename "+proposalsentfilename+'_sid : proposalsentsid '+proposalsentsid);
+	if(proposalsentsid){
+		Alloy.Globals.Log("proposaldetail.js::prefetchproposalsent: updating DB with: item : proposalsentsid : "+item+" : "+proposalsentsid);
+		Alloy.Globals.getPrivateData(proposalsentsid,item);
+	} else {
+		Alloy.Globals.Log("proposaldetail.js::prefetchproposalsent: creating proposalsentsid. very first new project");
+	};  // a very first new project would not have sid. suppress error.
+	Alloy.Globals.Log("proposaldetail.js::prefetchproposalsent:: Alloy.Collections.proposalsent.fetch()");
+	//Alloy.Collections.proposalsent.fetch();	
+	var proposalsent  = Alloy.Collections.instance('proposalsent');
+        proposalsent.fetch();
+        Alloy.Globals.Log("proposaldetail.js::JSON stringify proposalsent data on prefetch: "+JSON.stringify(proposalsent));
+}
+
+
+function actionPreview(e) {
+	Alloy.Globals.Log("proposaldetail.js:: actionPreview: JSON.stringify(e) :"+JSON.stringify(e));
+	prefetchproposalsent();
+	var tabViewOneController = Alloy.createController("proposalsent",{
+		callbackFunction : prefetchproposalsent
+			});
+	tabViewOneController.openMainWindow($.tab_proposaldetail);
+}
+
+function myRefresher(e) {
+	Alloy.Globals.Log("proposaldetail.js::refreshing after pull : " +JSON.stringify(e));
+	///prefetchproposalsent();
+	callbackFunction();
+    //Alloy.Collections.proposal.fetch({success: e.hide,error: e.hide});
+}
+
+var refresh = Ti.UI.createRefreshControl({
+    tintColor:'orange'
+});
+
+$.proposaldetail_table.refreshControl=refresh;
+
+refresh.addEventListener('refreshstart',function(e){
+	setTimeout(function(){
+        Alloy.Globals.Log('proposaldetail::refresh:: JSON.stringify(e): '+JSON.stringify(e));
+        callbackFunction();
+        refresh.endRefreshing();
+    }, 2000);
+});

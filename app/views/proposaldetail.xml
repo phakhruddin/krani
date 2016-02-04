@@ -16,7 +16,6 @@
 	  		<Label id="bal_title" color="gray" textAlign="Ti.UI.TEXT_ALIGNMENT_CENTER" top="10" text="total"/>
 	  		  <Label id="balance1" color="red" textAlign="Ti.UI.TEXT_ALIGNMENT_CENTER" top="20" text="{dummy.total}" />
 	  		  <Label id="currency" color="gray" textAlign="Ti.UI.TEXT_ALIGNMENT_CENTER" top="90" text="{dummy.currency}" />
-	  		  <Button id="viewproposal_button" top="115" title="Click to view the proposal"></Button>
 	   </TableViewRow>
 	   </TableViewSection>
 	  <TableViewSection  headerTitle="Dates">
@@ -28,12 +27,22 @@
 		  	  <TableViewRow id="datepicker_row" height="1"/>
 	  </TableViewSection>
 	  <TableViewSection  headerTitle="Action">
-	  	  <TableViewRow id="action_row" Title="duedate" height="Ti.UI.Size">
+	  	  <!--TableViewRow id="action_row" Title="duedate" height="Ti.UI.Size">
 	   		  <Button id="phone_button" left="30%" top="10" height="30" width="Ti.UI.SIZE" color="gray" textAlign="Ti.UI.TEXT_ALIGNMENT_CENTER" 
 	   		  	image="call.png" title=" {dummy.phone}" onClick="actionPhone" />
 	   		  <Button id="email_button" left="30%" top="50" height="30" width="Ti.UI.SIZE" color="gray" textAlign="Ti.UI.TEXT_ALIGNMENT_CENTER" 
 	   		  	image="email.png" title="  {dummy.email}" onClick="actioneMail"  />
 	   		  <Button id="proposal_button" image="pdf.png" left="30%" top="80" title=" Generate proposal" textAlign="Ti.UI.TEXT_ALIGNMENT_CENTER" onClick="genproposal"/>
+	   		  <Button id="viewproposal_button" top="80" title="Click to view the proposal" onClick="actionPreview"></Button>
+		  </TableViewRow-->  	
+  	  	  <TableViewRow id="action_row" Title="duedate" height="Ti.UI.Size">
+	   		  <Button id="phone_button" left="15%" top="10" height="30" width="Ti.UI.SIZE" color="gray" textAlign="Ti.UI.TEXT_ALIGNMENT_CENTER" 
+	   		  	image="call.png" titleid=" {dummy.phone}" onClick="actionPhone" />
+	   		  <Button id="email_button" left="40%" top="10" height="30" width="Ti.UI.SIZE" color="gray" textAlign="Ti.UI.TEXT_ALIGNMENT_CENTER" 
+	   		  	image="email.png" titleid=" {dummy.email}" onClick="actioneMail"  />
+	   		  <ImageView id="viewproposal_button" image="documents@2x.png"  left="65%" top="10" height="30" width="Ti.UI.SIZE" textAlign="Ti.UI.TEXT_ALIGNMENT_CENTER" 
+	   		  	onClick="actionPreview" />
+	   		  <Button id="proposal_button" image="pdf.png" left="30%" top="50" title=" Generate proposal" textAlign="Ti.UI.TEXT_ALIGNMENT_CENTER" onClick="genproposal"/>
 		  </TableViewRow>  		 
 	  </TableViewSection>
 	  <TableViewSection id="projitem_section" headerTitle="Project Items">

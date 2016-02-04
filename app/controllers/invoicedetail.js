@@ -20,7 +20,8 @@ exports.openMainWindow = function(_tab) {
 				lastname : lastname,
 				invoicenumber : invoicenumber,
 				sid : sid,
-				callbackFunction : dummyRefresh
+				callbackFunction : dummyRefresh, 
+				myRefreshercallBack :myRefresher
 			});
 			tabViewOneController.openMainWindow($.tab_invoicedetail);
 		} else {
@@ -446,7 +447,11 @@ function emailpdf(firstname,lastname,address,city,state,phone,email,invoicenumbe
 		 //Alloy.Globals.createImageSnapshotofPDFandUpload(file,pdffilename+"_image",parentid);
 		 setTimeout(function(){
 		 	viewpdf(file);
-		 	$.invoicedetail_window.title = "Invoice Detail" ; 
+		 	$.invoicedetail_window.title = "Invoice Detail" ;
+		 	$.invoice_button.title = " Generate New Invoice" ;
+		 	$.invoice_button.image = "pdf.png" ;
+		 	$.invoice_button.color = "#007AFF" ;
+		 	
 	 		},21000); // after 11 secs when the image is finished uploaded	
   	});  
  	
@@ -804,6 +809,9 @@ function uploadFile(file,filename,parentid){
    
 function genInvoice(e){
 	$.invoicedetail_window.title = "Please wait ...";
+ 	$.invoice_button.title = "Please wait ..." ;
+ 	$.invoice_button.color = "gray" ;
+ 	$.invoice_button.image = "" ;
 	Alloy.Globals.Log("invoicedetail.js::genInvoice:: JSON.stringify(e) "+JSON.stringify(e)+" with : "+firstname+" "+lastname+" : "+invoicenumber);
 	var logourl = Titanium.App.Properties.getString('logourl');
 	Alloy.Globals.Log("invoicedetail.js::genInvoice:: logourl is: "+logourl);
@@ -908,6 +916,7 @@ function fileExist(filename,parentid){
 		});
 	xhr.onerror = function(e){
 		alert("error:"+e.code+": Please refresh");
+		Alloy.Globals.googleAuthSheet.authorize();
 	};
 	var rawquerystring = '?q=title+%3D+\''+filename+'\'+and+mimeType+%3D+\'application%2Fvnd.google-apps.spreadsheet\'+and+trashed+%3D+false&fields=items(id%2CmimeType%2Clabels%2Ctitle)';
 	xhr.open("GET", 'https://www.googleapis.com/drive/v2/files'+rawquerystring);
@@ -1104,20 +1113,21 @@ function prefetchPayment(e){
 	
 	fileExist(filename,parentid);
 	var item = "payment";
-	var sidmatch = matchpaymentsidfromDB(filename);
-	var sid = sidmatch;
-	Alloy.Globals.Log("invoicedetail.js::prefetchpayment::sidmatch: sid "+sidmatch+' : '+sid);
+	var sid = eval("Titanium.App.Properties.getString('"+filename+"_sid')");
+	Alloy.Globals.Log("invoicedetail.js::prefetchpayment::sid for "+filename+' : '+sid);
 	if(sid){
 		Alloy.Globals.Log("invoicedetail.js::prefetchpayment: updating DB with: item : sid : "+item+" : "+sid);
 		Alloy.Globals.getPrivateData(sid,item);
 	} else {
 		Alloy.Globals.Log("invoicedetail.js::prefetchpayment: creating sid. very first new project");
 	};  // a very first new project would not have sid. suppress error.
-	Alloy.Globals.Log("invoicedetail.js::prefetchpayment:: Alloy.Collections.payment.fetch()");
-	//Alloy.Collections.payment.fetch();	
-	var payment  = Alloy.Collections.instance('payment');
-        payment.fetch();
-        Alloy.Globals.Log("invoicedetail.js::JSON stringify payment data on prefetch: "+JSON.stringify(payment));
+	//wait for 1 sec before fetching data
+	setTimeout(function(){
+		Alloy.Globals.Log("invoicedetail.js::prefetchpayment:: after 1 sec wait: Alloy.Collections.payment.fetch()");
+		var payment  = Alloy.Collections.instance('payment');
+    	payment.fetch();
+    	Alloy.Globals.Log("invoicedetail.js::JSON stringify payment data on prefetch: "+JSON.stringify(payment));
+	},1000);
 }
 
 function dummyRefresh(paid,balance,lastpaiddate){
@@ -1143,11 +1153,14 @@ function dummyRefresh(paid,balance,lastpaiddate){
 	var col6 = paid;
 	Alloy.Globals.updateExistingSpreadsheetAndDB("invoice",col1,col2,lastname,col4,col5,col6,col7,col8,col9,col10,col11,col12,col13,col14,col15,col16,edithref,selfhref,idtag);
 	invoicecallbackFunction(); //download update SS then update the local DB.
+	myRefresher();
 }	
 
 function actionPhone(e){
 	Alloy.Globals.Log("invoicedetail.js:actionPhone:JSON.stringify(e): "+JSON.stringify(e));
 	var phonenumber = e.source.titleid.trim();
+	if (phonenumber) {var phonenumber = phonenumber.replace(/(\s|\)|\(|-)/g,"");}
+	Alloy.Globals.Log("invoicedetail.js:actionPhone:call number: Ti.Platform.openURL('tel:'"+phonenumber+"''): "+phonenumber);
 	//var phonenumber = "2623526221";
 	//Ti.Platform.openURL('telprompt://' + phonenumber);; 
 	Ti.Platform.openURL('tel:'+phonenumber+'');; 
@@ -1237,12 +1250,13 @@ function duedateActionDone(e){
 		var calid = kraniemailid;
 		var organizerdisplayName = kraniemailid;
 		var summary = "Invoice Follow-up: "+col2+" "+col3;
-		var description = "Balance Amount: "+newbal+" ,email: "+col10+" ,Phone: "+col12;
+		var description = "Invoice link: "+Titanium.App.Properties.getString('webcontentlink')+" ,Bal: "+newbal+" ,email: "+col10+" ,Phone: "+col12;
 		updatecalendardialog.data = [{"calid":calid,"startdateTimeISO":startdateTimeISO,"enddateTimeISO":enddateTimeISO,"summary":summary,"description":description,"organizerdisplayName":organizerdisplayName}];
 		updatecalendardialog.show();
 	} else {
 		alert("Please select date");
-	}	
+	}
+	invoicecallbackFunction(); //refresh invoice callback	
 }
 
 var updatecalendardialog = Ti.UI.createAlertDialog({
@@ -1261,10 +1275,11 @@ updatecalendardialog.addEventListener('click', function(e){
 	var calid = data[0].calid;
 	var description = data[0].description;
 	var summary = data[0].summary;
+	var fileUrl = Titanium.App.Properties.getString('webcontentlink');
 	if (e.index == 1 ) {
 		Alloy.Globals.Log("invoicedetail.js:: updatecalendardialog: startdateTimeISO :"+startdateTimeISO);
 		Alloy.Globals.Log("Alloy.Globals.postCreateEvent(calid:"+calid+","+startdateTimeISO+","+enddateTimeISO+",\"\",summary:"+summary+",description:"+description+",organizerdisplayName:"+organizerdisplayName+")");
-		Alloy.Globals.postCreateEvent(calid,startdateTimeISO,enddateTimeISO,"",summary,description,organizerdisplayName);
+		Alloy.Globals.postCreateEvent(calid,startdateTimeISO,enddateTimeISO,"",summary,description,organizerdisplayName,fileUrl);
 	} else {
 		Alloy.Globals.Log("invoicedetail.js:: updatecalendardialog: Cancelled :");
 	}
@@ -1305,3 +1320,23 @@ function actionPreview(e) {
 	tabViewOneController.openMainWindow($.tab_invoicedetail);
 }
  
+function myRefresher() {
+	  Alloy.Globals.Log("invoicedetail.js:: refresh start: ");
+	  prefetchPayment(); //prefetch payment to get existing sid or to create new
+	  prefetchinvoicesent();
+}
+
+
+var refresh = Ti.UI.createRefreshControl({
+    tintColor:'orange'
+});
+
+$.invoicedetail_table.refreshControl=refresh;
+
+refresh.addEventListener('refreshstart',function(){
+	setTimeout(function(){
+        Alloy.Globals.Log('invoicedetail.js::refresh::start ');
+        myRefresher();
+        refresh.endRefreshing();
+    }, 2000);
+});

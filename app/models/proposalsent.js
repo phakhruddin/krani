@@ -20,7 +20,7 @@ exports.definition = {
 		},
 		adapter: {
 			type: "sql",
-			collection_name: "invoicesent",
+			collection_name: "proposalsent",
 			idAttribute: "col16"
 		}
 	},

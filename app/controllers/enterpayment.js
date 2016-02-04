@@ -1,8 +1,8 @@
 var args = arguments[0] || {};
 exports.openMainWindow = function(_tab) {
   _tab.open($.enterpayment_window);
-  Ti.API.info("This is child widow checking _tab on : " +JSON.stringify(_tab));
-  Ti.API.info(" input details after tab enterpayment : "+JSON.stringify(args));
+  Alloy.Globals.Log("This is child widow checking _tab on : " +JSON.stringify(_tab));
+  Alloy.Globals.Log(" input details after tab enterpayment : "+JSON.stringify(args));
 };
 
 
@@ -29,6 +29,7 @@ var edithref = (data[13])?data[13].replace(/xCoLoNx/g,',').split(',')[2].replace
 // Extraction END
 
 callbackFunction = args.callbackFunction;
+myRefresher = args.myRefreshercallBack;
 	
 
 function checkClick(e){
@@ -441,11 +442,11 @@ function enterNotes(e,imgurl) {
         +employee+'</gsx:col5><gsx:col6>'+thenone+'</gsx:col6><gsx:col7>'+thenone+'</gsx:col7><gsx:col8>'+thenone+'</gsx:col8><gsx:col9>'+thenone
         +'</gsx:col9><gsx:col10>'+sid+'</gsx:col10><gsx:col11>'+thenone+'</gsx:col11><gsx:col12>NA</gsx:col12><gsx:col13>NA</gsx:col13><gsx:col14>NA</gsx:col14>'
         +'<gsx:col15>NA</gsx:col15><gsx:col16>'+jobitemid+'</gsx:col16></entry>'].join('');
-        Ti.API.info('xmldatastring to POST: '+xmldatastring);
+        Alloy.Globals.Log('xmldatastring to POST: '+xmldatastring);
         var xhr =  Titanium.Network.createHTTPClient({
     onload: function() {
         try {
-                Ti.API.info(this.responseText); 
+                Alloy.Globals.Log(this.responseText); 
     			var xml = Titanium.XML.parseString(this.responseText);
 	    		var entry = xml.documentElement.getElementsByTagName("entry");
 	    		var link = xml.documentElement.getElementsByTagName("link");
@@ -459,8 +460,8 @@ function enterNotes(e,imgurl) {
 	    		Titanium.App.Properties.setString('edithref',edithref);
 	    		Titanium.App.Properties.setString('idtag',idtag);
 	    		Titanium.App.Properties.setString('selfhref',selfhref);
-	    		Ti.API.info("enterpayment.js::submit: self href is : "+selfhref+" edit href is: "+edithref);
-	    		Ti.API.info("enterpayment.js::submit: idtag is : "+idtag);
+	    		Alloy.Globals.Log("enterpayment.js::submit: self href is : "+selfhref+" edit href is: "+edithref);
+	    		Alloy.Globals.Log("enterpayment.js::submit: idtag is : "+idtag);
 	    		Alloy.Globals.Log("enterpayment.js::submit:: update DB with jobitemid :" +jobitemid+" sid: "+sid);
 				payment.get(jobitemid).set({
 					col16:	idtag+"xCoLoNx"+selfhref+"xCoLoNx"+edithref+"xCoLoNx"+selfhref || "none",
@@ -481,7 +482,7 @@ function enterNotes(e,imgurl) {
         xhr.setRequestHeader("Content-type", "application/atom+xml");
         xhr.setRequestHeader("Authorization", 'Bearer '+Alloy.Globals.googleAuthSheet.getAccessToken());
         xhr.send(xmldatastring);
-        Ti.API.info('done POSTed');
+        Alloy.Globals.Log('done POSTed');
  }
 
 var scope = ['https://spreadsheets.google.com/feeds', 'https://docs.google.com/feeds','https://www.googleapis.com/auth/calendar','https://www.googleapis.com/auth/calendar.readonly','https://www.googleapis.com/auth/drive'];
@@ -509,14 +510,14 @@ function getParentFolder(args) {
 	    onload: function(e) {
 	    try {
 	    		var json = JSON.parse(this.responseText);
-	    		Ti.API.info("response is: "+JSON.stringify(json));
+	    		Alloy.Globals.Log("response is: "+JSON.stringify(json));
 	    		var parentid = json.items[0].id;
 	    		Titanium.App.Properties.setString('parentid',parentid);
 	    		Alloy.Globals.Log("enterpayment.js::args inside getParentFolder: "+JSON.stringify(args));
 	    		//var filename = 'test03';
 	    		//createSpreadsheet(filename,parentid);    		
 	    	} catch(e){
-				Ti.API.info("cathing e: "+JSON.stringify(e));
+				Alloy.Globals.Log("cathing e: "+JSON.stringify(e));
 			}
 			return parentid;
 		}
@@ -547,13 +548,13 @@ function createSpreadsheet(filename,parentid) {
 		var xhr = Ti.Network.createHTTPClient({
 	    onload: function(e) {
 	    try {
-	    		Ti.API.info("response is: "+this.responseText);
+	    		Alloy.Globals.Log("response is: "+this.responseText);
 	    		var json = JSON.parse(this.responseText);
 	    		var sid = json.id;
 	    		Alloy.Globals.Log("enterpayment.js::sid : "+sid);
 	    		populatepaymentSIDtoDB(filename,sid);
 	    	} catch(e){
-				Ti.API.info("cathing e: "+JSON.stringify(e));
+				Alloy.Globals.Log("cathing e: "+JSON.stringify(e));
 			}
 		}
 		});
@@ -576,9 +577,9 @@ function fileExist(){
 	    onload: function(e) {
 	    try {
 	    		var jsonlist = JSON.parse(this.responseText);
-	    		Ti.API.info("response of jsonlist is: "+JSON.stringify(jsonlist));
+	    		Alloy.Globals.Log("response of jsonlist is: "+JSON.stringify(jsonlist));
 	    	} catch(e){
-				Ti.API.info("cathing e: "+JSON.stringify(e));
+				Alloy.Globals.Log("cathing e: "+JSON.stringify(e));
 			}
 			Alloy.Globals.Log("enterpayment.js::jsonlist.items.length: "+jsonlist.items.length);
 			var filename = Titanium.App.Properties.getString('filename');
@@ -631,7 +632,7 @@ function populatepaymentSIDtoDB(filename,sid) {
         dataModel.save();
 	var thepaymentsid = Alloy.Collections.instance('paymentsid');
 	thepaymentsid.fetch();
-	Ti.API.info(" enterpayment.js::populatepaymentSIDtoDB:: thepaymentsid : "+JSON.stringify(thepaymentsid));
+	Alloy.Globals.Log(" enterpayment.js::populatepaymentSIDtoDB:: thepaymentsid : "+JSON.stringify(thepaymentsid));
 	}
 
 //Retrieve cloud data again
@@ -664,21 +665,21 @@ function uploadPictoGoogle(image,filename){
 			    onload: function() {
 			    	try {
 			    		var json = JSON.parse(this.responseText);
-	    				Ti.API.info("enterpayment.js::uploadPictoGoogle::response is: "+JSON.stringify(json));
+	    				Alloy.Globals.Log("enterpayment.js::uploadPictoGoogle::response is: "+JSON.stringify(json));
 	    				var id = json.id;
 	    				var webcontentlink = json.webContentLink;
-	    				Ti.API.info("enterpayment.js::uploadPictoGoogle::id is: "+id+" webcontentlink: "+webcontentlink);
+	    				Alloy.Globals.Log("enterpayment.js::uploadPictoGoogle::id is: "+id+" webcontentlink: "+webcontentlink);
 	    				shareAnyonePermission(id);
 	    				var e = {"value":"none","source":{"_hintText":id}};
 	    				Alloy.Globals.Log("enterpayment.js::uploadPictoGoogle::entering urlimage with info below e: "+JSON.stringify(e));
 	    				enterNotes(e,webcontentlink);
 			    	} catch(e){
-			    		Ti.API.info("enterpayment.js::uploadPictoGoogle::cathing e: "+JSON.stringify(e));
+			    		Alloy.Globals.Log("enterpayment.js::uploadPictoGoogle::cathing e: "+JSON.stringify(e));
 			    	} 
 			    	return id;    
 			    },
 			    onerror: function(e) {
-			    	Ti.API.info("enterpayment.js::uploadPictoGoogle::error e: "+JSON.stringify(e));
+			    	Alloy.Globals.Log("enterpayment.js::uploadPictoGoogle::error e: "+JSON.stringify(e));
 			       alert("error:"+e.code+": Please connect to the network.");
 			    }
 			});
@@ -687,8 +688,8 @@ function uploadPictoGoogle(image,filename){
 			xhr.setRequestHeader("Authorization", 'Bearer '+googleAuthSheet.getAccessToken());
 			//xhr.setRequestHeader("Content-Length", "2000000");
 			xhr.send(parts.join("\r\n"));
-			Ti.API.info('done POSTed');
-			//Ti.API.info("enterpayment.js::uploadPictoGoogle::sid outside is: "+id);
+			Alloy.Globals.Log('done POSTed');
+			//Alloy.Globals.Log("enterpayment.js::uploadPictoGoogle::sid outside is: "+id);
 }
 
 function shareAnyonePermission(sid){
@@ -700,9 +701,9 @@ function shareAnyonePermission(sid){
 		var xhr = Ti.Network.createHTTPClient({
 	    onload: function(e) {
 	    try {
-	    		Ti.API.info("enterpayment.js::shareAnyonePermission::response is: "+this.responseText);
+	    		Alloy.Globals.Log("enterpayment.js::shareAnyonePermission::response is: "+this.responseText);
 	    	} catch(e){
-				Ti.API.info("cathing e: "+JSON.stringify(e));
+				Alloy.Globals.Log("cathing e: "+JSON.stringify(e));
 			}
 		}
 		});
@@ -732,10 +733,10 @@ $.labor_table.addEventListener("delete", function(e){
 	var xhr = Ti.Network.createHTTPClient({
 	    onload: function(e) {
 	    try {
-	    		Ti.API.info("enterpayment.js::$.labor_table delete:success e: "+JSON.stringify(e));
-	    		Ti.API.info("enterpayment.js::$.labor_table delete:response is: "+this.responseText);
+	    		Alloy.Globals.Log("enterpayment.js::$.labor_table delete:success e: "+JSON.stringify(e));
+	    		Alloy.Globals.Log("enterpayment.js::$.labor_table delete:response is: "+this.responseText);
 	    	} catch(e){
-				Ti.API.info("enterpayment.js::$.labor_table delete:cathing e: "+JSON.stringify(e));
+				Alloy.Globals.Log("enterpayment.js::$.labor_table delete:cathing e: "+JSON.stringify(e));
 			}
 		}
 	});
@@ -778,9 +779,9 @@ function updateInvoice(paidamount,datepaid,balance){
        var xhr =  Titanium.Network.createHTTPClient({
    	   onload: function() {
         try {
-                Ti.API.info("enterpayment.js::updateInvoice"+this.responseText); 
+                Alloy.Globals.Log("enterpayment.js::updateInvoice"+this.responseText); 
         } catch(e){
-                Ti.API.info("enterpayment.js::updateInvoice::cathing e: "+JSON.stringify(e));
+                Alloy.Globals.Log("enterpayment.js::updateInvoice::cathing e: "+JSON.stringify(e));
         }     
     },
     onerror: function(e) {
@@ -792,8 +793,10 @@ function updateInvoice(paidamount,datepaid,balance){
         xhr.setRequestHeader("Content-type", "application/atom+xml");
         xhr.setRequestHeader("Authorization", 'Bearer '+Alloy.Globals.googleAuthSheet.getAccessToken());
         xhr.send(xmldatastring);
-        Ti.API.info('done POSTed');
+        Alloy.Globals.Log('done POSTed');
 }
 
-$.enterpayment_window.addEventListener("close",function(){
+$.enterpayment_window.addEventListener("close",function(e){
+	Alloy.Globals.Log("enterpayment.js::enterpayment_window.close(): "+JSON.stringify(e));
+	myRefresher();
 });

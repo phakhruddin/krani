@@ -484,6 +484,7 @@ Alloy.Globals.getData = function(sid,type) {
 				(type == 'labor') && Alloy.Collections.labor.deleteAll();
 				(type == 'joblog') && Alloy.Collections.joblog.deleteAll();
 				(type == 'invoicesent') && Alloy.Collections.invoicesent.deleteAll();
+				(type == 'proposalsent') && Alloy.Collections.proposalsent.deleteAll();
 			//}		
 			for (var i=1; i < +json.feed.entry.length; i++) {
 				var dataModel = Alloy.createModel(type,{
@@ -561,6 +562,7 @@ Alloy.Globals.getPrivateData = function(sid,type) {
 				(type == 'payment') && Alloy.Collections.payment.deleteAll();
 				(type == 'paymentsid') && Alloy.Collections.paymentsid.deleteAll();
 				(type == 'invoicesent') && Alloy.Collections.invoicesent.deleteAll();
+				(type == 'proposalsent') && Alloy.Collections.proposalsent.deleteAll();
 			//};		
 			// deleting existing entry done
 			for (i=1;i<entry.length;i++){
@@ -598,7 +600,7 @@ Alloy.Globals.getPrivateData = function(sid,type) {
 				});	
 				dataModel.save();
 			}
-			Alloy.Globals.Log("alloy.js::updating database with data :"+JSON.stringify(data));
+			Alloy.Globals.Log("alloy.js:Alloy.Globals.getPrivateData:updating database with data :"+JSON.stringify(data));
 			var file = Ti.Filesystem.getFile(
 				Ti.Filesystem.tempDirectory, thefile
 			);
@@ -619,6 +621,7 @@ Alloy.Globals.getPrivateData = function(sid,type) {
 		//alert(e);
 		Alloy.Globals.Log("alloy.js::Alloy.Globals.getPrivateData::Unable to pull data from cloud. The "+type+" info displayed here is NOT the latest. error is: "+JSON.stringify(e));
 		alert("code:" +e.code+ " Unable to pull data from cloud");
+		Alloy.Globals.googleAuthSheet.authorize();
 	};
 	xhr.open("GET", url);
 	xhr.send();
@@ -814,13 +817,14 @@ Alloy.Globals.checkNetworkAndGoogleAuthorized = function(sid){
 	xhr.send();
 };
 
-Alloy.Globals.postCreateEvent = function(calid,startdateTime,enddateTime,location,summary,description,organizerdisplayName,organizeremail,colorid,attendeeslist) {
+Alloy.Globals.postCreateEvent = function(calid,startdateTime,enddateTime,location,summary,description,organizerdisplayName,fileUrl,organizeremail,colorid,attendeeslist) {
 	var startdateTime = startdateTime;
 	var enddateTime = enddateTime;
 	var location = location || " ";
 	var summary = summary || " ";
 	var description = description || " ";
 	var organizerdisplayName = organizerdisplayName|| " ";
+	var fileUrl = fileUrl || " ";
 	var organizeremail = organizeremail || " ";
 	var colorid = colorid || "3";
 	var organizerself ="true";
@@ -851,6 +855,9 @@ Alloy.Globals.postCreateEvent = function(calid,startdateTime,enddateTime,locatio
 	+'\"summary\": \"'+summary+'\",'
 	+'\"description\": \"'+description+'\",'
 	+'\"colorid\": \"'+colorid+'\",'
+	+'\"attachments\": \[\{ '
+	+			'\"fileUrl\": \"'+fileUrl+'\"'
+	+ 		'\}\],'
 	+eventattendees
 	+'\"organizer\": \{'
 	+	'\"email\": \"'+organizeremail+'\",'
@@ -1780,7 +1787,9 @@ Alloy.Globals.submit = function(type,clientfirstname,clientlastname,clientcompan
 	    				//enterNotes(e,webcontentlink);
 	    				eval("var col"+position+" = webcontentlink");
 	    				var ssidsourcename = filename.split("_")[0]+"_"+filename.split("_")[1]+"_"+filename.split("_")[2];
-	    				var ssid = Titanium.App.Properties.getString(type+'_'+ssidsourcename+"_sid");
+	    				var ssidsourcenametofind = type+'_'+ssidsourcename+"_sid";
+	    				var ssid = Titanium.App.Properties.getString(ssidsourcenametofind);
+	    				Alloy.Globals.Log("alloy.js:Alloy.Globals.uploadPictoGoogle:b4 execute Alloy.Globals.submit, ssid for Titanium.App.Properties.getString("+ssidsourcenametofind+") : "+ssid);
 	    				if (type) {
 	    					Alloy.Globals.Log("alloy.js:Alloy.Globals.uploadPictoGoogle:b4 execute Alloy.Globals.submit, ssid is : "+ssid);
 	    					Alloy.Globals.submit(type,ssid,col1,col2,col3,col4,col5,col6,col7,col8,col9,col10,col11,col12,col13,col14,col15,col16);
@@ -2209,7 +2218,8 @@ Alloy.Globals.locateIndexCreateSpreadsheet = function(name,name_dir_sid){
 		alert("error:"+e.code+": Unable to pull data from cloud."); 
 		Alloy.Globals.Log("alloy.js::locateIndexCreateSpreadsheet:: error is: "+JSON.stringify(e));
 		Alloy.Globals.Status ="failed";
-		Titanium.App.Properties.setString("status","failed");	
+		Titanium.App.Properties.setString("status","failed");
+		Alloy.Globals.googleAuthSheet.authorize();	
 	};
 	var filename = name+"_index";
 	if (name_dir_sid) {
@@ -3168,11 +3178,11 @@ Alloy.Globals.checkFileExistThenUpdateSID = function(filename){
 };
 
 Alloy.Globals.createImageSnapshotofPDFandUpload = function(url,filename,parentid,position,type,col1,col2,col3,col4,col5,col6,col7,col8,col9,col10,col11,col12,col13,col14,col15,col16){
-	Alloy.Globals.Log("Alloy.Globals.createImageSnapshotofPDF:: url:: "+url);
+	Alloy.Globals.Log("Alloy.Globals.createImageSnapshotofPDFandUpload:: url:: "+url);
 	 var webView= Ti.UI.createWebView({
 	 	url:url
 	 });
-	 Alloy.Globals.Log("Alloy.Globals.createImageSnapshotofPDF:: Initial: webView:: "+JSON.stringify(webView));
+	 Alloy.Globals.Log("Alloy.Globals.createImageSnapshotofPDFandUpload:: Initial: webView:: "+JSON.stringify(webView));
 	 // Added for test
 	 Titanium.UI.setBackgroundColor('#fff'); 
 	  		
@@ -3194,7 +3204,7 @@ Alloy.Globals.createImageSnapshotofPDFandUpload = function(url,filename,parentid
 		     	var pdf2image = webView.toImage();
 				 var filepdf2image = Titanium.Filesystem.createTempFile(Titanium.Filesystem.resourcesDirectory);
 				 filepdf2image.write(pdf2image);
-				 Alloy.Globals.Log("Alloy.Globals.createImageSnapshotofPDF:: JSON.stringify(filepdf2image):: "+JSON.stringify(filepdf2image)+" filepdf2image "+filepdf2image+" pdf2image "+pdf2image);
+				 Alloy.Globals.Log("Alloy.Globals.createImageSnapshotofPDFandUpload:: JSON.stringify(filepdf2image):: "+JSON.stringify(filepdf2image)+" filepdf2image "+filepdf2image+" pdf2image "+pdf2image);
 				 Alloy.Globals.uploadPictoGoogle(pdf2image,filename,parentid,position,type,col1,col2,col3,col4,col5,col6,col7,col8,col9,col10,col11,col12,col13,col14,col15,col16);
 		     	 win1.close();
 		     },10000);
@@ -3204,7 +3214,7 @@ Alloy.Globals.createImageSnapshotofPDFandUpload = function(url,filename,parentid
 		 
 		
 	 //Added for test Done
-	 Alloy.Globals.Log("Alloy.Globals.createImageSnapshotofPDF:: DONE: webView:: "+JSON.stringify(webView));
+	 Alloy.Globals.Log("Alloy.Globals.createImageSnapshotofPDFandUpload:: DONE: webView:: "+JSON.stringify(webView));
 	 
 	 win1.addEventListener('open',function() {
 	 	
@@ -3253,7 +3263,8 @@ Alloy.Globals.uploadPDFFileCreateSnapshotSubmit = function(file,filename,parenti
 	    			var col2 = Titanium.App.Properties.getString('webcontentlink');
 	    			var col4=col5=col6=col7=col8=col9=col10=col11=col12=col13=col14=col15=col16="NA";
 	    			setTimeout(function(){
-	    				Alloy.Globals.createImageSnapshotofPDFandUpload(webcontentlink,filename+"_image",parentid,"3","invoicesent",col1,col2,col3,col4,col5,col6,col7,col8,col9,col10,col11,col12,col13,col14,col15,col16);
+	    				//TODO: fix this.
+	    				Alloy.Globals.createImageSnapshotofPDFandUpload(webcontentlink,filename+"_image",parentid,"3",type,col1,col2,col3,col4,col5,col6,col7,col8,col9,col10,col11,col12,col13,col14,col15,col16);
 	    				//Alloy.Globals.submit(type,col1,col2,col3,col4,col5,col6,col7,col8,col9,col10,col11,col12,col13,col14,col15,col16);		
 	    			},10000);
 	    			Alloy.Globals.shareAnyonePermission(id);

@@ -1,6 +1,9 @@
 <Alloy>
 	<Model src="dummy" />
 	<Collection src="adhoc" />
+	<Collection src="invoice" />
+	<Collection src="payment" />
+	<Collection src="invoicesent" />
 	<Tab id="tab_invoicedetail">
   <Window id="invoicedetail_window" title="Invoice Detail" backgroundColor="white">
 	  <TableView id="invoicedetail_table"  backgroundColor="transparent">
