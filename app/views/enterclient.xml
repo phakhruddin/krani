@@ -18,9 +18,9 @@
 		  	<Label id="tflabel" top="70">Phone: </Label>
 		  	<TextField top="72" id="clientphone_tf" keyboardType="Ti.UI.KEYBOARD_NUMBER_PAD"></TextField>
 		  	<Label id="tflabel" top="100">Email: </Label>
-		  	<TextField top="102" id="clientemail_tf"></TextField>
+		  	<TextArea id="clientemail_tf" top="102" height="20" textAlign="left" suppressReturn="false" width="250" left="140" keyboardType="Titanium.UI.KEYBOARD_TYPE_EMAIL" ></TextArea>
 		  	<Label id="tflabel" top="130">Street addr: </Label>
-		  	<TextField   top="132" id="clientstreetaddress_tf"></TextField>
+		  	<TextArea id="clientstreetaddress_tf" top="132" height="20" textAlign="left" suppressReturn="false" width="250" left="140" ></TextArea>
 		  	<Label id="tflabel" top="160">City: </Label>
 		  	<TextField  top="162" id="clientcity_tf"></TextField>
 		  	<Label id="tflabel" top="190">State: </Label>
@@ -32,7 +32,7 @@
 	  	  <TableViewRow id="cover_row" borderColor="white" backgroundColor="transparent" height="500" opacity="0.1"/>	
 		  <TableViewRow id="itemdetail_row" borderColor="white" backgroundColor="white" height="Ti.UI.SIZE">
 		  	<Label id="tflabel" top="5">Notes: </Label>
-        	<TextArea id="notes_tf" width="320" height="200" top="30" color="#888" textAlign="left" suppressReturn="false"/ >     			
+        	<TextArea id="notes_tf" width="320" height="200" top="30" color="#888" textAlign="left" suppressReturn="false"/ > 
 		  </TableViewRow>
 		  <TableViewRow id="itemlineend_row" height="2" borderColor="white" backgroundColor="#80c342" />
 	  </TableView>

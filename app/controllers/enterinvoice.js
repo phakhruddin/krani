@@ -11,22 +11,6 @@ exports.openMainWindow = function(_tab) {
 	Alloy.Globals.Log("enterinvoice.js::openMainWindow:: $.enterinvoice_table.data[0] count "+$.enterinvoice_table.data[0].rowCount+" contents: "+JSON.stringify($.enterinvoice_table.data[0].rows));
  	if (args.clienttitle) {  //when user select existing client
 		selectClient(args);
-		//Alloy.Globals.Log("enterinvoice.js::after selectClient:: selectclientrow "+JSON.stringify(selectclientrow));
-		Alloy.Globals.Log("enterinvoice.js::after selectClient::openMainWindow:: b4 exe $.enterinvoice_table.data[0].rowCount : "+$.enterinvoice_table.data[0].rowCount);
-		Alloy.Globals.Log("enterinvoice.js::after selectClient::openMainWindow:: b4 exe $.enterinvoice_table.data[0] "+JSON.stringify($.enterinvoice_table.data[0].rows));
-		$.coverview.hide();
-		$.selectclient_button.hide();	
-		//$.enterinvoice_table.deleteRow()
-		/*
-		var tohide = [$.itemdetail_row, $.addrow_row, $.itemlineend_row,$.totalrow];
-		for (x=0;x<tohide.length;x++){
-			$.enterinvoice_table.deleteRow(tohide[x]);
-		}; //hide first*/
-		Alloy.Globals.Log("enterinvoice.js::after selectClient::openMainWindow:: after exe $.enterinvoice_table.data[0].rowCount : "+$.enterinvoice_table.data[0].rowCount);
-		Alloy.Globals.Log("enterinvoice.js::after selectClient::openMainWindow:: after exe $.enterinvoice_table.data[0] "+JSON.stringify($.enterinvoice_table.data[0].rows));
-		addJobItemFromClientSelection();		
-		$.enterinvoice_window.setRightNavButton($.savebutton);		
-		Alloy.Globals.Log("enterinvoice.js::after selectClient::openMainWindow:: checking $.jobitem_row "+JSON.stringify($.jobitem_row));	
 	} else {
 		//$.enterinvoice_table.setData(addnewclientrow)	;
 		Titanium.App.Properties.setString('selectclient',"false");
@@ -481,6 +465,39 @@ function setClientExisting(args) {
 
 }
 
+var selectclientdialog = Ti.UI.createAlertDialog({
+	cancel: 1,
+	buttonNames: ['NO', 'YES'],
+	message: 'They are existing proposals under this client, proceed?',
+	title: 'Invoice exist'
+});
+
+function clientSelected() {
+		//Alloy.Globals.Log("enterinvoice.js::after selectClient:: selectclientrow "+JSON.stringify(selectclientrow));
+		Alloy.Globals.Log("enterinvoice.js::after selectClient::openMainWindow:: b4 exe $.enterinvoice_table.data[0].rowCount : "+$.enterinvoice_table.data[0].rowCount);
+		Alloy.Globals.Log("enterinvoice.js::after selectClient::openMainWindow:: b4 exe $.enterinvoice_table.data[0] "+JSON.stringify($.enterinvoice_table.data[0].rows));
+		$.coverview.hide();
+		$.selectclient_button.hide();	
+		//$.enterinvoice_table.deleteRow()
+		/*
+		var tohide = [$.itemdetail_row, $.addrow_row, $.itemlineend_row,$.totalrow];
+		for (x=0;x<tohide.length;x++){
+			$.enterinvoice_table.deleteRow(tohide[x]);
+		}; //hide first*/
+		Alloy.Globals.Log("enterinvoice.js::after selectClient::openMainWindow:: after exe $.enterinvoice_table.data[0].rowCount : "+$.enterinvoice_table.data[0].rowCount);
+		Alloy.Globals.Log("enterinvoice.js::after selectClient::openMainWindow:: after exe $.enterinvoice_table.data[0] "+JSON.stringify($.enterinvoice_table.data[0].rows));
+		addJobItemFromClientSelection();		
+		$.enterinvoice_window.setRightNavButton($.savebutton);		
+		Alloy.Globals.Log("enterinvoice.js::after selectClient::openMainWindow:: checking $.jobitem_row "+JSON.stringify($.jobitem_row));	
+}
+
+
+selectclientdialog.addEventListener("click",function(e){
+	if (e.index == 1 ) {
+		clientSelected();
+	} else {return 100;};
+});
+
 function selectClient(args) {
 	Titanium.App.Properties.setString('selectclient',"true");
 			var data = args.clienttitle.split(':');
@@ -500,6 +517,15 @@ function selectClient(args) {
 	var project = data[11];
 	var proposal = data[12];
 	var customerid = data[15];
+	Alloy.Globals.Log("enterinvoice.js:selectClient: examine (args): "+JSON.stringify(args));
+	var item = "invoice";
+	var check = Alloy.Collections.instance(item);
+	check.fetch();
+	var found = check.where({col9:""+customerid+""});
+	Alloy.Globals.Log("enterinvoice.js:selectClient: examine (found): "+JSON.stringify(found));
+	if (found.length > 0) {
+		selectclientdialog.show();
+	} else { clientSelected();}
 }
 
 function matchClient() {

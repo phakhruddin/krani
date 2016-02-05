@@ -8,6 +8,7 @@
   	<RightNavButton platform="ios">
 	   <Button id="save_button" systemButton="Ti.UI.iPhone.SystemButton.SAVE" onClick="saveHandler" /> 
 	</RightNavButton>
+	<View id="coverview" backgroundColor="#222" height="Ti.UI.Fill" opacity="0.1" />
 	  <TableView id="enterproject_table" backgroundColor="transparent" separatorColor="transparent" >
 	  	<TableViewRow id="existing" borderColor="white" backgroundColor="#80c342" height="30" opacity="1" Title="Existing">
 	  		<Label id="titleinvoiceinput_label" color="white" left="20" text="Client Details"/>
@@ -23,7 +24,7 @@
 		  	<Label id="tflabel" top="70">Email: </Label>
 		  	<TextField top="72" id="projectclientemail_tf"></TextField>
 		  	<Label id="tflabel" top="90">Street addr: </Label>
-		  	<TextField   top="92" id="projectclientstreetaddress_tf"></TextField>
+		  	<TextField top="92" id="projectclientstreetaddress_tf"></TextField>
 		  	<Label id="tflabel" top="110">City: </Label>
 		  	<TextField  top="112" id="projectclientcity_tf"></TextField>
 		  	<Label id="tflabel" top="130">State: </Label>
@@ -41,7 +42,7 @@
 	   		  <Label id="email" text="Email:" left="20" top="70"/>
 	   		  <Label id="clientemail_tf" text="{dummy.email}" left="120" top="70"/>
 	   		  <Label id="streetaddress" text="Street addr:" left="20" top="90" />
-	   		  <Label id="clientstreetaddress_tf" text="{dummy.address}" left="120" top="90" />
+	   		  <Label id="clientstreetaddress_tf" text="{dummy.address}" left="120" top="90" suppressReturn="true"/>
 	   		  <Label id="clientcity" text="City:" left="20" top="110" />
 	   		  <Label id="clientcity_tf" text="{dummy.city}" left="120" top="110" />
 	   		  <Label id="clientstate" text="State:" left="20" top="130" />
@@ -91,6 +92,7 @@
 		  	<Label id="totalvalue" left="200" text="100"/>
 		  </TableViewRow>
 	  </TableView>
+  <Button id="selectclient_button" title="Select Client > " top="70" onClick="matchClient"/>
   </Window>
   </Tab>
 </Alloy>

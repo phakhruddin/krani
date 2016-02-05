@@ -11,7 +11,8 @@
 		height:Ti.UI.SIZE ,
 },
 "#clientstreetaddress_tf" : {
-		hintText:'2258 S Sanctuary Dr.'
+		hintText:'2258 S Sanctuary Dr.',
+		font: {fontSize: '18'}
 },
 "#clientstreetaddress_tf[platform=android]" : {
 		height:Ti.UI.SIZE ,

@@ -446,6 +446,7 @@ $.lineitem_tf.addEventListener('blur', function(_e) {
 if (args.title) {
 	selectClient(args);
 	$.enterproject_table.setData(selectclientrow)	;
+	$.selectclient_button.hide();
 } else {
 	$.enterproject_table.setData(addnewclientrow)	;
 	Titanium.App.Properties.setString('selectclient',"false");
@@ -518,6 +519,14 @@ $.check_client.addEventListener('click', function(e){
 
 });
 
+function matchClient(e){
+	var clientController = Alloy.createController('client',{
+		sourcecall: 'enterproject'
+	});
+	clientController.openMainWindow($.enterproject_tab);
+	clientController.logfromSource(e);
+}
+
 var scope = ['https://spreadsheets.google.com/feeds', 'https://docs.google.com/feeds','https://www.googleapis.com/auth/calendar','https://www.googleapis.com/auth/calendar.readonly','https://www.googleapis.com/auth/drive'];
 scope.push ("https://www.googleapis.com/auth/drive.appdata");
 scope.push ("https://www.googleapis.com/auth/drive.apps.readonly");
@@ -588,7 +597,12 @@ function projectDetailsAutoHeight(projectdescr_tf_height){
 	$.lineitemprice_tf.top = 32 + new_projectdescr_tf_height + 5 + 20 + 2;	
 }
 
-$.projectdescr_tf.addEventListener('return',function(){projectDetailsAutoHeight($.projectdescr_tf.height);}); //prevent return key from done
+$.projectdescr_tf.addEventListener('blur',function(e){Alloy.Globals.Log("enterproject.js::$.projectdescr_tf.addEventListener:BLUR:JSON.stringify(e): "+JSON.stringify(e));});
+
+$.projectdescr_tf.addEventListener('return',function(e){
+	Alloy.Globals.Log("enterproject.js::$.projectdescr_tf.addEventListener:RETURN:JSON.stringify(e): "+JSON.stringify(e));
+	projectDetailsAutoHeight($.projectdescr_tf.height);
+	}); //prevent return key from done
 function done(){$.projectdescr_tf.blur();} //actual done
 
 if (itemdescrvalue) {

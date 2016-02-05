@@ -235,13 +235,15 @@ var googleAuth = new GoogleAuth({
 	quiet: false
 	//scope : ['https://spreadsheets.google.com/feeds', 'https://docs.google.com/feeds'],
 });
-
-
-
+/*
+function getStreetAddress(){
+	(args.address)?$.clientstreetaddress_tf.value=args.address:$.clientstreetaddress_tf.value=" ";
+}*/
+/*
 $.enterclient_table.addEventListener('click', function(e){
 	Alloy.Globals.Log("JSON stringify after table row is clicked : " +JSON.stringify(e));
 	$.notes_tf.blur();
-});
+});*/
 
 (args.firstname)?$.clientfirstname_tf.value=args.firstname:$.clientfirstname_tf.value=" ";
 (args.lastname)?$.clientlastname_tf.value=args.lastname:$.clientlastname_tf.value=" ";
