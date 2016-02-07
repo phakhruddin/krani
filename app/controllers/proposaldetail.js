@@ -36,6 +36,9 @@ exports.openMainWindow = function(_tab) {
   Alloy.Globals.checkFileExistThenUpdateTitaniumProperties(name+"_defaultlogo"); //check the logo
 };
 
+kraniemailid = Titanium.App.Properties.getString('kraniemailid');
+name = kraniemailid.split('@')[0].trim();
+
 callbackFunction = args.callbackFunction;
 
 Alloy.Collections.adhoc.deleteAll(); //reset adhoc tables.
@@ -963,7 +966,12 @@ function fileExist(filename,parentid){
 		alert("error:"+e.code+": Please refresh");
 		Alloy.Globals.googleAuthSheet.authorize();
 	};
-	var rawquerystring = '?q=title+%3D+\''+filename+'\'+and+mimeType+%3D+\'application%2Fvnd.google-apps.spreadsheet\'+and+trashed+%3D+false&fields=items(id%2CmimeType%2Clabels%2Ctitle)';
+	//var rawquerystring = '?q=title+%3D+\''+filename+'\'+and+mimeType+%3D+\'application%2Fvnd.google-apps.spreadsheet\'+and+trashed+%3D+false&fields=items(id%2CmimeType%2Clabels%2Ctitle)';
+	if (parentid) {
+			var rawquerystring = '?q=title+%3D+\''+filename+'\'+and+\''+parentid+'\'+in+parents+and+mimeType+%3D+\'application%2Fvnd.google-apps.spreadsheet\'+and+trashed+%3D+false&fields=items(id%2CmimeType%2Clabels%2Cparents%2Ctitle)';
+		} else {
+			var rawquerystring = '?q=title+%3D+\''+filename+'\'+and+mimeType+%3D+\'application%2Fvnd.google-apps.spreadsheet\'+and+trashed+%3D+false&fields=items(id%2CmimeType%2Clabels%2Cparents%2Ctitle)';
+		}
 	xhr.open("GET", 'https://www.googleapis.com/drive/v2/files'+rawquerystring);
 	xhr.setRequestHeader("Content-type", "application/json");
     xhr.setRequestHeader("Authorization", 'Bearer '+Alloy.Globals.googleAuthSheet.getAccessToken());
@@ -1150,7 +1158,8 @@ function matchpaymentsidfromDB(filename){
 
 
 function prefetchPayment(e){
-	var parentid = Titanium.App.Properties.getString('parentid');
+	//var parentid = Titanium.App.Properties.getString('parentid');
+	var parentid = Titanium.App.Properties.getString(name+"_proposal");
 	Alloy.Globals.Log("proposaldetail.js::prefetchpayment::need to check if parent/filename exist: "+parentid+'/'+filename);
 	fileExist(filename,parentid);
 	var item = "payment";
@@ -1318,6 +1327,14 @@ updatecalendardialog.addEventListener('click', function(e){
 });
 
 $.proposaldetail_window.addEventListener("close",function(){
+	var proptoremove = [];
+	proptoremove.push(proposalsentfilename+"_sid");
+	proptoremove.push(filename+"_sid");
+	for (i=0;i<proptoremove.length;i++){
+		Alloy.Globals.Log("proposaldetail.js:proposaldetail_window: b4 remove property "+proptoremove[i]+" Titanium.App.Properties.getString(\'"+proptoremove[i]+"\') : "+eval("Titanium.App.Properties.getString(\'"+proptoremove[i]+"\')"));
+		eval("Ti.App.Properties.removeProperty(\'"+proptoremove[i]+"\')");
+		Alloy.Globals.Log("proposaldetail.js:proposaldetail_window: AFTER remove property "+proptoremove[i]+" Titanium.App.Properties.getString(\'"+proptoremove[i]+"\') : "+eval("Titanium.App.Properties.getString(\'"+proptoremove[i]+"\')"));
+	}
 	callbackFunction();
 });
 

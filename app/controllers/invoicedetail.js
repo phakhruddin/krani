@@ -35,6 +35,9 @@ exports.openMainWindow = function(_tab) {
   Alloy.Globals.checkFileExistThenUpdateTitaniumProperties(name+"_defaultlogo"); //check the logo
 };
 
+ var kraniemailid = Titanium.App.Properties.getString('kraniemailid');
+ var name = kraniemailid.split('@')[0].trim();
+
 invoicecallbackFunction = args.callbackFunction; //callback
 
 Alloy.Collections.adhoc.deleteAll(); //reset adhoc tables.
@@ -918,7 +921,12 @@ function fileExist(filename,parentid){
 		alert("error:"+e.code+": Please refresh");
 		Alloy.Globals.googleAuthSheet.authorize();
 	};
-	var rawquerystring = '?q=title+%3D+\''+filename+'\'+and+mimeType+%3D+\'application%2Fvnd.google-apps.spreadsheet\'+and+trashed+%3D+false&fields=items(id%2CmimeType%2Clabels%2Ctitle)';
+	//var rawquerystring = '?q=title+%3D+\''+filename+'\'+and+mimeType+%3D+\'application%2Fvnd.google-apps.spreadsheet\'+and+trashed+%3D+false&fields=items(id%2CmimeType%2Clabels%2Ctitle)';
+	if (parentid) {
+			var rawquerystring = '?q=title+%3D+\''+filename+'\'+and+\''+parentid+'\'+in+parents+and+mimeType+%3D+\'application%2Fvnd.google-apps.spreadsheet\'+and+trashed+%3D+false&fields=items(id%2CmimeType%2Clabels%2Cparents%2Ctitle)';
+		} else {
+			var rawquerystring = '?q=title+%3D+\''+filename+'\'+and+mimeType+%3D+\'application%2Fvnd.google-apps.spreadsheet\'+and+trashed+%3D+false&fields=items(id%2CmimeType%2Clabels%2Cparents%2Ctitle)';
+		}
 	xhr.open("GET", 'https://www.googleapis.com/drive/v2/files'+rawquerystring);
 	xhr.setRequestHeader("Content-type", "application/json");
     xhr.setRequestHeader("Authorization", 'Bearer '+Alloy.Globals.googleAuthSheet.getAccessToken());
@@ -1108,7 +1116,9 @@ function matchpaymentsidfromDB(filename){
 
 
 function prefetchPayment(e){
-	var parentid = Titanium.App.Properties.getString('parentid');
+	//var parentid = Titanium.App.Properties.getString('parentid');
+	var name = kraniemailid.split('@')[0].trim();
+	var parentid = Titanium.App.Properties.getString(name+"_invoice");
 	Alloy.Globals.Log("invoicedetail.js::prefetchpayment::need to check if parent/filename exist: "+parentid+'/'+filename);
 	
 	fileExist(filename,parentid);
@@ -1286,18 +1296,28 @@ updatecalendardialog.addEventListener('click', function(e){
 });
  
 $.invoicedetail_window.addEventListener("close",function(){
+	var proptoremove = [];
+	proptoremove.push(invoicesentfilename+"_sid");
+	proptoremove.push(filename+"_sid");
+	for (i=0;i<proptoremove.length;i++){
+		Alloy.Globals.Log("invoicedetail.js:invoicedetail_window: b4 remove property "+proptoremove[i]+" Titanium.App.Properties.getString(\'"+proptoremove[i]+"\') : "+eval("Titanium.App.Properties.getString(\'"+proptoremove[i]+"\')"));
+		eval("Ti.App.Properties.removeProperty(\'"+proptoremove[i]+"\')");
+		Alloy.Globals.Log("invoicedetail.js:invoicedetail_window: AFTER remove property "+proptoremove[i]+" Titanium.App.Properties.getString(\'"+proptoremove[i]+"\') : "+eval("Titanium.App.Properties.getString(\'"+proptoremove[i]+"\')"));
+	}
 	invoicecallbackFunction();
 });
 
 Alloy.Globals.checkFileExistThenUpdateSID("invoicesentfilename","invoicesent");
 
 function prefetchinvoicesent(e){
-	var parentid = Titanium.App.Properties.getString('parentid');
+	//var parentid = Titanium.App.Properties.getString('parentid');
+	var name = kraniemailid.split('@')[0].trim();
+	var parentid = Titanium.App.Properties.getString(name+"_invoice");
 	Alloy.Globals.Log("invoicedetail.js::prefetchinvoicesent::need to check if parent/filename exist: "+parentid+'/'+invoicesentfilename);
 	fileExist(invoicesentfilename,parentid);
 	var item = "invoicesent";	
 	var invoicesentsid = eval("Titanium.App.Properties.getString('"+invoicesentfilename+"_sid')");
-	Alloy.Globals.Log("invoicedetail.js::prefetchinvoicesent::sidmatch: filename "+invoicesentfilename+'_sid : invoicesentsid '+invoicesentsid);
+	Alloy.Globals.Log("invoicedetail.js::prefetchinvoicesent:: filename "+invoicesentfilename+'_sid : invoicesentsid '+invoicesentsid);
 	if(invoicesentsid){
 		Alloy.Globals.Log("invoicedetail.js::prefetchinvoicesent: updating DB with: item : invoicesentsid : "+item+" : "+invoicesentsid);
 		Alloy.Globals.getPrivateData(invoicesentsid,item);

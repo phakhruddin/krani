@@ -241,6 +241,14 @@ function logout(e){
 	$.logout_button.title = "Please click login ->";
 }
 
+function setMenuText() {
+	if (Titanium.App.Properties.getString("sharedkraniemailid")) {
+			$.label_schedule.text= "Schedule \("+Titanium.App.Properties.getString("sharedkraniemailid").split('@')[0].trim()+"\)";
+		} else { " Schedule \("+Titanium.App.Properties.getString("kraniemailid").split('@')[0].trim()+"\)";}
+	Titanium.App.Properties.setString('employee',Titanium.App.Properties.getString("emailid"));
+	Alloy.Globals.Log("tabViewOne.js::setMenuText: sharedkraniemailid: " +Titanium.App.Properties.getString("sharedkraniemailid"));
+}
+
 function login(e) {
 	Alloy.Globals.Log("tabViewOne.js::login(e): " +JSON.stringify(e));
 	var buttonstate = e.source.title;
@@ -268,7 +276,8 @@ function login(e) {
 				$.status_view.height="1%";
 				$.status_label.text="";
 				$.login_button.title="Logout";
-				$.logout_button.title=Titanium.App.Properties.getString("kraniemailid").split('@')[0].trim();
+				$.logout_button.title=Titanium.App.Properties.getString("emailid").split('@')[0].trim();
+				setMenuText();
 				Alloy.Globals.loginActivity();
 				$.tabviewone_window.remove(loadingView);
 			},2000);
@@ -416,7 +425,12 @@ function login(e) {
 			$.status_label.text="";
 			$.login_button.title="Logout";
 			$.tabviewone_window.remove(refreshView);
-			if (Titanium.App.Properties.getString("kraniemailid")) {$.logout_button.title=Titanium.App.Properties.getString("kraniemailid").split('@')[0].trim();};
+			setMenuText();
+			/*
+			if (Titanium.App.Properties.getString("kraniemailid")) {
+				var buttontitle = (Titanium.App.Properties.getString("sharedkraniemailid"))?Titanium.App.Properties.getString("sharedkraniemailid").split('@')[0].trim():Titanium.App.Properties.getString("kraniemailid").split('@')[0].trim();
+				$.logout_button.title = buttontitle;
+				};*/
 		},2000);
         break;
     case "RefreshAgain":
@@ -441,6 +455,7 @@ refresh.addEventListener('refreshstart',function(e){
 	setTimeout(function(){
         Alloy.Globals.Log('tabviewone::refresh:: JSON.stringify(e): '+JSON.stringify(e));
         Alloy.Globals.refreshActivity();
+        setMenuText();
         refresh.endRefreshing();
     }, 2000);
 });

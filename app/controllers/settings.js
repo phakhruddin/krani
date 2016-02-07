@@ -44,7 +44,13 @@ $.row_empselect.addEventListener("click", function(e){
   	empSelectController.openMainWindow($.tab_settings);	
 });
 
-$.companygmail_tf.hintText=Titanium.App.Properties.getString("kraniemailid")?"Gmail: "+Titanium.App.Properties.getString("kraniemailid"):"GMail e.g: ZefiLandscape@gmail.com";
+var sharedkraniemaildialog = Ti.UI.createAlertDialog({
+	cancel: 1,
+	buttonNames: ['NO', 'YES'],
+	title: 'Shared Account'
+});
+
+$.companygmail_tf.hintText=Titanium.App.Properties.getString("sharedkraniemailid")?"Gmail: "+Titanium.App.Properties.getString("sharedkraniemailid"):"GMail e.g: "+Titanium.App.Properties.getString("kraniemailid");
 $.companyname_tf.hintText=Titanium.App.Properties.getString("coName")?"Name: "+Titanium.App.Properties.getString("coName"):"Name e.g.: Zefi Landscape LLC";
 $.streetaddress_tf.hintText=Titanium.App.Properties.getString("coStreetAddress")?"Address: "+Titanium.App.Properties.getString("coStreetAddress"):"Address e.g.: 100 W East Ave";
 $.city_tf.hintText=Titanium.App.Properties.getString("coCity")?"City: "+Titanium.App.Properties.getString("coCity"):"City";
@@ -58,13 +64,25 @@ function coState(e) {Titanium.App.Properties.setString("coState", e.value);}
 function coZip(e) {Titanium.App.Properties.setString("coZip", e.value);}
 function coPhone(e) {Titanium.App.Properties.setString("coPhone", e.value);}
 function coGmail(e) {
-	Titanium.App.Properties.setString("kraniemailid", e.value);
-	var kraniemailid = Titanium.App.Properties.getString('kraniemailid');	
-	var name = kraniemailid.split('@')[0].trim(); //use kraniemailid for uniqueness
-	Alloy.Globals.Log("settings.js:coGmail:Alloy.Globals.getJSONOnlineCreateInitialFolder('"+name+"')");
-	Alloy.Globals.getJSONOnlineCreateInitialFolder(name); // refresh user
-	alert("shared account: "+name);
+	if (e.value && e.value != "") {
+		var sharedkraniemailid = e.value;
+		Titanium.App.Properties.setString("sharedkraniemailid", sharedkraniemailid);
+		Titanium.App.Properties.setString("kraniemailid", sharedkraniemailid);
+		Alloy.Globals.Log("setting.js::coGmail: sharedkraniemailid: "+sharedkraniemailid);
+		sharedkraniemaildialog.message = sharedkraniemailid+' is the source account?';
+		sharedkraniemaildialog.show();
+		}
 	}
+	
+sharedkraniemaildialog.addEventListener("click",function(e){
+	if (e.index == 1 ) {
+		var kraniemailid = Titanium.App.Properties.getString("sharedkraniemailid");	
+		var name = kraniemailid.split('@')[0].trim(); //use kraniemailid for uniqueness
+		Alloy.Globals.Log("settings.js:coGmail:Alloy.Globals.getJSONOnlineCreateInitialFolder('"+name+"')");
+		Alloy.Globals.getJSONOnlineCreateInitialFolder(name); // refresh user
+		alert("shared account: "+name);
+	} else {return 100;};
+});
 
 //LOGO
 var logourl = Titanium.App.Properties.getString("logourl");

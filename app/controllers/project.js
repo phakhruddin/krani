@@ -31,7 +31,7 @@ function transformFunction(model) {
 		transform.addresscolor = "red";
 	}
 	datesraw = transform.col15;
-	if (datesraw != "NA"){
+	if (datesraw != "NA" && datesraw != "none" ){
 		datesdata = datesraw.replace(/cOlOn/g,":");
 		datesdata = JSON.parse(datesdata);
 		Alloy.Globals.Log("project.js::transformfunction: JSON.stringify(datesraw): "+JSON.stringify(datesraw)+"due date: "+datesdata[0].duedate);

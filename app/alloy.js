@@ -30,8 +30,9 @@ var OfflineMode = 0; //default is ONLINE mode
 //Titanium.App.Properties.setInt('mindebug',1);
 //
 
-Alloy.Globals.Cleanup = function(){
-	var proptoremove = ["edithref","idtag","selfhref","lastpaiddate","paid","balance","krani_t"];
+Alloy.Globals.Cleanup = function(e) {
+	var proptoremove = [];
+	var proptoremove = (e)?proptoremove.push(e):["edithref","idtag","selfhref","lastpaiddate","paid","balance","krani_t"];
 	for (i=0;i<proptoremove.length;i++){
 		console.log("alloy.js:: b4 remove property "+proptoremove[i]+" Titanium.App.Properties.getString(\'"+proptoremove[i]+"\') : "+eval("Titanium.App.Properties.getString(\'"+proptoremove[i]+"\')"));
 		eval("Ti.App.Properties.removeProperty(\'"+proptoremove[i]+"\')");
@@ -242,8 +243,6 @@ var laborsid = Titanium.App.Properties.getString('labor',laborsid);
 var joblogsid = Titanium.App.Properties.getString('joblog',joblogsid);
 var authclientid = Titanium.App.Properties.getString('authclientid',authclientid);
 var authclientsecret = Titanium.App.Properties.getString('authclientsecret',authclientsecret);
-
-Titanium.App.Properties.setString('employee',"Joe Fanney");
 
 var coName = Titanium.App.Properties.getString('coName','Jack Mow Inc.');
 var coAddress =  Titanium.App.Properties.getString('coAddress',"1125 Bluemound Rd., Brookfield, WI 53222");
@@ -2117,6 +2116,58 @@ Alloy.Globals.createCoreSS = function (filename,parentid,indexsid) {
 		
 };
 
+
+Alloy.Globals.setTiPropFromSS = function(sid) {
+	Alloy.Globals.Log("alloy.js::executing Alloy.Globals.setTiPropFromSS on sid: "+sid);	
+	var data = [];
+	var maxdebug = Titanium.App.Properties.getInt('maxdebug');
+	var mindebug = Titanium.App.Properties.getInt('mindebug');
+	var url = "https://spreadsheets.google.com/feeds/list/"+sid+"/od6/private/full";
+	var thefile = "gss"+sid+".xml";
+	var xhr = Ti.Network.createHTTPClient({
+	    onload: function(e) {
+	    try {
+			var xml = Titanium.XML.parseString(this.responseText);
+			if(maxdebug==1){Alloy.Globals.Log("alloy.js::Alloy.Globals.setTiPropFromSS:: response txt is: "+this.responseText);};
+			if(maxdebug==1){Alloy.Globals.Log("alloy.js::Alloy.Globals.setTiPropFromSS:: this xml is: " +xml);	};   
+			var feed = xml.documentElement.getElementsByTagName("feed");
+			var entry = xml.documentElement.getElementsByTagName("entry"); 
+			(mindebug == 1) && Alloy.Globals.Log("alloy.js::this entry length is: " +entry.length);
+			for (i=1;i<entry.length;i++){
+				var col1 = entry.item(i).getElementsByTagName("gsx:col1").item(0).text;
+				var col2 = entry.item(i).getElementsByTagName("gsx:col2").item(0).text;
+				var col3 = entry.item(i).getElementsByTagName("gsx:col3").item(0).text;
+				var idtag = entry.item(i).getElementsByTagName("id").item(0).text.replace(':','yCoLoNy');
+				var link = entry.item(i).getElementsByTagName("link");
+				if(col1 && col2){
+					eval("Titanium.App.Properties.setString(\""+col1+"\",col2)"); // Titanium.App.Properties.setString("zefilandscape_client",1234)					
+					Alloy.Globals.Log("alloy::setTiPropFromSS:: Titanium.App.Properties.getString("+col1+"): "+eval("Titanium.App.Properties.getString(col1)"));
+					var stripcol1 = (col1.match(/list$/))?col1.replace(/list$/,'').split('_').pop():col1.split('_').pop()+"_dir";
+					eval("Titanium.App.Properties.setString(\""+stripcol1+"\",col2)"); // Titanium.App.Properties.setString("client",1234) or Titanium.App.Properties.setString("client_dir",1234)
+					Alloy.Globals.Log("alloy::setTiPropFromSS:: Titanium.App.Properties.getString("+stripcol1+"): "+eval("Titanium.App.Properties.getString(stripcol1)"));
+					//Alloy.Globals.Log("alloy::getMaster:: Titanium.App.Properties.getString(freeuser): "+Titanium.App.Properties.getString("freeuser"));						
+				}	
+				for (y=0;y<link.length;y++){			
+	    			var listitem = link.item(y);
+	    			if (listitem.getAttribute("rel") == "edit"){ var edithref = listitem.getAttribute("href").replace(':','yCoLoNy');}
+	    			if (listitem.getAttribute("rel") == "self"){ var selfhref = listitem.getAttribute("href").replace(':','yCoLoNy');}
+    			}
+			}
+			Alloy.Globals.Log(" Alloy.Globals.setTiPropFromSS:Data were successfuly downloaded from "+url+". Please proceed.");
+			} catch(e){
+				Alloy.Globals.Log("Alloy.Globals.setTiPropFromSS:: cathing e: "+JSON.stringify(e));
+			}
+		}
+	});
+	xhr.onerror = function(e){
+		//alert(e);
+		Alloy.Globals.Log("alloy.js::Alloy.Globals.setTiPropFromSS::Unable to connect to the network.url: "+url+" with error: "+JSON.stringify(e));
+	};
+	xhr.open("GET", url);
+	xhr.send();
+	
+};
+
 Alloy.Globals.createCoreInitialCoreFolderandSS = function(name,foldername,parentid,indexsid){
 	var foldername = name+"_"+foldername;
 	Alloy.Globals.Log("alloy.js::create ss with foldername: "+foldername+" and parentid: "+parentid);
@@ -2183,13 +2234,16 @@ Alloy.Globals.createCoreInitialCoreFolderandSS = function(name,foldername,parent
 	xhr1.send();		
 };
 
+
+
 Alloy.Globals.locateIndexCreateSpreadsheet = function(name,name_dir_sid){
 		var jsonlist = " ";
 		var xhr = Ti.Network.createHTTPClient({
 	    onload: function(e) {
 	    try {
 	    		var jsonlist = JSON.parse(this.responseText);
-	    		Alloy.Globals.Log("Alloy.Globals.locateIndexCreateSpreadsheet::response of jsonlist is: "+JSON.stringify(jsonlist));	
+	    		Alloy.Globals.Log("Alloy.Globals.locateIndexCreateSpreadsheet::response of jsonlist is: "+JSON.stringify(jsonlist));
+	    		var sid = jsonlist.items[0].id;;	
 	    	} catch(e){
 				Alloy.Globals.Log("Alloy.Globals.locateIndexCreateSpreadsheet::cathing e: "+JSON.stringify(e));
 			}
@@ -2199,18 +2253,30 @@ Alloy.Globals.locateIndexCreateSpreadsheet = function(name,name_dir_sid){
 				var fileexist = "false";
 				Titanium.App.Properties.setString("status","failed"); 	
 			} else {
-				var fileexist = "true";
-				var indexsid = jsonlist.items[0].id; Titanium.App.Properties.setString("indexsid",indexsid);
-				var parentid = jsonlist.items[0].parents[0].id; Titanium.App.Properties.setString("parentid",parentid);
-				Alloy.Globals.Log("alloy.js::Alloy.Globals.locateIndexCreateSpreadsheet::File exist. indexsid is: "+indexsid+" parentid:"+parentid);
-				// Create Credit and Debit START
-				var corefilenamearray = ["project","client","invoice","inventory","proposal","master","schedule","labor","joblog"];	
-				for (i=0;i<corefilenamearray.length;i++){	
-					var filename = corefilenamearray[i];	
-					Alloy.Globals.Log("alloy.js::check if ss with filename: "+filename+" exists ");
-					Alloy.Globals.createCoreInitialCoreFolderandSS(name,filename,parentid,indexsid);		
+				var kraniemailid = Titanium.App.Properties.getString('kraniemailid');
+				var emailid = Titanium.App.Properties.getString('emailid');
+				Alloy.Globals.Log("alloy.js::Alloy.Globals.locateIndexCreateSpreadsheet::emailid: "+emailid+" vs kraniemailid: "+kraniemailid);
+				if ( Titanium.App.Properties.getString("sharedkraniemailid") ) {
+	 				Alloy.Globals.Log("alloy.js::Alloy.Globals.locateIndexCreateSpreadsheet::sharedkraniemailid exists: " +Titanium.App.Properties.getString("sharedkraniemailid")+" kraniemailid: "+kraniemailid);
+					Alloy.Globals.Log("Alloy.Globals.setTiPropFromSS("+sid+")");
+					Alloy.Globals.setTiPropFromSS(sid);
+					//alert("could not find data for "+kraniemailid+" in the cloud.");
+				} else {
+					Alloy.Globals.Log("alloy.js::Alloy.Globals.locateIndexCreateSpreadsheet::NO sharedkraniemailid. kraniemailid: "+kraniemailid+":  emailid: "+emailid);
+					var fileexist = "true";
+					var indexsid = jsonlist.items[0].id; Titanium.App.Properties.setString("indexsid",indexsid);
+					var parentid = jsonlist.items[0].parents[0].id; Titanium.App.Properties.setString("parentid",parentid);
+					Alloy.Globals.Log("alloy.js::Alloy.Globals.locateIndexCreateSpreadsheet::File exist. indexsid is: "+indexsid+" parentid:"+parentid);
+					// Create Credit and Debit START
+					var corefilenamearray = ["project","client","invoice","inventory","proposal","master","schedule","labor","joblog"];	
+					for (i=0;i<corefilenamearray.length;i++){	
+						var filename = corefilenamearray[i];	
+						Alloy.Globals.Log("alloy.js::check if ss with filename: "+filename+" exists ");
+						Alloy.Globals.createCoreInitialCoreFolderandSS(name,filename,parentid,indexsid);		
+					}
+					Titanium.App.Properties.setString("status","passed");
 				}
-				Titanium.App.Properties.setString("status","passed"); 	
+
 			};
 		}
 		});
@@ -2690,10 +2756,6 @@ Alloy.Globals.getJSONOnlineCreateInitialFolder = function(name){
 						var col2= json.poi[i].col2 || "none";
 						if(col1 && col2){
 							eval("Titanium.App.Properties.setString(\""+col1+"\",col2)");
-							/*
-							if(col1=="publicrepo"){Titanium.App.Properties.setString("publicrepo",col2); };
-							if(col1=="privaterepo"){Titanium.App.Properties.setString("privaterepo",col2);};
-							if(col1=="userindex1"){Titanium.App.Properties.setString("userindex1",col2);};*/
 							Alloy.Globals.Log("alloy::getJSONOnlineCreateInitialFolder:: Titanium.App.Properties.getString("+col1+"): "+eval("Titanium.App.Properties.getString(col1)"));
 							//Alloy.Globals.Log("alloy::getMaster:: Titanium.App.Properties.getString(publicrepo): "+Titanium.App.Properties.getString("publicrepo"));						
 							}						
@@ -2736,6 +2798,10 @@ Alloy.Globals.stampSIDFromCoreFilename = function(filename){
 					Alloy.Globals.Log("alloy.js::stampSIDFromCoreFilename::emailid is the same: execute SS creation ");
 					Alloy.Globals.createSpreadsheet(filename);  // create file when does not exists
 					Titanium.App.Properties.setString(filename,sid); // stamp the ssid.
+					//TODO:Locateindex
+					var name = kraniemailid.split('@')[0].trim(); //use kraniemailid for uniqueness
+					Alloy.Globals.Log("Alloy.Globals.stampSIDFromCoreFilename::Alloy.Globals.getJSONOnlineCreateInitialFolder('"+name+"')");
+					Alloy.Globals.getJSONOnlineCreateInitialFolder(name); // refresh user
 				} else {
 					Alloy.Globals.Log("alloy.js::stampSIDFromCoreFilename::emailid is NOT the same: emailid : "+emailid+" vs. kraniemailid:  "+kraniemailid);
 				}				
@@ -3285,6 +3351,3 @@ Alloy.Globals.uploadPDFFileCreateSnapshotSubmit = function(file,filename,parenti
 		xhr.send(parts.join("\r\n"));
 		Alloy.Globals.Log('done POSTed');
 };
-
-
-

@@ -30,7 +30,7 @@
 		 	  	<TableViewSection headerTitle="Please enter if not present"/>
  	  	<TableViewSection headerTitle="Company Name">
 	  		<TableViewRow height="40">
- 	  			<TextField id="companygmail_tf"  width="320" left="20" hintText="" onBlur="coGmail" keyboardType="Titanium.UI.KEYBOARD_EMAIL" />
+ 	  			<TextField id="companygmail_tf"  width="320" left="20" hintText="" keyboardType="Titanium.UI.KEYBOARD_EMAIL" onReturn="coGmail"/>
  	  		</TableViewRow>
  	  		<TableViewRow height="40">
  	  			<TextField id="companyname_tf" width="320" left="20" onBlur="coName" />
