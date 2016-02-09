@@ -250,6 +250,8 @@ var coPhone = Titanium.App.Properties.getString('coPhone',"262-290-3141");;
 var coFax = Titanium.App.Properties.getString('coFax',"262-290-3142");
 var coEmail = Titanium.App.Properties.getString('coEmail',"sales@jackmowinc.com");
 
+var usertypearray = ["freeuser","paiduser","paidbasic","paidpremium","paidunlimited"];
+
 console.log("alloy.js::TempDir: "+JSON.stringify(Ti.Filesystem.tempDirectory));
 			
 Alloy.Globals.writeFile = function (content, filename){
@@ -2892,17 +2894,19 @@ Alloy.Globals.loginActivity = function(e){
 		    			var kraniemailid = Titanium.App.Properties.getString('kraniemailid');
 		    		} else {Titanium.App.Properties.setString('kraniemailid',emailid);var kraniemailid=emaild;};
 	    		Alloy.Globals.Log("tabViewOne.js::args inside getEmail: emailid "+emailid+" :: "+JSON.stringify(e));
-	    		Alloy.Globals.getJSONOnline(); //Initial initiation information. P
+	    		Alloy.Globals.getJSONOnline(); //Initial initiation information. 
+	    		var t=0;
 				for (i=0;i<Alloy.Globals.corefilenamearray.length;i++){
 					var kraniemailid = Titanium.App.Properties.getString('kraniemailid');
 					var name = kraniemailid.split('@')[0].trim();
 					//var name = emailid.split('@')[0].trim();
 					var newfilename = name+"_"+Alloy.Globals.corefilenamearray[i]+"list";
 					var newdirname = name+"_"+Alloy.Globals.corefilenamearray[i];
-					Alloy.Globals.Log("alloy.js::Alloy.Globals.loginActivity:Alloy.Globals.stampSIDFromCoreFilename("+newfilename+"); Alloy.Globals.stampSIDFromCoreDirname("+newdirname+"); ");
-					Alloy.Globals.stampSIDFromCoreFilename(newfilename);
-					Alloy.Globals.stampSIDFromCoreDirname(newdirname);
+					Alloy.Globals.Log("alloy.js::Alloy.Globals.loginActivity:Alloy.Globals.stampSIDFromCoreFilename("+newfilename+") at "+t+" ms; Alloy.Globals.stampSIDFromCoreDirname("+newdirname+") at "+t+" ms; ");
+					setTimeout(function(){Alloy.Globals.stampSIDFromCoreDirname(newdirname);},t);
+					setTimeout(function(){Alloy.Globals.stampSIDFromCoreFilename(newfilename);},t+500);
 					Alloy.Globals.checkFileExistThenUpdateTitaniumProperties(name+"_defaultlogo"); //update defaultlogo webcontent links
+					var t = t + 1000;
 				}
 	    		
 	    	} catch(e){
@@ -3350,4 +3354,128 @@ Alloy.Globals.uploadPDFFileCreateSnapshotSubmit = function(file,filename,parenti
 		xhr.setRequestHeader("Content-Length", "2000000");
 		xhr.send(parts.join("\r\n"));
 		Alloy.Globals.Log('done POSTed');
+};
+
+Alloy.Globals.LicenseUserAction = function(type) {
+	var checklicense = Titanium.App.Properties.getString("checklicense");
+	Alloy.Globals.Log("alloy.js::Alloy.Globals.LicenseUserAction: foldername: "+type+" checklicense action is: "+checklicense);
+	if ( checklicense == "yes" ) {		
+		switch (type) {
+			case "freeuser" :
+				Alloy.Globals.Log("alloy.js::Alloy.Globals.LicenseUserAction: "+type);
+				Alloy.Globals.statusColor = "gray";
+				Alloy.Globals.statusHeight = "3%";
+				Alloy.Globals.userText = "F R E E    U S E R";
+			break;
+			case "paiduser" :
+				alert("This is "+type);
+			break;
+			case "paidbasic" :
+				Alloy.Globals.Log("alloy.js::Alloy.Globals.LicenseUserAction: "+type);
+				alert("This is "+type);
+			break;
+			case "paidpremium" :
+				alert("This is "+type);
+			break;
+			case "paidunlimited" :
+				alert("This is "+type);
+			break;
+			default :
+				alert("This is "+type);
+				Alloy.Globals.statusColor = "blue";
+		}
+	};
+};
+/*
+Alloy.Globals.LicenseCheck = function(name){
+	var kraniemailid = (Titanium.App.Properties.getString('kraniemailid'))?Titanium.App.Properties.getString('kraniemailid'):Titanium.App.Properties.getString('emailid');
+	var name = (name)?name:kraniemailid.split('@')[0].trim();
+	var foldername = name+"_dir";
+	Alloy.Globals.Log("alloy.js::Alloy.Globals.LicenseCheck on: foldername: "+foldername);
+	var xhr1 = Ti.Network.createHTTPClient({
+		onload: function(e) {
+			var fileexistjsonlist = JSON.parse(this.responseText);
+			if (fileexistjsonlist) {
+				Alloy.Globals.Log("Alloy.Globals.LicenseCheck::response of fileexistjsonlist is: "+JSON.stringify(fileexistjsonlist));
+				if (fileexistjsonlist.items.length == "0" ){
+						Alloy.Globals.Log("Alloy.Globals.LicenseCheck::dir "+foldername+" does not exists ");					
+					} else {
+						//STAMP:: the folder SID into memory for additional use.
+						var sid = fileexistjsonlist.items[0].id;
+						var parentid = fileexistjsonlist.items[0].parents[0].id;
+						Alloy.Globals.Log("Alloy.Globals.LicenseCheck:: executing. Alloy.Globals.LicenseUserAction(\"freeuser\")");
+						Alloy.Globals.LicenseUserAction("freeuser");
+					}	
+				}		
+			}
+		});
+		var usertypeid = Titanium.App.Properties.getString("freeuser");
+		var rawquerystring1 = '?q=title+%3D+\''+foldername+'\'+and+\''+usertypeid+'\'+in+parents+and+mimeType+%3D+\'application%2Fvnd.google-apps.folder\'+and+trashed+%3D+false&fields=items(id%2CmimeType%2Clabels%2Cparents%2Ctitle)';
+		xhr1.open("GET", 'https://www.googleapis.com/drive/v2/files'+rawquerystring1);
+		xhr1.setRequestHeader("Content-type", "application/json");
+		xhr1.setRequestHeader("Authorization", 'Bearer '+ Alloy.Globals.googleAuthSheet.getAccessToken());
+		xhr1.send();
+		Alloy.Globals.Log("alloy.js::Alloy.Globals.LicenseCheck: execute GET https://www.googleapis.com/drive/v2/file/"+rawquerystring1);
+};*/
+
+Alloy.Globals.LicenseCheck = function(name,licensetype){
+	var kraniemailid = (Titanium.App.Properties.getString('kraniemailid'))?Titanium.App.Properties.getString('kraniemailid'):Titanium.App.Properties.getString('emailid');
+	var name = (name)?name.split('@')[0].trim():kraniemailid.split('@')[0].trim();
+	var foldername = name+"_dir";
+	Alloy.Globals.Log("alloy.js::Alloy.Globals.LicenseCheck on: foldername: "+foldername+" licensetype: "+licensetype);
+	var xhr1 = Ti.Network.createHTTPClient({
+		onload: function(e) {
+			var fileexistjsonlist = JSON.parse(this.responseText);
+			if (fileexistjsonlist) {
+				Alloy.Globals.Log("Alloy.Globals.LicenseCheck::response of fileexistjsonlist is: "+JSON.stringify(fileexistjsonlist));
+				if (fileexistjsonlist.items.length == "0" ){
+						Alloy.Globals.Log("Alloy.Globals.LicenseCheck::dir "+foldername+" does not exists in licensetype: "+licensetype);					
+					} else {
+						//STAMP:: the folder SID into memory for additional use.
+						var sid = fileexistjsonlist.items[0].id;
+						var parentid = fileexistjsonlist.items[0].parents[0].id;
+						Alloy.Globals.Log("Alloy.Globals.LicenseCheck:: executing. Alloy.Globals.LicenseUserAction(\""+licensetype+"\")");
+						Alloy.Globals.LicenseUserAction(licensetype);
+					}	
+				}		
+			}
+		});
+		var usertypeid = Titanium.App.Properties.getString(licensetype);
+		var rawquerystring1 = '?q=title+%3D+\''+foldername+'\'+and+\''+usertypeid+'\'+in+parents+and+mimeType+%3D+\'application%2Fvnd.google-apps.folder\'+and+trashed+%3D+false&fields=items(id%2CmimeType%2Clabels%2Cparents%2Ctitle)';
+		xhr1.open("GET", 'https://www.googleapis.com/drive/v2/files'+rawquerystring1);
+		xhr1.setRequestHeader("Content-type", "application/json");
+		xhr1.setRequestHeader("Authorization", 'Bearer '+ Alloy.Globals.googleAuthSheet.getAccessToken());
+		xhr1.send();
+		Alloy.Globals.Log("alloy.js::Alloy.Globals.LicenseCheck: execute GET https://www.googleapis.com/drive/v2/file/"+rawquerystring1);
+};
+
+Alloy.Globals.LicenseCheckNested = function(name,name1){
+	var kraniemailid = (Titanium.App.Properties.getString('kraniemailid'))?Titanium.App.Properties.getString('kraniemailid'):Titanium.App.Properties.getString('emailid');
+	var name = (name)?name:kraniemailid.split('@')[0].trim();
+	var foldername = name+"_dir";
+	Alloy.Globals.Log("alloy.js::Alloy.Globals.LicenseCheck on: foldername: "+foldername);
+	var xhr1 = Ti.Network.createHTTPClient({
+		onload: function(e) {
+			var fileexistjsonlist = JSON.parse(this.responseText);
+			if (fileexistjsonlist) {
+				Alloy.Globals.Log("Alloy.Globals.LicenseCheck::response of fileexistjsonlist is: "+JSON.stringify(fileexistjsonlist));
+				if (fileexistjsonlist.items.length == "0" ){
+						Alloy.Globals.Log("Alloy.Globals.LicenseCheck::dir "+foldername+" does not exists ");					
+					} else {
+						//STAMP:: the folder SID into memory for additional use.
+						var sid = fileexistjsonlist.items[0].id;
+						var parentid = fileexistjsonlist.items[0].parents[0].id;
+						Alloy.Globals.Log("Alloy.Globals.LicenseCheck:: executing. Alloy.Globals.LicenseUserAction(\"freeuser\")");
+						Alloy.Globals.LicenseUserAction("freeuser");
+					}	
+				}		
+			}
+		});
+		var usertypeid = Titanium.App.Properties.getString("freeuser");
+		var rawquerystring1 = '?q=title+%3D+\''+foldername+'\'+and+\''+usertypeid+'\'+in+parents+and+mimeType+%3D+\'application%2Fvnd.google-apps.folder\'+and+trashed+%3D+false&fields=items(id%2CmimeType%2Clabels%2Cparents%2Ctitle)';
+		xhr1.open("GET", 'https://www.googleapis.com/drive/v2/files'+rawquerystring1);
+		xhr1.setRequestHeader("Content-type", "application/json");
+		xhr1.setRequestHeader("Authorization", 'Bearer '+ Alloy.Globals.googleAuthSheet.getAccessToken());
+		xhr1.send();
+		Alloy.Globals.Log("alloy.js::Alloy.Globals.LicenseCheck: execute GET https://www.googleapis.com/drive/v2/file/"+rawquerystring1);
 };

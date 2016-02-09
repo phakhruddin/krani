@@ -350,3 +350,5 @@ function renameFile(e) {
 		Alloy.Globals.renameFile(sidtorename,newnametorename);
 	} else alert("Please enter SID to be renamed");
 }
+
+function licenseCheck() { Alloy.Globals.LicenseCheck($.licensecheck_tf.value);};

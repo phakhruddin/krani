@@ -171,6 +171,17 @@ checkNetworkAndGoogleAuthorized = function(sid){
 	xhr.send();
 };
 
+function checkUserLicense(name){
+	Alloy.Globals.LicenseCheck(name,"freeuser");
+	setTimeout(function(){Alloy.Globals.LicenseCheck(name,"paidbasic");},1000);
+	setTimeout(function(){
+		$.user_row.height = (Alloy.Globals.statusHeight)?Alloy.Globals.statusHeight:"1%";
+		$.user_row.backgroundColor = (Alloy.Globals.statusColor)?Alloy.Globals.statusColor:"white";
+		$.user_label.color = "white";
+		$.user_label.text = (Alloy.Globals.userText)?Alloy.Globals.userText:"";
+	},2000);		
+}
+
 function prefetchJoblogSID(){
 	var sid = Titanium.App.Properties.getString('joblogssid',"none");
 	Alloy.Globals.Log("prefetchJoblogSID:: checking sid :" +sid);
@@ -277,11 +288,12 @@ function login(e) {
 				$.status_label.text="";
 				$.login_button.title="Logout";
 				$.logout_button.title=Titanium.App.Properties.getString("emailid").split('@')[0].trim();
+				checkUserLicense($.logout_button.title);
 				setMenuText();
 				Alloy.Globals.loginActivity();
 				$.tabviewone_window.remove(loadingView);
 			},2000);
-
+			
 		}, function() {
 			//$.tabviewone_window.hide();
 			$.login_button.title="";	
@@ -301,7 +313,6 @@ function login(e) {
 			},10000);
 			Ti.API.info('Access Token: ' + Alloy.Globals.googleAuthSheet.getAccessToken());
 			//pause for a while before next action.
-
 			function dosettimeout (i,timeoutms) {
 				setTimeout(function(){
 					Alloy.Globals.Log((new Date())+"tabViewOne::loop no: "+i+" after "+timeoutms*i+" secs");		
@@ -347,7 +358,12 @@ function login(e) {
 						    		//Set the company emailid. Set to oneself if this is not a shared account.
 						    		if (Titanium.App.Properties.getString('kraniemailid')){
 						    			var kraniemailid = Titanium.App.Properties.getString('kraniemailid');
-						    		} else {Titanium.App.Properties.setString('kraniemailid',emailid);var kraniemailid=emaild;};
+						    			checkUserLicense(kraniemailid);
+						    		} else {
+						    			Titanium.App.Properties.setString('kraniemailid',emailid);
+						    			var kraniemailid=emaild;
+						    			checkUserLicense(kraniemailid);
+						    			};
 						    		Alloy.Globals.Log("tabViewOne.js::args inside getEmail: emailid "+emailid+" :: "+JSON.stringify(e));
 						    		
 						    	} catch(e){
@@ -396,7 +412,7 @@ function login(e) {
 						} 
 					}
 					
-					(Alloy.Globals.googleAuthSheet.getAccessToken()) && getEmail();
+					if (Alloy.Globals.googleAuthSheet.getAccessToken()) {getEmail();}
 					var email= Titanium.App.Properties.getString('emailid');
 					if (email) {
 					//var mastersid = Titanium.App.Properties.getString('master');
@@ -405,7 +421,6 @@ function login(e) {
 					//TODO:steps to get parentid.
 					
 				} else {(Alloy.Globals.googleAuthSheet.getAccessToken()) && getEmail(); }
-
 
 	
 			}

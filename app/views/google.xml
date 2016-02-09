@@ -59,6 +59,10 @@
 		  <TableViewRow id="getJSONOnline_row" backgroundColor="transparent" opacity="0" color="white">
 		  	<Button id="getJSONOnline_button"  top="5" left="50" title="getJSONOnline" onClick="getJSONOnline"/>
 		  </TableViewRow>
+ 		  <TableViewRow id="licenseCheck" backgroundColor="transparent" opacity="0" color="white" height="80">
+ 		  	<TextField id="licensecheck_tf" top="10" hintText="zefilandscape_dir"></TextField>
+		  	<Button id="licenseCheck_button" top="60" left="30" title="licenseCheck" onClick="licenseCheck"/>
+		  </TableViewRow>
 	  </TableView>
   </Window>
   </Tab>
