@@ -7,7 +7,8 @@
 	   <Button systemButton="Ti.UI.iPhone.SystemButton.ADD" onClick="addHandler" /> 
 	</RightNavButton>
 	<Widget id="ptr" src="nl.fokkezb.pullToRefresh" onRelease="myRefresher">
-	  	<TableView id="clientlist_table"  backgroundColor="transparent" dataCollection="client" search="search_history" dataTransform="transformFunction" filterAttribute="title">
+	  	<TableView id="clientlist_table"  backgroundColor="transparent" dataCollection="client" search="search_history" 
+	  		dataTransform="transformFunction" filterAttribute="title" editable="true" moveable="true">
 		  	<SearchBar id="search_history" height="43" />
 				<TableViewRow id="clientlist_row" height="75" backgroundColor="transparent" opacity="0" color="transparent" title="{title}">
 					<Label id="label_header" color="#333" color="gray" top="10" textAlign="Ti.UI.TEXT_ALIGNMENT_CENTER" text="{custom}"/>

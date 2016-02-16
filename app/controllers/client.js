@@ -165,4 +165,38 @@ exports.logfromSource = function(e){
 function logfromSource0(e) {
 	Alloy.Globals.Log("logfromSource0::source is client.js (e) :"+e);
 }
+
+function pulledEvent(e){
+	Alloy.Globals.Cleanup();
+	var item = "client";
+	var sid = Titanium.App.Properties.getString(item,"none");
+	Alloy.Globals.Log("client.js::pulledEvent::sid for Alloy.Globals.getPrivateData("+ item +" , "+sid+" )");
+	Alloy.Globals.getPrivateData(sid,item);
+	Alloy.Globals.Log("client.js:pulledEvent:use in callback: Alloy.Collections.client.fetch()");
+	Alloy.Collections.client.fetch();	
+}
 	
+$.clientlist_table.addEventListener("delete", function(e){
+	Alloy.Globals.Log("client.js::$.clientlist_table delete: "+JSON.stringify(e));
+	var urls = e.row.title.split(':')[13].replace(/yCoLoNy/g,':').replace(/xCoLoNx/g,',');
+	var existingurlsidtag = urls.split(',')[0];
+	var existingurlsselfhref = urls.split(',')[1];
+	var existingurlsedithref = urls.split(',')[2];
+	Alloy.Globals.Log("client.js::$.clientlist_table delete: idtag:"+existingurlsidtag+" selfhref: "+existingurlsselfhref+" edithref: "+existingurlsedithref);
+	var xhr = Ti.Network.createHTTPClient({
+	    onload: function(e) {
+	    try {
+	    		Alloy.Globals.Log("client.js::$.clientlist_table delete:success e: "+JSON.stringify(e));
+	    		Alloy.Globals.Log("client.js::$.clientlist_table delete:response is: "+this.responseText);
+	    	} catch(e){
+				Alloy.Globals.Log("client.js::$.clientlist_table delete:cathing e: "+JSON.stringify(e));
+			}
+		}
+	});
+	xhr.open("DELETE", existingurlsedithref);	
+	//xhr.setRequestHeader("Content-type", "application/json");
+    xhr.setRequestHeader("Authorization", 'Bearer '+Alloy.Globals.googleAuthSheet.getAccessToken());
+	if (existingurlsedithref) {xhr.send();} else {Alloy.Globals.Log("client.js::$.clientlist_table delete: NO edithref. abort delete ");}
+	Alloy.Globals.Log("client.js::$.clientlist_table delete: DONE: DELETE "+existingurlsedithref);
+	pulledEvent();
+});

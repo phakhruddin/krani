@@ -88,3 +88,29 @@ function pulledEvent(e){
 	Alloy.Globals.Log("project.js:pulledEvent:use in callback: Alloy.Collections.project.fetch()");
 	Alloy.Collections.project.fetch();	
 }
+
+
+$.projectlist_table.addEventListener("delete", function(e){
+	Alloy.Globals.Log("project.js::$.projectlist_table delete: "+JSON.stringify(e));
+	var urls = e.row.title.split(':')[13].replace(/yCoLoNy/g,':').replace(/xCoLoNx/g,',');
+	var existingurlsidtag = urls.split(',')[0];
+	var existingurlsselfhref = urls.split(',')[1];
+	var existingurlsedithref = urls.split(',')[2];
+	Alloy.Globals.Log("project.js::$.projectlist_table delete: idtag:"+existingurlsidtag+" selfhref: "+existingurlsselfhref+" edithref: "+existingurlsedithref);
+	var xhr = Ti.Network.createHTTPClient({
+	    onload: function(e) {
+	    try {
+	    		Alloy.Globals.Log("project.js::$.projectlist_table delete:success e: "+JSON.stringify(e));
+	    		Alloy.Globals.Log("project.js::$.projectlist_table delete:response is: "+this.responseText);
+	    	} catch(e){
+				Alloy.Globals.Log("project.js::$.projectlist_table delete:cathing e: "+JSON.stringify(e));
+			}
+		}
+	});
+	xhr.open("DELETE", existingurlsedithref);	
+	//xhr.setRequestHeader("Content-type", "application/json");
+    xhr.setRequestHeader("Authorization", 'Bearer '+Alloy.Globals.googleAuthSheet.getAccessToken());
+	if (existingurlsedithref) {xhr.send();} else {Alloy.Globals.Log("project.js::$.projectlist_table delete: NO edithref. abort delete ");}
+	Alloy.Globals.Log("project.js::$.projectlist_table delete: DONE: DELETE "+existingurlsedithref);
+	pulledEvent();
+});

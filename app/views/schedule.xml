@@ -12,7 +12,7 @@
 	</RightNavButton>	
 	 <Widget id="ptr" src="nl.fokkezb.pullToRefresh" onRelease="myRefresher">
 	 	<ListView id="schedule_list" height="Ti.UI.Size" defaultItemTemplate="template">
-		<SearchBar barColor="gray" />
+		<SearchBar id="search_history" barColor="gray" />
 		<HeaderView>
                 <View backgroundColor="#DDD" height="Ti.UI.SIZE">
                     <Label>Events</Label>
@@ -34,7 +34,7 @@
 		<ListSection id="schedule_section" headerTitle="{dummy.HeaderTitle}" dataCollection="schedule" dataTransform="transformFunction">
 			<ListItem id="schedule_listitem" all:text="{title}" info:text="{custom}" client:text="{client}" address:text="{address}"
 				startday:text="{startday}" startmonth:text="{startmonth}" daymonthyear:text="{daymonthyear}" event:text="{event}" 
-				startyear:text="{startyear}" img:image="{img}" imgday:image="{imgday}"/>
+				startyear:text="{startyear}" img:image="{img}" imgday:image="{imgday}" searchableText="{searchitems}" />
 		</ListSection>
 		<FooterView>
 	        <View backgroundColor="#DDD" height="50">

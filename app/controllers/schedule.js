@@ -1,7 +1,7 @@
 exports.openMainWindow = function(_tab) {
   _tab.open($.schedule_window);
   Ti.API.info("This is child widow schedule.js" +JSON.stringify(_tab));
- // $.schedule_table.search = $.search_history;
+  $.schedule_list.search = $.search_history;
   refreshCalendar();
   Alloy.Collections.schedule.fetch();
   Alloy.Collections.labor.fetch();	
@@ -712,6 +712,7 @@ function transformFunction(model) {
 	transform.startmonth = (startdatetimeUTC)?startmonth+' '+startdaydate:' ';
 	transform.startyear = (startdatetimeUTC)?startyear:' ';
 	transform.event = (transform.col1 == "none")?"Event title was not provided":transform.col1;
+	transform.searchitems = transform.custom+":"+transform.name+":"+transform.col3+":"+transform.client+":"+transform.startyear+":"+transform.startmonth+":"+transform.startday+":"+transform.col1;
 	//check status
 	if (transform.col15 == "submitted"){
 		transform.img ="proposalsubmitted.gif";
