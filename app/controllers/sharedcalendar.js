@@ -127,11 +127,11 @@ var sample = {
 function postCreateEvent(startdateTime,enddateTime,location,summary,description,organizerdisplayName,organizeremail,colorid,attendeeslist) {
 	var startdateTime = startdateTime || "2015-02-14T15:30:00-06:00";
 	var enddateTime = enddateTime || "2015-02-14T15:40:00-06:00";
-	var location = location || "2258 S Sanctuary Dr., New Berlin, WI 53151";
-	var summary = summary || "Dave Danish LawnMowing";
-	var description = description || "client: Deb Smith house";
-	var organizerdisplayName = organizerdisplayName|| "Eric Cole";
-	var organizeremail = organizeremail || "phakhruddin1@gmail.com";
+	var location = location || Titanium.App.Properties.getString("coStreetAddress");
+	var summary = summary || "summary";
+	var description = description || "description";
+	var organizerdisplayName = organizerdisplayName|| Titanium.App.Properties.getString("coName");
+	var organizeremail = organizeremail || Titanium.App.Properties.getString("emailid");
 	var colorid = colorid || "3";
 	var organizerself ="true";
 	//var url = 'https://www.googleapis.com/calendar/v3/calendars/idevice.net%40gmail.com/events?access_token='+googleAuthCalendar.getAccessToken();

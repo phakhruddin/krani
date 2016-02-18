@@ -1,12 +1,11 @@
 exports.openMainWindow = function(_tab) {
   _tab.open($.proposallist_window);
-  Ti.API.info("This is child widow proposal.js" +JSON.stringify(_tab));
+  Alloy.Globals.Log("proposallistlist.js:: This is child widow proposal.js" +JSON.stringify(_tab));
   //	$.proposallist_table.search = $.search_history;
-	Alloy.Collections.proposal.fetch();	
+	///Alloy.Collections.proposal.fetch();	//doublefetch
 
 };
 $.ptr.refresh();
-
 
 function transformFunction(model) {
 	var transform = model.toJSON();
@@ -20,6 +19,9 @@ function transformFunction(model) {
 	transform.paid ='PAID: '+transform.col6;
 	transform.status ='Status: '+transform.col13;
 	transform.lastpaiddate = 'Last Paid on: '+transform.col11;
+	transform.urlraw = (typeof transform.title.split(':')[13] === typeof undefined)?"":transform.title.split(':')[13];
+	//Alloy.Globals.Log("proposallistlist.js::transform.urlraw : for "+transform.col2+" "+transform.col3+"   " +transform.urlraw);
+	(typeof transform.urlraw === typeof undefined)?"":$.proposallist_list.metadata += transform.urlraw+",";	
 	if (transform.col13 == "submitted"){
 		transform.img ="proposalsubmitted.gif";
 	} else {
@@ -101,4 +103,28 @@ function pulledEvent(e){
 	Alloy.Globals.Log("proposallistlist.js:pulledEvent:use in callback: Alloy.Collections.proposal.fetch()");
 	Alloy.Collections.proposal.fetch();
 }
-   
+
+function deleteItem(e) {
+	Alloy.Globals.Log("proposallistlistjs:: deleteItem(): "+JSON.stringify(e));
+	var urls = e.source.metadata.replace("undefined","").split(",")[e.itemIndex].replace(/yCoLoNy/g,':').replace(/xCoLoNx/g,',');
+	var existingurlsidtag = urls.split(',')[0];
+	var existingurlsselfhref = urls.split(',')[1];
+	var existingurlsedithref = urls.split(',')[2];
+	Alloy.Globals.Log("proposallistlistjs::$.proposallist_table delete: idtag:"+existingurlsidtag+" selfhref: "+existingurlsselfhref+" edithref: "+existingurlsedithref);
+	var xhr = Ti.Network.createHTTPClient({
+	    onload: function(e) {
+	    try {
+	    		Alloy.Globals.Log("proposallistlistjs::$.proposallist_table delete:success e: "+JSON.stringify(e));
+	    		Alloy.Globals.Log("proposallistlistjs::$.proposallist_table delete:response is: "+this.responseText);
+	    	} catch(e){
+				Alloy.Globals.Log("proposallistlistjs::$.proposallist_table delete:cathing e: "+JSON.stringify(e));
+			}
+		}
+	});
+	xhr.open("DELETE", existingurlsedithref);	
+	//xhr.setRequestHeader("Content-type", "application/json");
+    xhr.setRequestHeader("Authorization", 'Bearer '+Alloy.Globals.googleAuthSheet.getAccessToken());
+	if (existingurlsedithref) {xhr.send();} else {Alloy.Globals.Log("proposallistlistjs::$.proposallist_table delete: NO edithref. abort delete ");}
+	Alloy.Globals.Log("proposallistlistjs::$.proposallist_table delete: DONE: DELETE "+existingurlsedithref);
+	pulledEvent();
+}
