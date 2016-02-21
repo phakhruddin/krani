@@ -366,7 +366,7 @@ $.notes_textarea.addEventListener("blur",function(e){
         Alloy.Globals.Log("enterpayment.js::JSON.stringify(e)  :" +JSON.stringify(e));
         e.source.keyboardToolbar.items = null;
         var datepaid = e.source.datepaid;
-        $.paymentdonebutton.datepaid = datepaid;
+       // $.paymentdonebutton.datepaid = datepaid;
         if (datepaid) {
         	Alloy.Globals.Log("enterpayment.js::before enterNotes(e): JSON.stringify(e): "+JSON.stringify(e));
         	enterNotes(e);
@@ -377,11 +377,11 @@ $.notes_textarea.addEventListener("blur",function(e){
         
         //$.ktb_textarea.hide();
 });
-
+/*
 $.paymentdonebutton.addEventListener("click",function(e){
     Alloy.Globals.Log("enterpayment.js::paymentdone:JSON.stringify(e)  :" +JSON.stringify(e));
  	$.notes_textarea.blur();
-});
+});*/
         
 function enterNotes(e,imgurl) {
         Alloy.Globals.Log("enterpayment.js::JSON.stringify(e) enterNotes  :" +JSON.stringify(e));
@@ -389,8 +389,7 @@ function enterNotes(e,imgurl) {
         //$.enterpayment_window.add(textfield);
         var date = new Date();
         var now = Date.now().toString();
-        var jobitemid = now;
-        Alloy.Globals.Log("enterpayment.js:: jobitemid is:"+jobitemid);
+        var jobitemid = now;      
         var employee = Titanium.App.Properties.getString('employee');
         var payment = parseFloat(e.value);
         var notesbody = payment.toFixed(2);
@@ -398,6 +397,7 @@ function enterNotes(e,imgurl) {
         var sourcesid = e.source._hintText;
         var paidamount = e.source.paidamount;
         var imageurl = imgurl?imgurl:"none";
+        Alloy.Globals.Log("enterpayment.js:: jobitemid is:"+jobitemid+" paidamount: "+paidamount+" payment: "+payment);
         var dataModel = Alloy.createModel("payment",{
                                         col1 : datepaid || "none",
                                         col2 : notesbody || "none",
@@ -799,4 +799,5 @@ function updateInvoice(paidamount,datepaid,balance){
 $.enterpayment_window.addEventListener("close",function(e){
 	Alloy.Globals.Log("enterpayment.js::enterpayment_window.close(): "+JSON.stringify(e));
 	myRefresher();
+	Alloy.Collections.paymentsid.deleteAll();
 });

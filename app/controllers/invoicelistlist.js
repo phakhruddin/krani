@@ -30,10 +30,18 @@ function transformFunction(model) {
 	transform.paid ='PAID: '+transform.col6;
 	transform.status ='Status: '+transform.col13;
 	transform.lastpaiddate = 'Last Paid on: '+transform.col11;
-	if (transform.col13 == "paid"){
+	if (transform.col5 <= "0"){
 		transform.img ="paid.gif";
+		transform.color ="green";
 	} else {
 		transform.img ="owedoverduewhite.gif";
+		var owedpercent = (parseFloat(transform.col5)/parseFloat(transform.col4))*100;
+		if ( owedpercent >= 75 ) {
+			transform.color ="red";
+		} else {
+			(owedpercent >= 50)?transform.color ="#FF999":transform.color ="orange";
+		}
+		//Alloy.Globals.Log("invoicelislist.js: transform: owedpercent, color  ::" +transform.color+" : "+transform.col5+"/"+transform.col4+" = owedpercent "+owedpercent);
 	}
 	return transform;
 }

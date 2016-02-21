@@ -1,8 +1,8 @@
 "TextField" : {
-	left:'140',
+	left:'120',
 	borderColor : 'white', // border color
     width: Ti.UI.FILL,
-    font: {fontSize: '18'}
+    font: {fontSize: '14'}
 },
 "#clientlastname_tf[platform=android]" : {
 		height:Ti.UI.SIZE ,
@@ -10,9 +10,12 @@
 "#clientemail_tf[platform=android]" : {
 		height:Ti.UI.SIZE ,
 },
+"#clientemail_tf" : {
+		font: {fontSize: '14'}
+},
 "#clientstreetaddress_tf" : {
 		hintText:'2258 S Sanctuary Dr.',
-		font: {fontSize: '18'}
+		font: {fontSize: '14'}
 },
 "#clientstreetaddress_tf[platform=android]" : {
 		height:Ti.UI.SIZE ,
@@ -36,12 +39,12 @@
 	color: "#3B708A",
 	left: "20",
 		font:{
-		fontSize : "18"
+		fontSize : "14"
 	}
 },
 "#itemline_row" : {
 	font:{
-		fontSize : "18"
+		fontSize : "14"
 	}
 },
 "#notes_tf" : {

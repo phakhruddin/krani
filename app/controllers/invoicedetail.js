@@ -1161,6 +1161,7 @@ function dummyRefresh(paid,balance,lastpaiddate){
 	var col4 = newtotal;
 	var col5 = balance;
 	var col6 = paid;
+	( balance <= "0" )?col13="paid":col13="owed";
 	Alloy.Globals.updateExistingSpreadsheetAndDB("invoice",col1,col2,lastname,col4,col5,col6,col7,col8,col9,col10,col11,col12,col13,col14,col15,col16,edithref,selfhref,idtag);
 	invoicecallbackFunction(); //download update SS then update the local DB.
 	myRefresher();

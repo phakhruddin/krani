@@ -41,7 +41,7 @@
 	   		  	image="email.png" titleid=" {dummy.email}" onClick="actioneMail"  />
 	   		  <ImageView id="preview_button" image="documents@2x.png"  left="65%" top="10" height="30" width="Ti.UI.SIZE" textAlign="Ti.UI.TEXT_ALIGNMENT_CENTER" 
 	   		  	onClick="actionPreview" />
-	   		  <Label id="noaction_button" color="blue" textAlign="Ti.UI.TEXT_ALIGNMENT_CENTER" top="20" text="NO ACTION" />
+	   		  <Label id="noaction_button" color="gray" textAlign="Ti.UI.TEXT_ALIGNMENT_CENTER" left="30" text="Paid in full" />
 		  </TableViewRow>  		 
 	  </TableViewSection>
 	  <TableViewSection id="projitem_section" headerTitle="Project Items">

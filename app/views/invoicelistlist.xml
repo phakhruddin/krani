@@ -27,8 +27,8 @@
 		</Templates>
 		<ListSection id="invoicelist_section" headerTitle="Invoice List" dataCollection="invoice" dataTransform="transformFunction">
 			<ListItem id="invoice_listitem" all:text="{title}" all:input="{title}" info:text="{custom}" info:input="{title}" total:text="{total}" total:input="{title}" 
-				bal:text="{bal}" bal:input="{title}" paid:text="{paid}" paid:input="{title}" status:text="{status}" status:input="{title}" img:image="{img}" img:input="{title}"
-				invoicenumber:text="{invoicenumber}" invoicenumber:input="{title}" />
+				bal:text="{bal}" bal:input="{title}" bal:color="{color}" paid:text="{paid}" paid:input="{title}" status:text="{status}" status:input="{title}" img:image="{img}" img:input="{title}"
+				invoicenumber:text="{invoicenumber}" invoicenumber:input="{title}" searchableText="{title}" />
 		</ListSection>
 			<FooterView>
                 <View backgroundColor="#DDD" height="50">

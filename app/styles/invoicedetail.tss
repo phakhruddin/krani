@@ -51,7 +51,8 @@
 },
 "#noaction_button": {
 	font: {
-		fontSize: '30',
+		fontSize: '20',
+		fontFamily:'Helvetica',
 		fontStyle: 'bold'
 	}
 },

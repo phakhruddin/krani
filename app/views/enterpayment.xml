@@ -26,13 +26,13 @@
         </TableViewSection>
   	</TableView>
           <Toolbar id="paymenttoolbar" platform="ios" bottom="0" borderTop="true" borderBottom="false">
-            <Items id="itempayment">
+            <!--Items id="itempayment">
             	<Button systemButton="ACTION" onClick="uploadFile"/>
             	<Button systemButton="CAMERA" onClick="takePic"/>
              	<Button systemButton="DISCLOSURE" onClick="getParentFolder"/> 
              	<FlexSpace/>
              	<Button id="paymentdonebutton" title="DONE" onClick="blurIT"/>	
-            </Items>
+            </Items-->
         </Toolbar>   
   </Window>
 </Alloy>

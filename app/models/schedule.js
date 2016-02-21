@@ -44,6 +44,7 @@ exports.definition = {
 				db.close();
 				 
 				collection.trigger('sync');
+				Alloy.Globals.Log("model: DELETE FROM " + collection.config.adapter.collection_name);
 				 
 				},
 				
