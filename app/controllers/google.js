@@ -1,6 +1,8 @@
+var args = arguments[0] || {};
 exports.openMainWindow = function(_tab) {
   _tab.open($.google_window);
-  Ti.API.info("This is child widow of " +JSON.stringify(_tab));
+   Alloy.Globals.Log("google.js::This is child widow of " +JSON.stringify(_tab));
+  Alloy.Globals.Log(" google.js::input details after tab google: args : "+JSON.stringify(args));
 	//var url = "https://spreadsheets.google.com/feeds/list/1ECkNoyzgeSu8WkVs3kBnlY8MjJRIAc787nVs6IJsA9w/od6/private/basic?hl=en_US&alt=json";
 	//googlegetData(url);
 	
@@ -100,6 +102,28 @@ exports.openMainWindow = function(_tab) {
 		 	});
 		 	
 };
+
+showFutureMenu = args.callbackFunction;
+futuremenuSwitchValue=Titanium.App.Properties.getInt('futuremenu');
+if (futuremenuSwitchValue && futuremenuSwitchValue == "1") {
+	$.switch_futuremenu.value = true;
+} else $.switch_futuremenu.value = false;
+$.switch_futuremenu.addEventListener("change", function(e){
+	var switchMDValue = $.switch_futuremenu.value;
+	Ti.API.info("switch value :" +switchMDValue);
+	if ( switchMDValue == true ) {
+		Titanium.App.Properties.setInt('futuremenu',1);
+		var futuremenustatus = "ON";
+		alert("Show Future Feature menu is "+futuremenustatus);
+		showFutureMenu("yes");
+	} else {
+		Titanium.App.Properties.setInt('futuremenu',0);
+		var futuremenustatus = "OFF";
+		alert("Show Future Feature menu is "+futuremenustatus);
+		showFutureMenu("no");
+	};
+});
+
 
 var GoogleAuth = require('googleAuth');
 var googleAuth = new GoogleAuth({
@@ -352,3 +376,10 @@ function renameFile(e) {
 }
 
 function licenseCheck() { Alloy.Globals.LicenseCheck($.licensecheck_tf.value);};
+
+
+$.bootstrap.addEventListener ("click", function(e){
+	Alloy.Globals.openDetail(e);
+	var tabViewOneController = Alloy.createController("bootstrap");
+	tabViewOneController.openMainWindow($.tab_google);	
+});

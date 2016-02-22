@@ -2,6 +2,11 @@
   <Tab id="tab_google">
   <Window id="google_window" backgroundColor="white" title="google List">
 	  <TableView id="google_table" backgroundColor="transparent" >
+		 <TableViewRow id="row_futuremenu" Title="Future Features">
+			 <Label id="label_futuremenu" color="#333" top="5" left="20" text="Future Features">Turn ON Future Features</Label>
+			 <Label id="label_futuremenu1" color="gray" top="30" left="20" text="FG LOC">Future Feature</Label>
+		     <Switch id="switch_futuremenu" right="20" titleOff="OFF" titleOn="ON" value=false />
+		 </TableViewRow>
 		  <TableViewRow id="sync" backgroundColor="transparent" opacity="0" color="white" Title="Google Sync">
 		  	<Label id="sync_label" color="yellow" top="5" left="50" text="Sync it"/>
 		  </TableViewRow>
@@ -63,6 +68,7 @@
  		  	<TextField id="licensecheck_tf" top="10" hintText="zefilandscape_dir"></TextField>
 		  	<Button id="licenseCheck_button" top="60" left="30" title="licenseCheck" onClick="licenseCheck"/>
 		  </TableViewRow>
+		  <TableViewRow id="bootstrap" Title="bootstrap"/>
 	  </TableView>
   </Window>
   </Tab>

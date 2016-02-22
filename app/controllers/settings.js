@@ -1,3 +1,4 @@
+var args = arguments[0] || {};
 exports.openMainWindow = function(_tab) {
   _tab.open($.settings_window);
   Ti.API.info("This is child widow schedule.js" +JSON.stringify(_tab));
@@ -315,4 +316,25 @@ function sendSupportEmail() {
         emailDialog.addAttachment(ftxt1);
         emailDialog.open();
 };
+
+showFutureMenu = args.callbackFunction;
+futuremenuSwitchValue=Titanium.App.Properties.getInt('futuremenu');
+if (futuremenuSwitchValue && futuremenuSwitchValue == "1") {
+	$.switch_futuremenu.value = true;
+} else $.switch_futuremenu.value = false;
+$.switch_futuremenu.addEventListener("change", function(e){
+	var switchMDValue = $.switch_futuremenu.value;
+	Ti.API.info("switch value :" +switchMDValue);
+	if ( switchMDValue == true ) {
+		Titanium.App.Properties.setInt('futuremenu',1);
+		var futuremenustatus = "ON";
+		alert("Show Future Feature menu is "+futuremenustatus);
+		showFutureMenu("yes");
+	} else {
+		Titanium.App.Properties.setInt('futuremenu',0);
+		var futuremenustatus = "OFF";
+		alert("Show Future Feature menu is "+futuremenustatus);
+		showFutureMenu("no");
+	};
+});
 

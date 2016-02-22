@@ -32,7 +32,7 @@ var OfflineMode = 0; //default is ONLINE mode
 
 Alloy.Globals.Cleanup = function(e) {
 	var proptoremove = [];
-	var proptoremove = (e)?proptoremove.push(e):["edithref","idtag","selfhref","lastpaiddate","paid","balance","krani_t"];
+	var proptoremove = (e)?proptoremove.push(e):["edithref","idtag","selfhref","lastpaiddate","paid","balance","krani_t","futuremenu"];
 	for (i=0;i<proptoremove.length;i++){
 		console.log("alloy.js:: b4 remove property "+proptoremove[i]+" Titanium.App.Properties.getString(\'"+proptoremove[i]+"\') : "+eval("Titanium.App.Properties.getString(\'"+proptoremove[i]+"\')"));
 		eval("Ti.App.Properties.removeProperty(\'"+proptoremove[i]+"\')");
@@ -441,7 +441,7 @@ Alloy.Globals.CheckLoc = function(){
 	    if (e.error) {
 	        Ti.API.error('Error: ' + e.error);
 	    } else {
-	        Alloy.Globals.Log(e.coords);
+	        Alloy.Globals.Log("Alloy.Globals.CheckLoc:"+e.coords);
 	        var coordslat =  e.coords.latitude;
 	        alert("Thanks for updating your location. loc details: latitude :"+e.coords.latitude+" longitude : "+e.coords.longitude);
 	        }

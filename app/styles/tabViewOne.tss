@@ -31,4 +31,9 @@
 	font: {
 		fontSize: '12dp'
 	},
+},
+"#futuremenu_label":{
+	font: {
+		fontSize: '18dp'
+	},
 }

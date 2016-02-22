@@ -102,6 +102,8 @@ function JobDetail(e){
                                                                                                        }
 
 function prefetchJoblog(){
+	$.joblog_button.hide();
+	Ti.App.Properties.removeProperty("sid"); var sid;
 	var item = "joblog";
 	var projectid = args.title.split(':')[15];
 	var firstname = args.title.split(':')[1];
@@ -115,17 +117,25 @@ function prefetchJoblog(){
 	Alloy.Globals.Log("projectdetail.js::prefetchJoblog::need to check if parent/filename exist: "+projectparentid+'/'+filename);
 	fileExist(filename,projectparentid);
 	var item = "joblog";
+	/*
 	var sidmatch = matchjoblogsidfromDB(filename);
-	var sid = sidmatch;
-	Alloy.Globals.Log("projectdetail.js::prefetchJoblog::sidmatch: sid "+sidmatch+' : '+sid);
-	if(sid){Alloy.Globals.getPrivateData(sid,item);} else {
-		Alloy.Globals.Log("projectdetail.js::prefetchJoblog: creating sid. very first new project");
-	};  // a very first new project would not have sid. suppress error.
-	Alloy.Globals.Log("projectdetail.js::prefetchJoblog:: Alloy.Collections.joblog.fetch()");
-	//Alloy.Collections.joblog.fetch();	
-	var joblog  = Alloy.Collections.instance('joblog');
+	var sid = sidmatch;*/
+	var sid = eval("Titanium.App.Properties.getString('"+filename+"_sid')");
+	//Alloy.Globals.Log("projectdetail.js::prefetchJoblog::sidmatch: sid "+sidmatch+' : '+sid);
+	Alloy.Globals.Log("projectdetail.js::prefetchJoblog::sidmatch: sid "+sid);
+	if(sid){
+		Alloy.Globals.getPrivateData(sid,item);
+		Alloy.Globals.Log("projectdetail.js::prefetchJoblog:: Alloy.Collections.joblog.fetch()");
+		//Alloy.Collections.joblog.fetch();	
+		var joblog  = Alloy.Collections.instance('joblog');
         joblog.fetch();
         Alloy.Globals.Log("projectdetail.js::JSON stringify joblog data on prefetch: "+JSON.stringify(joblog));
+        $.joblog_button.show();
+	} else {
+		Alloy.Globals.Log("projectdetail.js::prefetchJoblog: creating sid. very first new project");		
+		setTimeout(function(){$.joblog_button.show();},2000);
+	};  // a very first new project would not have sid. suppress error.
+
 }
 /*
 $.addbutton.setTitleid(args);

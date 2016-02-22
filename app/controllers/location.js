@@ -4,39 +4,6 @@ exports.openMainWindow = function(_tab) {
   Ti.API.info("This is child widow checking _tab : " +JSON.stringify(_tab));
    	$.labor_table.search = $.search_history;
 	Alloy.Collections.labor.fetch();	
-/*	
-	$.labor_window.addEventListener("click", function(e){
-		Alloy.Globals.openDetail(e);
-		var title = e.row.title;
-		Ti.API.info('input details : '+title);
-		var firstname = title.split(':')[1].trim();
-		var lastname = title.split(':')[2].trim();
-		var name = firstname+" "+lastname.trim();
-		var latitude = title.split(':')[7].trim().toString();
-		var longitude = title.split(':')[8].trim().toString();
-		
-		
-		//Alloy.Globals.UpdateMap('41.981233','-87.868259',"None");	
-		
-		Alloy.Globals.UpdateMap(latitude,longitude,name);
-		
-		var checked = Ti.UI.createImageView({
-			top: 10,
-			left: 300,
-			height : 30,
-			width : 30,
-			image : "check70.png"
-		});
-		
-		if (args.source == "settings"){
-			Alloy.Globals.Log("location.js: source is : "+args.source);
-			Alloy.Globals.Log("location.js: JSON.stringify(e) : "+ JSON.stringify(e));
-			e.row.titleid = "rowidimage";
-			Alloy.Globals.Log("location.js: JSON.stringify(e) : "+ JSON.stringify(e));
-		}
-
-});
-*/
   
 };
 

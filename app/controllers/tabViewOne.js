@@ -87,20 +87,10 @@ $.proposal.addEventListener ("click", function(e){
 
 $.settings.addEventListener ("click", function(e){
 	Alloy.Globals.openDetail(e);
-	var tabViewOneController = Alloy.createController("settings");
-	tabViewOneController.openMainWindow($.tab_one);	
-});
-
-
-$.google.addEventListener ("click", function(e){
-	Alloy.Globals.openDetail(e);
-	var tabViewOneController = Alloy.createController("google");
-	tabViewOneController.openMainWindow($.tab_one);	
-});
-
-$.bootstrap.addEventListener ("click", function(e){
-	Alloy.Globals.openDetail(e);
-	var tabViewOneController = Alloy.createController("bootstrap");
+	var tabViewOneController = Alloy.createController("settings",{
+		metadata: "from tabviewOne",
+		callbackFunction: showFutureMenu
+	});
 	tabViewOneController.openMainWindow($.tab_one);	
 });
 
@@ -473,5 +463,30 @@ refresh.addEventListener('refreshstart',function(e){
         setMenuText();
         refresh.endRefreshing();
     }, 2000);
+});
+
+function showFutureMenu(response) {
+	if(response == "yes") {
+		$.table.appendRow($.futuremenu);
+		$.table.appendRow($.supplier);
+		$.table.appendRow($.inventory);
+		$.table.appendRow($.report);			
+	} else {
+		$.table.deleteRow($.report);
+		$.table.deleteRow($.inventory);
+		$.table.deleteRow($.supplier);
+		$.table.deleteRow($.futuremenu);	
+	}	
+}
+
+showFutureMenu("no");
+
+$.google.addEventListener ("click", function(e){
+	Alloy.Globals.openDetail(e);
+	var tabViewOneController = Alloy.createController("google",{
+		metadata: "from tabviewOne",
+		callbackFunction: showFutureMenu
+	});
+	tabViewOneController.openMainWindow($.tab_one);	
 });
 

@@ -11,7 +11,7 @@
 			<Label id="label_header" color="#333" color="gray" top="10" textAlign="Ti.UI.TEXT_ALIGNMENT_CENTER" text="{custom}" />
 			<Label id="label_sub1" color="{labelcolor}"  textAlign="Ti.UI.TEXT_ALIGNMENT_CENTER" top="30" text="{phone}" />
 			<Label  id="label_sub2" color="orange"  textAlign="Ti.UI.TEXT_ALIGNMENT_CENTER" top="45" text="{email}"/>
-			<Label  id="label_sub3" color="#333"  textAlign="Ti.UI.TEXT_ALIGNMENT_CENTER" top="60" text="{address}"/>
+			<!--Label  id="label_sub3" color="#333"  textAlign="Ti.UI.TEXT_ALIGNMENT_CENTER" top="60" text="{address}"/-->
 			<Button id="edit_button" left="40" image="EditControl.png" height="30" width="30"/>
 		</TableViewRow>
 	</TableView>

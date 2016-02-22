@@ -71,6 +71,14 @@
  	  		<TableViewRow id="logo_row" height="Ti.UI.Size">
  	  		</TableViewRow>
   		</TableViewSection>
+	  	<TableViewSection headerTitle="Beta Feature">
+		 <TableViewRow id="row_futuremenu" Title="Future Features">
+			 <Label id="label_futuremenu" color="#333" top="5" left="20" text="Future Features">Turn ON Future Features</Label>
+			 <Label id="label_futuremenu1" color="gray" top="30" left="20" text="FG LOC">Future Feature</Label>
+		     <Switch id="switch_futuremenu" right="20" titleOff="OFF" titleOn="ON" value=false />
+		 </TableViewRow>
+		  <TableViewRow/>
+  		</TableViewSection>
 	  </TableView>
 		<Toolbar id="jobdetailtoolbar" platform="ios" bottom="0" borderTop="true" borderBottom="false">
 			<Items id="itemjobdetail">

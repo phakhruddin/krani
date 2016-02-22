@@ -40,6 +40,8 @@ function transformFunction(model) {
         return transform;
 }
 
+var content = "";
+Alloy.Globals.Log("enterjobdetail.js:: initial contents: "+JSON.stringify(content));
 var joblog = Alloy.Collections.instance('joblog');
 joblog.fetch();
 var content = joblog.toJSON();
@@ -786,3 +788,8 @@ function getReport(){
 	Alloy.Globals.Log("projectdetail.js: genReport: execute the source genJoblog()");
 	genJoblog();
 }
+
+$.enterjobdetail_window.addEventListener("close",function(){
+	var content;
+	Alloy.Globals.Log("enterjobdetail.js:: enterjobdetail_window close: clear contents: "+JSON.stringify(content));
+});
