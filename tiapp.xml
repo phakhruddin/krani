@@ -40,7 +40,13 @@
                 <key>NSAppTransportSecurity</key>
      				<dict>
 						<key>NSAllowsArbitraryLoads</key><true/>
-					</dict>
+					</dict>				
+				<key>NSLocationWhenInUseUsageDescription</key>
+                <string>
+                    Specify the reason for accessing the user's location information.
+                    This appears in the alert dialog when asking the user for permission to
+                    access their location.
+                </string>
             </dict>
         </plist>
     </ios>

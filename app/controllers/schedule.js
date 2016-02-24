@@ -738,7 +738,7 @@ function filterFunction(collection) {
 	    	Alloy.Globals.Log("filterday: "+filterday+ ", dateNow: "+dateNow);
 	    	return collection.where({col6:"confirmed"});
 	    } else if (sorttype == "ThisWeek") {
-	    	return collection.where({col6:"phakhruddin1@gmail.com"});
+	    	return collection.where({col6:"confirmed"});
 	    } else if ( sorttype == "ThisMonth") {
 	        return collection.where({col6:"confirmed"});
 	    } else {

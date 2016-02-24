@@ -250,6 +250,23 @@ function setMenuText() {
 	Alloy.Globals.Log("tabViewOne.js::setMenuText: sharedkraniemailid: " +Titanium.App.Properties.getString("sharedkraniemailid"));
 }
 
+//LOGO
+function addLogo(){
+	var logourl = Titanium.App.Properties.getString("logourl");
+	var logoview = Ti.UI.createImageView ({
+	        image : logourl,
+	        top : 10,
+	        height : "150",
+	        width : "150"
+	});
+	
+	if ( logourl ) {
+	 	var logourl = Titanium.App.Properties.getString('logourl') ; 
+	 	Alloy.Globals.Log("settings.js::logo url is: "+logourl); 
+	 	$.logo_row.add(logoview);
+	 } else { $.table.deleteRow($.logo_row);Alloy.Globals.Log("settings.js::logo does not exists.");};
+}
+
 function login(e) {
 	Alloy.Globals.Log("tabViewOne.js::login(e): " +JSON.stringify(e));
 	var buttonstate = e.source.title;
@@ -412,7 +429,7 @@ function login(e) {
 					
 				} else {(Alloy.Globals.googleAuthSheet.getAccessToken()) && getEmail(); }
 
-	
+				addLogo();
 			}
 		Alloy.Globals.Log("check Alloy.Globals.googleAuthSheet.getAccessToken() "+Alloy.Globals.googleAuthSheet.getAccessToken()+" before execute refreshActivity() ");
 		if(Alloy.Globals.googleAuthSheet.getAccessToken()){
@@ -490,3 +507,16 @@ $.google.addEventListener ("click", function(e){
 	tabViewOneController.openMainWindow($.tab_one);	
 });
 
+//LOGO
+addLogo();
+ $.logo_row.addEventListener ("click", function(e){
+ 	Alloy.Globals.Log('tabviewone::logo_row:: JSON.stringify(e): '+JSON.stringify(e));
+ 	if ( e.source.image != "" ) {
+ 		
+ 	} else {
+ 		e.source.image = "";
+ 		e.source.height = "10";
+ 	}
+ });
+
+ 

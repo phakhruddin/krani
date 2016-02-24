@@ -190,7 +190,7 @@ function uploadPictoGoogle(image,filename,parentid){
 			});
 			xhr.open("POST", url);
 			xhr.setRequestHeader("Content-type", "multipart/mixed; boundary=" + bound);
-			xhr.setRequestHeader("Authorization", 'Bearer '+googleAuthSheet.getAccessToken());
+			xhr.setRequestHeader("Authorization", 'Bearer '+Alloy.Globals.googleAuthSheet.getAccessToken());
 			//xhr.setRequestHeader("Content-Length", "2000000");
 			xhr.send(parts.join("\r\n"));
 			Ti.API.info('done POSTed');
