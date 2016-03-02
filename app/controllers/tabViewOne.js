@@ -511,11 +511,16 @@ $.google.addEventListener ("click", function(e){
 addLogo();
  $.logo_row.addEventListener ("click", function(e){
  	Alloy.Globals.Log('tabviewone::logo_row:: JSON.stringify(e): '+JSON.stringify(e));
- 	if ( e.source.image != "" ) {
- 		
+ 	if ( e.source.image = "" ) {
+ 		Alloy.Globals.Log('tabviewone::logo_row:: expand row: e.source.image '+e.source.image);
+ 		e.source.height = "Ti.UI.Size";		
+ 		var logourl = Titanium.App.Properties.getString("logourl");
+ 		e.source.image = logourl;	
  	} else {
+ 		Alloy.Globals.Log('tabviewone::logo_row:: shrink row: e.source.image '+e.source.image);
  		e.source.image = "";
- 		e.source.height = "10";
+ 		e.source.height = "20";
+ 
  	}
  });
 
