@@ -15,7 +15,7 @@
 	   <Button id="login_button" systemButton="Ti.UI.iPhone.SystemButton.PLAIN" title="LOGIN" onClick="login" /> 
 	</RightNavButton>
 	<LeftNavButton platform="ios">
-	   <Button id="logout_button" systemButton="Ti.UI.iPhone.SystemButton.PLAIN" title="Logout" onClick="logout" /> 
+	   <Button id="logout_button" systemButton="Ti.UI.iPhone.SystemButton.PLAIN" onClick="logout" /> 
 	</LeftNavButton>
       <TableView id="table" backgroundColor="white" separatorStyle="none">
       		<HeaderView id="tabviewone_headerview">

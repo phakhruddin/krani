@@ -361,7 +361,7 @@ function login(e) {
 						    		var json = JSON.parse(this.responseText);
 						    		Ti.API.info("response is: "+JSON.stringify(json));
 						    		var emailid = json.email;
-						    		Titanium.App.Properties.setString('emailid',emailid);
+						    		Titanium.App.Properties.setString('emailid',emailid); $.logout_button=Titanium.App.Properties.getString('emailid').split('@')[0].trim();
 						    		//Set the company emailid. Set to oneself if this is not a shared account.
 						    		if (Titanium.App.Properties.getString('kraniemailid')){
 						    			var kraniemailid = Titanium.App.Properties.getString('kraniemailid');
