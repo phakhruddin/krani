@@ -47,8 +47,6 @@
                     This appears in the alert dialog when asking the user for permission to
                     access their location.
                 </string>
-                <key>UILaunchStoryboardName</key>
-				<string>LaunchScreen</string>
             </dict>
         </plist>
     </ios>
