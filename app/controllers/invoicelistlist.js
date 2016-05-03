@@ -5,7 +5,8 @@ exports.openMainWindow = function(_tab) {
 	Alloy.Collections.invoice.fetch();	
 
 };
-$.ptr.refresh();
+///$.ptr.refresh();
+
 
 function pulledEvent(e){
 	Alloy.Globals.Cleanup();
@@ -17,6 +18,17 @@ function pulledEvent(e){
 	Alloy.Collections.invoice.fetch();
 }
 
+var refresh = Ti.UI.createRefreshControl({
+    tintColor:'orange'
+});
+$.invoicelist_list.refreshControl=refresh;
+refresh.addEventListener('refreshstart',function(e){
+	//if(sid){Alloy.Globals.getPrivateData(sid,"invoice");};
+	pulledEvent();
+	setTimeout(function(){
+        refresh.endRefreshing();
+    }, 2000);
+});
 
 function transformFunction(model) {
 	var transform = model.toJSON();

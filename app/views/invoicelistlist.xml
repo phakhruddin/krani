@@ -6,7 +6,7 @@
 	   <Button systemButton="Ti.UI.iPhone.SystemButton.ADD" onClick="addHandler" /> 
 	   <!--Button systemButton="Ti.UI.iPhone.SystemButton.SEARCH" right="20" onClick="searchHandler"/-->
 	</RightNavButton>
-	<Widget id="ptr" src="nl.fokkezb.pullToRefresh" onRelease="myRefresher">
+	<!--Widget id="ptr" src="nl.fokkezb.pullToRefresh" onRelease="myRefresher"-->
 	<ListView id="invoicelist_list" height="Ti.UI.Size" defaultItemTemplate="template">
 		<SearchBar barColor="gray" />
 		<HeaderView>
@@ -35,7 +35,7 @@
                 </View>>
             </FooterView>
    </ListView>
-  </Widget>
+  <!--/Widget-->
        <!--View id="sortview" backgroundColor="#DDD" width="Ti.UI.SIZE" height="Ti.UI.SIZE">
        	<Require src="button" label="All"/>
 		<Require src="button" label="Paid"/>

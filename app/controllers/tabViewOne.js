@@ -132,6 +132,31 @@ var refreshView = Titanium.UI.createView({
    height:Ti.UI.FILL
 });
 
+var signinView = Titanium.UI.createView({
+   opacity:"0.95",
+   backgroundColor:'#514F4F',
+   width:Ti.UI.FILL,
+   height:Ti.UI.FILL
+});
+var signinButton = Titanium.UI.createButton({
+   title: 'LOGIN',
+   width: 100,
+   height: 50,
+   color: "white",
+   font: {
+   	fontSize:"32"
+   }
+});
+signinButton.addEventListener('click',function(e)
+{
+   Alloy.Globals.Log("You clicked the button");
+   $.tabviewone_window.remove(signinView);
+   login(e);
+});
+signinView.add(signinButton);
+$.tabviewone_window.add(signinView);
+
+
 checkNetworkAndGoogleAuthorized = function(sid){
 	var url = "https://spreadsheets.google.com/feeds/list/"+sid+"/od6/public/basic?hl=en_US&alt=json";
 	var xhr = Ti.Network.createHTTPClient({
@@ -243,9 +268,9 @@ function logout(e){
 }
 
 function setMenuText() {
-	if (Titanium.App.Properties.getString("sharedkraniemailid")) {
-			$.label_schedule.text= "Schedule \("+Titanium.App.Properties.getString("sharedkraniemailid").split('@')[0].trim()+"\)";
-		} else { " Schedule \("+Titanium.App.Properties.getString("kraniemailid").split('@')[0].trim()+"\)";}
+	Alloy.Globals.Log("tabViewOne.js::Titanium.App.Properties.getString(sharedkraniemailid): " +Titanium.App.Properties.getString("sharedkraniemailid")+" Titanium.App.Properties.getString(kraniemailid): "+Titanium.App.Properties.getString("kraniemailid"));
+	(Titanium.App.Properties.getString("kraniemailid"))?$.label_schedule.text=" Schedule \("+Titanium.App.Properties.getString("kraniemailid").split('@')[0].trim()+"\)":"";
+	(Titanium.App.Properties.getString("sharedkraniemailid"))?$.label_schedule.text= " Schedule \("+Titanium.App.Properties.getString("sharedkraniemailid").split('@')[0].trim()+"\)":"";	
 	Titanium.App.Properties.setString('employee',Titanium.App.Properties.getString("emailid"));
 	Alloy.Globals.Log("tabViewOne.js::setMenuText: sharedkraniemailid: " +Titanium.App.Properties.getString("sharedkraniemailid"));
 }
@@ -299,6 +324,7 @@ function login(e) {
 				setMenuText();
 				Alloy.Globals.loginActivity();
 				$.tabviewone_window.remove(loadingView);
+				$.tabviewone_window.remove(signinView);
 			},2000);
 			
 		}, function() {
@@ -429,7 +455,7 @@ function login(e) {
 					
 				} else {(Alloy.Globals.googleAuthSheet.getAccessToken()) && getEmail(); }
 
-				addLogo();
+				///addLogo();
 			}
 		Alloy.Globals.Log("check Alloy.Globals.googleAuthSheet.getAccessToken() "+Alloy.Globals.googleAuthSheet.getAccessToken()+" before execute refreshActivity() ");
 		if(Alloy.Globals.googleAuthSheet.getAccessToken()){
@@ -508,7 +534,7 @@ $.google.addEventListener ("click", function(e){
 });
 
 //LOGO
-addLogo();
+/*addLogo();
  $.logo_row.addEventListener ("click", function(e){
  	Alloy.Globals.Log('tabviewone::logo_row:: JSON.stringify(e): '+JSON.stringify(e));
  	if ( e.source.image = "" ) {
@@ -522,6 +548,6 @@ addLogo();
  		e.source.height = "20";
  
  	}
- });
+ });*/
 
  
