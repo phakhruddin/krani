@@ -232,6 +232,20 @@ var laborsid = '1-weM0tLsaf51_bungT67LMpdgbXEJIbX6s_5qvVFOyE'; Titanium.App.Prop
 //var joblogsid = '1SLNRI176qK51rkFWWCQvqToXswdNYlqINsdB2HM0ozk'; Titanium.App.Properties.setString('joblog',joblogsid);
 var joblogsid = '1JX1pq5PNoG0MCyl1V17OAdM3KXSYvTdZACy_QlLA8ds'; Titanium.App.Properties.setString('joblog',joblogsid);*/
 
+
+var projectsid = Titanium.App.Properties.getString('project');
+var clientsid = Titanium.App.Properties.getString('client');
+var invoicesid = Titanium.App.Properties.getString('invoice');
+var inventorysid = Titanium.App.Properties.getString('inventory');
+var proposalsid = Titanium.App.Properties.getString('proposal');
+var mastersid = Titanium.App.Properties.getString('master');
+var schedulesid = Titanium.App.Properties.getString('schedule');
+var laborsid = Titanium.App.Properties.getString('labor');
+var joblogsid = Titanium.App.Properties.getString('joblog');
+var authclientid = Titanium.App.Properties.getString('authclientid');
+var authclientsecret = Titanium.App.Properties.getString('authclientsecret');
+
+/*
 var projectsid = Titanium.App.Properties.getString('project',projectsid);
 var clientsid = Titanium.App.Properties.getString('client',clientsid);
 var invoicesid = Titanium.App.Properties.getString('invoice',invoicesid);
@@ -242,7 +256,7 @@ var schedulesid = Titanium.App.Properties.getString('schedule',schedulesid);
 var laborsid = Titanium.App.Properties.getString('labor',laborsid);
 var joblogsid = Titanium.App.Properties.getString('joblog',joblogsid);
 var authclientid = Titanium.App.Properties.getString('authclientid',authclientid);
-var authclientsecret = Titanium.App.Properties.getString('authclientsecret',authclientsecret);
+var authclientsecret = Titanium.App.Properties.getString('authclientsecret',authclientsecret);*/
 
 var coName = Titanium.App.Properties.getString('coName','Jack Mow Inc.');
 var coAddress =  Titanium.App.Properties.getString('coAddress',"1125 Bluemound Rd., Brookfield, WI 53222");
