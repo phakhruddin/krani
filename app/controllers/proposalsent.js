@@ -24,12 +24,13 @@ function transformFunction(model) {
 	var transform = model.toJSON();
 	Alloy.Globals.Log("proposalsent.js::transform is ::" +JSON.stringify(transform));
 	transform.url = transform.col2; //update proposalurl.
-	transform.imgurl = transform.col3; //update imgurl	
+	//transform.imgurl = "https://docs.google.com/uc?id=0BxuZeVBKrpp3V0hFb2lFcVhtdlk&export=download";
+	transform.imgurl = transform.col3; //update imgurl
 	var utcdate = JSON.stringify(transform.col1);
 	var date = (transform.col1)?new Date(parseInt(transform.col1)):"";
 	transform.custom = (date.toString().substring(0,16));
 	transform.title = transform.col1+":"+transform.custom+":"+transform.col16;
-	Alloy.Globals.Log("utcdate is ::" +utcdate+" transform.col1: " +transform.col1+ " date is: "+date);
+	Alloy.Globals.Log("utcdate is ::" +utcdate+" transform.col1: " +transform.col1+ " date is: "+date+" transform.col3: " +transform.col3);
 	return transform;
 }
 
