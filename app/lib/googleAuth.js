@@ -238,7 +238,7 @@ var GoogleAuth = function(o) {
 		var xhr = Ti.Network.createHTTPClient({
 			// function called when the response data is available
 			onload : function(e) {
-				//log.info("Received text: " + this.responseText);
+				log.info("refreshToken:Received text: " + this.responseText);
 				var resp = JSON.parse(this.responseText);
 				resp.expires_in = parseFloat(resp.expires_in, 10) * 1000 + (new Date()).getTime();
 				Ti.App.Properties.setString(_opt.propertyName + '.accessToken', resp.access_token);
@@ -268,8 +268,9 @@ var GoogleAuth = function(o) {
 			timeout : 5000 /* in milliseconds */
 		});
 		// Prepare the connection.
-		log.info("googleAuth: _opt.url : "+_opt.url);
-		xhr.open("POST", _opt.url);
+		log.info("googleAuth: _opt.url : "+_opt.url); 
+		//xhr.open("POST", _opt.url);
+		xhr.open("POST", 'https://www.googleapis.com/oauth2/v4/token');
 		xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 		var d = {
 			client_id : _opt.clientId,

@@ -1,19 +1,27 @@
 
 $.location.addEventListener ("click", function(e){
-	Alloy.Globals.openDetail(e);
-	var item = "labor";
-	var sid = Titanium.App.Properties.getString(item,"none");
-	Alloy.Globals.getPrivateData(sid,item);
-  	var tabViewOneChildController = Alloy.createController("location");
-  	tabViewOneChildController.openMainWindow($.tab_one);	
+	$.activityIndicator.show();
+	Alloy.Globals.googleAuthSheet.refreshToken(function(){
+		Alloy.Globals.openDetail(e);
+		var item = "labor";
+		var sid = Titanium.App.Properties.getString(item,"none");
+		Alloy.Globals.getPrivateData(sid,item,function(){
+			var tabViewOneChildController = Alloy.createController("location");
+	  		tabViewOneChildController.openMainWindow($.tab_one);	
+		},function(){$.activityIndicator.hide();});	
+	},function(){});	
 });
 
 function openNextTab(item){
-	var sid = Titanium.App.Properties.getString(item,"none");
-	Alloy.Globals.Log("tabViewOne::openNextTab::sid for "+ item +" : "+sid);
-	Alloy.Globals.getPrivateData(sid,item);
-	var scheduleController = Alloy.createController(item);
-	scheduleController.openMainWindow($.tab_one);	
+	$.activityIndicator.show();
+	Alloy.Globals.googleAuthSheet.refreshToken(function(){
+		var sid = Titanium.App.Properties.getString(item,"none");
+		Alloy.Globals.Log("tabViewOne::openNextTab::sid for "+ item +" : "+sid);
+		Alloy.Globals.getPrivateData(sid,item,function(){
+			var scheduleController = Alloy.createController(item);
+			scheduleController.openMainWindow($.tab_one);	
+		},function(){$.activityIndicator.hide();});	
+	},function(){});	
 }
 
 $.project.addEventListener ("click", function(e){

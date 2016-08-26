@@ -13,7 +13,7 @@
     <fullscreen>false</fullscreen>
     <navbar-hidden>false</navbar-hidden>
     <analytics>true</analytics>
-    <guid>e6caa953-43f3-43dc-8a0a-bf4bc0ae03bf</guid>
+    <guid>25bd0636-1ad5-48d7-9888-5d14e9a0f35d</guid>
     <property name="ti.ui.defaultunit" type="string">dp</property>
     <ios>
         <plist>
@@ -38,10 +38,11 @@
                 <key>UIStatusBarStyle</key>
                 <string>UIStatusBarStyleDefault</string>
                 <key>NSAppTransportSecurity</key>
-     				<dict>
-						<key>NSAllowsArbitraryLoads</key><true/>
-					</dict>				
-				<key>NSLocationWhenInUseUsageDescription</key>
+                <dict>
+                    <key>NSAllowsArbitraryLoads</key>
+                    <true/>
+                </dict>
+                <key>NSLocationWhenInUseUsageDescription</key>
                 <string>
                     Specify the reason for accessing the user's location information.
                     This appears in the alert dialog when asking the user for permission to
@@ -66,14 +67,15 @@
         <module platform="commonjs">ti.cloud</module>
     </modules>
     <deployment-targets>
-        <target device="android">true</target>
+        <target device="android">false</target>
         <target device="blackberry">false</target>
         <target device="ipad">true</target>
         <target device="iphone">true</target>
         <target device="mobileweb">true</target>
     </deployment-targets>
-    <sdk-version>3.5.1.GA</sdk-version>
+    <sdk-version>5.2.2.GA</sdk-version>
     <plugins>
         <plugin version="1.0">ti.alloy</plugin>
     </plugins>
+    <property name="appc-app-id" type="string">57bf95e27be0fbfb675446a9</property>
 </ti:app>

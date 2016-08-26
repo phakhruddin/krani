@@ -541,7 +541,7 @@ Alloy.Globals.createController = function(controller,sourcetab){
 		newController.openMainWindow(sourcetab);
 };
 
-Alloy.Globals.getPrivateData = function(sid,type) {	
+Alloy.Globals.getPrivateData = function(sid,type,nextFunction,nextFunction1) {	
 	var data = [];
 	var maxdebug = Titanium.App.Properties.getInt('maxdebug');
 	var mindebug = Titanium.App.Properties.getInt('mindebug');
@@ -627,6 +627,16 @@ Alloy.Globals.getPrivateData = function(sid,type) {
 			Alloy.Globals.Log("alloy.js::checking data " +JSON.stringify(data));
 			//
 			Alloy.Globals.Log(" Alloy.Globals.getPrivateData::Data were successfuly downloaded from "+url+". Please proceed.");
+						//Future call back once loaded
+			if (nextFunction) {
+				Alloy.Globals.Log("Alloy.Globals.getPrivateData:nextFunction "+nextFunction);
+					nextFunction();		
+				};
+			if(nextFunction1){
+				Alloy.Globals.Log("Alloy.Globals.getPrivateData:nextFunction1 "+nextFunction1);
+					nextFunction1();	 
+				}
+			
 			} catch(e){
 				Alloy.Globals.Log("cathing e: "+JSON.stringify(e));
 			}
