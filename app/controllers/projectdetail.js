@@ -1,4 +1,5 @@
 var args = arguments[0] || {};
+$.projectdetail_window.add($.activityIndicator);
 exports.openMainWindow = function(_tab) {
   _tab.open($.projectdetail_window);
   Ti.API.info("This is child widow checking _tab on : " +JSON.stringify(_tab));
@@ -124,13 +125,14 @@ function prefetchJoblog(){
 	//Alloy.Globals.Log("projectdetail.js::prefetchJoblog::sidmatch: sid "+sidmatch+' : '+sid);
 	Alloy.Globals.Log("projectdetail.js::prefetchJoblog::sidmatch: sid "+sid);
 	if(sid){
-		Alloy.Globals.getPrivateData(sid,item);
-		Alloy.Globals.Log("projectdetail.js::prefetchJoblog:: Alloy.Collections.joblog.fetch()");
-		//Alloy.Collections.joblog.fetch();	
-		var joblog  = Alloy.Collections.instance('joblog');
-        joblog.fetch();
-        Alloy.Globals.Log("projectdetail.js::JSON stringify joblog data on prefetch: "+JSON.stringify(joblog));
-        $.joblog_button.show();
+		Alloy.Globals.getPrivateData(sid,item,function(){
+			Alloy.Globals.Log("projectdetail.js::prefetchJoblog:: Alloy.Collections.joblog.fetch()");
+			//Alloy.Collections.joblog.fetch();	
+			var joblog  = Alloy.Collections.instance('joblog');
+        	joblog.fetch();
+        	Alloy.Globals.Log("projectdetail.js::JSON stringify joblog data on prefetch: "+JSON.stringify(joblog));
+        	$.joblog_button.show();
+		},function(){});	
 	} else {
 		Alloy.Globals.Log("projectdetail.js::prefetchJoblog: creating sid. very first new project");		
 		setTimeout(function(){$.joblog_button.show();},2000);
@@ -152,18 +154,22 @@ $.addbutton.addEventListener("click", function(e){
 });*/
 
 $.joblog_button.addEventListener("click", function(e){
+	$.activityIndicator.show();
 	Alloy.Globals.Log("projectdetail.js::JSON stringify e on jobLog: "+JSON.stringify(e));
 	Alloy.Globals.Log("projectdetail.js::JSON stringify e on jobLog args: "+JSON.stringify(args));
 	var sid = matchjoblogsidfromDB(filename);
 	var parentid = Titanium.App.Properties.getString('parentid');
 	Alloy.Globals.Log("projectdetail.js::matched sid is: "+sid);
-	var tabViewOneController = Alloy.createController("enterjobdetail",{
+	Alloy.Globals.getPrivateData(sid,'joblog',function(){
+		var tabViewOneController = Alloy.createController("enterjobdetail",{
 			title: args,
 			sid: sid,
 			parentid: parentid,
 			callbackFunction: genJoblog
-	});
-	tabViewOneController.openMainWindow($.tab_projectdetail);		
+		});
+		tabViewOneController.openMainWindow($.tab_projectdetail);
+	},function(){$.activityIndicator.hide();});
+			
 });
 
 function addHandler(e,args){

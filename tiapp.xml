@@ -2,9 +2,9 @@
 <ti:app xmlns:ti="http://ti.appcelerator.org">
     <property name="acs-api-key-production" type="string">VXwjr8LdcmUetQOE4ci2SoY1y6IB0rGQ</property>
     <property name="acs-api-key-development" type="string">YSI4F3mgYBs4sQhRz8g7bjznjhRyFPco</property>
-    <id>com.idevice.krani</id>
+    <id>com.krani</id>
     <name>Krani</name>
-    <version>1.0</version>
+    <version>1.0.1</version>
     <publisher>dbayco inc.</publisher>
     <url>http://idevice.net</url>
     <description>Krani</description>

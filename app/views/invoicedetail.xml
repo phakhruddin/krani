@@ -6,6 +6,7 @@
 	<Collection src="invoicesent" />
 	<Tab id="tab_invoicedetail">
   <Window id="invoicedetail_window" title="Invoice Detail" backgroundColor="white">
+  	<ActivityIndicator id="activityIndicator" style="Ti.UI.iPhone.ActivityIndicatorStyle.DARK" message="Loading data.."/>
 	  <TableView id="invoicedetail_table"  backgroundColor="transparent">
 	  	<TableViewSection  headerTitle="Summary">
 		  <TableViewRow id="invoicenumber_row" color="gray" Title="Summary" height="100">

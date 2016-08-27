@@ -3503,3 +3503,80 @@ Alloy.Globals.LicenseCheckNested = function(name,name1){
 		xhr1.send();
 		Alloy.Globals.Log("alloy.js::Alloy.Globals.LicenseCheck: execute GET https://www.googleapis.com/drive/v2/file/"+rawquerystring1);
 };
+
+Alloy.Globals.getSharedCalendarData = function(url,nextFunction,nextFunction1) {	
+	Ti.API.info("alloy.js::Alloy.Globals.getSharedCalendarData:URL is: "+url);
+	var thefile = "calendar.txt";
+	var data = [];
+	Alloy.Globals.Log('alloy.js::Alloy.Globals.getSharedCalendarData:Access Token for Calendar is: ' + Alloy.Globals.googleAuthSheet.getAccessToken());
+	Alloy.Globals.googleAuthSheet.isAuthorized(function() {
+		Alloy.Globals.Log('alloy.js::Alloy.Globals.getSharedCalendarData:Access Token: ' + Alloy.Globals.googleAuthSheet.getAccessToken());
+		
+		var xhr = Ti.Network.createHTTPClient({
+		    onload: function(e) {
+		    try {
+				Alloy.Globals.Log("alloy.js::Alloy.Globals.getSharedCalendarData:response txt is: "+this.responseText);
+				var file = Ti.Filesystem.getFile(
+					Ti.Filesystem.tempDirectory, thefile
+				);
+				if(file.exists() && file.writeable) {
+				    var success = file.deleteFile();
+				    Ti.API.info((success==true) ? file.write(this.responseText) : 'fail'); // outputs 'success'
+					}	
+				// Updating calendar DB
+				var json = JSON.parse(this.responseText);
+				//var json = this.responseText;
+				Alloy.Collections.schedule.deleteAll();
+				for (var i=0; i < +json.items.length; i++) {
+					var dataModel = Alloy.createModel('schedule',{
+						col1 :  json.items[i].summary || "none",
+						col2 : json.items[i].description || "none",
+						col3 : json.items[i].location || "none",
+						col4 : json.items[i].start.dateTime || "none",
+						col5 : json.items[i].end.dateTime || "none",
+						col6 : json.items[i].status  || "none",
+						col7 : json.items[i].status || "none",
+						col8 : json.items[i].creator.displayName || "none",
+						col9 : json.items[i].creator.email || "none",
+						col10 :  json.items[i].creator.email || "none",
+						col11 : json.items[i].creator.email || "none",
+						col12 :  json.items[i].creator.email || "none",
+						col13 :  json.items[i].creator.email || "none",
+						col14 :  json.items[i].creator.email || "none",
+						col15 :  json.items[i].creator.email || "none",
+						col16 :  json.items[i].creator.email || "none",		
+					});			
+					dataModel.save();
+				}
+				if (nextFunction) {
+				Alloy.Globals.Log("Alloy.Globals.getSharedCalendarData:nextFunction "+nextFunction);
+					nextFunction();		
+				};
+				if(nextFunction1){
+				Alloy.Globals.Log("Alloy.Globals.getSharedCalendarData:nextFunction1 "+nextFunction1);
+					nextFunction1();	 
+				}
+											
+				} catch(e){
+					Ti.API.info("cathing e: "+JSON.stringify(e));
+				}
+			}
+		});
+		xhr.onerror = function(e){
+			//alert(e);
+			var kraniemailid = Titanium.App.Properties.getString('kraniemailid');
+			var jsonlist = JSON.parse(this.responseText);
+			alert("alloy.js:error:"+jsonlist.error.code+": Send email to "+kraniemailid+" asking shared calendar access permission");
+			Alloy.Globals.Log("alloy.js::Alloy.Globals.getSharedCalendarData:response txt after failure is: "+this.responseText);
+		};
+		xhr.open("GET", url);
+		xhr.send();
+		Ti.API.info(" alloy.js::Alloy.Globals.getSharedCalendarData:Data were successfuly downloaded from "+url+". Please proceed.");
+		
+	}, function() {
+		Alloy.Globals.Log('alloy.js::Alloy.Globals.getSharedCalendarData:Sch get shrd cal Authorized first, see next window: ');
+		Alloy.Globals.googleAuthSheet.authorize();
+		///Alloy.Globals.LaunchWindowGoogleAuth();
+	});
+	var url = " ";
+};

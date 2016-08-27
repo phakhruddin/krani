@@ -10,7 +10,7 @@
   <Collection src="joblogsid"/>
   <Tab id="tab_one" title="MAIN" icon="home45.png">
     <Window id="tabviewone_window" title="Krani" class='container'>
-    <ActivityIndicator id="activityIndicator" style="Ti.UI.iPhone.ActivityIndicatorStyle.PLAIN"/>
+    <ActivityIndicator id="activityIndicator" style="Ti.UI.iPhone.ActivityIndicatorStyle.DARK" message="Loading data.."/>
     <RightNavButton platform="ios">
 	   <Button id="login_button" systemButton="Ti.UI.iPhone.SystemButton.PLAIN" title="LOGIN" onClick="login" /> 
 	</RightNavButton>

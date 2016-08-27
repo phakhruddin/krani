@@ -1,4 +1,5 @@
 var args = arguments[0] || {};
+$.clientlist_window.add($.activityIndicator);
 exports.openMainWindow = function(_tab) {
   _tab.open($.clientlist_window);
   Ti.API.info("This is child widow client.js" +JSON.stringify(_tab));

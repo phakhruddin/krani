@@ -4,8 +4,9 @@
 	<Collection src="joblogsid"/>
 	<Tab id="tab_projectdetail" title="Project">
   <Window id="projectdetail_window" title="project Detail" backgroundColor="white">
+  	<ActivityIndicator id="activityIndicator" style="Ti.UI.iPhone.ActivityIndicatorStyle.DARK" message="Loading data.."/>
   	<RightNavButton platform="ios">
-<Button id="edit_rightnavbutton" systemButton="Ti.UI.iPhone.SystemButton.EDIT" onClick="editAction" /> 
+		<Button id="edit_rightnavbutton" systemButton="Ti.UI.iPhone.SystemButton.EDIT" onClick="editAction" /> 
 	</RightNavButton>
 	  <TableView id="projectdetail_table"  backgroundColor="transparent">
 	  	<TableViewSection headerTitle="Project#: {dummy.projectid}">

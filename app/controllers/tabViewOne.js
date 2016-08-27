@@ -1,4 +1,4 @@
-
+$.tabviewone_window.add($.activityIndicator);
 $.location.addEventListener ("click", function(e){
 	$.activityIndicator.show();
 	Alloy.Globals.googleAuthSheet.refreshToken(function(){
@@ -32,9 +32,18 @@ $.project.addEventListener ("click", function(e){
 });
 
 $.schedule.addEventListener ("click", function(e){
+	$.activityIndicator.show();
 	Alloy.Globals.openDetail(e);
-	var scheduleController = Alloy.createController("schedule");
- 	scheduleController.openMainWindow($.tab_one);
+	Alloy.Globals.googleAuthSheet.refreshToken(function(){
+		var kraniemailid = Titanium.App.Properties.getString('kraniemailid');Alloy.Globals.Log("schedule.js::kraniemailid:: "+kraniemailid);
+		var calid = kraniemailid;
+		var url = 'https://www.googleapis.com/calendar/v3/calendars/'+calid+'/events'+"?access_token="+Alloy.Globals.googleAuthSheet.getAccessToken();;
+		Alloy.Globals.getSharedCalendarData(url,function(){
+			Alloy.Collections.schedule.fetch();
+			var scheduleController = Alloy.createController("schedule");
+ 			scheduleController.openMainWindow($.tab_one);
+		},function(){$.activityIndicator.hide();});		
+	});
 });
  	
 $.client.addEventListener ("click", function(e){
@@ -46,14 +55,15 @@ $.client.addEventListener ("click", function(e){
 });
 
 $.invoicelistlist.addEventListener ("click", function(e){
+	$.activityIndicator.show();
 	Alloy.Globals.openDetail(e);
-
- 		var item = 'invoice';
- 			var sid = Titanium.App.Properties.getString(item,"none");
+	var item = 'invoice';
+	var sid = Titanium.App.Properties.getString(item,"none");
 	Alloy.Globals.Log("tabviewone.js::sid for "+ item +" : "+sid);
-	Alloy.Globals.getPrivateData(sid,item);
+	Alloy.Globals.getPrivateData(sid,item,function(){
 		var scheduleController = Alloy.createController("invoicelistlist");
- 	scheduleController.openMainWindow($.tab_one);
+ 		scheduleController.openMainWindow($.tab_one);
+	},function(){$.activityIndicator.hide();});
 	//openNextTab(item);
 });
 
@@ -74,14 +84,19 @@ $.inventory.addEventListener ("click", function(e){
 });
 
 $.proposallistlist.addEventListener ("click", function(e){
-	Alloy.Globals.openDetail(e);
+	$.activityIndicator.show();
+	Alloy.Globals.googleAuthSheet.refreshToken(function(){
+		Alloy.Globals.openDetail(e);
+		var item = 'proposal';
+		var sid = Titanium.App.Properties.getString(item,"none");
+		Alloy.Globals.Log("tabviewone.js::sid for "+ item +" : "+sid);
+			Alloy.Globals.getPrivateData(sid,item,function(){
+			var scheduleController = Alloy.createController("proposallistlist");
+	 		scheduleController.openMainWindow($.tab_one);
+		},function(){$.activityIndicator.hide();});
+	},function(){});
 
- 		var item = 'proposal';
- 			var sid = Titanium.App.Properties.getString(item,"none");
-	Alloy.Globals.Log("tabviewone.js::sid for "+ item +" : "+sid);
-	Alloy.Globals.getPrivateData(sid,item);
-		var scheduleController = Alloy.createController("proposallistlist");
- 	scheduleController.openMainWindow($.tab_one);
+
 	//openNextTab(item);
 });
 
@@ -95,11 +110,14 @@ $.proposal.addEventListener ("click", function(e){
 
 $.settings.addEventListener ("click", function(e){
 	Alloy.Globals.openDetail(e);
-	var tabViewOneController = Alloy.createController("settings",{
+	Alloy.Globals.googleAuthSheet.refreshToken(function(){
+		var tabViewOneController = Alloy.createController("settings",{
 		metadata: "from tabviewOne",
 		callbackFunction: showFutureMenu
-	});
+		});
 	tabViewOneController.openMainWindow($.tab_one);	
+	},function(){});
+
 });
 
 

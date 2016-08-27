@@ -1,4 +1,5 @@
 var args = arguments[0] || {};
+$.invoicedetail_window.add($.activityIndicator);
 exports.openMainWindow = function(_tab) {
   _tab.open($.invoicedetail_window);
   Ti.API.info("invoicedetail.js::This is child widow checking _tab on : " +JSON.stringify(_tab));
@@ -12,18 +13,22 @@ exports.openMainWindow = function(_tab) {
   	    var filename = e.row.filename;
 	  	//var sid = e.row.sid;
 	  	eval("var sid = e.row."+filename+"_sid");
-	  	Alloy.Globals.Log("invoicedetail.js::totalbalance_row:: JSON.stringify(e) "+JSON.stringify(e)+" with : "+firstname+" "+lastname+" : "+invoicenumber+" : "+sid+" : "+filename);
+	  	Alloy.Globals.Log("invoicedetail.js::totalbalance_row:: JSON.stringify(e) "+JSON.stringify(e)+" with : "+firstname+" "+lastname+" : "+invoicenumber+" : "+sid+" : "+filename);  	
 		if (sid){	
-			var tabViewOneController = Alloy.createController("enterpayment",{
-				title: args,
-				firstname : firstname,
-				lastname : lastname,
-				invoicenumber : invoicenumber,
-				sid : sid,
-				callbackFunction : dummyRefresh, 
-				myRefreshercallBack :myRefresher
-			});
-			tabViewOneController.openMainWindow($.tab_invoicedetail);
+			$.activityIndicator.show();
+			Alloy.Globals.getPrivateData(sid,'payment',function(){
+				var tabViewOneController = Alloy.createController("enterpayment",{
+					title: args,
+					firstname : firstname,
+					lastname : lastname,
+					invoicenumber : invoicenumber,
+					sid : sid,
+					callbackFunction : dummyRefresh, 
+					myRefreshercallBack :myRefresher
+				});			
+				tabViewOneController.openMainWindow($.tab_invoicedetail);			
+			},function(){$.activityIndicator.hide();});
+					
 		} else {
 			alert("Loading data from the cloud. Please click OK and try again.");
 		}

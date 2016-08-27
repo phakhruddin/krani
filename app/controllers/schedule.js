@@ -2,8 +2,8 @@ exports.openMainWindow = function(_tab) {
   _tab.open($.schedule_window);
   Ti.API.info("This is child widow schedule.js" +JSON.stringify(_tab));
   $.schedule_list.search = $.search_history;
-  refreshCalendar();
-  Alloy.Collections.schedule.fetch();
+  //refreshCalendar();
+  //Alloy.Collections.schedule.fetch();
   Alloy.Collections.labor.fetch();	
   
 };
