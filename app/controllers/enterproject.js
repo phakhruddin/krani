@@ -8,6 +8,16 @@ exports.openMainWindow = function(_tab) {
  // Alloy.Globals.Log("enterproject.js::openMainWindow:: set back_button title to: "+backButtonTitle);
   //$.back_button.title = "< "+backButtonTitle;	
 };
+$.save_button.selectclient = 'no';
+var savedata = {col1:"",col2:"",col3:"",col4:"",col5:"",col6:"",col7:"",col8:"",col9:"",col10:"",col11:"",col12:"",col13:"",col14:"",col15:"",col16:""};
+$.save_button.savedata = savedata;
+item = [{descr:""}];
+item.push({lineitem:"",qty:"",price:""});$.addrow_button.item = item;savedata.col12=JSON.stringify(item).toString().replace(/:/g,'cOlOn');$.save_button.savedata=savedata;
+$.projectname_tf.addEventListener('change',function(e){savedata.col1 = e.value;$.addrow_button.item = item;savedata.col12=JSON.stringify(item).toString().replace(/:/g,'cOlOn');$.save_button.savedata=savedata;Alloy.Globals.Log("enteproject.js::projectname_tf:savedata: "+JSON.stringify(savedata));});
+$.projectdescr_tf.addEventListener('change',function(e){item[0].descr = e.value;$.addrow_button.item = item;savedata.col12=JSON.stringify(item).toString().replace(/:/g,'cOlOn');$.save_button.savedata=savedata;Alloy.Globals.Log("enteproject.js::projectdescr_tf:item: "+JSON.stringify(item));});
+$.lineitem_tf.addEventListener('blur',function(e){item[1].lineitem = e.value;$.addrow_button.item = item;savedata.col12=JSON.stringify(item).toString().replace(/:/g,'cOlOn');$.save_button.savedata=savedata;Alloy.Globals.Log("enteproject.js::lineitem_tf:item: "+JSON.stringify(item));});
+$.lineitemqty_tf.addEventListener('blur',function(e){item[1].qty = e.value;$.addrow_button.item = item;savedata.col12=JSON.stringify(item).toString().replace(/:/g,'cOlOn');$.save_button.savedata=savedata;Alloy.Globals.Log("enteproject.js::lineitemqty_tf:item: "+JSON.stringify(item));});
+$.lineitemprice_tf.addEventListener('blur',function(e){item[1].price = e.value;$.addrow_button.item = item;savedata.col12=JSON.stringify(item).toString().replace(/:/g,'cOlOn');$.save_button.savedata=savedata;Alloy.Globals.Log("enteproject.js::lineitemprice_tf:item: "+JSON.stringify(item));});
 
 //$.back_button.sid = "1234";
 
@@ -31,7 +41,8 @@ Alloy.Globals.Log("enterproject.js::JSON.stringify(args): "+JSON.stringify(args)
 (args.address)?$.projectclientstreetaddress_tf.value=args.address:$.projectclientstreetaddress_tf.value=" ";
 (args.city)?$.projectclientcity_tf.value=args.city:$.projectclientcity_tf.value=" ";
 (args.state)?$.projectclientstate_tf.value=args.state:$.projectclientstate_tf.value=" ";
-(args.projectname)?$.projectname_tf.value=args.projectname:$.projectname_tf.value=" ";
+if (args.projectname) { $.projectname_tf.value=args.projectname; savedata.col1 = args.projectname;$.save_button.savedata = savedata;};
+(args.selectclient)?$.save_button.selectclient = 'yes':$.save_button.selectclient = 'no';
 
 
 
@@ -85,129 +96,69 @@ $.enterproject_table.appendRow(newRow);
 
 var count = 3; //row where line item is entered
 Titanium.App.Properties.setInt('count',count);
-
-function addItem(e,itemvalues){
-	var count = Titanium.App.Properties.getInt('count',3);
-    Alloy.Globals.Log("count :" +count);
-	//log
-	Alloy.Globals.Log("enterproject.js::addItem:: JSON stringify e : " +JSON.stringify(e));
-	Alloy.Globals.Log("enterproject.js::addItem:: itemvalues: " +JSON.stringify(itemvalues));
-	Ti.API.info("data length " +$.enterproject_table.data.length);		
-	Ti.API.info("table data 0 "+$.enterproject_table.data[0]);
-	Ti.API.info("table row count : "+$.enterproject_table.data[0].rowCount);
-	Alloy.Globals.Log("JSON stringify table data 0 : " +JSON.stringify($.enterproject_table.data[0]));
-	
-	var itemval = count - 1;
+c=1;
+function addItem(e){
+	c=(c)?c+1:2;
+	Alloy.Globals.Log('enterproject.js::addItem:: JSON stringify e : ' +JSON.stringify(e));
+	var item = e.source.item;
+	item.push({lineitem:"",qty:"",price:""});$.addrow_button.item = item;
+    Alloy.Globals.Log('c :' +c);
+	//log	
+	Alloy.Globals.Log('enterproject.js::addItem:: item: ' +JSON.stringify(item));
+	var itemval = c - 1;
 	// Defining new test field
-	var itemLabellist = Ti.UI.createLabel({
-		id:"tflabellist" , 
-		text:'Line item ' + itemval+' : ',
-		font : {
-			fontSize: '14',
-			fontweight : 'normal'
-		},
-		left: '20',
-		top: '10',
-		color: "#3B708A"
-		});
-	var itemTextField = Titanium.UI.createTextField({
-		id:"lineitem_tf",
-		borderColor : 'white', // border color
-    	width: Ti.UI.FILL,
-    	left:'120',
-    	top: '12',
-    	font: {fontSize: '14'},
-    	value: (e == "modify")?itemvalues.lineitem:""
-		});
-	var itemLabelqty = Ti.UI.createLabel({
-		id:"linetflabelqty" , 
-		text:'qty(opt) : ',
-		font : {
-			fontSize: '14',
-			fontweight : 'normal'
-		},
-		top: '30',
-		left: '20',
-		color: "#3B708A"
-		});
-	isNaN(itemvalues.qty)?itemvalues.qty=0:itemvalues.qty;
-	var itemTextFieldqty = Titanium.UI.createTextField({
-		id:"lineitemqty_tf",
-		borderColor : 'white', // border color
-    	top: '32',
-    	left: '90',
-    	width: '40',
-    	hintText: '1',
-    	width: '60',
-    	keyboardType: Ti.UI.KEYBOARD_NUMBER_PAD,
-    	returnKeyType : Ti.UI.RETURNKEY_DONE,
-    	font: {fontSize: '14'},
-    	value: (e == "modify")?isNaN(itemvalues.qty)?itemvalues.qty=0:itemvalues.qty:""
-		});
-	var itemLabelprice = Ti.UI.createLabel({
-		id:"linetflabelqty" , 
-		text:'price(opt) : ',
-		font : {
-			fontSize: '14',
-			fontweight : 'normal'
-		},
-		top: '30',
-		left: '180',
-		color: "#3B708A"
-		});
-	isNaN(itemvalues.price)?itemvalues.price=0:itemvalues.price;
-	var itemTextFieldprice = Titanium.UI.createTextField({
-		id:"lineitemprice_tf",
-		borderColor : 'white', // border color
-       	top: '32',
-		left: '260',
-		hintText: '160',
-		width: '80',
-		keyboardType: Ti.UI.KEYBOARD_DECIMAL_PAD,
-		returnKeyType: Ti.UI.RETURNKEY_DONE, 
-		border: 1, 
-		width: 100,
-    	font: {fontSize: '14'},
-    	value: (e == "modify")?itemvalues.price:""
-		});
-	var toolbarDone = Ti.UI.createButton({systemButton: Titanium.UI.iPhone.SystemButton.DONE});
-	var flexSpace = Titanium.UI.createButton({systemButton : Titanium.UI.iPhone.SystemButton.FLEXIBLE_SPACE});
-	toolbarDone.addEventListener('click', function(){
-		itemTextFieldprice.blur();
-	});
-	itemTextFieldprice.keyboardToolbarColor = '#80c342';
-	itemTextFieldprice.keyboardToolbar = [flexSpace, toolbarDone];
+	eval("var itemLabellist"+c+"= Ti.UI.createLabel({text:'Line item ' + c +' : ',font : {fontSize: '14'},left:'20',top:'10',color:'#3B708A'})");
+	eval("var itemTextField"+c+"= Titanium.UI.createTextField({borderColor:'white',width: Ti.UI.FILL,left:'120',top: '12',font: {fontSize: '14'},value: (e == 'modify')?item["+c+"].lineitem:''})");
+	eval("itemTextField"+c+".addEventListener('change',function(e){item["+c+"].lineitem = e.value;$.addrow_button.item = item;savedata.col12=JSON.stringify(item).toString().replace(/:/g,'cOlOn');$.save_button.savedata=savedata;Alloy.Globals.Log('enteproject.js::lineitem_tf:item:' +JSON.stringify(item));})");
+	eval("var itemLabelqty"+c+"= Ti.UI.createLabel({text:'qty(opt) : ',font : {fontSize: '14'},top:'30',left:'20',color:'#3B708A'})");
+	eval("var itemTextFieldqty"+c+"= Titanium.UI.createTextField({top:32,left:90,width:40,hintText:'1',width:60,value:(e == 'modify')?isNaN(item["+c+"].qty)?item["+c+"].qty=0:item["+c+"].qty:''})");
+	eval("itemTextFieldqty"+c+".font={fontSize:14}");;
+	eval("itemTextFieldqty"+c+".keyboardType=Ti.UI.KEYBOARD_NUMBER_PAD");
+	eval("itemTextFieldqty"+c+".returnKeyType=Ti.UI.RETURNKEY_DONE");
+	eval("itemTextFieldqty"+c+".borderColor='white'");
+	eval("itemTextFieldqty"+c+".addEventListener('change',function(e){item["+c+"].qty = e.value;$.addrow_button.item = item;savedata.col12=JSON.stringify(item).toString().replace(/:/g,'cOlOn');$.save_button.savedata=savedata;Alloy.Globals.Log('enteproject.js::qty_tf:item:' +JSON.stringify(item));})");
+	eval("isNaN(item["+c+"].qty)?item["+c+"].qty=0:item["+c+"].qty;");
+	eval("var itemLabelprice"+c+"= Ti.UI.createLabel({text:'price(opt) : ',font:{fontSize:14},top:30,left:180,color: '#3B708A'})");
+	eval("var itemTextFieldprice"+c+"= Titanium.UI.createTextField({borderColor:'white',top:32,left:260,hintText: '160',width:100,border: 1,value: (e == 'modify')?item["+c+"].price:''})");
+	eval("itemTextFieldprice"+c+".keyboardType = Ti.UI.KEYBOARD_DECIMAL_PAD");
+	eval("itemTextFieldprice"+c+".returnKeyType = Ti.UI.RETURNKEY_DONE");
+	eval("itemTextFieldprice"+c+".font = {fontSize: '14'}");
+	eval("var toolbarDone"+c+"= Ti.UI.createButton({systemButton: Titanium.UI.iPhone.SystemButton.DONE})");
+	eval("var flexSpace"+c+"= Titanium.UI.createButton({systemButton : Titanium.UI.iPhone.SystemButton.FLEXIBLE_SPACE})");
+	eval("toolbarDone"+c+".addEventListener('click', function(){itemTextFieldprice"+c+".blur()})");
+	eval("itemTextFieldprice"+c+".keyboardToolbarColor = '#80c342'");
+	eval("itemTextFieldprice"+c+".keyboardToolbar = [flexSpace"+c+", toolbarDone"+c+"]");
+	eval("itemTextFieldprice"+c+".addEventListener('change',function(e){item["+c+"].price = e.value;$.addrow_button.item = item;savedata.col12=JSON.stringify(item).toString().replace(/:/g,'cOlOn');$.save_button.savedata=savedata;Alloy.Globals.Log('enteproject.js::price_tf:item:' +JSON.stringify(item));})");
+	eval("isNaN(item["+c+"].price)?item["+c+"].price=0:item["+c+"].price;");
+
 	// Defining new row
+	var newView = Ti.UI.createView();
 	var newRow = Ti.UI.createTableViewRow({
 		height: '50',
 		borderColor : 'white',
-		backgroundColor : "white"
+		backgroundColor : 'white'
 	});
-	newRow.add(itemLabellist);
-	newRow.add(itemTextField);
-	newRow.add(itemLabelqty);
-	newRow.add(itemTextFieldqty);
-	newRow.add(itemLabelprice);
-	newRow.add(itemTextFieldprice);
+	eval("newView.add(itemLabellist"+c+")");
+	eval("newView.add(itemTextField"+c+")");
+	eval("newView.add(itemLabelqty"+c+")");
+	eval("newView.add(itemTextFieldqty"+c+")");
+	eval("newView.add(itemLabelprice"+c+")");
+	eval("newView.add(itemTextFieldprice"+c+")");
+	newRow.add(newView);
     
 	// Adding row to the table view
-	$.enterproject_table.insertRowAfter(count,newRow);
-	var count = count+1;
-	Alloy.Globals.Log("new count :" +count);
-	Titanium.App.Properties.setInt('count',count);
-	
-	itemTextField.addEventListener('blur', function(_e) {
- 	var clientproject = itemTextField.value;
- 	Ti.API.info("clientproject entered in dyn field is: "+clientproject);
- 	Alloy.Globals.Log("e JSON of textfield: "+JSON.stringify(_e));
- });
- 
+	$.enterproject_table.insertRowAfter(c+1,newRow);
+	//var c = c+1;
+	//Alloy.Globals.Log('new c :' +c);
+	//Titanium.App.Properties.setInt('c',c);
 	//var textfield = Ti.UI.createTextField({keyboardType: Ti.UI.KEYBOARD_NUMBER_PAD, returnKeyType: Ti.UI.RETURNKEY_DONE, backgroundColor: '#262626', border: 1, width: 100});
 
 }
 
 $.lineitem_tf.addEventListener('blur', function(_e) {
     var clientproject = $.lineitem_tf.value;
+    item[1].lineitem = _e.value;
+    Alloy.Globals.Log("enterproject:js:lineitem_tf:blur:JSON.stringify(item) "+JSON.stringify(item));
     Ti.API.info("clientproject entered is: "+clientproject);
     Titanium.App.Properties.setString('clientproject',clientproject);
     Ti.API.info("clientproject obtained is: "+Titanium.App.Properties.getString('clientproject',"none"));
@@ -219,9 +170,9 @@ $.lineitem_tf.addEventListener('blur', function(_e) {
  function saveHandler(e){
  	//$.back_button.titleid = "dbNeedSync";
  	Alloy.Globals.Log("enterproject.js::saveHandler::JSON.stringify(e): "+JSON.stringify(e));
- 	var isSelectClientTrue = Titanium.App.Properties.getString('selectclient');
+ 	Alloy.Globals.Log("enterproject.js::saveHandler::JSON.stringify(e.source.savedata): "+JSON.stringify(e.source.savedata));
+ 	var savedata = e.source.savedata;
  	Alloy.Globals.Log("saving all data ");
- 	Alloy.Globals.Log("isSelectClientTrue is:"+isSelectClientTrue);
  	var tabledata = [];	
  	var getvalue = ["clientfirstname","clientlastname","clientphone","clientemail","clientstreetaddress","clientcity","clientstate","clientcompany"];
  	for (i=0;i<$.enterproject_table.data[0].rowCount;i++) {		
@@ -242,32 +193,6 @@ $.lineitem_tf.addEventListener('blur', function(_e) {
 	Alloy.Globals.Log("enterproject.js::saveHandler:: detect array dyn variable: "+clientfirstname+","+clientlastname+","+clientphone+","+clientemail+","+clientstreetaddress
 	+","+clientcity+","+clientstate+","+clientcompany);
 	//once tabledata is populated, find submission value
-	var projectname = [];
-	var projectdescr = [];
-	var lineitem = [];
-	var lineitemqty = [];
-	var lineitemprice = [];
-	for (i=0;i<tabledata.length;i++){
-		if (tabledata[i].data1 == "projectname_tf") {  projectname.push({ name:tabledata[i].data2.trim() }); };
-		if (tabledata[i].data1 == "projectdescr_tf") {  projectdescr.push({ descr:tabledata[i].data2.trim() }); };
-		if (tabledata[i].data1 == "lineitem_tf") {  lineitem.push({ item:tabledata[i].data2.trim()}); };
-		if (tabledata[i].data1 == "lineitemqty_tf") {  lineitemqty.push({ itemqty:isNaN(tabledata[i].data2.trim())?0:tabledata[i].data2.trim() }); };
-		if (tabledata[i].data1 == "lineitemprice_tf") {  lineitemprice.push({ itemprice:isNaN(tabledata[i].data2.trim())?0:tabledata[i].data2.trim() }); };
-	}
-	Alloy.Globals.Log("lineitem: "+JSON.stringify(lineitem));
-	Alloy.Globals.Log("lineitemqty: "+JSON.stringify(lineitemqty));
-	Alloy.Globals.Log("lineitemprice: "+JSON.stringify(lineitemprice));
-	var item = [];
-	item.push({'descr':projectdescr[0].descr});
-	for (i=0;i<lineitem.length;i++){
-		if (lineitem[i].item != "none"){
-			item.push({
-				'lineitem':lineitem[i].item,
-				'qty':lineitemqty[i].itemqty,
-				'price':lineitemprice[i].itemprice
-			});
-		}
-	}
 	Alloy.Globals.Log("enterproject::saveHandler:JSON.stringify(item): "+JSON.stringify(item));
 	var projectnumber = "10";
 	var name = clientfirstname+' '+clientlastname;
@@ -275,21 +200,21 @@ $.lineitem_tf.addEventListener('blur', function(_e) {
 	var total = "200";
 	var bal = "200";
 	var paid = "50%";
-	var dates = "[{\"nextapptdate\"cOlOn\"5/1/2015\",\"duedate\"cOlOn\"6/1/2015\",\"lastpaiddate\"cOlOn\"4/1/2015\"}]";
+	var dates = "[{\"nextapptdate\"cOlOn\"10/1/2015\",\"duedate\"cOlOn\"6/1/2015\",\"lastpaiddate\"cOlOn\"4/1/2015\"}]";
 	var currency = "USD";
 	var status = (status)?status:"Not Started";
 	var country = "USA";
-	var clientproject = projectname[0].name;
+	var clientproject = savedata.col1;
 	var notes = JSON.stringify(item).toString().replace(/:/g,'cOlOn');
 	var projectid = e.source.titleid || Date.now();
 	var customerid = e.source.customerid || Date.now();
 	Alloy.Globals.Log("enterproject.js::saveHandler::clientproject: "+clientproject+" clientfirstname: "+clientfirstname+" projectid: "+projectid+" customerid: "+customerid);	
 	submit(e,clientproject.trim(),clientfirstname.trim(),clientlastname.trim(),clientcompany,clientphone,clientemail,clientstreetaddress,clientcity,clientstate,country,status,notes,"0","none",dates,projectid,customerid,"project");
-	submit(e,customerid,clientfirstname.trim(),clientlastname.trim(),clientcompany,clientphone,clientemail,clientstreetaddress,clientcity,clientstate,country,status,notes,"0","none",dates,projectid,customerid,"client");
+	(e.source.selectclient == "no") && submit(e,customerid,clientfirstname.trim(),clientlastname.trim(),clientcompany,clientphone,clientemail,clientstreetaddress,clientcity,clientstate,country,status,notes,"0","none",dates,projectid,customerid,"client");
 	///Alloy.Globals.Log('submit('+projectnumber+','+name+','+customerno+','+total+','+bal+','+paid+','+lastpaiddate+','+followupdate+','+clientphone+','+clientemail+','+duedate+','
 	///+currency+','+status+')');
  }; 
- 
+ var notes = savedata.col12;
  function submit(e,clientproject,clientfirstname,clientlastname,clientcompany,clientphone,clientemail,clientstreetaddress,clientcity,clientstate,country,status,notes,percentcompletion,nextappt,datedue,projectid,customerid,type) {	
     //var existingedithref = Titanium.App.Properties.getString('edithref');
     if(type=="project"){ var existingedithref = e.source.projectedithref; };
@@ -457,13 +382,13 @@ function setClientExisting(args) {
 }
 
 function selectClient(args) {
-	Titanium.App.Properties.setString('selectclient',"true");
 	var someDummy = Alloy.Models.dummy;
-	Alloy.Globals.Log("stringify dummy after selectClient :"+JSON.stringify(someDummy));
+	Alloy.Globals.Log("stringify dummy after selectClient:JSON.stringify(args): "+JSON.stringify(args));
+	Alloy.Globals.Log("stringify dummy after selectClient:JSON.stringify(someDummy): "+JSON.stringify(someDummy));
 	someDummy.set('id', '1234');
 	someDummy.fetch();
 	
-			var data = args.title.split(':');
+	var data = args.title.split(':');
 	var customerid = data[0];
 	var firstname = data[1];
 	var lastname = data[2];
@@ -508,6 +433,7 @@ function selectClient(args) {
 	someDummy.set('invoice', invoice);
 	someDummy.set('project', project);
 	someDummy.set('proposal', proposal);
+	$.save_button.selectclient = 'yes';
 }
 
 $.check_client.addEventListener('click', function(e){
@@ -543,12 +469,12 @@ var googleAuth = new GoogleAuth({
 
 
 
-$.enterproject_table.addEventListener('click', function(e){
+/*$.enterproject_table.addEventListener('click', function(e){
 	Alloy.Globals.Log("JSON stringify after table row is clicked : " +JSON.stringify(e));
 		 	$.lineitem_tf.blur();
 	 	$.lineitemqty_tf.blur();
 	 	$.lineitemprice_tf.blur();
-});
+});*/
  
  /*
 function goBack(e) {
@@ -562,6 +488,7 @@ function goBack(e) {
 }
 */
 if (args.notesraw) {
+	savedata.col12 = args.notesraw; $.save_button.savedata = savedata;
 	var notesraw = args.notesraw.toString();
 	var notes = notesraw.replace(/cOlOn/g,":");
 	var notesJSON = JSON.parse(notes);
@@ -589,12 +516,13 @@ if (args.notesraw) {
 function projectDetailsAutoHeight(projectdescr_tf_height){
 	var new_projectdescr_tf_height = 14 + parseFloat(projectdescr_tf_height);
 	$.projectdescr_tf.height = new_projectdescr_tf_height;
-	$.tflabellineitem.top = 32 + new_projectdescr_tf_height + 5;
-	$.lineitem_tf.top = 32 + new_projectdescr_tf_height + 5 + 2;
-	$.tflineitemqty.top = 32 + new_projectdescr_tf_height + 5 + 20;
-	$.lineitemqty_tf.top = 32 + new_projectdescr_tf_height + 5 + 20 + 2;
-	$.tflineitemprice.top = 32 + new_projectdescr_tf_height + 5 + 20;
-	$.lineitemprice_tf.top = 32 + new_projectdescr_tf_height + 5 + 20 + 2;	
+	$.tflabellineitem.top = 32 + new_projectdescr_tf_height + 10;
+	$.lineitem_tf.top = 32 + new_projectdescr_tf_height + 10 + 2;
+	$.tflineitemqty.top = 32 + new_projectdescr_tf_height + 10 + 20;
+	$.lineitemqty_tf.top = 32 + new_projectdescr_tf_height + 10 + 20 + 2;
+	$.tflineitemprice.top = 32 + new_projectdescr_tf_height + 10 + 20;
+	$.lineitemprice_tf.top = 32 + new_projectdescr_tf_height + 10 + 20 + 2;
+	$.itemdetail_view.height = 	32 + new_projectdescr_tf_height + 10 + 20 + 2 + 30;
 }
 
 $.projectdescr_tf.addEventListener('blur',function(e){Alloy.Globals.Log("enterproject.js::$.projectdescr_tf.addEventListener:BLUR:JSON.stringify(e): "+JSON.stringify(e));});
@@ -611,12 +539,12 @@ if (itemdescrvalue) {
 	var projectdescr_tf_height = ((Math.round(itemdescrvalue.split('').length/70)+(itemdescrvalue.split(/\r?\n|\r/).length))*14)+14;
 	var new_projectdescr_tf_height = 2 + projectdescr_tf_height;
 	$.projectdescr_tf.height = new_projectdescr_tf_height;
-	$.tflabellineitem.top = 32 + new_projectdescr_tf_height + 5;
-	$.lineitem_tf.top = 32 + new_projectdescr_tf_height + 5 + 2;
-	$.tflineitemqty.top = 32 + new_projectdescr_tf_height + 5 + 20;
-	$.lineitemqty_tf.top = 32 + new_projectdescr_tf_height + 5 + 20 + 2;
-	$.tflineitemprice.top = 32 + new_projectdescr_tf_height + 5 + 20;
-	$.lineitemprice_tf.top = 32 + new_projectdescr_tf_height + 5 + 20 + 2;	
+	$.tflabellineitem.top = 32 + new_projectdescr_tf_height + 10;
+	$.lineitem_tf.top = 32 + new_projectdescr_tf_height + 10 + 2;
+	$.tflineitemqty.top = 32 + new_projectdescr_tf_height + 10 + 20;
+	$.lineitemqty_tf.top = 32 + new_projectdescr_tf_height + 10 + 20 + 2;
+	$.tflineitemprice.top = 32 + new_projectdescr_tf_height + 10 + 20;
+	$.lineitemprice_tf.top = 32 + new_projectdescr_tf_height + 10 + 20 + 2;	
 } else {
 	$.projectdescr_tf.value=" ";
 }

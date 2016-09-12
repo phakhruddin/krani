@@ -11,6 +11,9 @@ exports.openMainWindow = function(_tab) {
 		});
 };
 
+var savedata = {col1:"",col2:"",col3:"",col4:"",col5:"",col6:"",col7:"",col8:"",col9:"",col10:"",col11:"",col12:"",col13:"",col14:"",col15:"",col16:""};
+$.save_button.savedata = savedata;
+
 if (args) {
 	var customerid = args.customerid;
 	var clients = Alloy.Collections.instance('client');
@@ -63,14 +66,26 @@ var count = 3; //row where line item is entered
 Titanium.App.Properties.setInt('count',count);
  
  var itemvalue =[];
-
+ 
+ $.clientfirstname_tf.addEventListener('change',function(e){savedata.col2=e.value;$.save_button.savedata=savedata;});
+ $.clientlastname_tf.addEventListener('change',function(e){savedata.col3=e.value;$.save_button.savedata=savedata;});
+ $.clientcompany_tf.addEventListener('change',function(e){savedata.col4=e.value;$.save_button.savedata=savedata;});
+ $.clientphone_tf.addEventListener('change',function(e){savedata.col5=e.value;$.save_button.savedata=savedata;});
+ $.clientemail_tf.addEventListener('change',function(e){savedata.col6=e.value;$.save_button.savedata=savedata;});
+ $.clientstreetaddress_tf.addEventListener('change',function(e){savedata.col7=e.value;$.save_button.savedata=savedata;});
+ $.clientcity_tf.addEventListener('change',function(e){savedata.col8=e.value;$.save_button.savedata=savedata;});
+ $.clientstate_tf.addEventListener('change',function(e){savedata.col9=e.value;$.save_button.savedata=savedata;});
+ 
  function saveHandler(e){
  	Alloy.Globals.Log("enterclient.js::saveHandler::saving all data JSON e: "+JSON.stringify(e));
+ 	Alloy.Globals.Log("enterclient.js::saveHandler::JSON.stringify(e.source.savedata): "+JSON.stringify(e.source.savedata));
  	var tabledata = [];	
  	var noentry = "none";
  	var getvalue = ["clientfirstname","clientlastname","clientphone","clientemail","clientstreetaddress","clientcity","clientstate","clientcompany","notes"];
  	for (i=0;i<$.enterclient_table.data[0].rowCount;i++) {		
  		Alloy.Globals.Log("children count : "	+$.enterclient_table.data[0].rows[i].children.length);
+ 		Alloy.Globals.Log("children lev 0 : "	+JSON.stringify($.enterclient_table.data[0].rows[i].children));
+ 		Alloy.Globals.Log("children JSON.stringify($.tfkeyboardfix_view) : "	+JSON.stringify($.tfkeyboardfix_view));		
  		for (j=0;j<+$.enterclient_table.data[0].rows[i].children.length;j++) { 			
 			Alloy.Globals.Log("JSON stringify table 0 row "+i+' : ' +JSON.stringify($.enterclient_table.data[0].rows[i]));
 			Alloy.Globals.Log("JSON stringify table 0 row "+i+'w/children '+j+' : ' +JSON.stringify($.enterclient_table.data[0].rows[i].children[j]));
@@ -83,6 +98,15 @@ Titanium.App.Properties.setInt('count',count);
 			}		
 		};
 	};
+	var savedata = e.source.savedata;
+	var clientfirstname = savedata.col2;
+	var clientlastname = savedata.col3;
+	var clientcompany = savedata.col4;
+	var clientphone = savedata.col5;
+	var clientemail = savedata.col6;
+	var clientstreetaddress = savedata.col7;
+	var clientcity = savedata.col8;
+	var clientstate = savedata.col9;
 	Alloy.Globals.Log("tabledata are: "+JSON.stringify(tabledata));
 	Alloy.Globals.Log("enterclient.js::saveHandler:: detect array dyn variable: "+clientfirstname+","+clientlastname+","+clientphone+","+clientemail+","+clientstreetaddress
 	+","+clientcity+","+clientstate+","+clientcompany);
@@ -245,6 +269,7 @@ $.enterclient_table.addEventListener('click', function(e){
 	$.notes_tf.blur();
 });*/
 
+/*
 (args.firstname)?$.clientfirstname_tf.value=args.firstname:$.clientfirstname_tf.value=" ";
 (args.lastname)?$.clientlastname_tf.value=args.lastname:$.clientlastname_tf.value=" ";
 (args.company)?$.clientcompany_tf.value=args.company:$.clientcompany_tf.value=" ";
@@ -252,7 +277,17 @@ $.enterclient_table.addEventListener('click', function(e){
 (args.email)?$.clientemail_tf.value=args.email:$.clientemail_tf.value=" ";
 (args.address)?$.clientstreetaddress_tf.value=args.address:$.clientstreetaddress_tf.value=" ";
 (args.city)?$.clientcity_tf.value=args.city:$.clientcity_tf.value=" ";
-(args.state)?$.clientstate_tf.value=args.state:$.clientstate_tf.value=" ";
+(args.state)?$.clientstate_tf.value=args.state:$.clientstate_tf.value=" ";*/
+
+
+var subj = ['firstname','lastname','company','phone','email','streetaddress','city','state'];
+
+for (i=0;i<subj.length;i++){
+	var c=i+2;
+	eval("if(args."+subj[0]+"){$.client"+subj[i]+"_tf.value=args."+subj[i]+";savedata.col"+c+"=args."+subj[i]+";$.save_button.savedata=savedata;}");
+}
+if (args.selectclient) { $.save_button.selectclient = args.selectclient; }
+
  
 
 

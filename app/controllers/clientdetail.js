@@ -74,7 +74,7 @@ function editAction(e){
 			company : company,
 			phone : phone,
 			email : email,
-			address : address,
+			streetaddress : address,
 			city : city,
 			state : state,
 			country : country,
@@ -84,7 +84,8 @@ function editAction(e){
 			proposal : proposal,
 			idtag : idtag,
 			edithref : edithref,
-			selfhref : selfhref
+			selfhref : selfhref,
+			selectclient : 'yes'
 		});
 		clientController.openMainWindow($.tab_clientdetail);
 }

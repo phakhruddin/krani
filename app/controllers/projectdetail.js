@@ -621,7 +621,8 @@ function editAction(e){
 			nextapptdate : nextapptdate,
 			dates : dates,
 			datesdata : datesdata,
-			datedue : datedue
+			datedue : datedue,
+			selectclient : 'yes'
 		});
 		projectController.openMainWindow($.tab_projectdetail);	
 }
